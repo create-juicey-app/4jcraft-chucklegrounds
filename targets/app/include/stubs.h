@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
-#ifdef __linux__
+#include "platform/PlatformConfig.h"
+
+#if APP_PLATFORM_LINUX
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -157,7 +159,7 @@ void glActiveTexture(int);
 
 #endif
 
-#ifdef __linux__
+#if APP_PLATFORM_LINUX
 #include "java/File.h"
 
 class GL11 {

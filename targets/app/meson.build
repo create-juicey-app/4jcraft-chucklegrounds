@@ -1,6 +1,7 @@
 exclude_sources = [
   ' ! -path "*/common/*"',
   ' ! -path "*/linux/*"',
+  ' ! -path "*/android/*"',
   ' ! -path "*/windows/*"',
 ]
 
@@ -34,6 +35,14 @@ if host_machine.system() == 'linux'
     'sh',
     '-c', 'find "'
     + meson.current_source_dir() / 'linux'
+    + '" \\( -name "*.cpp" -o -name "*.c" \\) ',
+    check: true,
+  ).stdout().strip().split('\n')
+elif host_machine.system() == 'android'
+  platform_sources += run_command(
+    'sh',
+    '-c', 'find "'
+    + meson.current_source_dir() / 'android'
     + '" \\( -name "*.cpp" -o -name "*.c" \\) ',
     check: true,
   ).stdout().strip().split('\n')

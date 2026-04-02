@@ -29,6 +29,11 @@ global_cpp_defs = [
 
 if host_machine.system() == 'linux'
   global_cpp_defs += ['-Dlinux', '-D__linux', '-D__linux__']
+  global_cpp_defs += ['-DAPP_PLATFORM_LINUX=1', '-DAPP_PLATFORM_ANDROID=0']
+elif host_machine.system() == 'android'
+  global_cpp_defs += ['-DAPP_PLATFORM_LINUX=0', '-DAPP_PLATFORM_ANDROID=1']
+else
+  global_cpp_defs += ['-DAPP_PLATFORM_LINUX=0', '-DAPP_PLATFORM_ANDROID=0']
 endif
 
 if get_option('renderer') == 'gles'
