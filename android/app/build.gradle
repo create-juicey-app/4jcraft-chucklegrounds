@@ -12,14 +12,14 @@ def sdkDir = props.getProperty("sdk.dir") ?: System.getenv("ANDROID_SDK_ROOT") ?
 def ndkDir = props.getProperty("ndk.dir") ?: System.getenv("ANDROID_NDK_HOME")
 
 android {
-    namespace "com.fourjcraft.minecraftlegacyedition"
+    namespace "io.github.fourjcraft.mcle"
     compileSdk 34
     if (sdkDir != null) {
         sdkDirectory file(sdkDir)
     }
 
     defaultConfig {
-        applicationId "com.fourjcraft.minecraftlegacyedition"
+        applicationId "io.github.fourjcraft.mcle"
         minSdk 21
         targetSdk 34
         versionCode 1

@@ -1,4 +1,4 @@
-package com.fourjcraft.minecraftlegacyedition;
+package io.github.fourjcraft.mcle;
 
 import org.libsdl.app.SDLActivity;
 
