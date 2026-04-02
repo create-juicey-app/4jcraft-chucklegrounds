@@ -12,12 +12,17 @@
 /subprojects/*
 !/subprojects/*.wrap
 !/subprojects/packagefiles
+/android/.gradle/
+/android/app/build/
 /scripts/__pycache__/
 !/.clang-format
 !/.git-blame-ignore-revs
 !/.gitattributes
 !/.gitignore
 !/.gitmodules
+!/android/
+/android/local.properties
+**/local.properties
 !/CONTRIBUTING.md
 !/flake.lock
 !/flake.nix

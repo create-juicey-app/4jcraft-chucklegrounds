@@ -1,0 +1,69 @@
+plugins {
+    id "com.android.application"
+}
+
+def props = new Properties()
+def localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { props.load(it) }
+}
+
+def sdkDir = props.getProperty("sdk.dir") ?: System.getenv("ANDROID_SDK_ROOT") ?: System.getenv("ANDROID_HOME")
+def ndkDir = props.getProperty("ndk.dir") ?: System.getenv("ANDROID_NDK_HOME")
+
+android {
+    namespace "com.fourjcraft.minecraftlegacyedition"
+    compileSdk 34
+    if (sdkDir != null) {
+        sdkDirectory file(sdkDir)
+    }
+
+    defaultConfig {
+        applicationId "com.fourjcraft.minecraftlegacyedition"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "0.1.0"
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+        if (ndkDir != null) {
+            ndkPath ndkDir
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["src/main/jniLibs"]
+            assets.srcDirs = ["../../build/targets/resources"]
+        }
+    }
+}
+
+dependencies {
+}
+
+tasks.register("buildNativeArm64", Exec) {
+    workingDir rootProject.projectDir.parentFile
+    commandLine "bash", "android/scripts/build-native.sh"
+}
+
+tasks.named("preBuild") {
+    dependsOn(tasks.named("buildNativeArm64"))
+}
