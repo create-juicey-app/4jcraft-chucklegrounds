@@ -46,6 +46,7 @@ elif host_machine.system() == 'android'
     + '" \\( -name "*.cpp" -o -name "*.c" \\) ',
     check: true,
   ).stdout().strip().split('\n')
+  platform_sources += files('linux/Iggy/gdraw/gdraw.c')
 endif
 
 client_dependencies = [
@@ -78,21 +79,39 @@ endif
 
 platform_services_src = files('../platform/PlatformServices.cpp')
 
-client = executable(
-  'Minecraft.Client',
-  client_sources + platform_sources + platform_services_src + localisation[1],
-  include_directories: include_directories('include', '..'),
-  dependencies: client_dependencies,
-  cpp_args: global_cpp_args
+target_sources = client_sources + platform_sources + platform_services_src + localisation[1]
+target_includes = include_directories('include', '..')
+target_cpp_args = global_cpp_args
   + global_cpp_defs
   + [
     '-DUNICODE',
     '-D_UNICODE',
-  ],
-  c_args: global_cpp_defs + ['-DUNICODE', '-D_UNICODE'],
-  install: true,
-  install_dir: '',
-)
+  ]
+target_c_args = global_cpp_defs + ['-DUNICODE', '-D_UNICODE']
+
+if host_machine.system() == 'android'
+  client = shared_library(
+    'main',
+    target_sources,
+    include_directories: target_includes,
+    dependencies: client_dependencies,
+    cpp_args: target_cpp_args,
+    c_args: target_c_args,
+    install: true,
+    install_dir: '',
+  )
+else
+  client = executable(
+    'Minecraft.Client',
+    target_sources,
+    include_directories: target_includes,
+    dependencies: client_dependencies,
+    cpp_args: target_cpp_args,
+    c_args: target_c_args,
+    install: true,
+    install_dir: '',
+  )
+endif
 
 custom_target(
   'copy_assets_to_client',

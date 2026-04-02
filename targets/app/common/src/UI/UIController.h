@@ -8,22 +8,28 @@
 #include <unordered_map>
 #include <vector>
 
-#ifdef __linux__
+#include "platform/PlatformConfig.h"
+
+#if APP_PLATFORM_LINUX || APP_PLATFORM_ANDROID
 #include "app/linux/Iggy/include/iggy.h"
 #include "app/linux/Stubs/d3d11_stubs.h"
 #elif defined(_WINDOWS64)
 #include "app/windows/Iggy/include/iggy.h"
 #endif
 
-#include "platform/PlatformTypes.h"
-#include "platform/InputActions.h"
-#include "platform/sdl2/Render.h"
-#include "platform/sdl2/Storage.h"
 #include "app/common/src/UI/All Platforms/IUIController.h"
 #include "app/common/src/UI/All Platforms/UIEnums.h"
 #include "app/common/src/UI/All Platforms/UIStructs.h"
 #include "app/common/src/UI/Controls/UIControl.h"
+#include "platform/InputActions.h"
+#include "platform/PlatformTypes.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/Storage.h"
+#if APP_PLATFORM_LINUX || APP_PLATFORM_ANDROID
 #include "app/linux/Iggy/include/rrCore.h"
+#elif defined(_WINDOWS64)
+#include "app/windows/Iggy/include/rrCore.h"
+#endif
 #include "UIGroup.h"
 #include "minecraft/sounds/SoundTypes.h"
 

@@ -20,8 +20,14 @@
 #include "app/common/src/UI/All Platforms/UIEnums.h"
 #include "app/common/src/UI/All Platforms/UIStructs.h"
 #include "app/common/src/UI/Scenes/In-Game Menu Screens/UIScene_PauseMenu.h"
+#include "platform/PlatformConfig.h"
+#if APP_PLATFORM_ANDROID
+#include "app/android/Android_App.h"
+#include "app/android/Android_UIController.h"
+#else
 #include "app/linux/Linux_App.h"
 #include "app/linux/Linux_UIController.h"
+#endif
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "console_helpers/StringHelpers.h"
 #include "console_helpers/ThreadName.h"

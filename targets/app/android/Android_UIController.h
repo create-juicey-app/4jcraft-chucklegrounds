@@ -1,13 +1,5 @@
 #pragma once
 
-#include "platform/PlatformConfig.h"
-
-#if APP_PLATFORM_ANDROID
-
-#include "app/android/Android_UIController.h"
-
-#else
-
 #include "app/common/src/UI/All Platforms/UIStructs.h"
 #include "app/common/src/UI/UIController.h"
 #include "app/linux/Iggy/include/iggy.h"
@@ -40,5 +32,3 @@ public:
 };
 
 extern ConsoleUIController ui;
-
-#endif

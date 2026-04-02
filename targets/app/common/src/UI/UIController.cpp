@@ -10,8 +10,6 @@
 #include <memory>
 #include <utility>
 
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Profile.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/Audio/SoundEngine.h"
 #include "app/common/src/DLC/DLCManager.h"
@@ -30,11 +28,19 @@
 #include "app/common/src/UI/UIString.h"
 #include "app/common/src/UI/UITTFFont.h"
 #include "app/linux/Iggy/include/iggy.h"
+#include "platform/PlatformConfig.h"
+#include "platform/sdl2/Input.h"
+#include "platform/sdl2/Profile.h"
+#if APP_PLATFORM_ANDROID
+#include "app/android/Android_App.h"
+#include "app/android/Android_UIController.h"
+#else
 #include "app/linux/Linux_App.h"
 #include "app/linux/Linux_UIController.h"
-#include "app/include/BufferedImage.h"
+#endif
 #include "UIFontData.h"
 #include "XboxStubs.h"
+#include "app/include/BufferedImage.h"
 #include "console_helpers/C4JThread.h"
 #include "console_helpers/PerformanceTimer.h"
 #include "console_helpers/PlatformTime.h"
@@ -351,15 +357,13 @@ UITTFFont* UIController::createFont(EFont fontLanguage) {
                 "app/common/Media/font/JPN/DFGMaruGothic-Md.ttf",
                 0x2022);  // JPN
         case eFont_TradChinese:
-            return new UITTFFont(
-                "Mojangles_TTF_cnTD",
-                "app/common/Media/font/CHT/DFHeiMedium-B5.ttf",
-                0x2022);  // CHT
+            return new UITTFFont("Mojangles_TTF_cnTD",
+                                 "app/common/Media/font/CHT/DFHeiMedium-B5.ttf",
+                                 0x2022);  // CHT
         case eFont_Korean:
-            return new UITTFFont(
-                "Mojangles_TTF_koKR",
-                "app/common/Media/font/KOR/BOKMSD.ttf",
-                0x2022);  // KOR
+            return new UITTFFont("Mojangles_TTF_koKR",
+                                 "app/common/Media/font/KOR/BOKMSD.ttf",
+                                 0x2022);  // KOR
         // 4J-JEV, Cyrillic characters have been added to this font now,
         // (4/July/14) XC_LANGUAGE_RUSSIAN and XC_LANGUAGE_GREEK:
         default:

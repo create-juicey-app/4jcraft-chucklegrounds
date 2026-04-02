@@ -1,5 +1,13 @@
 #pragma once
 
+#include "platform/PlatformConfig.h"
+
+#if APP_PLATFORM_ANDROID
+
+#include "app/android/Android_App.h"
+
+#else
+
 #include <cstdint>
 
 #include "app/common/App_enums.h"
@@ -43,3 +51,5 @@ public:
 };
 
 extern CConsoleMinecraftApp app;
+
+#endif

@@ -1,10 +1,5 @@
 #include "app/common/Consoles_App.h"
 
-#include "platform/PlatformTypes.h"
-#include "platform/InputActions.h"
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Render.h"
-#include "platform/sdl2/Storage.h"
 #include "app/common/App_Defines.h"
 #include "app/common/App_enums.h"
 #include "app/common/App_structs.h"
@@ -18,12 +13,23 @@
 #include "app/common/src/UI/All Platforms/UIEnums.h"
 #include "app/common/src/UI/All Platforms/UIStructs.h"
 #include "app/common/src/UI/Scenes/UIScene_FullscreenProgress.h"
+#include "platform/InputActions.h"
+#include "platform/PlatformConfig.h"
+#include "platform/PlatformTypes.h"
+#include "platform/sdl2/Profile.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/Storage.h"
+#if APP_PLATFORM_ANDROID
+#include "app/android/Android_App.h"
+#include "app/android/Android_UIController.h"
+#else
 #include "app/linux/Linux_App.h"
 #include "app/linux/Linux_UIController.h"
-#include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/NetTypes.h"
+#endif
 #include "SkinBox.h"
 #include "XboxStubs.h"
+#include "app/include/NetTypes.h"
+#include "app/linux/Stubs/winapi_stubs.h"
 #include "console_helpers/PathHelper.h"
 #include "java/Class.h"
 #include "java/File.h"
@@ -73,14 +79,13 @@
 #include <utility>
 #include <vector>
 
-#include "platform/sdl2/Input.h"
+#include "Minecraft_Macros.h"
 #include "app/common/src/Audio/SoundEngine.h"
 #include "app/common/src/Colours/ColourTable.h"
 #include "app/common/src/DLC/DLCPack.h"
 #include "app/common/src/Localisation/StringTable.h"
 #include "app/common/src/UI/All Platforms/ArchiveFile.h"
 #include "app/common/src/UI/Scenes/In-Game Menu Screens/UIScene_PauseMenu.h"
-#include "Minecraft_Macros.h"
 #include "console_helpers/PlatformTime.h"
 #include "console_helpers/StringHelpers.h"
 #include "console_helpers/compression.h"
@@ -91,6 +96,7 @@
 #include "minecraft/client/skins/TexturePackRepository.h"
 #include "minecraft/server/PlayerList.h"
 #include "minecraft/server/level/ServerPlayer.h"
+#include "platform/sdl2/Input.h"
 
 class BeaconTileEntity;
 class BrewingStandTileEntity;

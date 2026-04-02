@@ -7,11 +7,16 @@
 
 #include "app/common/src/Network/GameNetworkManager.h"
 #include "app/common/src/Network/NetworkPlayerInterface.h"
+#include "platform/PlatformConfig.h"
+#if APP_PLATFORM_ANDROID
+#include "app/android/Android_App.h"
+#else
 #include "app/linux/Linux_App.h"
-#include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/NetTypes.h"
+#endif
 #include "NetworkPlayerQNet.h"
 #include "Socket.h"
+#include "app/include/NetTypes.h"
+#include "app/linux/Stubs/winapi_stubs.h"
 #include "console_helpers/C4JThread.h"
 
 IPlatformNetworkStub* g_pPlatformNetworkManager;
@@ -109,8 +114,8 @@ void IPlatformNetworkStub::NotifyPlayerJoined(IQNetPlayer* pQNetPlayer) {
     }
 }
 
-bool IPlatformNetworkStub::Initialise(
-    CGameNetworkManager* pGameNetworkManager, int flagIndexSize) {
+bool IPlatformNetworkStub::Initialise(CGameNetworkManager* pGameNetworkManager,
+                                      int flagIndexSize) {
     m_pGameNetworkManager = pGameNetworkManager;
     m_flagIndexSize = flagIndexSize;
     g_pPlatformNetworkManager = this;
@@ -155,8 +160,7 @@ int IPlatformNetworkStub::GetJoiningReadyPercentage() { return 100; }
 
 int IPlatformNetworkStub::CorrectErrorIDS(int IDS) { return IDS; }
 
-bool IPlatformNetworkStub::isSystemPrimaryPlayer(
-    IQNetPlayer* pQNetPlayer) {
+bool IPlatformNetworkStub::isSystemPrimaryPlayer(IQNetPlayer* pQNetPlayer) {
     return true;
 }
 
@@ -168,9 +172,7 @@ int IPlatformNetworkStub::GetPlayerCount() {
     return m_pIQNet->GetPlayerCount();
 }
 
-bool IPlatformNetworkStub::ShouldMessageForFullSession() {
-    return false;
-}
+bool IPlatformNetworkStub::ShouldMessageForFullSession() { return false; }
 
 int IPlatformNetworkStub::GetOnlinePlayerCount() { return 1; }
 
@@ -189,8 +191,7 @@ bool IPlatformNetworkStub::RemoveLocalPlayerByUserIndex(int userIndex) {
 
 bool IPlatformNetworkStub::IsInStatsEnabledSession() { return true; }
 
-bool IPlatformNetworkStub::SessionHasSpace(
-    unsigned int spaceRequired /*= 1*/) {
+bool IPlatformNetworkStub::SessionHasSpace(unsigned int spaceRequired /*= 1*/) {
     return true;
 }
 
@@ -212,8 +213,7 @@ bool IPlatformNetworkStub::LeaveGame(bool bMigrateHost) {
     return true;
 }
 
-bool IPlatformNetworkStub::_LeaveGame(bool bMigrateHost,
-                                             bool bLeaveRoom) {
+bool IPlatformNetworkStub::_LeaveGame(bool bMigrateHost, bool bLeaveRoom) {
     return true;
 }
 
@@ -245,8 +245,7 @@ void IPlatformNetworkStub::_HostGame(
 bool IPlatformNetworkStub::_StartGame() { return true; }
 
 int IPlatformNetworkStub::JoinGame(FriendSessionInfo* searchResult,
-                                          int localUsersMask,
-                                          int primaryUserIndex) {
+                                   int localUsersMask, int primaryUserIndex) {
     return CGameNetworkManager::JOINGAME_SUCCESS;
 }
 
@@ -332,8 +331,7 @@ void IPlatformNetworkStub::UpdateAndSetGameSessionData(
     // app.GetGameHostOption(eGameHostOption_All);
 }
 
-int IPlatformNetworkStub::RemovePlayerOnSocketClosedThreadProc(
-    void* lpParam) {
+int IPlatformNetworkStub::RemovePlayerOnSocketClosedThreadProc(void* lpParam) {
     INetworkPlayer* pNetworkPlayer = (INetworkPlayer*)lpParam;
 
     Socket* socket = pNetworkPlayer->GetSocket();
@@ -351,13 +349,12 @@ int IPlatformNetworkStub::RemovePlayerOnSocketClosedThreadProc(
     return g_pPlatformNetworkManager->RemoveLocalPlayer(pNetworkPlayer);
 }
 
-bool IPlatformNetworkStub::RemoveLocalPlayer(
-    INetworkPlayer* pNetworkPlayer) {
+bool IPlatformNetworkStub::RemoveLocalPlayer(INetworkPlayer* pNetworkPlayer) {
     return true;
 }
 
-IPlatformNetworkStub::PlayerFlags::PlayerFlags(
-    INetworkPlayer* pNetworkPlayer, unsigned int count) {
+IPlatformNetworkStub::PlayerFlags::PlayerFlags(INetworkPlayer* pNetworkPlayer,
+                                               unsigned int count) {
     // 4J Stu - Don't assert, just make it a multiple of 8! This count is
     // calculated from a load of separate values, and makes tweaking
     // world/render sizes a pain if we hit an assert here
@@ -372,8 +369,7 @@ IPlatformNetworkStub::PlayerFlags::~PlayerFlags() { delete[] flags; }
 
 // Add a player to the per system flag storage - if we've already got a player
 // from that system, copy its flags over
-void IPlatformNetworkStub::SystemFlagAddPlayer(
-    INetworkPlayer* pNetworkPlayer) {
+void IPlatformNetworkStub::SystemFlagAddPlayer(INetworkPlayer* pNetworkPlayer) {
     PlayerFlags* newPlayerFlags =
         new PlayerFlags(pNetworkPlayer, m_flagIndexSize);
     // If any of our existing players are on the same system, then copy over
@@ -412,7 +408,7 @@ void IPlatformNetworkStub::SystemFlagReset() {
 // Set a per system flag - this is done by setting the flag on every player that
 // shares that system
 void IPlatformNetworkStub::SystemFlagSet(INetworkPlayer* pNetworkPlayer,
-                                                int index) {
+                                         int index) {
     if ((index < 0) || (index >= m_flagIndexSize)) return;
     if (pNetworkPlayer == nullptr) return;
 
@@ -427,7 +423,7 @@ void IPlatformNetworkStub::SystemFlagSet(INetworkPlayer* pNetworkPlayer,
 // player as anything else sent to that system should also have been duplicated
 // here
 bool IPlatformNetworkStub::SystemFlagGet(INetworkPlayer* pNetworkPlayer,
-                                                int index) {
+                                         int index) {
     if ((index < 0) || (index >= m_flagIndexSize)) return false;
     if (pNetworkPlayer == nullptr) {
         return false;
@@ -519,8 +515,7 @@ INetworkPlayer* IPlatformNetworkStub::addNetworkPlayer(
     return pNetworkPlayer;
 }
 
-void IPlatformNetworkStub::removeNetworkPlayer(
-    IQNetPlayer* pQNetPlayer) {
+void IPlatformNetworkStub::removeNetworkPlayer(IQNetPlayer* pQNetPlayer) {
     INetworkPlayer* pNetworkPlayer = getNetworkPlayer(pQNetPlayer);
     for (auto it = currentNetworkPlayers.begin();
          it != currentNetworkPlayers.end(); it++) {
@@ -537,8 +532,7 @@ INetworkPlayer* IPlatformNetworkStub::getNetworkPlayer(
                        : nullptr;
 }
 
-INetworkPlayer* IPlatformNetworkStub::GetLocalPlayerByUserIndex(
-    int userIndex) {
+INetworkPlayer* IPlatformNetworkStub::GetLocalPlayerByUserIndex(int userIndex) {
     return getNetworkPlayer(m_pIQNet->GetLocalPlayerByUserIndex(userIndex));
 }
 
