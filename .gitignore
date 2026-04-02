@@ -15,6 +15,7 @@
 /android/.gradle/
 /android/app/build/
 /android/.idea/
+/android/build/
 /scripts/__pycache__/
 !/.clang-format
 !/.git-blame-ignore-revs
@@ -23,6 +24,8 @@
 !/.gitmodules
 !/android/
 /android/local.properties
+/android/.cache/
+/android/third_party/
 **/local.properties
 !/CONTRIBUTING.md
 !/flake.lock
@@ -30,4 +33,3 @@
 !/meson.build
 !/meson.options
 !/README.md
-

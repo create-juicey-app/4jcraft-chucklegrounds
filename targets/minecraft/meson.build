@@ -16,6 +16,7 @@ exclude_sources = [
   '! -name "CreativeMode.cpp"',
   '! -name "GameMode.cpp"',
   '! -name "DemoMode.cpp"',
+  '! -name "Hasher.cpp"',
 ]
 
 # GET IT ALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
@@ -63,9 +64,9 @@ lib_minecraft = static_library('minecraft',
 )
 
 zlib_dep = dependency('zlib')
-crypto_dep = dependency('libcrypto')  # for MD5 in Hasher.cpp on Linux
+crypto_dep = dependency('libcrypto', required: false)
 
 minecraft_dep = declare_dependency(
   link_with : lib_minecraft,
-  dependencies : [crypto_dep, zlib_dep],
+  dependencies : [zlib_dep] + (crypto_dep.found() ? [crypto_dep] : []),
 )

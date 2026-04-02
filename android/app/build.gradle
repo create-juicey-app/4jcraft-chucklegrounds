@@ -2,21 +2,9 @@ plugins {
     id "com.android.application"
 }
 
-def props = new Properties()
-def localPropsFile = rootProject.file("local.properties")
-if (localPropsFile.exists()) {
-    localPropsFile.withInputStream { props.load(it) }
-}
-
-def sdkDir = props.getProperty("sdk.dir") ?: System.getenv("ANDROID_SDK_ROOT") ?: System.getenv("ANDROID_HOME")
-def ndkDir = props.getProperty("ndk.dir") ?: System.getenv("ANDROID_NDK_HOME")
-
 android {
     namespace "io.github.fourjcraft.mcle"
     compileSdk 34
-    if (sdkDir != null) {
-        sdkDirectory file(sdkDir)
-    }
 
     defaultConfig {
         applicationId "io.github.fourjcraft.mcle"
@@ -27,9 +15,6 @@ android {
 
         ndk {
             abiFilters "arm64-v8a"
-        }
-        if (ndkDir != null) {
-            ndkPath ndkDir
         }
     }
 
@@ -61,7 +46,7 @@ dependencies {
 
 tasks.register("buildNativeArm64", Exec) {
     workingDir rootProject.projectDir.parentFile
-    commandLine "bash", "android/scripts/build-native.sh"
+    commandLine = ["bash", "android/scripts/build-native.sh"]
 }
 
 tasks.named("preBuild") {

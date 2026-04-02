@@ -130,7 +130,7 @@ void setThreadNamePlatform([[maybe_unused]] std::uint32_t threadId,
     } __except (EXCEPTION_EXECUTE_HANDLER) {
     }
 
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__ANDROID__)
     // pthread_setname_np limit: 16 chars including null terminator.
     char truncated[16];
     std::snprintf(truncated, sizeof(truncated), "%s", name);
@@ -140,7 +140,7 @@ void setThreadNamePlatform([[maybe_unused]] std::uint32_t threadId,
 
 #if defined(_WIN32)
 thread_local std::vector<DWORD_PTR> g_affinityMaskStack;
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__ANDROID__)
 thread_local std::vector<cpu_set_t> g_affinityMaskStack;
 #endif
 
@@ -170,7 +170,7 @@ void setAffinityPlatform(std::thread& threadHandle, bool isSelf, int proc) {
     }
     (void)::SetThreadAffinityMask(handle, mask);
 
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__ANDROID__)
     pthread_t handle;
     if (threadHandle.joinable())
         handle = threadHandle.native_handle();

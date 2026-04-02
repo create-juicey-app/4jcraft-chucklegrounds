@@ -15,8 +15,9 @@ project(
 
 pymod = import('python')
 python = pymod.find_installation('python3', required: true)
+fs = import('fs')
 
-cc = meson.get_compiler('cpp')
+cc = meson.get_compiler('cpp', native: false)
 
 global_cpp_defs = [
   '-DSPLIT_SAVES',
@@ -38,7 +39,10 @@ endif
 
 if get_option('renderer') == 'gles'
   global_cpp_defs += ['-DGLES']
-  gl_dep = dependency('glesv2', required: true)
+  gl_dep = dependency('glesv2', required: false)
+  if not gl_dep.found()
+    gl_dep = cc.find_library('GLESv2', required: true)
+  endif
   glu_dep = dependency('', required: false)
 else
   gl_dep = dependency('gl', required: true)
@@ -73,7 +77,24 @@ global_cpp_args = [
 ]
 add_project_arguments(global_cpp_args, language: 'cpp')
 
-sdl2_dep = dependency('sdl2')
+sdl2_dep = dependency('sdl2', required: false)
+if not sdl2_dep.found() and host_machine.system() == 'android'
+  sdl2_lib = meson.project_source_root() / 'android/third_party/SDL2/lib/arm64-v8a/libSDL2.so'
+  if fs.exists(sdl2_lib)
+    sdl2_inc_dirs = [include_directories('android/third_party/SDL2/include')]
+    sdl2_inc2 = meson.project_source_root() / 'android/third_party/SDL2/include/SDL2'
+    if fs.exists(sdl2_inc2)
+      sdl2_inc_dirs += include_directories('android/third_party/SDL2/include/SDL2')
+    endif
+    sdl2_dep = declare_dependency(
+      include_directories: sdl2_inc_dirs,
+      link_args: [sdl2_lib],
+    )
+  endif
+endif
+if not sdl2_dep.found()
+  error('SDL2 dependency not found. For Android builds, place SDL2 at android/third_party/SDL2 with include/ and lib/arm64-v8a/libSDL2.so')
+endif
 thread_dep = dependency('threads')
 dl_dep = cc.find_library('dl', required: true)
 

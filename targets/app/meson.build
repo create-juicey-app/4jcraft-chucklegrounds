@@ -81,12 +81,10 @@ platform_services_src = files('../platform/PlatformServices.cpp')
 
 target_sources = client_sources + platform_sources + platform_services_src + localisation[1]
 target_includes = include_directories('include', '..')
-target_cpp_args = global_cpp_args
-  + global_cpp_defs
-  + [
-    '-DUNICODE',
-    '-D_UNICODE',
-  ]
+target_cpp_args = global_cpp_args + global_cpp_defs + [
+  '-DUNICODE',
+  '-D_UNICODE',
+]
 target_c_args = global_cpp_defs + ['-DUNICODE', '-D_UNICODE']
 
 if host_machine.system() == 'android'

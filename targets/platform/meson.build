@@ -5,16 +5,27 @@ platform_dep = declare_dependency(
 )
 
 # SDL2-based platform implementations (formerly 4J.* modules)
-_sdl2 = dependency('sdl2')
-_threads = dependency('threads')
-_glm = dependency('glm')
+_sdl2 = sdl2_dep
+_threads = thread_dep
+_glm = dependency('glm', required: false)
+if not _glm.found() and host_machine.system() == 'android'
+  glm_header = meson.project_source_root() / 'android/third_party/glm/glm/glm.hpp'
+  if fs.exists(glm_header)
+    _glm = declare_dependency(include_directories: include_directories('../../android/third_party/glm'))
+  else
+    error('GLM dependency not found!')
+  endif
+endif
+if not _glm.found()
+  error('GLM dependency not found')
+endif
 _defs = []
 
 if get_option('renderer') == 'gles'
-  _gl = dependency('glesv2', required: true)
+  _gl = gl_dep
   _defs += ['-DGLES']
 else
-  _gl = dependency('gl', required: true)
+  _gl = gl_dep
 endif
 
 sdl2_sources = files(

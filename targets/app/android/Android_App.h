@@ -32,6 +32,11 @@ public:
         wchar_t* wchTMSFile, bool bFilenameIncludesExtension,
         eFileExtensionType eEXT = eFileExtensionType_PNG);
 
+    virtual void ReadBannedList(int iPad, eTMSAction action = (eTMSAction)0,
+                                bool bCallback = false) {}
+
+    C4JStringTable* GetStringTable() { return nullptr; }
+
     virtual void TemporaryCreateGameStart();
 };
 
