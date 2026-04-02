@@ -11,9 +11,9 @@ class Random;
 
 #include "app/common/App_Defines.h"
 #include "app/common/src/Audio/Consoles_SoundEngine.h"
-#include "app/linux/Iggy/include/rrCore.h"
 #include "minecraft/sounds/SoundTypes.h"
 #include "miniaudio.h"
+#include "platform/PlatformConfig.h"
 
 constexpr float SFX_3D_MIN_DISTANCE = 1.0f;
 constexpr float SFX_3D_MAX_DISTANCE = 16.0f;
@@ -85,7 +85,7 @@ enum MUSIC_STREAMSTATE {
 };
 
 typedef struct {
-    F32 x, y, z, volume, pitch;
+    float x, y, z, volume, pitch;
     int iSound;
     bool bIs3D;
     bool bUseSoundsPitchVal;
@@ -142,7 +142,7 @@ private:
     float getMasterMusicVolume();
     // platform specific functions
     int initAudioHardware(int iMinSpeakers) { return iMinSpeakers; }
-#if defined(__linux__)
+#if APP_PLATFORM_LINUX || APP_PLATFORM_ANDROID
     void updateMiniAudio();
 #endif
 

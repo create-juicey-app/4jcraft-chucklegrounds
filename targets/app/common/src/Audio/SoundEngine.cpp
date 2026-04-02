@@ -14,8 +14,12 @@
 
 #include "app/common/App_Defines.h"
 #include "app/common/src/Audio/Consoles_SoundEngine.h"
-#include "app/linux/Iggy/include/rrCore.h"
+#include "platform/PlatformConfig.h"
+#if APP_PLATFORM_ANDROID
+#include "app/android/Android_App.h"
+#elif APP_PLATFORM_LINUX
 #include "app/linux/Linux_App.h"
+#endif
 #include "console_helpers/C4JThread.h"
 #include "console_helpers/PathHelper.h"
 #include "java/Random.h"
@@ -27,7 +31,7 @@
 #include "minecraft/world/level/storage/LevelData.h"
 #include "platform/PlatformTypes.h"
 
-#if defined(__linux__)
+#if APP_PLATFORM_LINUX || APP_PLATFORM_ANDROID
 #define STB_VORBIS_HEADER_ONLY
 #include "stb_vorbis.c"
 
@@ -104,7 +108,7 @@ const char* SoundEngine::m_szStreamFileA[eStream_Max] = {"calm1",
                                                          "strad",
                                                          "ward",
                                                          "where_are_we_now"};
-#if defined(__linux__)
+#if APP_PLATFORM_LINUX || APP_PLATFORM_ANDROID
 char SoundEngine::m_szSoundPath[] = {"app/common/Sound/"};
 char SoundEngine::m_szMusicPath[] = {"app/common/"};
 char SoundEngine::m_szRedistName[] = {"redist64"};
@@ -118,7 +122,7 @@ char SoundEngine::m_szRedistName[] = {"redist64"};
 // END ASSETS
 
 // Linux specific functions
-#if defined(__linux__)
+#if APP_PLATFORM_LINUX || APP_PLATFORM_ANDROID
 std::wstring stws(const char* utf8) {
     size_t len = std::mbstowcs(nullptr, utf8, 0);
     if (len == static_cast<size_t>(-1)) return L"";

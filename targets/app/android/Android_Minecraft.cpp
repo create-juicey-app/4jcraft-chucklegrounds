@@ -9,3 +9,7 @@ int Android_MinecraftMain(int argc, const char* argv[]) {
     Minecraft::main();
     return 0;
 }
+
+int main(int argc, const char* argv[]) {
+    return Android_MinecraftMain(argc, argv);
+}
