@@ -2,11 +2,12 @@
 // 4J Stu - Represents Java standard library class
 
 #include <cstdint>
-#include <cstdio>
+#include <vector>
 
 #include "InputStream.h"
 
 class File;
+struct SDL_RWops;
 
 class FileInputStream : public InputStream {
 public:
@@ -20,5 +21,8 @@ public:
     virtual int64_t skip(int64_t n);
 
 private:
-    std::FILE* m_fileHandle;
+    SDL_RWops* m_fileHandle;
+
+public:
+    bool isOpen() const;
 };

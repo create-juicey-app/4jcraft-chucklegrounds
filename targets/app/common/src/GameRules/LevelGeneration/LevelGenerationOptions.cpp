@@ -3,13 +3,9 @@
 #include <limits.h>
 #include <wchar.h>
 
-#include <filesystem>
-#include <fstream>
 #include <unordered_set>
 #include <utility>
 
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Storage.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/DLC/DLCGameRulesHeader.h"
 #include "app/common/src/DLC/DLCManager.h"
@@ -29,11 +25,14 @@
 #include "java/InputOutputStream/ByteArrayInputStream.h"
 #include "java/InputOutputStream/DataInputStream.h"
 #include "java/InputOutputStream/DataOutputStream.h"
+#include "java/InputOutputStream/FileInputStream.h"
 #include "minecraft/Pos.h"
 #include "minecraft/world/level/Level.h"
 #include "minecraft/world/level/chunk/LevelChunk.h"
 #include "minecraft/world/level/levelgen/structure/BoundingBox.h"
 #include "minecraft/world/phys/AABB.h"
+#include "platform/sdl2/Profile.h"
+#include "platform/sdl2/Storage.h"
 #include "strings.h"
 
 JustGrSource::JustGrSource() {
@@ -521,26 +520,21 @@ int LevelGenerationOptions::packMounted(void* pParam, int iPad, uint32_t dwErr,
                                          dlcFile->getGrfPath(), true,
                                          L"WPACK:"));
                 if (grf.exists()) {
-                    std::filesystem::path grfPath = grf.getPath();
-                    std::ifstream fileHandle(grfPath, std::ios::binary);
+                    uint32_t dwFileSize = static_cast<uint32_t>(grf.length());
+                    std::vector<uint8_t> fileData(dwFileSize);
+                    FileInputStream fileHandle(grf);
 
-                    if (fileHandle) {
-                        uint32_t dwFileSize = grf.length();
-                        uint8_t* pbData = (uint8_t*)new uint8_t[dwFileSize];
-                        fileHandle.read(
-                            reinterpret_cast<char*>(pbData),
-                            static_cast<std::streamsize>(dwFileSize));
-                        if (!fileHandle) {
+                    if (fileHandle.isOpen()) {
+                        int bytesRead =
+                            fileHandle.read(fileData, 0, dwFileSize);
+                        fileHandle.close();
+
+                        if (bytesRead != static_cast<int>(dwFileSize)) {
                             app.FatalLoadError();
                         }
 
-                        // 4J-PB - is it possible that we can get here after a
-                        // read fail and it's not an error?
-                        dlcFile->setGrfData(pbData, dwFileSize,
+                        dlcFile->setGrfData(fileData.data(), dwFileSize,
                                             lgo->m_stringTable);
-
-                        delete[] pbData;
-
                         app.m_gameRules.setLevelGenerationOptions(dlcFile->lgo);
                     }
                 }
@@ -550,20 +544,21 @@ int LevelGenerationOptions::packMounted(void* pParam, int iPad, uint32_t dwErr,
             File save(app.getFilePath(lgo->m_parentDLCPack->GetPackID(),
                                       lgo->getBaseSavePath(), true, L"WPACK:"));
             if (save.exists()) {
-                std::filesystem::path savePath = save.getPath();
-                std::ifstream saveHandle(savePath, std::ios::binary);
+                const unsigned int dwFileSize =
+                    static_cast<unsigned int>(save.length());
+                std::vector<uint8_t> fileData(dwFileSize);
+                FileInputStream saveHandle(save);
 
-                if (saveHandle) {
-                    auto dwFileSize = std::filesystem::file_size(savePath);
-                    uint8_t* pbData = (uint8_t*)new uint8_t[dwFileSize];
-                    saveHandle.read(reinterpret_cast<char*>(pbData),
-                                    static_cast<std::streamsize>(dwFileSize));
-                    if (!saveHandle) {
+                if (saveHandle.isOpen()) {
+                    int bytesRead = saveHandle.read(fileData, 0, dwFileSize);
+                    saveHandle.close();
+
+                    if (bytesRead != static_cast<int>(dwFileSize)) {
                         app.FatalLoadError();
                     }
 
-                    // 4J-PB - is it possible that we can get here after a read
-                    // fail and it's not an error?
+                    std::uint8_t* pbData = new std::uint8_t[dwFileSize];
+                    std::copy(fileData.begin(), fileData.end(), pbData);
                     lgo->setBaseSaveData(pbData, dwFileSize);
                 }
             }

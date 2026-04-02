@@ -1,5 +1,6 @@
 #include "java/File.h"
 
+#include <SDL2/SDL_rwops.h>
 #include <stdio.h>
 
 #include <chrono>
@@ -19,6 +20,16 @@ const std::wstring File::pathRoot =
 
 namespace {
 namespace fs = std::filesystem;
+
+bool SDLPathExists(const std::string& path) {
+    SDL_RWops* file = SDL_RWFromFile(path.c_str(), "rb");
+    if (file == nullptr) {
+        return false;
+    }
+
+    SDL_RWclose(file);
+    return true;
+}
 
 fs::path ToFilesystemPath(const std::wstring& path) {
     const std::string nativePath = wstringtofilename(path);
@@ -85,11 +96,11 @@ File::File(const std::wstring& pathname) {
     for (const char* base : bases) {
         std::string tryFull = exeDir + base + request;
         std::string tryFile = exeDir + base + fileName;
-        if (std::filesystem::exists(tryFull)) {
+        if (SDLPathExists(tryFull)) {
             m_abstractPathName = convStringToWstring(tryFull);
             return;
         }
-        if (std::filesystem::exists(tryFile)) {
+        if (SDLPathExists(tryFile)) {
             m_abstractPathName = convStringToWstring(tryFile);
             return;
         }
@@ -224,7 +235,18 @@ bool File::exists() const {
     // TODO 4J Stu - Possible we could get an error result from something other
     // than the file not existing?
     std::error_code error;
-    return fs::exists(ToFilesystemPath(getPath()), error);
+    if (fs::exists(ToFilesystemPath(getPath()), error)) {
+        return true;
+    }
+
+    const std::string nativePath = wstringtofilename(getPath());
+    SDL_RWops* file = SDL_RWFromFile(nativePath.c_str(), "rb");
+    if (file != nullptr) {
+        SDL_RWclose(file);
+        return true;
+    }
+
+    return false;
 }
 
 // Tests whether the file denoted by this abstract pathname is a normal file. A
@@ -338,6 +360,16 @@ int64_t File::length() {
     if (fs::is_regular_file(path, error)) {
         const auto size = fs::file_size(path, error);
         if (!error) {
+            return static_cast<int64_t>(size);
+        }
+    }
+
+    const std::string nativePath = wstringtofilename(getPath());
+    SDL_RWops* file = SDL_RWFromFile(nativePath.c_str(), "rb");
+    if (file != nullptr) {
+        const Sint64 size = SDL_RWsize(file);
+        SDL_RWclose(file);
+        if (size >= 0) {
             return static_cast<int64_t>(size);
         }
     }

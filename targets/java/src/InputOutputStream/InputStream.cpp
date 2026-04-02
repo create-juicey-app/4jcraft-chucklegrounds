@@ -7,5 +7,10 @@
 
 InputStream* InputStream::getResourceAsStream(const std::wstring& fileName) {
     File file(fileName);
-    return file.exists() ? new FileInputStream(file) : nullptr;
+    FileInputStream* stream = new FileInputStream(file);
+    if (!stream->isOpen()) {
+        delete stream;
+        return nullptr;
+    }
+    return stream;
 }

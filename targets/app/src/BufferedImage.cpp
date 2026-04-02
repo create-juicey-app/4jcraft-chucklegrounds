@@ -3,19 +3,18 @@
 #include <string.h>
 
 #include <cstdint>
-#include <filesystem>
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "PlatformTypes.h"
 #include "app/common/src/DLC/DLCFile.h"
 #include "app/common/src/DLC/DLCManager.h"
 #include "app/common/src/DLC/DLCPack.h"
 #include "app/linux/Linux_App.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "PlatformTypes.h"
 #include "console_helpers/PathHelper.h"
 #include "console_helpers/StringHelpers.h"
+#include "platform/sdl2/Render.h"
 
 BufferedImage::BufferedImage(int width, int height, int type) {
     data[0] = new int[width * height];
@@ -65,11 +64,14 @@ BufferedImage::BufferedImage(const std::wstring& File,
     std::wstring exeDir = PathHelper::GetExecutableDirW();
 
     for (int l = 0; l < 10; l++) {
+        D3DXIMAGE_INFO ImageInfo;
+        memset(&ImageInfo, 0, sizeof(D3DXIMAGE_INFO));
+        hr = -1;
+
         std::wstring mipSuffix =
             (l != 0) ? L"MipMapLevel" + _toString<int>(l + 1) : L"";
         std::wstring fileName = baseName + mipSuffix + L".png";
-        std::wstring finalPath;
-        bool foundOnDisk = false;
+        bool loadedFromPath = false;
 
         std::vector<std::wstring> searchPaths = {
             exeDir + L"/Common/res/TitleUpdate/res/" + fileName,
@@ -83,20 +85,15 @@ BufferedImage::BufferedImage(const std::wstring& File,
             size_t p;
             while ((p = attempt.find(L"//")) != std::wstring::npos)
                 attempt.replace(p, 2, L"/");
-            if (std::filesystem::exists(wstringtofilename(attempt))) {
-                finalPath = attempt;
-                foundOnDisk = true;
+            hr = RenderManager.LoadTextureData(wstringtofilename(attempt),
+                                               &ImageInfo, &data[l]);
+            if (hr == ERROR_SUCCESS) {
+                loadedFromPath = true;
                 break;
             }
         }
 
-        D3DXIMAGE_INFO ImageInfo;
-        memset(&ImageInfo, 0, sizeof(D3DXIMAGE_INFO));
-
-        if (foundOnDisk) {
-            hr = RenderManager.LoadTextureData(wstringtofilename(finalPath),
-                                               &ImageInfo, &data[l]);
-        } else {
+        if (!loadedFromPath) {
             std::wstring archiveKey = L"res/" + fileName;
             if (app.hasArchiveFile(archiveKey)) {
                 std::vector<uint8_t> ba = app.getArchiveFile(archiveKey);

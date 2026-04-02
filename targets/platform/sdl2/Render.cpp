@@ -1081,11 +1081,15 @@ static int stbLoad(unsigned char* data, int w, int h, D3DXIMAGE_INFO* info,
     return 0;  // Success
 }
 int C4JRender::LoadTextureData(const char* fn, D3DXIMAGE_INFO* i, int** o) {
-    int w, h, c;
-    unsigned char* d = stbi_load(fn, &w, &h, &c, 4);
-    if (!d) return -1;  // Failure
-    int hr = stbLoad(d, w, h, i, o);
-    stbi_image_free(d);
+    size_t byteCount = 0;
+    void* loadedData = SDL_LoadFile(fn, &byteCount);
+    if (loadedData == nullptr || byteCount == 0) {
+        return -1;  // Failure
+    }
+
+    int hr = LoadTextureData(static_cast<uint8_t*>(loadedData),
+                             static_cast<uint32_t>(byteCount), i, o);
+    SDL_free(loadedData);
     return hr;
 }
 int C4JRender::LoadTextureData(uint8_t* pb, uint32_t nb, D3DXIMAGE_INFO* i,

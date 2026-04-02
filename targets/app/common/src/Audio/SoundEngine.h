@@ -4,7 +4,9 @@ class Options;
 class C4JThread;
 class Random;
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
 #include "app/common/App_Defines.h"
 #include "app/common/src/Audio/Consoles_SoundEngine.h"
@@ -92,6 +94,9 @@ typedef struct {
 } AUDIO_INFO;
 struct MiniAudioSound {
     ma_sound sound;
+    ma_decoder decoder;
+    std::vector<std::uint8_t> fileBytes;
+    bool decoderActive;
     AUDIO_INFO info;
     bool active;
 };
@@ -145,6 +150,9 @@ private:
     ma_engine m_engine;
     ma_engine_config m_engineConfig;
     ma_sound m_musicStream;
+    ma_decoder m_musicStreamDecoder;
+    std::vector<std::uint8_t> m_musicStreamFileBytes;
+    bool m_musicStreamDecoderActive;
     bool m_musicStreamActive;
 
     static char m_szSoundPath[];

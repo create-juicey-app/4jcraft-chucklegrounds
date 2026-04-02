@@ -1,17 +1,17 @@
 ﻿#include "SoundEngine.h"
 
+#include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL_stdinc.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
 #include <cmath>
 #include <cstdlib>
-#include <filesystem>
 #include <initializer_list>
 #include <memory>
 #include <vector>
 
-#include "platform/PlatformTypes.h"
 #include "app/common/App_Defines.h"
 #include "app/common/src/Audio/Consoles_SoundEngine.h"
 #include "app/linux/Iggy/include/rrCore.h"
@@ -25,6 +25,7 @@
 #include "minecraft/util/Mth.h"
 #include "minecraft/world/entity/Mob.h"
 #include "minecraft/world/level/storage/LevelData.h"
+#include "platform/PlatformTypes.h"
 
 #if defined(__linux__)
 #define STB_VORBIS_HEADER_ONLY
@@ -125,6 +126,51 @@ std::wstring stws(const char* utf8) {
     std::mbstowcs(&result[0], utf8, len);
     return result;
 }
+
+static bool SDLFileExists(const char* path) {
+    SDL_RWops* rw = SDL_RWFromFile(path, "rb");
+    if (rw == nullptr) {
+        return false;
+    }
+
+    SDL_RWclose(rw);
+    return true;
+}
+
+static bool SDLLoadFileBytes(const char* path, std::vector<std::uint8_t>& out) {
+    size_t byteCount = 0;
+    void* loaded = SDL_LoadFile(path, &byteCount);
+    if (loaded == nullptr || byteCount == 0) {
+        return false;
+    }
+
+    const std::uint8_t* begin = static_cast<const std::uint8_t*>(loaded);
+    out.assign(begin, begin + byteCount);
+    SDL_free(loaded);
+    return true;
+}
+
+static bool InitSoundFromBytes(ma_engine* engine,
+                               std::vector<std::uint8_t>& fileBytes,
+                               ma_uint32 flags, ma_decoder* decoder,
+                               ma_sound* sound) {
+    ma_decoder_config decoderConfig = ma_decoder_config_init_default();
+    if (ma_decoder_init_memory(fileBytes.data(), fileBytes.size(),
+                               &decoderConfig, decoder) != MA_SUCCESS) {
+        return false;
+    }
+
+    ma_result result = ma_sound_init_from_data_source(
+        engine, reinterpret_cast<ma_data_source*>(decoder), flags, nullptr,
+        sound);
+    if (result != MA_SUCCESS) {
+        ma_decoder_uninit(decoder);
+        return false;
+    }
+
+    return true;
+}
+
 SoundEngine::SoundEngine() {}
 std::vector<MiniAudioSound*> m_activeSounds;
 void SoundEngine::init(Options* pOptions) {
@@ -132,6 +178,9 @@ void SoundEngine::init(Options* pOptions) {
     random = new Random();
     memset(&m_engine, 0, sizeof(ma_engine));
     memset(&m_engineConfig, 0, sizeof(ma_engine_config));
+    memset(&m_musicStreamDecoder, 0, sizeof(ma_decoder));
+    m_musicStreamDecoderActive = false;
+    m_musicStreamFileBytes.clear();
     m_musicStreamActive = false;
     m_StreamState = eMusicStreamState_Idle;
     m_iMusicDelay = 0;
@@ -174,7 +223,30 @@ void SoundEngine::init(Options* pOptions) {
 
     m_bSystemMusicPlaying = false;
 }
-void SoundEngine::destroy() { ma_engine_uninit(&m_engine); }
+void SoundEngine::destroy() {
+    if (m_musicStreamActive) {
+        ma_sound_stop(&m_musicStream);
+        ma_sound_uninit(&m_musicStream);
+        m_musicStreamActive = false;
+    }
+
+    if (m_musicStreamDecoderActive) {
+        ma_decoder_uninit(&m_musicStreamDecoder);
+        m_musicStreamDecoderActive = false;
+        m_musicStreamFileBytes.clear();
+    }
+
+    for (MiniAudioSound* sound : m_activeSounds) {
+        ma_sound_uninit(&sound->sound);
+        if (sound->decoderActive) {
+            ma_decoder_uninit(&sound->decoder);
+        }
+        delete sound;
+    }
+    m_activeSounds.clear();
+
+    ma_engine_uninit(&m_engine);
+}
 
 void SoundEngine::play(int iSound, float x, float y, float z, float volume,
                        float pitch) {
@@ -185,9 +257,8 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume,
         if (szId[i] == '.') szId[i] = '/';
 
     std::string base = PathHelper::GetExecutableDirA() + "/";
-    const char* roots[] = {
-        "Sound/Minecraft/", "app/common/Sound/Minecraft/",
-        "app/common/res/TitleUpdate/res/Sound/Minecraft/"};
+    const char* roots[] = {"Sound/Minecraft/", "app/common/Sound/Minecraft/",
+                           "app/common/res/TitleUpdate/res/Sound/Minecraft/"};
     char finalPath[512] = {0};
     bool found = false;
 
@@ -198,7 +269,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume,
             for (int i = 1; i <= 16; i++) {
                 char tryP[512];
                 snprintf(tryP, 512, "%s%s%d%s", fullRoot.c_str(), szId, i, ext);
-                if (std::filesystem::exists(tryP))
+                if (SDLFileExists(tryP))
                     count = i;
                 else
                     break;
@@ -211,7 +282,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume,
             }
             char tryP[512];
             snprintf(tryP, 512, "%s%s%s", fullRoot.c_str(), szId, ext);
-            if (std::filesystem::exists(tryP)) {
+            if (SDLFileExists(tryP)) {
                 strncpy(finalPath, tryP, 511);
                 found = true;
                 break;
@@ -229,9 +300,12 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume,
     s->info.volume = volume;
     s->info.pitch = pitch;
     s->info.bIs3D = true;
+    s->decoderActive = false;
 
-    if (ma_sound_init_from_file(&m_engine, finalPath, MA_SOUND_FLAG_ASYNC,
-                                nullptr, nullptr, &s->sound) == MA_SUCCESS) {
+    if (SDLLoadFileBytes(finalPath, s->fileBytes) &&
+        InitSoundFromBytes(&m_engine, s->fileBytes, 0, &s->decoder,
+                           &s->sound)) {
+        s->decoderActive = true;
         ma_sound_set_spatialization_enabled(&s->sound, MA_TRUE);
         ma_sound_set_min_distance(&s->sound, 2.0f);
         ma_sound_set_max_distance(&s->sound, 48.0f);
@@ -239,8 +313,12 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume,
         ma_sound_set_position(&s->sound, x, y, z);
         ma_sound_start(&s->sound);
         m_activeSounds.push_back(s);
-    } else
+    } else {
+        if (s->decoderActive) {
+            ma_decoder_uninit(&s->decoder);
+        }
         delete s;
+    }
 }
 
 void SoundEngine::playUI(int iSound, float volume, float pitch) {
@@ -266,7 +344,7 @@ void SoundEngine::playUI(int iSound, float volume, float pitch) {
             char tryP[512];
             snprintf(tryP, 512, "%s%s%s%s", base.c_str(), root, szIdentifier,
                      ext);
-            if (std::filesystem::exists(tryP)) {
+            if (SDLFileExists(tryP)) {
                 strncpy(finalPath, tryP, 511);
                 found = true;
                 break;
@@ -281,16 +359,23 @@ void SoundEngine::playUI(int iSound, float volume, float pitch) {
     s->info.volume = volume;
     s->info.pitch = pitch;
     s->info.bIs3D = false;
+    s->decoderActive = false;
 
-    if (ma_sound_init_from_file(&m_engine, finalPath, MA_SOUND_FLAG_ASYNC,
-                                nullptr, nullptr, &s->sound) == MA_SUCCESS) {
+    if (SDLLoadFileBytes(finalPath, s->fileBytes) &&
+        InitSoundFromBytes(&m_engine, s->fileBytes, 0, &s->decoder,
+                           &s->sound)) {
+        s->decoderActive = true;
         ma_sound_set_spatialization_enabled(&s->sound, MA_FALSE);
         ma_sound_set_volume(&s->sound, volume * m_MasterEffectsVolume);
         ma_sound_set_pitch(&s->sound, pitch);
         ma_sound_start(&s->sound);
         m_activeSounds.push_back(s);
-    } else
+    } else {
+        if (s->decoderActive) {
+            ma_decoder_uninit(&s->decoder);
+        }
         delete s;
+    }
 }
 
 int SoundEngine::getMusicID(int iDomain) {
@@ -415,23 +500,57 @@ void SoundEngine::playStreaming(const std::wstring& name, float x, float y,
 int SoundEngine::OpenStreamThreadProc(void* lpParameter) {
     SoundEngine* soundEngine = (SoundEngine*)lpParameter;
 
-    const char* ext = strrchr(soundEngine->m_szStreamName, '.');
-
     if (soundEngine->m_musicStreamActive) {
         ma_sound_stop(&soundEngine->m_musicStream);
         ma_sound_uninit(&soundEngine->m_musicStream);
         soundEngine->m_musicStreamActive = false;
     }
 
-    ma_result result = ma_sound_init_from_file(
-        &soundEngine->m_engine, soundEngine->m_szStreamName,
-        MA_SOUND_FLAG_STREAM, nullptr, nullptr, &soundEngine->m_musicStream);
+    if (soundEngine->m_musicStreamDecoderActive) {
+        ma_decoder_uninit(&soundEngine->m_musicStreamDecoder);
+        soundEngine->m_musicStreamDecoderActive = false;
+        soundEngine->m_musicStreamFileBytes.clear();
+    }
+
+    if (!SDLLoadFileBytes(soundEngine->m_szStreamName,
+                          soundEngine->m_musicStreamFileBytes)) {
+        app.DebugPrintf(
+            "SoundEngine::OpenStreamThreadProc - Failed to load stream: "
+            "%s\n",
+            soundEngine->m_szStreamName);
+        return 0;
+    }
+
+    ma_decoder_config decoderConfig = ma_decoder_config_init_default();
+    ma_result result = ma_decoder_init_memory(
+        soundEngine->m_musicStreamFileBytes.data(),
+        soundEngine->m_musicStreamFileBytes.size(), &decoderConfig,
+        &soundEngine->m_musicStreamDecoder);
+
+    if (result != MA_SUCCESS) {
+        app.DebugPrintf(
+            "SoundEngine::OpenStreamThreadProc - Failed to decode stream: "
+            "%s\n",
+            soundEngine->m_szStreamName);
+        soundEngine->m_musicStreamFileBytes.clear();
+        return 0;
+    }
+
+    soundEngine->m_musicStreamDecoderActive = true;
+
+    result = ma_sound_init_from_data_source(
+        &soundEngine->m_engine,
+        reinterpret_cast<ma_data_source*>(&soundEngine->m_musicStreamDecoder),
+        MA_SOUND_FLAG_STREAM, nullptr, &soundEngine->m_musicStream);
 
     if (result != MA_SUCCESS) {
         app.DebugPrintf(
             "SoundEngine::OpenStreamThreadProc - Failed to open stream: "
             "%s\n",
             soundEngine->m_szStreamName);
+        ma_decoder_uninit(&soundEngine->m_musicStreamDecoder);
+        soundEngine->m_musicStreamDecoderActive = false;
+        soundEngine->m_musicStreamFileBytes.clear();
         return 0;
     }
 
@@ -460,8 +579,7 @@ void SoundEngine::playMusicTick() {
                 bool found = false;
                 m_szStreamName[0] = '\0';
 
-                const char* roots[] = {"app/common/music/",
-                                       "music/", "./"};
+                const char* roots[] = {"app/common/music/", "music/", "./"};
 
                 for (const char* r : roots) {
                     for (const char* e : {".ogg", ".mp3", ".wav"}) {
@@ -469,14 +587,14 @@ void SoundEngine::playMusicTick() {
                         // try with folder prefix (music/ or cds/)
                         snprintf(c, 512, "%s%s%s%s%s", base.c_str(), r, folder,
                                  track, e);
-                        if (std::filesystem::exists(c)) {
+                        if (SDLFileExists(c)) {
                             strncpy(m_szStreamName, c, 511);
                             found = true;
                             break;
                         }
                         // try without folder prefix
                         snprintf(c, 512, "%s%s%s%s", base.c_str(), r, track, e);
-                        if (std::filesystem::exists(c)) {
+                        if (SDLFileExists(c)) {
                             strncpy(m_szStreamName, c, 511);
                             found = true;
                             break;
@@ -545,6 +663,11 @@ void SoundEngine::playMusicTick() {
                 ma_sound_stop(&m_musicStream);
                 ma_sound_uninit(&m_musicStream);
                 m_musicStreamActive = false;
+            }
+            if (m_musicStreamDecoderActive) {
+                ma_decoder_uninit(&m_musicStreamDecoder);
+                m_musicStreamDecoderActive = false;
+                m_musicStreamFileBytes.clear();
             }
             SetIsPlayingStreamingCDMusic(false);
             SetIsPlayingStreamingGameMusic(false);
@@ -660,6 +783,11 @@ void SoundEngine::playMusicTick() {
         ma_sound_at_end(&m_musicStream)) {
         ma_sound_uninit(&m_musicStream);
         m_musicStreamActive = false;
+        if (m_musicStreamDecoderActive) {
+            ma_decoder_uninit(&m_musicStreamDecoder);
+            m_musicStreamDecoderActive = false;
+            m_musicStreamFileBytes.clear();
+        }
         SetIsPlayingStreamingCDMusic(false);
         SetIsPlayingStreamingGameMusic(false);
         m_StreamState = eMusicStreamState_Completed;
@@ -695,6 +823,11 @@ void SoundEngine::updateMiniAudio() {
 
         if (!ma_sound_is_playing(&s->sound)) {
             ma_sound_uninit(&s->sound);
+            if (s->decoderActive) {
+                ma_decoder_uninit(&s->decoder);
+                s->decoderActive = false;
+                s->fileBytes.clear();
+            }
             delete s;
             it = m_activeSounds.erase(it);
             continue;

@@ -1,12 +1,11 @@
 
 #include "java/InputOutputStream/FileInputStream.h"
 
+#include <SDL2/SDL_rwops.h>
 #include <assert.h>
-#include <sys/types.h>
 
 #include <algorithm>
 #include <cstdint>
-#include <cstdio>
 #include <string>
 #include <vector>
 
@@ -14,20 +13,10 @@
 #include "java/File.h"
 
 namespace {
-int64_t FileTell(std::FILE* file) {
-#if defined(_WIN32)
-    return _ftelli64(file);
-#else
-    return static_cast<int64_t>(ftello(file));
-#endif
-}
+int64_t FileTell(SDL_RWops* file) { return SDL_RWtell(file); }
 
-bool FileSeek(std::FILE* file, int64_t offset, int origin) {
-#if defined(_WIN32)
-    return _fseeki64(file, offset, origin) == 0;
-#else
-    return fseeko(file, static_cast<off_t>(offset), origin) == 0;
-#endif
+bool FileSeek(SDL_RWops* file, int64_t offset, int origin) {
+    return SDL_RWseek(file, offset, origin) >= 0;
 }
 }  // namespace
 
@@ -49,23 +38,17 @@ bool FileSeek(std::FILE* file, int64_t offset, int origin) {
 // SecurityException - if a security manager exists and its checkRead method
 // denies read access to the file.
 FileInputStream::FileInputStream(const File& file) : m_fileHandle(nullptr) {
-#if defined(_WIN32)
-    m_fileHandle = _wfopen(file.getPath().c_str(), L"rb");
-#else
     const std::string nativePath = wstringtofilename(file.getPath());
-    m_fileHandle = std::fopen(nativePath.c_str(), "rb");
-#endif
-
-    if (m_fileHandle == nullptr) {
-        assert(0);
-    }
+    m_fileHandle = SDL_RWFromFile(nativePath.c_str(), "rb");
 }
 
 FileInputStream::~FileInputStream() {
     if (m_fileHandle != nullptr) {
-        std::fclose(m_fileHandle);
+        SDL_RWclose(m_fileHandle);
     }
 }
+
+bool FileInputStream::isOpen() const { return m_fileHandle != nullptr; }
 
 // Reads a byte of data from this input stream. This method blocks if no input
 // is yet available. Returns: the next byte of data, or -1 if the end of the
@@ -76,11 +59,9 @@ int FileInputStream::read() {
     }
 
     std::uint8_t byteRead = static_cast<std::uint8_t>(0);
-    const size_t numberOfBytesRead = std::fread(&byteRead, 1, 1, m_fileHandle);
+    const size_t numberOfBytesRead = SDL_RWread(m_fileHandle, &byteRead, 1, 1);
 
-    if (std::ferror(m_fileHandle) != 0) {
-        assert(0);
-    } else if (numberOfBytesRead == 0) {
+    if (numberOfBytesRead == 0) {
         // File pointer is past the end of the file
         return -1;
     }
@@ -99,11 +80,9 @@ int FileInputStream::read(std::vector<uint8_t>& b) {
     }
 
     const size_t numberOfBytesRead =
-        std::fread(b.data(), 1, b.size(), m_fileHandle);
+        SDL_RWread(m_fileHandle, b.data(), 1, b.size());
 
-    if (std::ferror(m_fileHandle) != 0) {
-        assert(0);
-    } else if (numberOfBytesRead == 0) {
+    if (numberOfBytesRead == 0) {
         // File pointer is past the end of the file
         return -1;
     }
@@ -128,11 +107,9 @@ int FileInputStream::read(std::vector<uint8_t>& b, unsigned int offset,
     }
 
     const size_t numberOfBytesRead =
-        std::fread(&b[offset], 1, length, m_fileHandle);
+        SDL_RWread(m_fileHandle, &b[offset], 1, length);
 
-    if (std::ferror(m_fileHandle) != 0) {
-        assert(0);
-    } else if (numberOfBytesRead == 0) {
+    if (numberOfBytesRead == 0) {
         // File pointer is past the end of the file
         return -1;
     }
@@ -150,7 +127,7 @@ void FileInputStream::close() {
         return;
     }
 
-    int result = std::fclose(m_fileHandle);
+    int result = SDL_RWclose(m_fileHandle);
 
     if (result != 0) {
         // TODO 4J Stu - Some kind of error handling
@@ -176,7 +153,7 @@ int64_t FileInputStream::skip(int64_t n) {
         return 0;
     }
 
-    if (!FileSeek(m_fileHandle, 0, SEEK_END)) {
+    if (!FileSeek(m_fileHandle, 0, RW_SEEK_END)) {
         return 0;
     }
 
@@ -187,7 +164,7 @@ int64_t FileInputStream::skip(int64_t n) {
 
     const int64_t offset = std::min(n, std::max<int64_t>(0, end - start));
     const int64_t target = start + offset;
-    if (!FileSeek(m_fileHandle, target, SEEK_SET)) {
+    if (!FileSeek(m_fileHandle, target, RW_SEEK_SET)) {
         return 0;
     }
 

@@ -5,16 +5,12 @@
 #include <algorithm>
 #include <chrono>
 #include <compare>
-#include <filesystem>
-#include <fstream>
 #include <memory>
 #include <thread>
 #include <vector>
 
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Render.h"
-#include "platform/sdl2/Storage.h"
+#include "Socket.h"
+#include "XboxStubs.h"
 #include "app/common/App_enums.h"
 #include "app/common/Consoles_App.h"
 #include "app/common/src/GameRules/GameRuleManager.h"
@@ -27,12 +23,11 @@
 #include "app/linux/Linux_App.h"
 #include "app/linux/Linux_UIController.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "Socket.h"
-#include "XboxStubs.h"
 #include "console_helpers/StringHelpers.h"
 #include "console_helpers/ThreadName.h"
 #include "console_helpers/compression.h"
 #include "java/File.h"
+#include "java/InputOutputStream/FileInputStream.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/ProgressRenderer.h"
 #include "minecraft/client/User.h"
@@ -54,6 +49,10 @@
 #include "minecraft/world/level/Level.h"
 #include "minecraft/world/level/chunk/storage/OldChunkStorage.h"
 #include "minecraft/world/level/tile/Tile.h"
+#include "platform/sdl2/Input.h"
+#include "platform/sdl2/Profile.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/Storage.h"
 #include "strings.h"
 
 class FriendSessionInfo;
@@ -161,23 +160,24 @@ bool CGameNetworkManager::StartNetworkGame(Minecraft* minecraft,
 #endif
                         File grf(fileRoot);
                         if (grf.exists()) {
-                            std::filesystem::path grfPath = grf.getPath();
-                            std::ifstream fileHandle(grfPath, std::ios::binary);
+                            const unsigned int dwFileSize =
+                                static_cast<unsigned int>(grf.length());
+                            std::vector<std::uint8_t> fileData(dwFileSize);
+                            FileInputStream fileHandle(grf);
 
-                            if (fileHandle) {
-                                auto dwFileSize =
-                                    std::filesystem::file_size(grfPath);
-                                uint8_t* pbData =
-                                    (uint8_t*)new uint8_t[dwFileSize];
-                                fileHandle.read(
-                                    reinterpret_cast<char*>(pbData),
-                                    static_cast<std::streamsize>(dwFileSize));
-                                if (!fileHandle) {
+                            if (fileHandle.isOpen()) {
+                                int bytesRead =
+                                    fileHandle.read(fileData, 0, dwFileSize);
+                                fileHandle.close();
+
+                                if (bytesRead != static_cast<int>(dwFileSize)) {
                                     app.FatalLoadError();
                                 }
 
-                                // 4J-PB - is it possible that we can get here
-                                // after a read fail and it's not an error?
+                                std::uint8_t* pbData =
+                                    new std::uint8_t[dwFileSize];
+                                std::copy(fileData.begin(), fileData.end(),
+                                          pbData);
                                 param->levelGen->setBaseSaveData(pbData,
                                                                  dwFileSize);
                             }
