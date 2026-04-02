@@ -14,6 +14,7 @@
 !/subprojects/packagefiles
 /android/.gradle/
 /android/app/build/
+/android/.idea/
 /scripts/__pycache__/
 !/.clang-format
 !/.git-blame-ignore-revs
@@ -29,3 +30,4 @@
 !/meson.build
 !/meson.options
 !/README.md
+
