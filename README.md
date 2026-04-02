@@ -1,7 +1,8 @@
-# <img src=".github-assets/logo.jpg" alt="Logo" width="50" height="50" style="vertical-align: middle;"> 4JCraft
+# <img src=".github-assets/logo.jpg" alt="Logo" width="50" height="50" style="vertical-align: middle;"> Minecraft Legacy Edition
 
 ![](.github-assets/transrights.png) ![](.github-assets/progress.png) ![](.github-assets/internetarchive.gif) ![](.github-assets//ieget-an.gif) ![](.github-assets/minecraft.gif) ![](.github-assets/powered-llvm.gif)
 ![](.github-assets/opengl.gif) ![](.github-assets/adobe_getflash2.gif) ![](.github-assets/flash_get_20010813.gif) ![](.github-assets/SiliconValley_7479_English_imagens_get_flashplayer.gif)
+
 ---
 
 4JCraft is a modified version of the Minecraft Console Legacy Edition, aimed at porting old Minecraft to different platforms (such as Linux, Android, Emscripten, etc.) and refactoring the codebase to improve organization and use modern C++ features.
@@ -19,17 +20,18 @@ Please note that these percentages are **estimates** and do not necessarily refl
 - Android (~5%)
 
 > [!WARNING]
-> There is NO Windows support, for that, go to [smartcmd/MinecraftConsoles](https://github.com/smartcmd/MinecraftConsoles/). 
+> There is NO Windows support, for that, go to [smartcmd/MinecraftConsoles](https://github.com/smartcmd/MinecraftConsoles/).
 
 > All efforts are focused towards a native Linux port, OpenGL rendering pipeline, and modernizing the existing LCE codebase/tooling to make future platform ports easier.
-> 
+>
 > `Windows64` and other platforms originally supported by LCE are currently unsupported, since the original Visual Studio tooling has been stripped from this repository and replaced with our own.
 
 ---
 
 ## Join our community:
-* **Discord:** https://discord.gg/zFCwRWkkUg
-* **Steam:** https://steamcommunity.com/groups/4JCraft
+
+- **Discord:** https://discord.gg/zFCwRWkkUg
+- **Steam:** https://steamcommunity.com/groups/4JCraft
 
 ## Building (Linux)
 
@@ -63,7 +65,9 @@ Alternatively, you can build and use the container manually:
 docker build -t 4jcraft-dev .devcontainer/
 docker run -it --rm -v $(pwd):/workspaces/4jcraft -w /workspaces/4jcraft 4jcraft-dev bash
 ```
+
 (Optional) Clean up the Docker image
+
 ```bash
 docker rmi 4jcraft-dev --force
 ```
@@ -117,7 +121,7 @@ meson compile --clean -C build
 ...or to reconfigure an existing build directory:
 
 ```bash
-meson setup build --reconfigure 
+meson setup build --reconfigure
 ```
 
 ...or to hard reset the build directory:
@@ -126,6 +130,29 @@ meson setup build --reconfigure
 rm -r ./build
 meson setup build
 ```
+
+## Building (Android)
+
+### Dependencies
+
+Install Android Studio or the Android command line tools + the Android NDK
+
+You do not need Android Studio to build, but you do need a working Android SDK and NDK installation (because google is silly).
+
+### Setup
+
+Copy [android/local.properties.template](android/local.properties.template) to [android/local.properties](android/local.properties) and fill in your SDK and NDK paths, or set the environment variables `ANDROID_SDK_ROOT` and `ANDROID_NDK_HOME`.
+
+-# I couldn't find a better idea on how to do it.
+
+### Build
+
+```bash
+cd android
+./scripts/build-apk.sh
+```
+
+The debug APK will be written under the Android Gradle output directory.
 
 ---
 
@@ -146,4 +173,4 @@ cd build/Minecraft.Client
 
 ## Generative AI Policy
 
-Submitting code to this repository authored by generative AI tools (LLMs, agentic coding tools, etc...) is strictly forbidden (see [CONTRIBUTING.md](./CONTRIBUTING.md)). Pull requests that are clearly vibe-coded or written by an LLM will be closed. Contributors are expected to both fully understand the code that they write **and** have the necessary skills to *maintain it*.
+Submitting code to this repository authored by generative AI tools (LLMs, agentic coding tools, etc...) is strictly forbidden (see [CONTRIBUTING.md](./CONTRIBUTING.md)). Pull requests that are clearly vibe-coded or written by an LLM will be closed. Contributors are expected to both fully understand the code that they write **and** have the necessary skills to _maintain it_.
