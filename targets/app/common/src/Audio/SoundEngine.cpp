@@ -150,6 +150,61 @@ static bool SDLLoadFileBytes(const char* path, std::vector<std::uint8_t>& out) {
     return true;
 }
 
+static bool ResolveSoundCandidates(
+    const std::string& cacheKey, const char* const* roots, size_t rootCount,
+    const char* const* exts, size_t extCount, bool allowIndexedVariants,
+    int maxIndexedVariants,
+    std::unordered_map<std::string, std::vector<std::string>>& cache,
+    std::vector<std::string>& outCandidates) {
+    auto it = cache.find(cacheKey);
+    if (it != cache.end()) {
+        outCandidates = it->second;
+        return !outCandidates.empty();
+    }
+
+    std::vector<std::string> candidates;
+    const std::string base = PathHelper::GetExecutableDirA() + "/";
+    char tryPath[512];
+
+    for (size_t rootIdx = 0; rootIdx < rootCount; ++rootIdx) {
+        const std::string fullRoot = base + roots[rootIdx];
+
+        for (size_t extIdx = 0; extIdx < extCount; ++extIdx) {
+            const char* ext = exts[extIdx];
+
+            if (allowIndexedVariants) {
+                std::vector<std::string> indexedCandidates;
+                for (int i = 1; i <= maxIndexedVariants; ++i) {
+                    snprintf(tryPath, sizeof(tryPath), "%s%s%d%s",
+                             fullRoot.c_str(), cacheKey.c_str(), i, ext);
+                    if (!SDLFileExists(tryPath)) break;
+                    indexedCandidates.emplace_back(tryPath);
+                }
+
+                if (!indexedCandidates.empty()) {
+                    candidates = indexedCandidates;
+                    cache.emplace(cacheKey, candidates);
+                    outCandidates = candidates;
+                    return true;
+                }
+            }
+
+            snprintf(tryPath, sizeof(tryPath), "%s%s%s", fullRoot.c_str(),
+                     cacheKey.c_str(), ext);
+            if (SDLFileExists(tryPath)) {
+                candidates.emplace_back(tryPath);
+                cache.emplace(cacheKey, candidates);
+                outCandidates = candidates;
+                return true;
+            }
+        }
+    }
+
+    cache.emplace(cacheKey, candidates);
+    outCandidates.clear();
+    return false;
+}
+
 static bool InitSoundFromBytes(ma_engine* engine,
                                std::vector<std::uint8_t>& fileBytes,
                                ma_uint32 flags, ma_decoder* decoder,
@@ -185,6 +240,8 @@ void SoundEngine::init(Options* pOptions) {
     m_StreamState = eMusicStreamState_Idle;
     m_iMusicDelay = 0;
     m_validListenerCount = 0;
+    m_soundPathCache.clear();
+    m_uiSoundPathCache.clear();
 
     m_bHeardTrackA = nullptr;
 
@@ -244,6 +301,8 @@ void SoundEngine::destroy() {
         delete sound;
     }
     m_activeSounds.clear();
+    m_soundPathCache.clear();
+    m_uiSoundPathCache.clear();
 
     ma_engine_uninit(&m_engine);
 }
@@ -255,43 +314,23 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume,
     wcstombs(szId, wchSoundNames[iSound], 255);
     for (int i = 0; szId[i]; i++)
         if (szId[i] == '.') szId[i] = '/';
-
-    std::string base = PathHelper::GetExecutableDirA() + "/";
     const char* roots[] = {"Sound/Minecraft/", "app/common/Sound/Minecraft/",
                            "app/common/res/TitleUpdate/res/Sound/Minecraft/"};
-    char finalPath[512] = {0};
-    bool found = false;
-
-    for (const char* root : roots) {
-        std::string fullRoot = base + root;
-        for (const char* ext : {".ogg", ".wav"}) {
-            int count = 0;
-            for (int i = 1; i <= 16; i++) {
-                char tryP[512];
-                snprintf(tryP, 512, "%s%s%d%s", fullRoot.c_str(), szId, i, ext);
-                if (SDLFileExists(tryP))
-                    count = i;
-                else
-                    break;
-            }
-            if (count > 0) {
-                snprintf(finalPath, 512, "%s%s%d%s", fullRoot.c_str(), szId,
-                         (rand() % count) + 1, ext);
-                found = true;
-                break;
-            }
-            char tryP[512];
-            snprintf(tryP, 512, "%s%s%s", fullRoot.c_str(), szId, ext);
-            if (SDLFileExists(tryP)) {
-                strncpy(finalPath, tryP, 511);
-                found = true;
-                break;
-            }
-        }
-        if (found) break;
+    const char* exts[] = {".ogg", ".wav"};
+    std::vector<std::string> candidates;
+    if (!ResolveSoundCandidates(szId, roots, sizeof(roots) / sizeof(roots[0]),
+                                exts, sizeof(exts) / sizeof(exts[0]), true, 16,
+                                m_soundPathCache, candidates)) {
+        return;
     }
 
-    if (!found) return;
+    const std::string& finalPath =
+        candidates.size() == 1
+            ? candidates.front()
+            : candidates[static_cast<size_t>(
+                  random != nullptr ? random->nextInt((int)candidates.size())
+                                    : (std::rand() % candidates.size()))];
+
     MiniAudioSound* s = new MiniAudioSound();
     memset(&s->info, 0, sizeof(AUDIO_INFO));
     s->info.x = x;
@@ -302,7 +341,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume,
     s->info.bIs3D = true;
     s->decoderActive = false;
 
-    if (SDLLoadFileBytes(finalPath, s->fileBytes) &&
+    if (SDLLoadFileBytes(finalPath.c_str(), s->fileBytes) &&
         InitSoundFromBytes(&m_engine, s->fileBytes, 0, &s->decoder,
                            &s->sound)) {
         s->decoderActive = true;
@@ -329,31 +368,23 @@ void SoundEngine::playUI(int iSound, float volume, float pitch) {
         wcstombs(szIdentifier, wchUISoundNames[iSound], 255);
     for (int i = 0; szIdentifier[i]; i++)
         if (szIdentifier[i] == '.') szIdentifier[i] = '/';
-    std::string base = PathHelper::GetExecutableDirA() + "/";
     const char* roots[] = {
         "Sound/Minecraft/UI/",
         "Sound/Minecraft/",
         "app/common/Sound/Minecraft/UI/",
         "app/common/Sound/Minecraft/",
     };
-    char finalPath[512] = {0};
-    bool found = false;
-
-    for (const char* root : roots) {
-        for (const char* ext : {".ogg", ".wav", ".mp3"}) {
-            char tryP[512];
-            snprintf(tryP, 512, "%s%s%s%s", base.c_str(), root, szIdentifier,
-                     ext);
-            if (SDLFileExists(tryP)) {
-                strncpy(finalPath, tryP, 511);
-                found = true;
-                break;
-            }
-        }
-        if (found) break;
+    const char* exts[] = {".ogg", ".wav", ".mp3"};
+    std::vector<std::string> candidates;
+    if (!ResolveSoundCandidates(szIdentifier, roots,
+                                sizeof(roots) / sizeof(roots[0]), exts,
+                                sizeof(exts) / sizeof(exts[0]), false, 0,
+                                m_uiSoundPathCache, candidates)) {
+        return;
     }
 
-    if (!found) return;
+    const std::string& finalPath = candidates.front();
+
     MiniAudioSound* s = new MiniAudioSound();
     memset(&s->info, 0, sizeof(AUDIO_INFO));
     s->info.volume = volume;
@@ -361,7 +392,7 @@ void SoundEngine::playUI(int iSound, float volume, float pitch) {
     s->info.bIs3D = false;
     s->decoderActive = false;
 
-    if (SDLLoadFileBytes(finalPath, s->fileBytes) &&
+    if (SDLLoadFileBytes(finalPath.c_str(), s->fileBytes) &&
         InitSoundFromBytes(&m_engine, s->fileBytes, 0, &s->decoder,
                            &s->sound)) {
         s->decoderActive = true;

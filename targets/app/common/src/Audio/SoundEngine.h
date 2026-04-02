@@ -6,6 +6,7 @@ class Random;
 
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "app/common/App_Defines.h"
@@ -173,6 +174,10 @@ private:
     bool m_bSystemMusicPlaying;
     float m_MasterMusicVolume;
     float m_MasterEffectsVolume;
+
+    std::unordered_map<std::string, std::vector<std::string>> m_soundPathCache;
+    std::unordered_map<std::string, std::vector<std::string>>
+        m_uiSoundPathCache;
 
     C4JThread* m_openStreamThread;
     static int OpenStreamThreadProc(void* lpParameter);
