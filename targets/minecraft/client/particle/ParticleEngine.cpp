@@ -1,12 +1,10 @@
 #include "ParticleEngine.h"
 
-#include <GL/gl.h>
 #include <math.h>
 
 #include <algorithm>
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
 #include "Particle.h"
 #include "TerrainParticle.h"
 #include "console_helpers/StringHelpers.h"
@@ -22,6 +20,8 @@
 #include "minecraft/world/level/Level.h"
 #include "minecraft/world/level/dimension/Dimension.h"
 #include "minecraft/world/level/tile/Tile.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 ResourceLocation ParticleEngine::PARTICLES_LOCATION =
     ResourceLocation(TN_PARTICLES);

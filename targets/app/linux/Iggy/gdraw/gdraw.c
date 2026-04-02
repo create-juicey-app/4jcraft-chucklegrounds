@@ -1,8 +1,10 @@
 #define GDRAW_ASSERTS
 
+#define C4J_DISABLE_GL_GLEXT_PROTOTYPES
+
 #include "gdraw.h"
 
-#include <GL/gl.h>
+#include "platform/sdl2/GL/c4j_gl.h"
 #include <dlfcn.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -106,11 +108,12 @@ static void* get_gl_proc(const char* name) {
         FRAMEBUFFERRENDERBUFFEREXT)                                            \
     GLE(FramebufferTexture2D, "FramebufferTexture2DEXT",                       \
         FRAMEBUFFERTEXTURE2DEXT)                                               \
-    GLE(GenerateMipmap, "GenerateMipmapEXT", GENERATEMIPMAPEXT)                \
+    GLE(GenerateMipmapEXTFn, "GenerateMipmapEXT", GENERATEMIPMAPEXT)           \
     /* GL_EXT_framebuffer_blit */                                              \
-    GLE(BlitFramebuffer, "BlitFramebufferEXT", BLITFRAMEBUFFEREXT)             \
+    GLE(BlitFramebufferEXTFn, "BlitFramebufferEXT", BLITFRAMEBUFFEREXT)        \
     /* GL_EXT_framebuffer_multisample */                                       \
-    GLE(RenderbufferStorageMultisample, "RenderbufferStorageMultisampleEXT",   \
+    GLE(RenderbufferStorageMultisampleEXTFn,                                    \
+        "RenderbufferStorageMultisampleEXT",                                   \
         RENDERBUFFERSTORAGEMULTISAMPLEEXT)                                     \
     /* <end> */
 
@@ -241,9 +244,10 @@ static void load_extensions(void) {
         "glFramebufferRenderbuffer");
     TRY(glFramebufferTexture2D, "glFramebufferTexture2DEXT",
         "glFramebufferTexture2D");
-    TRY(glGenerateMipmap, "glGenerateMipmapEXT", "glGenerateMipmap");
-    TRY(glBlitFramebuffer, "glBlitFramebufferEXT", "glBlitFramebuffer");
-    TRY(glRenderbufferStorageMultisample, "glRenderbufferStorageMultisampleEXT",
+    TRY(glGenerateMipmapEXTFn, "glGenerateMipmapEXT", "glGenerateMipmap");
+    TRY(glBlitFramebufferEXTFn, "glBlitFramebufferEXT", "glBlitFramebuffer");
+    TRY(glRenderbufferStorageMultisampleEXTFn,
+        "glRenderbufferStorageMultisampleEXT",
         "glRenderbufferStorageMultisample");
 
     // Save raw pointers before we #define over the names below
@@ -679,8 +683,18 @@ static void gdraw_FramebufferRenderbufferSafe(GLenum target, GLenum attachment,
 #define glFramebufferRenderbuffer_SAFE gdraw_FramebufferRenderbufferSafe
 #define glFramebufferRenderbuffer glFramebufferRenderbuffer_SAFE
 
+#undef glGenerateMipmap
+#define glGenerateMipmap glGenerateMipmapEXTFn
+#undef glBlitFramebuffer
+#define glBlitFramebuffer glBlitFramebufferEXTFn
+#undef glRenderbufferStorageMultisample
+#define glRenderbufferStorageMultisample glRenderbufferStorageMultisampleEXTFn
+
 #include "app/windows/Iggy/gdraw/gdraw_gl_shared.inl"
 
+#undef glGenerateMipmap
+#undef glBlitFramebuffer
+#undef glRenderbufferStorageMultisample
 #undef glVertexAttribPointer
 #define glVertexAttribPointer gdraw_real_vtxattrib
 

@@ -1,8 +1,5 @@
 #include "HugeExplosionParticle.h"
 
-#include <GL/gl.h>
-
-#include "platform/sdl2/Render.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/Colours/ColourTable.h"
 #include "java/Random.h"
@@ -13,6 +10,8 @@
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/client/resources/ResourceLocation.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 class Level;
 

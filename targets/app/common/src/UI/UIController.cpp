@@ -53,6 +53,7 @@
 #include "minecraft/client/skins/DLCTexturePack.h"
 #include "minecraft/client/skins/TexturePack.h"
 #include "minecraft/client/skins/TexturePackRepository.h"
+#include "minecraft/client/title/TitleScreen.h"
 #include "strings.h"
 
 class Tutorial;
@@ -579,7 +580,8 @@ IggyLibrary UIController::loadSkin(const std::wstring& skinPath,
         const std::u16string convSkinName = wstring_to_u16string(skinName);
 
         lib = IggyLibraryCreateFromMemoryUTF16(
-            convSkinName.data(), (void*)baFile.data(), baFile.size(), nullptr);
+            reinterpret_cast<const IggyUTF16*>(convSkinName.data()),
+            (void*)baFile.data(), baFile.size(), nullptr);
 
 #if defined(_DEBUG)
         IggyMemoryUseInfo memoryInfo;

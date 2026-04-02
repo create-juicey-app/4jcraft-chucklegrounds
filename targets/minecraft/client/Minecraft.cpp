@@ -10,10 +10,12 @@
 #include <ctime>
 #include <thread>
 
-#include "platform/InputActions.h"
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Render.h"
-#include "platform/sdl2/Storage.h"
+#include "Options.h"
+#include "Pos.h"
+#include "ProgressRenderer.h"
+#include "SharedConstants.h"
+#include "Timer.h"
+#include "User.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/Audio/SoundEngine.h"
 #include "app/common/src/DLC/DLCManager.h"
@@ -22,16 +24,10 @@
 #include "app/common/src/Tutorial/Tutorial.h"
 #include "app/common/src/UI/All Platforms/UIEnums.h"
 #include "app/common/src/UI/All Platforms/UIStructs.h"
+#include "app/include/XboxStubs.h"
 #include "app/linux/Linux_App.h"
 #include "app/linux/Linux_UIController.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/XboxStubs.h"
-#include "Options.h"
-#include "Pos.h"
-#include "ProgressRenderer.h"
-#include "SharedConstants.h"
-#include "Timer.h"
-#include "User.h"
 #include "console_helpers/Definitions.h"
 #include "console_helpers/compression.h"
 #include "gl3_loader.h"
@@ -97,11 +93,16 @@
 #include "minecraft/world/level/tile/TallGrassPlantTile.h"
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/phys/HitResult.h"
+#include "platform/InputActions.h"
+#include "platform/sdl2/Profile.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/Storage.h"
 #include "strings.h"
 #if defined(ENABLE_JAVA_GUIS)
+#include "minecraft/client/gui/PauseScreen.h"
 #include "minecraft/client/gui/inventory/CreativeInventoryScreen.h"
+#include "minecraft/client/gui/inventory/InventoryScreen.h"
 #endif
-#include "platform/sdl2/Input.h"
 #include "app/common/Minecraft_Macros.h"
 #include "app/common/src/Colours/ColourTable.h"
 #include "app/common/src/ConsoleGameMode.h"
@@ -129,6 +130,7 @@
 #include "minecraft/world/item/alchemy/PotionMacros.h"
 #include "minecraft/world/level/chunk/SparseDataStorage.h"
 #include "minecraft/world/level/chunk/SparseLightStorage.h"
+#include "platform/sdl2/Input.h"
 
 class ChunkSource;
 

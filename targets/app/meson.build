@@ -46,7 +46,6 @@ elif host_machine.system() == 'android'
     + '" \\( -name "*.cpp" -o -name "*.c" \\) ',
     check: true,
   ).stdout().strip().split('\n')
-  platform_sources += files('linux/Iggy/gdraw/gdraw.c')
 endif
 
 client_dependencies = [

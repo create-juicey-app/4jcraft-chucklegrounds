@@ -3,6 +3,10 @@
 #include "app/linux/Linux_App.h"
 #include "console_helpers/StringHelpers.h"
 
+#if APP_PLATFORM_ANDROID
+LeaderboardManager* LeaderboardManager::m_instance = nullptr;
+#endif
+
 const std::wstring LeaderboardManager::filterNames[eNumFilterModes] = {
     L"Friends", L"MyScore", L"TopRank"};
 

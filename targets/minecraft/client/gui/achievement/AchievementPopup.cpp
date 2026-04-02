@@ -1,15 +1,15 @@
 #include "AchievementPopup.h"
 
-#include <GL/gl.h>
-
-#include "platform/sdl2/Render.h"
 #include "java/System.h"
+#include "minecraft/client/Lighting.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Font.h"
 #include "minecraft/client/gui/ScreenSizeCalculator.h"
 #include "minecraft/client/renderer/entity/ItemRenderer.h"
 #include "minecraft/locale/I18n.h"
 #include "minecraft/stats/Achievement.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 AchievementPopup::AchievementPopup(Minecraft* mc) {
     // 4J - added initialisers

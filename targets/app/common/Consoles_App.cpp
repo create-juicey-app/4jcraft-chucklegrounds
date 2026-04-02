@@ -4566,6 +4566,11 @@ void CMinecraftApp::RemoveMemoryTPDFile(int iConfig) {
 
 #if defined(_WINDOWS64)
 int CMinecraftApp::GetTPConfigVal(wchar_t* pwchDataFile) { return -1; }
+#elif APP_PLATFORM_ANDROID
+int CMinecraftApp::GetTPConfigVal(wchar_t* pwchDataFile) {
+    (void)pwchDataFile;
+    return -1;
+}
 #endif
 bool CMinecraftApp::IsFileInTPD(int iConfig) {
     bool val = false;

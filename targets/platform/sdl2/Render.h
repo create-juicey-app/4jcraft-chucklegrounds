@@ -1,14 +1,10 @@
 #pragma once
 
-#include "gl3_loader.h"
-// NOTE: gl3_loader.h must be included before these two
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 #include <cstdint>
 #include <cstdlib>
 
 #include "../IPlatformRenderer.h"
+#include "GL/c4j_gl.h"
 
 class C4JRender : public IPlatformRenderer {
 public:
@@ -164,6 +160,32 @@ extern C4JRender RenderManager;
 #endif
 #ifndef GL_PROJECTION
 #define GL_PROJECTION 0x1701
+#endif
+#ifndef GL_NORMALIZE
+#define GL_NORMALIZE 0x0BA1
+#endif
+#ifndef GL_RESCALE_NORMAL
+#define GL_RESCALE_NORMAL 0x803A
+#endif
+#ifndef GL_COLOR_MATERIAL
+#define GL_COLOR_MATERIAL 0x0B57
+#endif
+#ifndef GL_AMBIENT_AND_DIFFUSE
+#define GL_AMBIENT_AND_DIFFUSE 0x1602
+#endif
+#ifndef GL_BGRA
+#define GL_BGRA 0x80E1
+#endif
+#ifdef GL_SMOOTH
+#undef GL_SMOOTH
+#endif
+#ifdef GL_FLAT
+#undef GL_FLAT
+#endif
+#ifndef C4J_GL_SHADE_CONSTS_DEFINED
+#define C4J_GL_SHADE_CONSTS_DEFINED
+static constexpr int GL_SMOOTH = 0x1D01;
+static constexpr int GL_FLAT = 0x1D00;
 #endif
 #ifndef GL_TEXTURE
 #define GL_TEXTURE 0x1702
@@ -328,6 +350,9 @@ extern C4JRender RenderManager;
 #ifndef GL_NEAREST_MIPMAP_LINEAR
 #define GL_NEAREST_MIPMAP_LINEAR 0x2702
 #endif
+#ifndef GL_POLYGON_OFFSET_LINE
+#define GL_POLYGON_OFFSET_LINE 0x2A02
+#endif
 
 #ifndef GL_CLAMP
 #define GL_CLAMP 0x2900
@@ -399,11 +424,17 @@ extern C4JRender RenderManager;
 #undef glDeleteLists
 #define glDeleteLists(list, range) RenderManager.CBuffDelete(list, range)
 
-#ifndef GL_SHADEMODEL_IS_FUNCTION
+#if !defined(GL_SHADEMODEL_IS_FUNCTION) && \
+    (!defined(APP_PLATFORM_ANDROID) || (APP_PLATFORM_ANDROID == 0))
 #undef glShadeModel
 #define glShadeModel(mode) \
     do {                   \
     } while (0)
+#endif
+
+#if defined(APP_PLATFORM_ANDROID) && (APP_PLATFORM_ANDROID == 1)
+extern "C" void glShadeModel(unsigned int mode);
+extern "C" void glNormal3f(float x, float y, float z);
 #endif
 
 #undef glTranslatef
@@ -547,6 +578,16 @@ extern C4JRender RenderManager;
             RenderManager.StateSetFogFarDistance(param);  \
         else if ((pname) == 0x0B62 /*GL_FOG_DENSITY*/)    \
             RenderManager.StateSetFogDensity(param);      \
+    } while (0)
+
+#undef glTexGeni
+#define glTexGeni(coord, pname, param) \
+    do {                               \
+    } while (0)
+
+#undef glPolygonOffset
+#define glPolygonOffset(factor, units) \
+    do {                               \
     } while (0)
 
 #undef glOrtho

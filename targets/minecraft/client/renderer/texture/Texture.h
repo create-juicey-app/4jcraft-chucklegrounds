@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/gl.h>
+#include "platform/sdl2/GL/c4j_gl.h"
 
 #include <format>
 #include <string>

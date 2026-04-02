@@ -3,6 +3,7 @@
 #include "Android_App.h"
 #include "app/android/Android_UIController.h"
 #include "app/common/App_Defines.h"
+#include "app/common/src/Audio/SoundEngine.h"
 #include "app/common/src/Network/GameNetworkManager.h"
 #include "console_helpers/compression.h"
 #include "minecraft/client/Minecraft.h"

@@ -1,17 +1,15 @@
 #include "Gui.h"
 
+#include <algorithm>
 #include <cmath>
 
-#include "platform/PlatformTypes.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Render.h"
 #include "Facing.h"
 #include "app/common/App_enums.h"
 #include "app/common/App_structs.h"
-#include "app/linux/Linux_App.h"
-#include "app/linux/Linux_UIController.h"
 #include "app/include/XboxStubs.h"
 #include "app/include/stdafx.h"
+#include "app/linux/Linux_App.h"
+#include "app/linux/Linux_UIController.h"
 #include "console_helpers/StringHelpers.h"
 #include "gl3_loader.h"
 #include "java/JavaMath.h"
@@ -36,25 +34,26 @@
 #include "minecraft/client/renderer/entity/EntityRenderDispatcher.h"
 #include "minecraft/client/renderer/texture/TextureAtlas.h"
 #include "minecraft/client/resources/ResourceLocation.h"
-
 #include "minecraft/util/Mth.h"
 #include "minecraft/world/Icon.h"
 #include "minecraft/world/effect/MobEffect.h"
 #include "minecraft/world/entity/Entity.h"
+#include "minecraft/world/entity/ai/attributes/AttributeInstance.h"
+#include "minecraft/world/entity/monster/SharedMonsterAttributes.h"
 #include "minecraft/world/entity/player/Abilities.h"
 #include "minecraft/world/entity/player/Inventory.h"
 #include "minecraft/world/entity/player/Player.h"
-
+#include "minecraft/world/food/FoodConstants.h"
 #include "minecraft/world/item/ItemInstance.h"
-
 #include "minecraft/world/level/biome/Biome.h"
 #include "minecraft/world/level/chunk/LevelChunk.h"
 #include "minecraft/world/level/dimension/Dimension.h"
 #include "minecraft/world/level/storage/LevelData.h"
 #include "minecraft/world/level/tile/PortalTile.h"
 #include "minecraft/world/level/tile/Tile.h"
-
-
+#include "platform/PlatformTypes.h"
+#include "platform/sdl2/Input.h"
+#include "platform/sdl2/Render.h"
 #include "strings.h"
 
 ResourceLocation Gui::PUMPKIN_BLUR_LOCATION =
@@ -513,7 +512,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
                 int NUM_HEARTS_PER_ROW = 10;  // 4jcraft: missing definition
                 int numHealthRows = Mth::ceil((maxHealth + totalAbsorption) /
                                               2 / (float)NUM_HEARTS_PER_ROW);
-                int healthRowHeight = max(10 - (numHealthRows - 2), 3);
+                int healthRowHeight = std::max(10 - (numHealthRows - 2), 3);
                 yLine2 = yLine1 - (numHealthRows - 1) * healthRowHeight - 10;
                 double absorption = totalAbsorption;
 
@@ -649,7 +648,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
                     int baseHealth = 0;
 
                     while (hearts > 0) {
-                        int rowHearts = min(hearts, 10);
+                        int rowHearts = std::min(hearts, 10);
                         hearts -= rowHearts;
 
                         for (int i = 0; i < rowHearts; i++) {

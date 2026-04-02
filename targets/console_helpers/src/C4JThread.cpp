@@ -668,7 +668,7 @@ void C4JThread::pushAffinityAllCores() {
         ::SetThreadAffinityMask(::GetCurrentThread(), processMask);
     if (prev != 0) g_affinityMaskStack.push_back(prev);
 
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__ANDROID__)
     cpu_set_t prev;
     if (::pthread_getaffinity_np(::pthread_self(), sizeof(prev), &prev) != 0)
         return;
@@ -690,7 +690,7 @@ void C4JThread::popAffinity() {
     g_affinityMaskStack.pop_back();
     (void)::SetThreadAffinityMask(::GetCurrentThread(), prev);
 
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__ANDROID__)
     if (g_affinityMaskStack.empty()) return;
     const cpu_set_t prev = g_affinityMaskStack.back();
     g_affinityMaskStack.pop_back();

@@ -1,18 +1,19 @@
 #include "Screen.h"
 
-#include "platform/InputActions.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Profile.h"
 #include "Button.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/Audio/SoundEngine.h"
 #include "app/common/src/Network/GameNetworkManager.h"
-#include "app/linux/Linux_App.h"
 #include "app/include/stubs.h"
+#include "app/linux/Linux_App.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Screen.h"
+#include "minecraft/client/gui/ScreenSizeCalculator.h"
 #include "minecraft/client/gui/particle/GuiParticles.h"
 #include "minecraft/sounds/SoundTypes.h"
+#include "platform/InputActions.h"
+#include "platform/sdl2/Input.h"
+#include "platform/sdl2/Profile.h"
 
 Screen::Screen()  // 4J added
 {

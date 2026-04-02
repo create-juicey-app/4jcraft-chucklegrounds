@@ -10,9 +10,8 @@
 #include <limits>
 #include <unordered_set>
 
-#include "platform/PlatformTypes.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Profile.h"
+#include "MultiPlayerLevel.h"
+#include "ReceivingLevelScreen.h"
 #include "app/common/App_enums.h"
 #include "app/common/App_structs.h"
 #include "app/common/src/ConsoleGameMode.h"
@@ -33,8 +32,6 @@
 #include "app/linux/Linux_App.h"
 #include "app/linux/Linux_UIController.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "MultiPlayerLevel.h"
-#include "ReceivingLevelScreen.h"
 #include "console_helpers/PlatformTime.h"
 #include "console_helpers/StringHelpers.h"
 #include "java/Class.h"
@@ -47,6 +44,7 @@
 #include "minecraft/client/ProgressRenderer.h"
 #include "minecraft/client/User.h"
 #include "minecraft/client/gui/Gui.h"
+#include "minecraft/client/gui/inventory/MerchantScreen.h"
 #include "minecraft/client/multiplayer/MultiPlayerGameMode.h"
 #include "minecraft/client/multiplayer/MultiPlayerLocalPlayer.h"
 #include "minecraft/client/particle/CritParticle.h"
@@ -200,6 +198,9 @@
 #include "minecraft/world/level/tile/entity/SkullTileEntity.h"
 #include "minecraft/world/level/tile/entity/TileEntity.h"
 #include "minecraft/world/phys/AABB.h"
+#include "platform/PlatformTypes.h"
+#include "platform/sdl2/Input.h"
+#include "platform/sdl2/Profile.h"
 #include "strings.h"
 
 class Packet;

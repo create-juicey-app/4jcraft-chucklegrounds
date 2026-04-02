@@ -1,18 +1,15 @@
 #include "ItemInHandRenderer.h"
 
-#include <GL/gl.h>
-
 #include <cmath>
 #include <numbers>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/linux/Linux_App.h"
 #include "Tesselator.h"
 #include "Textures.h"
 #include "TileRenderer.h"
+#include "app/common/App_enums.h"
+#include "app/common/src/Colours/ColourTable.h"
+#include "app/linux/Linux_App.h"
 #include "java/System.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/Lighting.h"
@@ -38,6 +35,8 @@
 #include "minecraft/world/level/material/Material.h"
 #include "minecraft/world/level/tile/FireTile.h"
 #include "minecraft/world/level/tile/Tile.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 class EntityRenderer;
 class MapItemSavedData;

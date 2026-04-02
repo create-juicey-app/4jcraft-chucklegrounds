@@ -1,14 +1,14 @@
 #include "GuiComponent.h"
 
-#include <GL/gl.h>
 #include <math.h>
 
-#include "platform/sdl2/Render.h"
 #include "app/include/stubs.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Font.h"
 #include "minecraft/client/gui/Gui.h"
 #include "minecraft/client/renderer/Tesselator.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 void GuiComponent::hLine(int x0, int x1, int y, int col) {
     if (x1 < x0) {

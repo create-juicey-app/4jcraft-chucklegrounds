@@ -1,11 +1,8 @@
 #include "AchievementScreen.h"
 
-#include <GL/gl.h>
-
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
 #include "app/include/stubs.h"
 #include "minecraft/client/KeyMapping.h"
 #include "minecraft/client/Minecraft.h"
@@ -17,6 +14,8 @@
 #include "minecraft/locale/I18n.h"
 #include "minecraft/stats/Achievement.h"
 #include "minecraft/stats/Achievements.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 AchievementScreen::AchievementScreen(StatsCounter* statsCounter) {
     // 4J - added initialisers

@@ -1,6 +1,5 @@
 #include "Chunk.h"
 
-#include <GL/gl.h>
 #include <string.h>
 
 #include <mutex>
@@ -9,11 +8,10 @@
 #include <utility>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
 #include "LevelRenderer.h"
-#include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/FrameProfiler.h"
 #include "TileRenderer.h"
+#include "app/include/FrameProfiler.h"
+#include "app/linux/Stubs/winapi_stubs.h"
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/culling/Culler.h"
 #include "minecraft/client/renderer/tileentity/TileEntityRenderDispatcher.h"
@@ -25,6 +23,8 @@
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/level/tile/entity/TileEntity.h"
 #include "minecraft/world/phys/AABB.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 int Chunk::updates = 0;
 

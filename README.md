@@ -143,13 +143,19 @@ You do not need Android Studio to build, but you do need a working Android SDK a
 
 Copy [android/local.properties.template](android/local.properties.template) to [android/local.properties](android/local.properties) and fill in your SDK and NDK paths, or set the environment variables `ANDROID_SDK_ROOT` and `ANDROID_NDK_HOME`.
 
--# I couldn't find a better idea on how to do it.
+The Android scripts will resolve paths in this order:
+
+1. Environment (`ANDROID_SDK_ROOT` / `ANDROID_HOME`, `ANDROID_NDK_HOME`)
+2. `android/local.properties`
+3. Latest NDK under `$SDK/ndk` (if `ndk.dir` is not set)
+
+If it fails then read the text above PLEASE.
 
 ### Build
 
 ```bash
-cd android
-./scripts/build-apk.sh
+python3 ./scripts/android/build_native.py
+python3 ./scripts/android/build_apk.py
 ```
 
 The debug APK will be written under the Android Gradle output directory.

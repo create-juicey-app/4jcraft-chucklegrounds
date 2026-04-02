@@ -1,13 +1,11 @@
 #include "Minimap.h"
 
-#include <GL/gl.h>
 #include <math.h>
 #include <string.h>
 #include <wchar.h>
 
 #include <string>
 
-#include "platform/sdl2/Render.h"
 #include "Font.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/Colours/ColourTable.h"
@@ -18,6 +16,8 @@
 #include "minecraft/world/entity/player/Player.h"
 #include "minecraft/world/level/material/MaterialColor.h"
 #include "minecraft/world/level/saveddata/MapItemSavedData.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 int Minimap::LUT[256];        // 4J added
 bool Minimap::genLUT = true;  // 4J added

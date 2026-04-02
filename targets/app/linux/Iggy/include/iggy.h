@@ -1633,6 +1633,10 @@ iggy_sync_check_fromdisk(char* filename_or_null, U32 flags);
 IDOCN RADEXPFUNC void RADEXPLINK iggy_sync_check_end(void);
 #define IGGY_SYNCCHECK_readytotick 1U IDOCN
 
+#if defined(APP_PLATFORM_ANDROID) && APP_PLATFORM_ANDROID
+#include "app/linux/Stubs/iggy_stubs.h"
+#endif
+
 RADDEFEND
 
 #endif

@@ -1,11 +1,9 @@
-#include <GL/gl.h>
-
 #include <string>
 
 #include "EntityRenderDispatcher.h"
 #include "minecraft/client/renderer/TileRenderer.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 // #include "ItemFrame"
-#include "platform/sdl2/Render.h"
 #include "ItemFrameRenderer.h"
 #include "minecraft/Direction.h"
 #include "minecraft/Facing.h"
@@ -27,6 +25,7 @@
 #include "minecraft/world/item/MapItem.h"
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/level/tile/TreeTile.h"
+#include "platform/sdl2/Render.h"
 
 class MapItemSavedData;
 

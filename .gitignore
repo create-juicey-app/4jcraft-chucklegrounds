@@ -8,6 +8,7 @@
 !/docs/
 !/targets/
 !/scripts/
+/scripts/android/__pycache__/
 !/subprojects/
 /subprojects/*
 !/subprojects/*.wrap
@@ -16,6 +17,10 @@
 /android/app/build/
 /android/.idea/
 /android/build/
+/android/.cxx/
+/android/app/.cxx/
+/build-android*/
+**/libmain.so
 /scripts/__pycache__/
 !/.clang-format
 !/.git-blame-ignore-revs
@@ -27,6 +32,8 @@
 /android/.cache/
 /android/third_party/
 **/local.properties
+**/.cxx/
+**/build/
 !/CONTRIBUTING.md
 !/flake.lock
 !/flake.nix

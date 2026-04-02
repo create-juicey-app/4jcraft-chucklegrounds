@@ -1,8 +1,7 @@
 #include "ChestModel.h"
 
-#include <GL/gl.h>
-
 #include "minecraft/client/model/geom/ModelPart.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 ChestModel::ChestModel() {
     lid = ((new ModelPart(this, 0, 0)))->setTexSize(64, 64);
@@ -39,7 +38,11 @@ void ChestModel::render(bool usecompiled) {
     // 4J - moved lid to last and added z-bias to avoid glitching caused by
     // z-fighting between the area of overlap between the lid & bottom of the
     // chest
+#if !defined(__ANDROID__)
     glPolygonOffset(-0.3f, -0.3f);
+#endif
     lid->render(1 / 16.0f, usecompiled);
+#if !defined(__ANDROID__)
     glPolygonOffset(0.0f, 0.0f);
+#endif
 }

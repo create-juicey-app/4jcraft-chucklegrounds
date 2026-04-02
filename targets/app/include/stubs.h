@@ -1,7 +1,16 @@
 #pragma once
 
 #include <string>
+
+#include "java/File.h"
 #include "platform/PlatformConfig.h"
+
+class FloatBuffer;
+class IntBuffer;
+class ByteBuffer;
+class Minecraft;
+void LinuxGLLogLightmapState(const char* stage, int textureId, bool scaleLight);
+void LinuxLogStubLightmapProbe();
 
 #if APP_PLATFORM_LINUX
 #include <GL/gl.h>
@@ -9,13 +18,11 @@
 
 #undef GL_SMOOTH
 #undef GL_FLAT
+#ifndef C4J_GL_SHADE_CONSTS_DEFINED
+#define C4J_GL_SHADE_CONSTS_DEFINED
 static const int GL_SMOOTH = 0x1D01;
 static const int GL_FLAT = 0x1D00;
-
-class FloatBuffer;
-class IntBuffer;
-class ByteBuffer;
-class Minecraft;
+#endif
 
 void glGenTextures(IntBuffer*);
 int glGenTextures();
@@ -41,9 +48,9 @@ void glEndQueryARB(int);
 void glGetQueryObjectuARB(int, int, IntBuffer*);
 void glReadPixels(int, int, int, int, int, int, ByteBuffer*);
 
-void LinuxGLLogLightmapState(const char* stage, int textureId, bool scaleLight);
-void LinuxLogStubLightmapProbe();
 #else
+
+#if !defined(GLES)
 
 const int GL_BYTE = 0;
 const int GL_FLOAT = 0;
@@ -157,6 +164,36 @@ void glMultiTexCoord2f(int, float, float);
 void glClientActiveTexture(int);
 void glActiveTexture(int);
 
+#else
+
+#ifndef GL_MODELVIEW_MATRIX
+#define GL_MODELVIEW_MATRIX 0x0BA6
+#endif
+#ifndef GL_PROJECTION_MATRIX
+#define GL_PROJECTION_MATRIX 0x0BA7
+#endif
+#ifndef GL_NORMALIZE
+#define GL_NORMALIZE 0x0BA1
+#endif
+#ifndef GL_RESCALE_NORMAL
+#define GL_RESCALE_NORMAL 0x803A
+#endif
+#ifndef GL_COLOR_MATERIAL
+#define GL_COLOR_MATERIAL 0x0B57
+#endif
+#ifndef GL_AMBIENT_AND_DIFFUSE
+#define GL_AMBIENT_AND_DIFFUSE 0x1602
+#endif
+#ifndef GL_BGRA
+#define GL_BGRA 0x80E1
+#endif
+
+void glGetFloat(int a, FloatBuffer* b);
+extern "C" void glNormal3f(float, float, float);
+extern "C" void glColorMaterial(int, int);
+
+#endif
+
 #endif
 
 #if APP_PLATFORM_LINUX
@@ -220,6 +257,7 @@ public:
 };
 
 class ZipEntry {};
+
 class InputStream;
 
 class ZipFile {

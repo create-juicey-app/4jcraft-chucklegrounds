@@ -5,6 +5,7 @@ plugins {
 android {
     namespace "io.github.fourjcraft.mcle"
     compileSdk 34
+    ndkVersion "30.0.14904198"
 
     defaultConfig {
         applicationId "io.github.fourjcraft.mcle"
@@ -46,7 +47,7 @@ dependencies {
 
 tasks.register("buildNativeArm64", Exec) {
     workingDir rootProject.projectDir.parentFile
-    commandLine = ["bash", "android/scripts/build-native.sh"]
+    commandLine = ["python3", "scripts/android/build_native.py"]
 }
 
 tasks.named("preBuild") {

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <cstring>
+
 #include "app/linux/Iggy/include/iggy.h"
 
 #define STUBBED \

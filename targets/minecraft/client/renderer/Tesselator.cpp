@@ -1,13 +1,12 @@
 #include "Tesselator.h"
 
-#include <GL/gl.h>
-
 #include <vector>
 
-#include "platform/sdl2/Render.h"
-#include "app/linux/Linux_App.h"
 #include "app/include/stubs.h"
+#include "app/linux/Linux_App.h"
 #include "minecraft/client/MemoryTracker.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 bool Tesselator::TRIANGLE_MODE = false;
 bool Tesselator::USE_VBO = false;

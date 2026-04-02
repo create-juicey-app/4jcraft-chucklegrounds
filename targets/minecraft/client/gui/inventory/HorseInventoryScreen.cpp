@@ -11,10 +11,9 @@
 #include "minecraft/client/renderer/entity/EntityRenderDispatcher.h"
 #include "minecraft/client/resources/ResourceLocation.h"
 #include "minecraft/world/Container.h"
+#include "minecraft/world/entity/animal/EntityHorse.h"
 #include "minecraft/world/entity/player/Inventory.h"
 #include "minecraft/world/inventory/HorseInventoryMenu.h"
-
-class EntityHorse;
 
 // 4jcraft: referenced from MCP 8.11 (JE 1.6.4) and the existing InventoryScreen
 #ifdef ENABLE_JAVA_GUIS

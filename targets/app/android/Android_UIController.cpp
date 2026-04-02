@@ -76,7 +76,12 @@ void ConsoleUIController::render() {
 
 void ConsoleUIController::beginIggyCustomDraw4J(
     IggyCustomDrawCallbackRegion* region, CustomDrawData* customDrawRegion) {
+#ifdef _ENABLEIGGY
     gdraw_GL_BeginCustomDraw_4J(region, customDrawRegion->mat);
+#else
+    (void)region;
+    (void)customDrawRegion;
+#endif
 }
 
 CustomDrawData* ConsoleUIController::setupCustomDraw(
@@ -87,7 +92,9 @@ CustomDrawData* ConsoleUIController::setupCustomDraw(
     customDrawRegion->y0 = region->y0;
     customDrawRegion->y1 = region->y1;
 
+#ifdef _ENABLEIGGY
     gdraw_GL_BeginCustomDraw_4J(region, customDrawRegion->mat);
+#endif
 
     setupCustomDrawGameStateAndMatrices(scene, customDrawRegion);
 
@@ -102,7 +109,9 @@ CustomDrawData* ConsoleUIController::calculateCustomDraw(
     customDrawRegion->y0 = region->y0;
     customDrawRegion->y1 = region->y1;
 
+#ifdef _ENABLEIGGY
     gdraw_GL_CalculateCustomDraw_4J(region, customDrawRegion->mat);
+#endif
 
     return customDrawRegion;
 }
@@ -110,11 +119,20 @@ CustomDrawData* ConsoleUIController::calculateCustomDraw(
 void ConsoleUIController::endCustomDraw(IggyCustomDrawCallbackRegion* region) {
     endCustomDrawGameStateAndMatrices();
 
+#ifdef _ENABLEIGGY
     gdraw_GL_EndCustomDraw(region);
+#else
+    (void)region;
+#endif
 }
 
 void ConsoleUIController::setTileOrigin(S32 xPos, S32 yPos) {
+#ifdef _ENABLEIGGY
     gdraw_GL_SetTileOrigin(xPos, yPos, 0);
+#else
+    (void)xPos;
+    (void)yPos;
+#endif
 }
 
 GDrawTexture* ConsoleUIController::getSubstitutionTexture(int textureId) {
@@ -123,7 +141,12 @@ GDrawTexture* ConsoleUIController::getSubstitutionTexture(int textureId) {
 
 void ConsoleUIController::destroySubstitutionTexture(void* destroyCallBackData,
                                                      GDrawTexture* handle) {
+#ifdef _ENABLEIGGY
     if (handle) gdraw_GL_WrappedTextureDestroy(handle);
+#else
+    (void)destroyCallBackData;
+    (void)handle;
+#endif
 }
 
 void ConsoleUIController::shutdown() {

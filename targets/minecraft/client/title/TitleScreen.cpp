@@ -3,12 +3,12 @@
 #include <stdint.h>
 
 #include <cmath>
+#include <numbers>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "app/include/BufferedImage.h"
 #include "app/linux/Linux_App.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/BufferedImage.h"
 #include "console_helpers/StringHelpers.h"
 #include "java/InputOutputStream/BufferedReader.h"
 #include "java/InputOutputStream/ByteArrayInputStream.h"
@@ -25,6 +25,7 @@
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/client/resources/ResourceLocation.h"
 #include "minecraft/locale/Language.h"
+#include "platform/sdl2/Render.h"
 
 Random* TitleScreen::random = new Random();
 

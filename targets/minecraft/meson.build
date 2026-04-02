@@ -45,6 +45,11 @@ if get_option('ui_backend') == 'java'
   global_cpp_defs += '-DENABLE_JAVA_GUIS'
 endif
 
+minecraft_includes = [include_directories('..')]
+if host_machine.system() == 'android'
+  minecraft_includes += include_directories('../platform/sdl2/GL')
+endif
+
 lib_minecraft = static_library('minecraft',
   minecraft_sources,
   dependencies : [
@@ -59,7 +64,7 @@ lib_minecraft = static_library('minecraft',
     platform_dep,
     console_helpers_dep,
   ],
-  include_directories : include_directories('..'),
+  include_directories : minecraft_includes,
   cpp_args : global_cpp_args + global_cpp_defs,
 )
 

@@ -21,6 +21,7 @@
 #include "minecraft/world/inventory/MerchantContainer.h"
 #include "minecraft/world/inventory/MerchantMenu.h"
 #include "minecraft/world/item/trading/Merchant.h"
+#include "minecraft/world/item/trading/MerchantRecipe.h"
 #include "minecraft/world/item/trading/MerchantRecipeList.h"
 
 class Level;

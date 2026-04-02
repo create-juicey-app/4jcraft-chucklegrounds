@@ -1,12 +1,9 @@
 #include "BeaconScreen.h"
 
-#include <GL/gl.h>
-
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
 #include "BeaconCancelButton.h"
 #include "BeaconConfirmButton.h"
 #include "BeaconPowerButton.h"
@@ -27,6 +24,8 @@
 #include "minecraft/world/inventory/BeaconMenu.h"
 #include "minecraft/world/item/Item.h"
 #include "minecraft/world/level/tile/entity/BeaconTileEntity.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 // 4jcraft: referenced from MCP 8.11 (JE 1.6.4) and the existing
 // container classes (and iggy too)

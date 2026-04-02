@@ -20,6 +20,11 @@ if not _glm.found()
   error('GLM dependency not found')
 endif
 _defs = []
+_platform_includes = [platform_inc, include_directories('sdl2')]
+
+if host_machine.system() == 'android'
+  _platform_includes += include_directories('sdl2/GL')
+endif
 
 if get_option('renderer') == 'gles'
   _gl = gl_dep
@@ -38,7 +43,7 @@ sdl2_sources = files(
 
 lib_platform_sdl2 = static_library('platform_sdl2',
   sdl2_sources,
-  include_directories: [platform_inc, include_directories('sdl2')],
+  include_directories: _platform_includes,
   dependencies: [_sdl2, _gl, _threads, _glm, stb_dep],
   cpp_args: _defs + global_cpp_args + global_cpp_defs,
 )
@@ -47,7 +52,7 @@ lib_platform_sdl2 = static_library('platform_sdl2',
 # Replaces the old render_dep, input_dep, profile_dep, storage_dep
 render_dep = declare_dependency(
   link_with: lib_platform_sdl2,
-  include_directories: [platform_inc, include_directories('sdl2')],
+  include_directories: _platform_includes,
   dependencies: [_sdl2, _gl, _threads, _glm],
 )
 input_dep = render_dep

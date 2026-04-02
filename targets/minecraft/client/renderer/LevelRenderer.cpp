@@ -1,6 +1,5 @@
 #include "LevelRenderer.h"
 
-#include <GL/gl.h>
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,20 +12,17 @@
 #include <ranges>
 #include <utility>
 
-#include "platform/PlatformTypes.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Render.h"
 #include "Chunk.h"
 #include "GameRenderer.h"
+#include "Tesselator.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/Audio/SoundEngine.h"
 #include "app/common/src/Colours/ColourTable.h"
 #include "app/common/src/Console_Debug_enum.h"
-#include "app/linux/Linux_App.h"
 #include "app/include/FrameProfiler.h"
 #include "app/include/MobSkinMemTextureProcessor.h"
 #include "app/include/stubs.h"
-#include "Tesselator.h"
+#include "app/linux/Linux_App.h"
 #include "console_helpers/StringHelpers.h"
 #include "java/Class.h"
 #include "java/JavaMath.h"
@@ -107,6 +103,10 @@
 #include "minecraft/world/phys/AABB.h"
 #include "minecraft/world/phys/HitResult.h"
 #include "minecraft/world/phys/Vec3.h"
+#include "platform/PlatformTypes.h"
+#include "platform/sdl2/Input.h"
+#include "platform/sdl2/Render.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 class Icon;
 class ItemInstance;

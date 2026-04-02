@@ -1,14 +1,13 @@
 #include "Camera.h"
 
-#include <GL/gl.h>
 #include <math.h>
 #include <string.h>
 
 #include <numbers>
 
 #include "MemoryTracker.h"
-#include "app/linux/Stubs/DirectXMath/DirectXMath.h"
 #include "app/include/stubs.h"
+#include "app/linux/Stubs/DirectXMath/DirectXMath.h"
 #include "java/FloatBuffer.h"
 #include "minecraft/world/entity/LivingEntity.h"
 #include "minecraft/world/entity/player/Player.h"
@@ -18,6 +17,7 @@
 #include "minecraft/world/level/tile/LiquidTile.h"
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/phys/Vec3.h"
+#include "platform/sdl2/GL/c4j_gl.h"
 
 float Camera::xPlayerOffs = 0.0f;
 float Camera::yPlayerOffs = 0.0f;
