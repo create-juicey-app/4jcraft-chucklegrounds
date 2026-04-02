@@ -922,7 +922,7 @@ void SoundEngine::tick(std::shared_ptr<Mob>* players, float a) {
         for (size_t i = 0; i < MAX_LOCAL_PLAYERS; i++) {
             if (players[i] != nullptr) {
                 m_ListenerA[i].bValid = true;
-                F32 x, y, z;
+                float x, y, z;
                 x = players[i]->xo + (players[i]->x - players[i]->xo) * a;
                 y = players[i]->yo + (players[i]->y - players[i]->yo) * a;
                 z = players[i]->zo + (players[i]->z - players[i]->zo) * a;
