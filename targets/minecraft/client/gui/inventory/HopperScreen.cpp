@@ -2,12 +2,12 @@
 
 #include <string>
 
+#include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Font.h"
 #include "minecraft/client/gui/inventory/AbstractContainerScreen.h"
 #include "minecraft/world/Container.h"
 #include "minecraft/world/entity/player/Inventory.h"
 #include "minecraft/world/inventory/HopperMenu.h"
-
 // 4jcraft: referenced from MCP 8.11 (JE 1.6.4) and the existing
 // container classes
 #ifdef ENABLE_JAVA_GUIS

@@ -10,19 +10,16 @@
 #include <thread>
 #include <utility>
 
-#include "platform/PlatformTypes.h"
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Storage.h"
 #include "ConsoleInput.h"
 #include "DispenserBootstrap.h"
+#include "PlayerList.h"
+#include "Settings.h"
 #include "app/common/App_enums.h"
 #include "app/common/src/GameRules/GameRuleManager.h"
 #include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/common/src/Network/GameNetworkManager.h"
 #include "app/common/src/Network/NetworkPlayerInterface.h"
 #include "app/linux/Linux_App.h"
-#include "PlayerList.h"
-#include "Settings.h"
 #include "console_helpers/PlatformTime.h"
 #include "java/Class.h"
 #include "java/File.h"
@@ -60,11 +57,13 @@
 #include "minecraft/world/level/storage/McRegionLevelStorage.h"
 #include "minecraft/world/level/storage/McRegionLevelStorageSource.h"
 #include "minecraft/world/level/tile/Tile.h"
+#include "platform/PlatformTypes.h"
+#include "platform/sdl2/Profile.h"
+#include "platform/sdl2/Storage.h"
 #include "strings.h"
 #if defined(SPLIT_SAVES)
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/ConsoleSaveFileSplit.h"
 #endif
-#include "platform/sdl2/Input.h"
 #include "app/common/ShutdownManager.h"
 #include "app/common/src/Console_Debug_enum.h"
 #include "app/common/src/GameRules/LevelGeneration/ConsoleSchematicFile.h"
@@ -82,6 +81,7 @@
 #include "minecraft/world/level/chunk/SparseDataStorage.h"
 #include "minecraft/world/level/chunk/SparseLightStorage.h"
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/ConsoleSaveFileOriginal.h"
+#include "platform/sdl2/Input.h"
 
 class ConsoleInputSource;
 
@@ -1526,7 +1526,7 @@ void MinecraftServer::handleConsoleInputs() {
     }
 }
 
-void MinecraftServer::main(int64_t seed, void* lpParameter) {
+void MinecraftServer::StartServer(int64_t seed, void* lpParameter) {
     ShutdownManager::HasStarted(ShutdownManager::eServerThread);
     server = new MinecraftServer();
     server->run(seed, lpParameter);

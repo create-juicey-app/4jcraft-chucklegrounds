@@ -206,8 +206,8 @@ public:
     void handleConsoleInput(const std::wstring& msg,
                             ConsoleInputSource* source);
     void handleConsoleInputs();
+    static void StartServer(int64_t seed, void* lpParameter);
     //    void addTickable(Tickable tickable);	// 4J removed
-    static void main(int64_t seed, void* lpParameter);
     static void HaltServer(bool bPrimaryPlayerSignedOut = false);
 
     File* getFile(const std::wstring& name);

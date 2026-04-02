@@ -10,6 +10,7 @@
 #include "minecraft/client/gui/Screen.h"
 #include "minecraft/client/gui/ScreenSizeCalculator.h"
 #include "minecraft/client/gui/particle/GuiParticles.h"
+#include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/sounds/SoundTypes.h"
 #include "platform/InputActions.h"
 #include "platform/sdl2/Input.h"

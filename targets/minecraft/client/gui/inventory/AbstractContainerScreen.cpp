@@ -4,8 +4,8 @@
 
 #include <vector>
 
-#include "app/linux/Linux_App.h"
 #include "app/include/stubs.h"
+#include "app/linux/Linux_App.h"
 #include "minecraft/client/KeyMapping.h"
 #include "minecraft/client/Lighting.h"
 #include "minecraft/client/Minecraft.h"
@@ -15,6 +15,7 @@
 #include "minecraft/client/multiplayer/MultiPlayerGameMode.h"
 #include "minecraft/client/multiplayer/MultiPlayerLocalPlayer.h"
 #include "minecraft/client/renderer/entity/ItemRenderer.h"
+#include "minecraft/world/entity/player/Inventory.h"
 #include "minecraft/world/inventory/AbstractContainerMenu.h"
 #include "minecraft/world/inventory/Slot.h"
 #include "minecraft/world/item/ItemInstance.h"
