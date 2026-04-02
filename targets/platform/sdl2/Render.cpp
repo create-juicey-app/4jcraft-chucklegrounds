@@ -37,6 +37,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -93,6 +94,50 @@ static pthread_mutex_t s_glCallMtx = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t s_mainThread;
 static bool s_mainThreadSet = false;
 static thread_local bool s_rs_dirty = true;
+
+// sets da window icon
+// can make use of a helper function but due to the repo restructure i don't
+// rlly know how to get it back
+static void setWindowIcon(SDL_Window* window) {
+    if (!window) return;
+    // still doing the candidate hack thing, idc it works
+    const char* iconCandidates[] = {
+        "Common/Media/Graphics/Logos/Icon.png",
+        "resources/Common/Media/Graphics/Logos/MinecraftIcon.png",
+        "targets/resources/Common/Media/Graphics/Logos/MinecraftIcon.png",
+    };
+
+    const char* basePath = SDL_GetBasePath();
+    std::string base = (basePath != nullptr) ? std::string(basePath) : "";
+
+    for (const char* iconPath : iconCandidates) {
+        std::string candidate = iconPath;
+
+        int width = 0;
+        int height = 0;
+        int channels = 0;
+        stbi_uc* pixels =
+            stbi_load(candidate.c_str(), &width, &height, &channels, 4);
+
+        if (pixels == nullptr && !base.empty()) {
+            candidate = base + iconPath;
+            pixels =
+                stbi_load(candidate.c_str(), &width, &height, &channels, 4);
+        }
+
+        if (pixels == nullptr) continue;
+
+        SDL_Surface* iconSurface = SDL_CreateRGBSurfaceWithFormatFrom(
+            pixels, width, height, 32, width * 4, SDL_PIXELFORMAT_RGBA32);
+        if (iconSurface != nullptr) {
+            SDL_SetWindowIcon(window, iconSurface);
+            SDL_FreeSurface(iconSurface);
+        }
+
+        stbi_image_free(pixels);
+        return;
+    }
+}
 
 static void onFramebufferResize(int w, int h) {
     if (w < 1) w = 1;
@@ -461,6 +506,7 @@ void C4JRender::Initialise() {
         fprintf(stderr, "[4J_Render] Window: %s\n", SDL_GetError());
         return;
     }
+    setWindowIcon(s_window);
     s_glContext = SDL_GL_CreateContext(s_window);
     if (!s_glContext) {
         fprintf(stderr, "[4J_Render] Context: %s\n", SDL_GetError());
