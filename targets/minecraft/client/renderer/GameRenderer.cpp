@@ -6,22 +6,19 @@
 #include <cmath>
 #include <numbers>
 
-#include "platform/PlatformTypes.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Render.h"
 #include "BossMobGuiInfo.h"
 #include "Chunk.h"
 #include "ItemInHandRenderer.h"
 #include "LevelRenderer.h"
+#include "Tesselator.h"
 #include "app/common/App_enums.h"
 #include "app/common/ShutdownManager.h"
 #include "app/common/src/Colours/ColourTable.h"
-#include "app/linux/Linux_App.h"
-#include "app/linux/Stubs/winapi_stubs.h"
 #include "app/include/BufferedImage.h"
 #include "app/include/FrameProfiler.h"
 #include "app/include/stubs.h"
-#include "Tesselator.h"
+#include "app/linux/Linux_App.h"
+#include "app/linux/Stubs/winapi_stubs.h"
 #include "console_helpers/compression.h"
 #include "gl3_loader.h"
 #include "java/Class.h"
@@ -82,6 +79,13 @@
 #include "minecraft/world/phys/AABB.h"
 #include "minecraft/world/phys/HitResult.h"
 #include "minecraft/world/phys/Vec3.h"
+#include "platform/PlatformTypes.h"
+#include "platform/sdl2/Input.h"
+#include "platform/sdl2/Render.h"
+
+#if defined(__ANDROID__)
+#include <android/log.h>
+#endif
 
 bool GameRenderer::anaglyph3d = false;
 int GameRenderer::anaglyphPass = 0;
@@ -173,7 +177,13 @@ GameRenderer::GameRenderer(Minecraft* mc) {
 
     this->mc = mc;
     itemInHandRenderer = nullptr;
-
+#if defined(__ANDROID__)
+    static bool s_logged_gui = false;
+    if (!s_logged_gui) {
+        printf("MCLE_Render Successfully Rendering Title Screen UI Layer");
+        s_logged_gui = true;
+    }
+#endif
     // 4J-PB - set up the local players iteminhand renderers here - needs to be
     // done with lighting enabled so that the render geometry gets compiled
     // correctly

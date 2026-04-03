@@ -1,9 +1,9 @@
 #include "UIBitmapFont.h"
 
+#include "UIFontData.h"
+#include "app/include/BufferedImage.h"
 #include "app/linux/Iggy/include/iggy.h"
 #include "app/linux/Iggy/include/rrCore.h"
-#include "app/include/BufferedImage.h"
-#include "UIFontData.h"
 
 /////////////////////////////
 // UI Abstract Bitmap Font //
@@ -110,7 +110,8 @@ UIBitmapFont::UIBitmapFont(SFontData& sfontdata)
     BufferedImage bimg(sfontdata.m_wstrFilename);
     int* bimgData = bimg.getData();
 
-    m_cFontData = new CFontData(sfontdata, bimgData);
+    m_cFontData =
+        new CFontData(sfontdata, bimgData, bimg.getWidth(), bimg.getHeight());
 
     // delete [] bimgData;
 }

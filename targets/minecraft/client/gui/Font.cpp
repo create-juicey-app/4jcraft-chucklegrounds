@@ -5,7 +5,6 @@
 #include <utility>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
 #include "app/include/BufferedImage.h"
 #include "console_helpers/StringHelpers.h"
 #include "java/Random.h"
@@ -14,6 +13,7 @@
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/client/resources/ResourceLocation.h"
+#include "platform/sdl2/Render.h"
 
 Font::Font(Options* options, const std::wstring& name, Textures* textures,
            bool enforceUnicode, ResourceLocation* textureLocation, int cols,
@@ -25,7 +25,7 @@ Font::Font(Options* options, const std::wstring& name, Textures* textures,
     charWidths = new int[charC];
 
     // 4J - added initialisers
-    memset(charWidths, 0, charC);
+    memset(charWidths, 0, charC * sizeof(int));
 
     enforceUnicodeSheet = false;
     bidirectional = false;
@@ -59,8 +59,31 @@ Font::Font(Options* options, const std::wstring& name, Textures* textures,
 }
     */
 
+    int expectedW = m_cols * m_charWidth;
+    int expectedH = m_rows * m_charHeight;
+
+    if (img == nullptr) {
+        app.DebugPrintf("Font::Font failed to read image: %ls\n", name.c_str());
+        for (int i = 0; i < charC; i++) {
+            charWidths[i] = (i == ' ') ? (m_charWidth / 2) : m_charWidth;
+        }
+        return;
+    }
+
     int w = img->getWidth();
     int h = img->getHeight();
+    if (w <= 0 || h <= 0 || w < expectedW || h < expectedH) {
+        app.DebugPrintf(
+            "Font::Font atlas size invalid for %ls (%d x %d, expected at least "
+            "%d x %d)\n",
+            name.c_str(), w, h, expectedW, expectedH);
+        for (int i = 0; i < charC; i++) {
+            charWidths[i] = (i == ' ') ? (m_charWidth / 2) : m_charWidth;
+        }
+        delete img;
+        return;
+    }
+
     std::vector<int> rawPixels(w * h);
     img->getRGB(0, 0, w, h, rawPixels, 0, w);
 
@@ -68,12 +91,16 @@ Font::Font(Options* options, const std::wstring& name, Textures* textures,
         int xt = i % m_cols;
         int yt = i / m_cols;
 
-        int x = 7;
+        int x = m_charWidth - 1;
         for (; x >= 0; x--) {
-            int xPixel = xt * 8 + x;
+            int xPixel = xt * m_charWidth + x;
             bool emptyColumn = true;
-            for (int y = 0; y < 8 && emptyColumn; y++) {
-                int yPixel = (yt * 8 + y) * w;
+            for (int y = 0; y < m_charHeight && emptyColumn; y++) {
+                int yPixel = (yt * m_charHeight + y) * w;
+                int pixelIndex = xPixel + yPixel;
+                if (pixelIndex < 0 || pixelIndex >= (int)rawPixels.size()) {
+                    continue;
+                }
                 bool emptyPixel = (rawPixels[xPixel + yPixel] >> 24) ==
                                   0;  // Check the alpha value
                 if (!emptyPixel) emptyColumn = false;
@@ -83,8 +110,9 @@ Font::Font(Options* options, const std::wstring& name, Textures* textures,
             }
         }
 
-        if (i == ' ') x = 4 - 2;
+        if (i == ' ') x = (m_charWidth / 2) - 2;
         charWidths[i] = x + 2;
+        if (charWidths[i] < 1) charWidths[i] = 1;
     }
 
     delete img;
@@ -296,7 +324,7 @@ bool Font::CharacterExists(wchar_t c) {
     if (!m_charMap.empty()) {
         return m_charMap.find(c) != m_charMap.end();
     } else {
-        return c >= 0 && c <= m_rows * m_cols;
+        return c >= 0 && c < (m_rows * m_cols);
     }
 }
 

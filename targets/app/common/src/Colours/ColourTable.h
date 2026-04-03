@@ -15,6 +15,7 @@ private:
 public:
     static void staticCtor();
 
+    ColourTable();
     ColourTable(std::uint8_t* pbData, std::uint32_t dataLength);
     ColourTable(ColourTable* defaultColours, std::uint8_t* pbData,
                 std::uint32_t dataLength);

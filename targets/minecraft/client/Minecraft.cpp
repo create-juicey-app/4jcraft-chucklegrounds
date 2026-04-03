@@ -10,6 +10,10 @@
 #include <ctime>
 #include <thread>
 
+#if defined(__ANDROID__)
+#include <SDL2/SDL_system.h>
+#endif
+
 #include "Options.h"
 #include "Pos.h"
 #include "ProgressRenderer.h"
@@ -150,6 +154,7 @@ int64_t Minecraft::frameTimes[512];
 int64_t Minecraft::tickTimes[512];
 int Minecraft::frameTimePos = 0;
 int64_t Minecraft::warezTime = 0;
+
 File Minecraft::workDir = File(L"");
 
 ResourceLocation Minecraft::DEFAULT_FONT_LOCATION =
@@ -471,33 +476,94 @@ File Minecraft::getWorkingDirectory() {
 File Minecraft::getWorkingDirectory(const std::wstring& applicationName) {
     // 4J - original version
     // 4jcraft: ported to C++
-    std::wstring userHome = convStringToWstring(getenv("HOME"));
-    File* workingDirectory;
-#if defined(__linux__)
-    workingDirectory = new File(userHome, L'.' + applicationName + L'/');
-#elif defined(_WINDOWS64)
-    std::string applicationData = getenv("APPDATA");
-    if (!applicationData.empty()) {
-        workingDirectory = new File(convStringToWstring(applicationData),
-                                    L'.' + applicationName + L'/');
+    auto getEnvAsWstring = [](const char* envName) -> std::wstring {
+        const char* envValue = getenv(envName);
+        if (envValue == nullptr || envValue[0] == '\0') return L"";
+
+        std::wstring converted;
+        for (const unsigned char* p =
+                 reinterpret_cast<const unsigned char*>(envValue);
+             *p != '\0'; ++p) {
+            converted.push_back((wchar_t)*p);
+        }
+        return converted;
+    };
+
+    std::wstring userHome = getEnvAsWstring("HOME");
+    const std::wstring appDirName =
+        (!applicationName.empty() && applicationName[0] == L'.')
+            ? applicationName
+            : (std::wstring(1, L'.') + applicationName);
+
+    File workingDirectory;
+#if defined(__ANDROID__)
+    std::wstring androidStoragePath;
+    const char* internalStorage = SDL_AndroidGetInternalStoragePath();
+    if (internalStorage != nullptr && internalStorage[0] != '\0') {
+        for (const unsigned char* p =
+                 reinterpret_cast<const unsigned char*>(internalStorage);
+             *p != '\0'; ++p) {
+            androidStoragePath.push_back((wchar_t)*p);
+        }
+    }
+
+    if (!androidStoragePath.empty()) {
+        if (androidStoragePath.back() != L'/')
+            androidStoragePath.push_back(L'/');
+        workingDirectory = File(androidStoragePath + appDirName + L'/');
     } else {
-        workingDirectory = new File(userHome, L'.' + applicationName + L'/');
+        // Fallback if SDL does not provide internal storage path.
+        workingDirectory = File(std::wstring(L"./") + appDirName + L'/');
+    }
+#elif defined(__linux__)
+    if (!userHome.empty()) {
+        workingDirectory = File(userHome, L'.' + applicationName + L'/');
+    } else {
+        workingDirectory = File(L".", L'.' + applicationName + L'/');
+    }
+#elif defined(_WINDOWS64)
+    std::wstring applicationData = getEnvAsWstring("APPDATA");
+    if (!applicationData.empty()) {
+        workingDirectory = File(applicationData, L'.' + applicationName + L'/');
+    } else {
+        if (!userHome.empty()) {
+            workingDirectory = File(userHome, L'.' + applicationName + L'/');
+        } else {
+            workingDirectory = File(L".", L'.' + applicationName + L'/');
+        }
     }
 // #elif defined(_MACOS)
 //		workingDirectory = new File(userHome, "Library/Application
 // Support/" + applicationName);
 #else
-    workingDirectory = new File(userHome, applicationName + L'/');
+    if (!userHome.empty()) {
+        workingDirectory = File(userHome, applicationName + L'/');
+    } else {
+        workingDirectory = File(L".", applicationName + L'/');
+    }
 #endif
-    if (!workingDirectory->exists()) {
-        if (!workingDirectory->mkdirs()) {
-            app.DebugPrintf("The working directory could not be created");
-            assert(0);
-            // throw new RuntimeException(L"The working directory could not be
-            // created: " + workingDirectory);
+    if (!workingDirectory.exists()) {
+        if (!workingDirectory.mkdirs()) {
+            app.DebugPrintf("Working directory create failed: %s\n",
+                            wstringtofilename(workingDirectory.getPath()));
+
+            File fallbackDir(std::wstring(L"./") + appDirName + L'/');
+            if (!fallbackDir.exists()) {
+                fallbackDir.mkdirs();
+            }
+
+            if (fallbackDir.exists()) {
+                app.DebugPrintf("Using fallback working directory: %s\n",
+                                wstringtofilename(fallbackDir.getPath()));
+                return fallbackDir;
+            }
+
+            app.DebugPrintf(
+                "Fallback working directory also unavailable, continuing "
+                "anyway\n");
         }
     }
-    return *workingDirectory;
+    return workingDirectory;
 }
 
 LevelStorageSource* Minecraft::getLevelSource() { return levelSource; }

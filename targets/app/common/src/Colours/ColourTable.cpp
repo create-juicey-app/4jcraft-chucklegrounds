@@ -337,6 +337,12 @@ void ColourTable::staticCtor() {
     }
 }
 
+ColourTable::ColourTable() {
+    for (int i = 0; i < eMinecraftColour_COUNT; ++i) {
+        m_colourValues[i] = 0;
+    }
+}
+
 ColourTable::ColourTable(std::uint8_t* pbData, std::uint32_t dataLength) {
     loadColoursFromData(pbData, dataLength);
 }

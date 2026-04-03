@@ -1,5 +1,10 @@
 #include "Render.h"
 
+#define GLES 1
+#include <SDL2/SDL_log.h>
+#define SDL_MAIN_HANDLED 1
+#include <SDL2/SDL_main.h>  // Required for SDL_SetMainReady
+
 #include "../PlatformTypes.h"
 #include "SDL.h"
 #include "SDL_error.h"
@@ -119,6 +124,12 @@ static GLuint compileShader(GLenum type, const char* src) {
 }
 
 static GLuint linkProgram(GLuint v, GLuint f) {
+    if (v == 0 || f == 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_RENDER,
+                     "MCLE_Render: Cannot link program because shaders failed "
+                     "to compile.");
+        return 0;
+    }
     GLuint p = glCreateProgram();
     glAttachShader(p, v);
     glAttachShader(p, f);
@@ -156,9 +167,15 @@ struct ShaderUniforms {
         GLuint v = compileShader(GL_VERTEX_SHADER, vs);
         GLuint f = compileShader(GL_FRAGMENT_SHADER, fs);
         prog = linkProgram(v, f);
-        glDeleteShader(v);
-        glDeleteShader(f);
-        if (!prog) return;
+
+        if (v) glDeleteShader(v);
+        if (f) glDeleteShader(f);
+
+        if (!prog) {
+            SDL_LogError(SDL_LOG_CATEGORY_RENDER,
+                         "MCLE_Render: Shader Program Linking FAILED.");
+            return;
+        }
 
 #define L(x) x = glGetUniformLocation(prog, #x)
         L(uMVP);
@@ -424,13 +441,19 @@ static GLenum mapPrim(int pt) {
 }
 
 // MARK: Renderer impl
-
+#if defined(__ANDROID__)
+#include <android/log.h>
+#endif
 // Initialises the renderer
 void C4JRender::Initialise() {
+    SDL_SetMainReady();
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        fprintf(stderr, "[4J_Render] SDL_Init: %s\n", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "MCLE_Render: SDL_Init failed: %s",
+                     SDL_GetError());
         return;
     }
+
+    SDL_Delay(100);
     SDL_DisplayMode dm;
     if (s_reqWidth > 0 && s_reqHeight > 0) {
         s_windowWidth = s_reqWidth;
@@ -439,6 +462,7 @@ void C4JRender::Initialise() {
         s_windowWidth = (int)(dm.w * 0.4f);
         s_windowHeight = (int)(dm.h * 0.4f);
     }
+
 #ifdef GLES
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -449,49 +473,66 @@ void C4JRender::Initialise() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                         SDL_GL_CONTEXT_PROFILE_CORE);
 #endif
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    // Relaxing depth requirements for better Android EGL compatibility
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
     Uint32 wf = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
     if (s_fullscreen) wf |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+
     s_window = SDL_CreateWindow("Minecraft Console Edition",
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 s_windowWidth, s_windowHeight, wf);
     if (!s_window) {
-        fprintf(stderr, "[4J_Render] Window: %s\n", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_VIDEO,
+                     "MCLE_Render: SDL_CreateWindow failed! Error: %s",
+                     SDL_GetError());
         return;
     }
+
     s_glContext = SDL_GL_CreateContext(s_window);
     if (!s_glContext) {
-        fprintf(stderr, "[4J_Render] Context: %s\n", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_VIDEO,
+                     "MCLE_Render: SDL_GL_CreateContext failed! Error: %s",
+                     SDL_GetError());
         return;
     }
+
 #ifndef GLES
     gl3_load();
 #endif
+
     int fw, fh;
     SDL_GetWindowSize(s_window, &fw, &fh);
     onFramebufferResize(fw, fh);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
+
 #ifdef GLES
     glClearDepthf(1.0f);
 #else
     glClearDepth(1.0);
 #endif
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glClearColor(0, 0, 0, 1);
     glViewport(0, 0, s_windowWidth, s_windowHeight);
+
     s_shader.build(VERT_SRC, FRAG_SRC);
+
     initStreamingVAOs();
+
     pthread_once(&s_glCtxKeyOnce, makeGLCtxKey);
     s_mainThread = pthread_self();
     s_mainThreadSet = true;
     pthread_setspecific(s_glCtxKey, (void*)s_window);
     SDL_GL_MakeCurrent(s_window, s_glContext);
+
     for (int i = 0; i < MAX_SHARED_CTXS; i++) {
         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
         SDL_Window* w = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED,
@@ -507,6 +548,7 @@ void C4JRender::Initialise() {
         s_sharedCtxs[s_sharedCtxCount] = ctx;
         s_sharedCtxCount++;
     }
+
     SDL_GL_MakeCurrent(s_window, s_glContext);
     pushRenderState();
 
@@ -546,13 +588,18 @@ void C4JRender::InitialiseContext() {
             SDL_GL_MakeCurrent(s_sharedWins[i], shared);
     pthread_setspecific(s_glCtxKey, (void*)shared);
 }
-
 void C4JRender::StartFrame() {
+    // Re-bind context every frame on Android — surface may have changed
+    if (s_window && s_glContext) {
+        SDL_GL_MakeCurrent(s_window, s_glContext);
+    }
     int w, h;
     SDL_GetWindowSize(s_window, &w, &h);
     s_windowWidth = w > 0 ? w : 1;
     s_windowHeight = h > 0 ? h : 1;
     glViewport(0, 0, s_windowWidth, s_windowHeight);
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void C4JRender::Present() {

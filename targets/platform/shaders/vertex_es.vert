@@ -42,7 +42,7 @@ void main() {
     vec2 lm = (aLMraw.x <= -500) ? uGlobalLM : vec2(aLMraw);
     vUV1 = (lm / 256.0) * uLMTransform.xy + uLMTransform.zw;
 
-    bool sentinel = all(equal(aColor, vec4(0.0)));
+    bool sentinel = (aColor.r == 0.0 && aColor.g == 0.0 && aColor.b == 0.0 && aColor.a == 0.0);
     vec4 col = sentinel ? uBaseColor : aColor.abgr;
     if (uLighting == 1) {
         vec3 n = normalize(uNormalMatrix * aNormal) * uNormalSign;

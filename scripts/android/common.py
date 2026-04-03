@@ -243,6 +243,8 @@ def fetch_sdl2_if_missing(sdk_dir: str, ndk_dir: str) -> None:
                 "[built-in options]",
                 "c_args = ['-fPIC']",
                 "cpp_args = ['-fPIC']",
+                "c_link_args = ['-llog']",
+                "cpp_link_args = ['-llog']",
                 "",
             ]
         ),

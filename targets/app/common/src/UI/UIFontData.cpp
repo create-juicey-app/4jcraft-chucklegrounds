@@ -659,26 +659,44 @@ CFontData::CFontData() {
     m_pbRawImage = nullptr;
 }
 
-CFontData::CFontData(SFontData& sFontData, int* pbRawImage)
+CFontData::CFontData(SFontData& sFontData, int* pbRawImage,
+                     unsigned int rawImageWidth, unsigned int rawImageHeight)
     : m_unicodeMap(sFontData.m_uiGlyphCount + 2) {
     this->m_sFontData = &sFontData;
 
-    if (pbRawImage == nullptr) {
-        // Font image failed to load; leave raw buffers null so the font renders
-        // nothing rather than crashing. UIBitmapFont already logs an error in
-        // this case.
-        m_pbRawImage = nullptr;
-        m_kerningTable = nullptr;
-        m_pfAdvanceTable = nullptr;
+    const unsigned int archiveSize =
+        sFontData.m_uiGlyphMapX * sFontData.m_uiGlyphMapY;
+
+    auto buildFallback = [&]() {
+        m_pbRawImage = new unsigned char[archiveSize]();
+
+        for (unsigned int i = 0; i < sFontData.m_uiGlyphCount; i++) {
+            std::unordered_map<unsigned int, unsigned short>::value_type pair(
+                sFontData.Codepoints[i], i);
+            m_unicodeMap.insert(pair);
+        }
+
+        m_kerningTable = new unsigned short[sFontData.m_uiGlyphCount];
+        m_pfAdvanceTable = new float[sFontData.m_uiGlyphCount];
+        for (unsigned short glyph = 0; glyph < sFontData.m_uiGlyphCount;
+             ++glyph) {
+            m_kerningTable[glyph] = sFontData.m_uiWhitespaceWidth;
+            m_pfAdvanceTable[glyph] =
+                m_kerningTable[glyph] * sFontData.m_fAdvPerPixel;
+        }
+    };
+
+    if (pbRawImage == nullptr || rawImageWidth != sFontData.m_uiGlyphMapX ||
+        rawImageHeight != sFontData.m_uiGlyphMapY) {
+        // Font image failed to load or had unexpected dimensions.
+        // Build a safe blank font atlas and metrics so we don't crash.
+        buildFallback();
         return;
     }
 
     // INITIALISE ALPHA CHANNEL //
 
     // Glyph Archive (1Byte per pixel).
-    unsigned int archiveSize =
-        sFontData.m_uiGlyphMapX * sFontData.m_uiGlyphMapY;
-
     this->m_pbRawImage = new unsigned char[archiveSize];
 
     // 4J-JEV: Take the alpha channel from each pixel.

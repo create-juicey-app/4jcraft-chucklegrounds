@@ -25,7 +25,7 @@ void main() {
     if (uUseLightmap != 0) c.rgb *= texture(uTex1, vUV1).rgb;
     if (uFogEnable != 0) c.rgb = mix(uFogColor.rgb, c.rgb, vFogFactor);
 
-    c.rgb = pow(c.rgb, vec3(uInvGamma));
+    c.rgb = pow(max(c.rgb, vec3(0.0001)), vec3(uInvGamma));
 
     oColor = c;
 }

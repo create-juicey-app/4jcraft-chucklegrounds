@@ -2,7 +2,7 @@
 
 #include "Language.h"
 
-Language* I18n::lang = Language::getInstance();
+Language* I18n::lang = nullptr;
 // 4jcraft const & into va_start is ub
 std::wstring I18n::get(std::wstring id, ...) {
     va_list va;

@@ -1,5 +1,6 @@
 #include "ArchiveFile.h"
 
+#include <SDL2/SDL_rwops.h>
 #include <assert.h>
 
 #include <cstdlib>
@@ -8,6 +9,7 @@
 #include "app/linux/Linux_App.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "console_helpers/PortableFileIO.h"
+#include "console_helpers/StringHelpers.h"
 #include "console_helpers/compression.h"
 #include "java/InputOutputStream/ByteArrayInputStream.h"
 #include "java/InputOutputStream/DataInputStream.h"
@@ -112,6 +114,32 @@ std::vector<uint8_t> ArchiveFile::getFile(const std::wstring& filename) {
         out = std::vector<uint8_t>(data->filesize);
 
         memcpy(out.data(), m_cachedData + data->ptr, data->filesize);
+#elif APP_PLATFORM_ANDROID
+        out = std::vector<uint8_t>(data->filesize);
+        const std::string nativePath =
+            wstringtofilename(m_sourcefile.getPath());
+        SDL_RWops* file = SDL_RWFromFile(nativePath.c_str(), "rb");
+        if (file == nullptr) {
+            app.DebugPrintf("Failed to open archive stream for segment read\n");
+            app.FatalLoadError();
+        }
+
+        const Sint64 seekResult =
+            SDL_RWseek(file, static_cast<Sint64>(data->ptr), RW_SEEK_SET);
+        if (seekResult < 0) {
+            SDL_RWclose(file);
+            app.DebugPrintf("Failed to seek archive stream for segment read\n");
+            app.FatalLoadError();
+        }
+
+        const size_t bytesRead = SDL_RWread(
+            file, out.data(), 1, static_cast<size_t>(data->filesize));
+        SDL_RWclose(file);
+        if (bytesRead != static_cast<size_t>(data->filesize)) {
+            app.DebugPrintf(
+                "Failed to read archive file segment from stream\n");
+            app.FatalLoadError();
+        }
 #else
         const unsigned int fileSize = static_cast<unsigned int>(data->filesize);
         std::uint8_t* pbData = new std::uint8_t[fileSize == 0 ? 1 : fileSize];

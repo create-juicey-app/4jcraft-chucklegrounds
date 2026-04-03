@@ -16,6 +16,7 @@
 
 #include <string>
 
+#include "../../minecraft/locale/I18n.h"
 #include "../InputActions.h"
 #include "../PlatformTypes.h"
 
@@ -231,15 +232,27 @@ static void TakeSnapIfNeeded() {
 // We initialize the SDL input
 void C_4JInput::Initialise(int, unsigned char, unsigned char, unsigned char) {
     if (!s_sdlInitialized) {
+        SDL_SetHint(SDL_HINT_JOYSTICK_HIDAPI, "0");
+        SDL_SetHint(SDL_HINT_HIDAPI_IGNORE_DEVICES, "1");
+
         if (SDL_WasInit(SDL_INIT_VIDEO) == 0) {
             SDL_Init(SDL_INIT_VIDEO);
         }
+
+#if !defined(__ANDROID__)
+        // Only init GameController on non-Android for now to bypass the
+        // PLATFORM_hid_init crash
         if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) == 0) {
-            SDL_Init(SDL_INIT_GAMECONTROLLER);
+            SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
         }
+#endif
+
         SDL_AddEventWatch(EventWatcher, NULL);
         s_sdlInitialized = true;
     }
+
+    // move this soon
+    I18n::lang = Language::getInstance();
 
     memset(s_keysCurrent, 0, sizeof(s_keysCurrent));
     memset(s_keysPrev, 0, sizeof(s_keysPrev));

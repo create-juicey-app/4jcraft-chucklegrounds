@@ -69,118 +69,23 @@ File::File(const std::wstring& pathname) {
     for (size_t i = 0; i < fixedPath.length(); ++i) {
         if (fixedPath[i] == L'\\') fixedPath[i] = L'/';
     }
-    size_t dpos;
-    while ((dpos = fixedPath.find(L"//")) != std::wstring::npos)
-        fixedPath.erase(dpos, 1);
-    if (fixedPath.find(L"GAME:/") == 0) fixedPath = fixedPath.substr(6);
     m_abstractPathName = fixedPath;
-
-#if defined(__linux__)
-    std::string request = wstringtofilename(m_abstractPathName);
-    while (!request.empty() && request[0] == '/') request.erase(0, 1);
-    if (request.find("res/") == 0) request.erase(0, 4);
-
-    std::string exeDir = PathHelper::GetExecutableDirA();
-    std::string fileName = request;
-    size_t lastSlash = fileName.find_last_of('/');
-    if (lastSlash != std::string::npos)
-        fileName = fileName.substr(lastSlash + 1);
-
-    const char* bases[] = {"/",
-                           "/Common/res/TitleUpdate/res/",
-                           "/Common/Media/",
-                           "/Common/res/",
-                           "/Common/",
-                           "resources/"};
-
-    for (const char* base : bases) {
-        std::string tryFull = exeDir + base + request;
-        std::string tryFile = exeDir + base + fileName;
-        if (SDLPathExists(tryFull)) {
-            m_abstractPathName = convStringToWstring(tryFull);
-            return;
-        }
-        if (SDLPathExists(tryFile)) {
-            m_abstractPathName = convStringToWstring(tryFile);
-            return;
-        }
-    }
-#endif
-
-#ifdef _WINDOWS64
-    std::string path = wstringtofilename(m_abstractPathName);
-    std::string finalPath = StorageManager.GetMountedPath(path.c_str());
-    if (finalPath.size() == 0) finalPath = path;
-    m_abstractPathName = convStringToWstring(finalPath);
-#endif
-    /*
-    std::vector<std::wstring> path = stringSplit( pathname, pathSeparator );
-
-    if( path.back().compare( pathRoot ) != 0 )
-    m_abstractPathName = path.back();
-    else
-    m_abstractPathName = L"";
-
-    path.pop_back();
-
-    if( path.size() > 0 )
-    {
-    // If the last member of the vector is the root then just stop
-    if( path.back().compare( pathRoot ) != 0 )
-    this->parent = new File( &path );
-    else
-    this->parent = nullptr;
-    }
-    */
 }
 
-File::File(const std::wstring& parent,
-           const std::wstring& child)  //: m_abstractPathName( child  )
-{
+File::File(const std::wstring& parent, const std::wstring& child) {
     m_abstractPathName =
         pathRoot + pathSeparator + parent + pathSeparator + child;
-    // this->parent = new File( parent );
 }
 
-// Creates a new File instance by converting the given path vector into an
-// abstract pathname.
-/*
-File::File( std::vector<std::wstring> *path ) : parent( nullptr )
-{
-m_abstractPathName = path->back();
-path->pop_back();
-
-if( path->size() > 0 )
-{
-// If the last member of the vector is the root then just stop
-if( path->back().compare( pathRoot ) != 0 )
-this->parent = new File( path );
-else
-this->parent = nullptr;
-}
-}
-*/
-
-// Deletes the file or directory denoted by this abstract pathname. If this
-// pathname denotes a directory, then the directory must be empty in order to be
-// deleted. Returns: true if and only if the file or directory is successfully
-// deleted; false otherwise
 bool File::_delete() {
     std::error_code error;
     const bool result = fs::remove(ToFilesystemPath(getPath()), error);
     if (!result || error) {
-#ifndef _CONTENT_PACKAGE
-        printf("File::_delete - Error code %d (%#0.8X)\n", error.value(),
-               error.value());
-#endif
         return false;
     }
     return true;
 }
 
-// Creates the directory named by this abstract pathname.
-// Returns:
-// true if and only if the directory was created; false otherwise
 bool File::mkdir() const {
     std::error_code error;
     return fs::create_directory(ToFilesystemPath(getPath()), error);
@@ -212,11 +117,9 @@ bool File::mkdirs() const {
     if (fs::exists(path, error)) {
         return fs::is_directory(path, error);
     }
-
     if (error) {
         return false;
     }
-
     return fs::create_directories(path, error);
 }
 
@@ -432,6 +335,5 @@ int File::hash_fnct(const File& k) {
     for (unsigned int i = 0; i < k.m_abstractPathName.length(); i++) {
         hashCode += ((hashCode * 33) + ref[i]) % 149;
     }
-
     return (int)hashCode;
 }

@@ -1,8 +1,12 @@
 #include "Android_App.h"
 
+#include <android/log.h>
 #include <assert.h>
 
 #include "platform/sdl2/Render.h"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "MCLE_App", __VA_ARGS__)
+#define LOGE(...) \
+    __android_log_print(ANDROID_LOG_ERROR, "MCLE_App", __VA_ARGS__)
 
 CConsoleMinecraftApp app;
 
@@ -14,7 +18,10 @@ void CConsoleMinecraftApp::StoreLaunchData() {}
 
 void CConsoleMinecraftApp::ExitGame() { RenderManager.Close(); }
 
-void CConsoleMinecraftApp::FatalLoadError() { assert(0); }
+void CConsoleMinecraftApp::FatalLoadError() {
+    // eh
+    app.DebugPrintf("Fatal load error in App\n");
+}
 
 void CConsoleMinecraftApp::CaptureSaveThumbnail() {}
 

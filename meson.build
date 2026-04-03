@@ -54,7 +54,7 @@ if get_option('enable_vsync')
 endif
 
 if get_option('classic_panorama')
-    global_cpp_defs += '-DCLASSIC_PANORAMA'
+  global_cpp_defs += '-DCLASSIC_PANORAMA'
 endif
 
 if get_option('enable_frame_profiler')
@@ -67,6 +67,10 @@ endif
 
 if get_option('ui_backend') == 'java'
   global_cpp_defs += '-DENABLE_JAVA_GUIS'
+endif
+
+if host_machine.system() == 'android'
+  add_project_link_arguments('-llog', language: ['c', 'cpp'])
 endif
 
 add_project_arguments(global_cpp_defs, language: ['cpp', 'c'])
@@ -93,7 +97,9 @@ if not sdl2_dep.found() and host_machine.system() == 'android'
   endif
 endif
 if not sdl2_dep.found()
-  error('SDL2 dependency not found. For Android builds, place SDL2 at android/third_party/SDL2 with include/ and lib/arm64-v8a/libSDL2.so')
+  error(
+    'SDL2 dependency not found. For Android builds, place SDL2 at android/third_party/SDL2 with include/ and lib/arm64-v8a/libSDL2.so',
+  )
 endif
 thread_dep = dependency('threads')
 dl_dep = cc.find_library('dl', required: true)
@@ -111,4 +117,3 @@ subdir('targets/platform')
 subdir('targets/resources')
 subdir('targets/minecraft')
 subdir('targets/app')
-

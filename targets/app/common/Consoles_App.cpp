@@ -3652,6 +3652,9 @@ void CMinecraftApp::loadMediaArchive() {
 
 #if _WINDOWS64
     mediapath = L"Common\\Media\\MediaWindows64.arc";
+#elif APP_PLATFORM_ANDROID
+    // Android packages this archive at the APK assets root.
+    mediapath = L"MediaLinux.arc";
 #elif __linux__
     mediapath = L"app/common/Media/MediaLinux.arc";
 #endif

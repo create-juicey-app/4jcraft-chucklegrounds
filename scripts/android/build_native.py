@@ -75,7 +75,8 @@ def main() -> int:
     build_dir.mkdir(parents=True, exist_ok=True)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    cross_file = build_dir / "meson-cross.ini" # i know this is a wee bit hacky but i get the version names :3
+    # Keep cross-file generation local to this script to avoid extra templates.
+    cross_file = build_dir / "meson-cross.ini"
     cross_file.write_text(
         "\n".join(
             [
@@ -97,6 +98,9 @@ def main() -> int:
                 "[built-in options]",
                 "c_args = ['-fPIC']",
                 "cpp_args = ['-fPIC']",
+                "c_link_args = ['-llog']",
+                "cpp_link_args = ['-llog']",
+
                 "",
             ]
         ),
@@ -126,6 +130,30 @@ def main() -> int:
         return 1
 
     shutil.copy2(lib_path, out_dir / "libmain.so")
+
+    sdl2_lib_path = ANDROID_DIR / "third_party" / "SDL2" / "lib" / "arm64-v8a" / "libSDL2.so"
+    if sdl2_lib_path.is_file():
+        shutil.copy2(sdl2_lib_path, out_dir / "libSDL2.so")
+    else:
+        print("Warning: libSDL2.so was not found; skipping copy")
+
+    libcxx_path = (
+        Path(ndk_dir)
+        /"toolchains"
+        /"llvm"
+        /"prebuilt"
+        /"linux-x86_64"
+        /"sysroot"
+        /"usr"
+        /"lib"
+        /"aarch64-linux-android"
+        /"libc++_shared.so"
+    )
+
+    if libcxx_path.is_file():
+        shutil.copy2(libcxx_path, out_dir / "libc++_shared.so")
+    else:
+        print("Warning: libc++_shared.so was not found; skipping copy")
     return 0
 
 

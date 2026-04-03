@@ -59,6 +59,8 @@ BufferedImage::BufferedImage(const std::wstring& File,
 
     while (!baseName.empty() && (baseName[0] == L'/' || baseName[0] == L'\\'))
         baseName = baseName.substr(1);
+    if (baseName.find(L"TitleUpdate/res/") == 0) baseName = baseName.substr(16);
+    if (baseName.find(L"Common/res/") == 0) baseName = baseName.substr(11);
     if (baseName.find(L"res/") == 0) baseName = baseName.substr(4);
 
     std::wstring exeDir = PathHelper::GetExecutableDirW();
@@ -94,9 +96,20 @@ BufferedImage::BufferedImage(const std::wstring& File,
         }
 
         if (!loadedFromPath) {
-            std::wstring archiveKey = L"res/" + fileName;
-            if (app.hasArchiveFile(archiveKey)) {
-                std::vector<uint8_t> ba = app.getArchiveFile(archiveKey);
+            std::wstring archiveKeyA = L"res/" + fileName;
+            std::wstring archiveKeyB = fileName;
+            std::wstring archiveKeyC = L"TitleUpdate/res/" + fileName;
+
+            if (app.hasArchiveFile(archiveKeyA)) {
+                std::vector<uint8_t> ba = app.getArchiveFile(archiveKeyA);
+                hr = RenderManager.LoadTextureData(ba.data(), ba.size(),
+                                                   &ImageInfo, &data[l]);
+            } else if (app.hasArchiveFile(archiveKeyB)) {
+                std::vector<uint8_t> ba = app.getArchiveFile(archiveKeyB);
+                hr = RenderManager.LoadTextureData(ba.data(), ba.size(),
+                                                   &ImageInfo, &data[l]);
+            } else if (app.hasArchiveFile(archiveKeyC)) {
+                std::vector<uint8_t> ba = app.getArchiveFile(archiveKeyC);
                 hr = RenderManager.LoadTextureData(ba.data(), ba.size(),
                                                    &ImageInfo, &data[l]);
             }

@@ -2,6 +2,7 @@
 
 #include <wchar.h>
 
+#include <string>
 #include <vector>
 
 #include "app/common/src/Colours/ColourTable.h"
@@ -152,6 +153,61 @@ std::wstring AbstractTexturePack::getAnimationString(
             line = br.readLine();
         }
         delete fileStream;
+    } else {
+        std::wstring normalisedPath = path;
+        for (size_t i = 0; i < normalisedPath.length(); ++i) {
+            if (normalisedPath[i] == L'\\') {
+                normalisedPath[i] = L'/';
+            }
+        }
+        while (!normalisedPath.empty() &&
+               (normalisedPath[0] == L'/' || normalisedPath[0] == L'\\')) {
+            normalisedPath = normalisedPath.substr(1);
+        }
+
+        const std::vector<std::wstring> archiveCandidates = {
+            L"res/" + normalisedPath + animationDefinitionFile,
+            normalisedPath + animationDefinitionFile,
+            L"TitleUpdate/res/" + normalisedPath + animationDefinitionFile};
+
+        for (const std::wstring& archivePath : archiveCandidates) {
+            if (!app.hasArchiveFile(archivePath)) {
+                continue;
+            }
+
+            std::vector<uint8_t> data = app.getArchiveFile(archivePath);
+            if (data.empty()) {
+                break;
+            }
+
+            std::string text(data.begin(), data.end());
+            std::wstring line;
+
+            for (char c : text) {
+                if (c == '\r') {
+                    continue;
+                }
+                if (c == '\n') {
+                    line = trimString(line);
+                    if (!line.empty()) {
+                        result.append(L",");
+                        result.append(line);
+                    }
+                    line.clear();
+                    continue;
+                }
+                line.push_back(static_cast<wchar_t>(c));
+            }
+
+            if (!line.empty()) {
+                line = trimString(line);
+                if (!line.empty()) {
+                    result.append(L",");
+                    result.append(line);
+                }
+            }
+            break;
+        }
     }
 
     return result;
@@ -191,12 +247,18 @@ void AbstractTexturePack::loadDefaultColourTable() {
         m_colourTable = new ColourTable(data.data(), dataLength);
 
     } else {
-        app.DebugPrintf("Failed to load the default colours table\n");
-        app.FatalLoadError();
+        app.DebugPrintf(
+            "Failed to load the default colours table, using safe fallback\n");
+        if (m_colourTable == nullptr) {
+            m_colourTable = new ColourTable();
+        }
     }
 }
 
 void AbstractTexturePack::loadDefaultHTMLColourTable() {
+    if (m_colourTable == nullptr) {
+        m_colourTable = new ColourTable();
+    }
     if (app.hasArchiveFile(L"HTMLColours.col")) {
         std::vector<uint8_t> textColours =
             app.getArchiveFile(L"HTMLColours.col");
