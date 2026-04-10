@@ -15,9 +15,9 @@ protected:
 
 public:
     GuiComponent();  // 4J added
-    void drawCenteredString(Font* font, const std::wstring& str, int x, int y,
+    void drawCenteredString(Font* font, const std::string& str, int x, int y,
                             int color);
-    void drawString(Font* font, const std::wstring& str, int x, int y,
+    void drawString(Font* font, const std::string& str, int x, int y,
                     int color);
     void blit(int x, int y, int sx, int sy, int w, int h);
 };

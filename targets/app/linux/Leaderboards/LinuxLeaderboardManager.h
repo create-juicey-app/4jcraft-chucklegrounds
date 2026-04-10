@@ -1,7 +1,7 @@
 #pragma once
 
 #include "platform/PlatformTypes.h"
-#include "app/common/src/Leaderboards/LeaderboardManager.h"
+#include "app/common/Leaderboards/LeaderboardManager.h"
 
 class LinuxLeaderboardManager : public LeaderboardManager {
 public:

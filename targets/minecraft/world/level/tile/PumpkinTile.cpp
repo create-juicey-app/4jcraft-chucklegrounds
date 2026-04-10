@@ -16,8 +16,8 @@
 #include "minecraft/world/level/tile/DirectionalTile.h"
 #include "minecraft/world/level/tile/Tile.h"
 
-const std::wstring PumpkinTile::TEXTURE_FACE = L"pumpkin_face";
-const std::wstring PumpkinTile::TEXTURE_LANTERN = L"pumpkin_jack";
+const std::string PumpkinTile::TEXTURE_FACE = "pumpkin_face";
+const std::string PumpkinTile::TEXTURE_LANTERN = "pumpkin_jack";
 
 PumpkinTile::PumpkinTile(int id, bool lit)
     : DirectionalTile(id, Material::vegetable, false) {
@@ -188,8 +188,8 @@ void PumpkinTile::setPlacedBy(Level* level, int x, int y, int z,
 }
 
 void PumpkinTile::registerIcons(IconRegister* iconRegister) {
-    iconFace = iconRegister->registerIcon(getIconName() + L"_face_" +
-                                          (lit ? L"on" : L"off"));
-    iconTop = iconRegister->registerIcon(getIconName() + L"_top");
-    icon = iconRegister->registerIcon(getIconName() + L"_side");
+    iconFace = iconRegister->registerIcon(getIconName() + "_face_" +
+                                          (lit ? "on" : "off"));
+    iconTop = iconRegister->registerIcon(getIconName() + "_top");
+    icon = iconRegister->registerIcon(getIconName() + "_side");
 }

@@ -11,6 +11,7 @@
 #include "java/File.h"
 #include "minecraft/client/resources/ResourceLocation.h"
 #include "minecraft/network/packet/DisconnectPacket.h"
+#include "platform/stubs.h"
 
 class Timer;
 class MultiPlayerLevel;
@@ -65,7 +66,7 @@ private:
     static ResourceLocation ALT_FONT_LOCATION;
 
 public:
-    static const std::wstring VERSION_STRING;
+    static const std::string VERSION_STRING;
     Minecraft(Component* mouseComponent, Canvas* parent,
               MinecraftApplet* minecraftApplet, int width, int height,
               bool fullscreen);
@@ -134,7 +135,7 @@ public:
     }
 
     std::shared_ptr<MultiplayerLocalPlayer> createExtraLocalPlayer(
-        int idx, const std::wstring& name, int pad, int iDimension,
+        int idx, const std::string& name, int pad, int iDimension,
         ClientConnection* clientConnection = nullptr,
         MultiPlayerLevel* levelpassedin = nullptr);
     void createPrimaryLocalPlayer(int iPad);
@@ -149,7 +150,7 @@ public:
     std::shared_ptr<LivingEntity> crosshairPickMob;
     ParticleEngine* particleEngine;
     User* user;
-    std::wstring serverDomain;
+    std::string serverDomain;
     Canvas* parent;
     bool appletMode;
 
@@ -215,12 +216,12 @@ public:
     StatsCounter* stats[4];
 
 private:
-    std::wstring connectToIp;
+    std::string connectToIp;
     int connectToPort;
 
 public:
     void clearConnectionFailed();
-    void connectTo(const std::wstring& server, int port);
+    void connectTo(const std::string& server, int port);
 
 private:
     void renderLoadingScreen();
@@ -233,19 +234,19 @@ private:
 
 public:
     static File getWorkingDirectory();
-    static File getWorkingDirectory(const std::wstring& applicationName);
+    static File getWorkingDirectory(const std::string& applicationName);
 
 public:
     LevelStorageSource* getLevelSource();
     void setScreen(Screen* screen);
 
 private:
-    void checkGlError(const std::wstring& string);
+    void checkGlError(const std::string& string);
 
 public:
     void destroy();
     volatile bool running;
-    std::wstring fpsString;
+    std::string fpsString;
     void run();
     // 4J-PB - split the run into 3 parts so we can run it from our xbox game
     // loop
@@ -308,16 +309,16 @@ private:
 
 public:
     bool isClientSide();
-    void selectLevel(ConsoleSaveFile* saveFile, const std::wstring& levelId,
-                     const std::wstring& levelName,
+    void selectLevel(ConsoleSaveFile* saveFile, const std::string& levelId,
+                     const std::string& levelName,
                      LevelSettings* levelSettings);
     // void toggleDimension(int targetDimension);
-    bool saveSlot(int slot, const std::wstring& name);
-    bool loadSlot(const std::wstring& userName, int slot);
+    bool saveSlot(int slot, const std::string& name);
+    bool loadSlot(const std::string& userName, int slot);
     void releaseLevel(int message);
     // 4J Stu - Added the doForceStatsSave param
     // void setLevel(Level *level, bool doForceStatsSave = true);
-    // void setLevel(Level *level, const std::wstring& message, bool
+    // void setLevel(Level *level, const std::string& message, bool
     // doForceStatsSave = true);
     void setLevel(MultiPlayerLevel* level, int message = -1,
                   std::shared_ptr<Player> forceInsertPlayer = nullptr,
@@ -327,26 +328,26 @@ public:
     // the level at game load time
     void forceaddLevel(MultiPlayerLevel* level);
     void prepareLevel(int title);  // 4J - changed to public
-    void fileDownloaded(const std::wstring& name, File* file);
+    void fileDownloaded(const std::string& name, File* file);
     //  OpenGLCapabilities getOpenGLCapabilities();	// 4J - removed
 
-    std::wstring gatherStats1();
-    std::wstring gatherStats2();
-    std::wstring gatherStats3();
-    std::wstring gatherStats4();
+    std::string gatherStats1();
+    std::string gatherStats2();
+    std::string gatherStats3();
+    std::string gatherStats4();
 
     void respawnPlayer(int iPad, int dimension, int newEntityId);
-    static void start(const std::wstring& name, const std::wstring& sid);
-    static void startAndConnectTo(const std::wstring& name,
-                                  const std::wstring& sid,
-                                  const std::wstring& url);
+    static void start(const std::string& name, const std::string& sid);
+    static void startAndConnectTo(const std::string& name,
+                                  const std::string& sid,
+                                  const std::string& url);
     ClientConnection* getConnection(int iPad);  // 4J Stu added iPad param
     static void main();
     static bool renderNames();
     static bool useFancyGraphics();
     static bool useAmbientOcclusion();
     static bool renderDebug();
-    bool handleClientSideCommand(const std::wstring& chatMessage);
+    bool handleClientSideCommand(const std::string& chatMessage);
 
     static int maxSupportedTextureSize();
     void delayTextureReload();
@@ -380,18 +381,18 @@ public:
 
     // 4J - When a client requests a texture, it should add it to here while we
     // are waiting for it
-    std::vector<std::wstring> m_pendingTextureRequests;
-    std::vector<std::wstring>
+    std::vector<std::string> m_pendingTextureRequests;
+    std::vector<std::string>
         m_pendingGeometryRequests;  // additional skin box geometry
 
     // 4J Added
-    bool addPendingClientTextureRequest(const std::wstring& textureName);
-    void handleClientTextureReceived(const std::wstring& textureName);
+    bool addPendingClientTextureRequest(const std::string& textureName);
+    void handleClientTextureReceived(const std::string& textureName);
     void clearPendingClientTextureRequests() {
         m_pendingTextureRequests.clear();
     }
-    bool addPendingClientGeometryRequest(const std::wstring& textureName);
-    void handleClientGeometryReceived(const std::wstring& textureName);
+    bool addPendingClientGeometryRequest(const std::string& textureName);
+    void handleClientGeometryReceived(const std::string& textureName);
     void clearPendingClientGeometryRequests() {
         m_pendingGeometryRequests.clear();
     }

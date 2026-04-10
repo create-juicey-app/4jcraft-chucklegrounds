@@ -127,6 +127,6 @@ int FarmTile::cloneTileId(Level* level, int x, int y, int z) {
 }
 
 void FarmTile::registerIcons(IconRegister* iconRegister) {
-    iconWet = iconRegister->registerIcon(L"farmland_wet");
-    iconDry = iconRegister->registerIcon(L"farmland_dry");
+    iconWet = iconRegister->registerIcon("farmland_wet");
+    iconDry = iconRegister->registerIcon("farmland_dry");
 }

@@ -7,11 +7,11 @@ class IntArrayTag : public Tag {
 public:
     std::vector<int> data;
 
-    IntArrayTag(const std::wstring& name) : Tag(name) {
+    IntArrayTag(const std::string& name) : Tag(name) {
         data = std::vector<int>();
     }
 
-    IntArrayTag(const std::wstring& name, const std::vector<int>& data)
+    IntArrayTag(const std::string& name, const std::vector<int>& data)
         : Tag(name) {
         this->data = data;
     }
@@ -34,10 +34,10 @@ public:
 
     uint8_t getId() { return TAG_Int_Array; }
 
-    std::wstring toString() {
-        static wchar_t buf[32];
-        swprintf(buf, 32, L"[%d bytes]", data.size());
-        return std::wstring(buf);
+    std::string toString() {
+        static char buf[32];
+        snprintf(buf, 32, "[%d bytes]", data.size());
+        return std::string(buf);
     }
 
     bool equals(Tag* obj) {

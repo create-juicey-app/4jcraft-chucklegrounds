@@ -87,16 +87,16 @@ void setThreadNamePlatform([[maybe_unused]] std::uint32_t threadId,
     if (threadId == static_cast<std::uint32_t>(-1) ||
         threadId == ::GetCurrentThreadId()) {
         using SetThreadDescriptionFn = int32_t(WINAPI*)(void*, PCWSTR);
-        const HMODULE kernel = ::GetModuleHandleW(L"Kernel32.dll");
+        const HMODULE kernel = ::GetModuleHandleW("Kernel32.dll");
         if (kernel) {
             const auto fn = reinterpret_cast<SetThreadDescriptionFn>(
                 ::GetProcAddress(kernel, "SetThreadDescription"));
             if (fn) {
-                wchar_t wide[64];
-                const auto n = std::mbstowcs(
+                char wide[64];
+                const auto n = std::strncpy(
                     wide, name, (sizeof(wide) / sizeof(wide[0])) - 1);
                 if (n != static_cast<std::size_t>(-1)) {
-                    wide[n] = L'\0';
+                    wide[n] = '\0';
                     (void)fn(::GetCurrentThread(), wide);
                     return;
                 }

@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/Random.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/stats/GenericStats.h"
@@ -30,8 +30,8 @@ const unsigned int
         IDS_TILE_FERN,
 };
 
-const std::wstring TallGrass::TEXTURE_NAMES[] = {L"deadbush", L"tallgrass",
-                                                 L"fern"};
+const std::string TallGrass::TEXTURE_NAMES[] = {"deadbush", "tallgrass",
+                                                 "fern"};
 
 TallGrass::TallGrass(int id) : Bush(id, Material::replaceable_plant) {
     this->updateDefaultShape();

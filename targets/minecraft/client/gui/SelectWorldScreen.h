@@ -29,15 +29,15 @@ private:
 
 protected:
     Screen* lastScreen;
-    std::wstring title;
+    std::string title;
 
 private:
     bool done;
     int selectedWorld;
     std::vector<LevelSummary*>* levelList;
     WorldSelectionList* worldSelectionList;
-    std::wstring worldLang;
-    std::wstring conversionLang;
+    std::string worldLang;
+    std::string conversionLang;
     bool isDeleting;
 
     Button* deleteButton;
@@ -52,8 +52,8 @@ private:
     void loadLevelList();
 
 protected:
-    std::wstring getWorldId(int id);
-    std::wstring getWorldName(int id);
+    std::string getWorldId(int id);
+    std::string getWorldName(int id);
 
 public:
     virtual void postInit();

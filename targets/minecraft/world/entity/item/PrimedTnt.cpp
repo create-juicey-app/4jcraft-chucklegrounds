@@ -93,11 +93,11 @@ void PrimedTnt::explode() {
 }
 
 void PrimedTnt::addAdditonalSaveData(CompoundTag* entityTag) {
-    entityTag->putByte(L"Fuse", (uint8_t)life);
+    entityTag->putByte("Fuse", (uint8_t)life);
 }
 
 void PrimedTnt::readAdditionalSaveData(CompoundTag* tag) {
-    life = tag->getByte(L"Fuse");
+    life = tag->getByte("Fuse");
 }
 
 float PrimedTnt::getShadowHeightOffs() { return 0; }

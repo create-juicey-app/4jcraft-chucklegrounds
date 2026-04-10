@@ -5,7 +5,7 @@
 
 float BossMobGuiInfo::healthProgress = 0.0f;
 int BossMobGuiInfo::displayTicks = 0;
-std::wstring BossMobGuiInfo::name = L"";
+std::string BossMobGuiInfo::name = "";
 bool BossMobGuiInfo::darkenWorld = false;
 
 void BossMobGuiInfo::setBossHealth(std::shared_ptr<BossMob> boss,

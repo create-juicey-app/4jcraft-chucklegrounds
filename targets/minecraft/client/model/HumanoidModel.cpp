@@ -1,10 +1,11 @@
+#include "minecraft/util/Log.h"
 #include "HumanoidModel.h"
 
 #include <cmath>
 #include <memory>
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/client/model/geom/Model.h"
 #include "minecraft/client/model/geom/ModelPart.h"
@@ -44,14 +45,14 @@ ModelPart* HumanoidModel::AddOrRetrievePart(SKIN_BOX* pBox) {
     if (pNewBox) {
         if ((pNewBox->getfU() != (int)pBox->fU) ||
             (pNewBox->getfV() != (int)pBox->fV)) {
-            app.DebugPrintf(
+            Log::info(
                 "HumanoidModel::AddOrRetrievePart - Box geometry was found, "
                 "but with different uvs\n");
             pNewBox = nullptr;
         }
     }
     if (pNewBox == nullptr) {
-        // app.DebugPrintf("HumanoidModel::AddOrRetrievePart - Adding box to
+        // Log::info("HumanoidModel::AddOrRetrievePart - Adding box to
         // model part\n");
 
         pNewBox = new ModelPart(this, (int)pBox->fU, (int)pBox->fV);

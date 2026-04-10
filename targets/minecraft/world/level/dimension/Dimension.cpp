@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "Dimension.h"
 
 #include <math.h>
@@ -5,10 +6,10 @@
 #include <numbers>
 
 #include "HellDimension.h"
-#include "IPlatformInput.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/common/src/Console_Debug_enum.h"
+#include "platform/input/input.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
+#include "app/common/Console_Debug_enum.h"
 #include "app/linux/LinuxGame.h"
 #include "NormalDimension.h"
 #include "TheEndDimension.h"
@@ -26,7 +27,6 @@
 #include "minecraft/world/level/storage/LevelData.h"
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/phys/Vec3.h"
-#include "platform/PlatformServices.h"
 
 class Pos;
 
@@ -54,8 +54,8 @@ void Dimension::init() {
 #ifdef _OVERRIDE_HEIGHTMAP
     // 4J Stu - Added to enable overriding the heightmap from a loaded in data
     // file
-    if (app.DebugSettingsOn() &&
-        app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn() &&
+        gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_EnableBiomeOverride)) {
         biomeSource = new BiomeSource(level);
     } else
@@ -76,7 +76,7 @@ Dimension::Dimension() {
     hasCeiling = false;
     brightnessRamp = new float[Level::MAX_BRIGHTNESS + 1];
     id = 0;
-    levelTypeOptions = L"";
+    levelTypeOptions = "";
 }
 
 Dimension::~Dimension() {
@@ -89,8 +89,8 @@ ChunkSource* Dimension::createRandomLevelSource() const {
 #ifdef _OVERRIDE_HEIGHTMAP
     // 4J Stu - Added to enable overriding the heightmap from a loaded in data
     // file
-    if (app.DebugSettingsOn() &&
-        app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn() &&
+        gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_EnableHeightWaterOverride)) {
         return new CustomLevelSource(
             level, level->getSeed(),
@@ -216,7 +216,7 @@ int Dimension::getSpawnYPosition() {
 
 bool Dimension::hasBedrockFog() {
     // 4J-PB - turn off bedrock fog if the host player doesn't want it
-    if (app.GetGameHostOption(eGameHostOption_BedrockFog) == 0) {
+    if (gameServices().getGameHostOption(eGameHostOption_BedrockFog) == 0) {
         return false;
     }
 

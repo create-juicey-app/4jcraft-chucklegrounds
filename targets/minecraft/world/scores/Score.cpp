@@ -7,7 +7,7 @@
 class Player;
 
 Score::Score(Scoreboard* scoreboard, Objective* objective,
-             const std::wstring& owner) {
+             const std::string& owner) {
     this->scoreboard = scoreboard;
     this->objective = objective;
     this->owner = owner;
@@ -48,7 +48,7 @@ void Score::setScore(int score) {
 
 Objective* Score::getObjective() { return objective; }
 
-std::wstring Score::getOwner() { return owner; }
+std::string Score::getOwner() { return owner; }
 
 Scoreboard* Score::getScoreboard() { return scoreboard; }
 

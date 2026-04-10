@@ -18,7 +18,7 @@ class ListTag;
 
 class EnchantedBookItem : public Item {
 public:
-    static const std::wstring TAG_STORED_ENCHANTMENTS;
+    static const std::string TAG_STORED_ENCHANTMENTS;
 
     EnchantedBookItem(int id);
 

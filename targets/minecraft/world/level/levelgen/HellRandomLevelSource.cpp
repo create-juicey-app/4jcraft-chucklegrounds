@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "HellRandomLevelSource.h"
 
 #include <stdlib.h>
@@ -528,7 +529,7 @@ void HellRandomLevelSource::postProcess(ChunkSource* parent, int xt, int zt) {
 
     HeavyTile::instaFall = false;
 
-    app.processSchematics(parent->getChunk(xt, zt));
+    gameServices().processSchematics(parent->getChunk(xt, zt));
 }
 
 bool HellRandomLevelSource::save(bool force,
@@ -540,8 +541,8 @@ bool HellRandomLevelSource::tick() { return false; }
 
 bool HellRandomLevelSource::shouldSave() { return true; }
 
-std::wstring HellRandomLevelSource::gatherStats() {
-    return L"HellRandomLevelSource";
+std::string HellRandomLevelSource::gatherStats() {
+    return "HellRandomLevelSource";
 }
 
 std::vector<Biome::MobSpawnerData*>* HellRandomLevelSource::getMobsAt(
@@ -565,7 +566,7 @@ std::vector<Biome::MobSpawnerData*>* HellRandomLevelSource::getMobsAt(
 }
 
 TilePos* HellRandomLevelSource::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
     return nullptr;
 }
 

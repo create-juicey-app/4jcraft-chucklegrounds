@@ -16,5 +16,5 @@ public:
     virtual bool place(Level* level, Random* random, int x, int y, int z);
 
 private:
-    std::wstring randomEntityId(Random* random);
+    std::string randomEntityId(Random* random);
 };

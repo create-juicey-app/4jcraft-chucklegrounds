@@ -10,9 +10,9 @@ std::shared_ptr<ItemInstance> ResultContainer::getItem(unsigned int slot) {
     return items[0];
 }
 
-std::wstring ResultContainer::getName() { return L""; }
+std::string ResultContainer::getName() { return ""; }
 
-std::wstring ResultContainer::getCustomName() { return L""; }
+std::string ResultContainer::getCustomName() { return ""; }
 
 bool ResultContainer::hasCustomName() { return false; }
 

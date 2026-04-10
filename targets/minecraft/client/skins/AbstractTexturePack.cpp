@@ -1,15 +1,16 @@
+#include "minecraft/util/Log.h"
 #include "AbstractTexturePack.h"
 
-#include <GL/gl.h>
+
 #include <wchar.h>
 
 #include <vector>
 
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/linux/LinuxGame.h"
+#include "app/common/Colours/ColourTable.h"
+#include "minecraft/IGameServices.h"
 #include "app/linux/Linux_UIController.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/BufferedImage.h"
+#include "minecraft/client/BufferedImage.h"
 #include "util/StringHelpers.h"
 #include "java/File.h"
 #include "java/InputOutputStream/BufferedReader.h"
@@ -20,7 +21,7 @@
 #include "minecraft/client/skins/TexturePack.h"
 
 AbstractTexturePack::AbstractTexturePack(std::uint32_t id, File* file,
-                                         const std::wstring& name,
+                                         const std::string& name,
                                          TexturePack* fallback)
     : id(id), name(name) {
     // 4J init
@@ -41,7 +42,7 @@ AbstractTexturePack::AbstractTexturePack(std::uint32_t id, File* file,
     // loadDescription();
 }
 
-std::wstring AbstractTexturePack::trim(std::wstring line) {
+std::string AbstractTexturePack::trim(std::string line) {
     if (!line.empty() && line.length() > 34) {
         line = line.substr(0, 34);
     }
@@ -59,9 +60,9 @@ void AbstractTexturePack::loadDescription() {
 void AbstractTexturePack::loadName() {}
 
 InputStream* AbstractTexturePack::getResource(
-    const std::wstring& name, bool allowFallback)  // throws IOException
+    const std::string& name, bool allowFallback)  // throws IOException
 {
-    app.DebugPrintf("texture - %ls\n", name.c_str());
+    Log::info("texture - %s\n", name.c_str());
     InputStream* is = getResourceImplementation(name);
     if (is == nullptr && fallback != nullptr && allowFallback) {
         is = fallback->getResource(name, true);
@@ -71,7 +72,7 @@ InputStream* AbstractTexturePack::getResource(
 }
 
 // 4J Currently removed due to override in TexturePack class
-// InputStream *AbstractTexturePack::getResource(const std::wstring &name)
+// InputStream *AbstractTexturePack::getResource(const std::string &name)
 // //throws IOException
 //{
 //	return getResource(name, true);
@@ -92,11 +93,11 @@ void AbstractTexturePack::load(Textures* textures) {
         textures->clearLastBoundId();
     } else {
         // 4J Stu - Don't do this
-        // textures->bindTexture(L"/gui/unknown_pack.png");
+        // textures->bindTexture("/gui/unknown_pack.png");
     }
 }
 
-bool AbstractTexturePack::hasFile(const std::wstring& name,
+bool AbstractTexturePack::hasFile(const std::string& name,
                                   bool allowFallback) {
     bool hasFile = this->hasFile(name);
 
@@ -107,46 +108,46 @@ bool AbstractTexturePack::hasFile(const std::wstring& name,
 
 std::uint32_t AbstractTexturePack::getId() { return id; }
 
-std::wstring AbstractTexturePack::getName() { return texname; }
+std::string AbstractTexturePack::getName() { return texname; }
 
-std::wstring AbstractTexturePack::getWorldName() { return m_wsWorldName; }
+std::string AbstractTexturePack::getWorldName() { return m_wsWorldName; }
 
-std::wstring AbstractTexturePack::getDesc1() { return desc1; }
+std::string AbstractTexturePack::getDesc1() { return desc1; }
 
-std::wstring AbstractTexturePack::getDesc2() { return desc2; }
+std::string AbstractTexturePack::getDesc2() { return desc2; }
 
-std::wstring AbstractTexturePack::getAnimationString(
-    const std::wstring& textureName, const std::wstring& path,
+std::string AbstractTexturePack::getAnimationString(
+    const std::string& textureName, const std::string& path,
     bool allowFallback) {
     return getAnimationString(textureName, path);
 }
 
-std::wstring AbstractTexturePack::getAnimationString(
-    const std::wstring& textureName, const std::wstring& path) {
-    std::wstring animationDefinitionFile = textureName + L".txt";
+std::string AbstractTexturePack::getAnimationString(
+    const std::string& textureName, const std::string& path) {
+    std::string animationDefinitionFile = textureName + ".txt";
 
-    bool requiresFallback = !hasFile(L"\\" + textureName + L".png", false);
+    bool requiresFallback = !hasFile("\\" + textureName + ".png", false);
 
-    std::wstring result = L"";
+    std::string result = "";
 
     InputStream* fileStream =
-        getResource(L"\\" + path + animationDefinitionFile, requiresFallback);
+        getResource("\\" + path + animationDefinitionFile, requiresFallback);
 
     if (fileStream) {
         // Minecraft::getInstance()->getLogger().info("Found animation info for:
         // " + animationDefinitionFile);
 #if !defined(_CONTENT_PACKAGE)
-        app.DebugPrintf("Found animation info for: %ls\n",
+        Log::info("Found animation info for: %s\n",
                         animationDefinitionFile.c_str());
 #endif
         InputStreamReader isr(fileStream);
         BufferedReader br(&isr);
 
-        std::wstring line = br.readLine();
+        std::string line = br.readLine();
         while (!line.empty()) {
             line = trimString(line);
             if (line.length() > 0) {
-                result.append(L",");
+                result.append(",");
                 result.append(line);
             }
             line = br.readLine();
@@ -158,14 +159,14 @@ std::wstring AbstractTexturePack::getAnimationString(
 }
 
 BufferedImage* AbstractTexturePack::getImageResource(
-    const std::wstring& File, bool filenameHasExtension /*= false*/,
-    bool bTitleUpdateTexture /*=false*/, const std::wstring& drive /*=L""*/) {
-    std::string pchTexture = wstringtofilename(File);
-    std::string pchDrive = wstringtofilename(drive);
-    app.DebugPrintf("AbstractTexturePack::getImageResource - %s, drive is %s\n",
+    const std::string& File, bool filenameHasExtension /*= false*/,
+    bool bTitleUpdateTexture /*=false*/, const std::string& drive /*=""*/) {
+    std::string pchTexture = File;
+    std::string pchDrive = drive;
+    Log::info("AbstractTexturePack::getImageResource - %s, drive is %s\n",
                     pchTexture.c_str(), pchDrive.c_str());
 
-    return new BufferedImage(TexturePack::getResource(L"/" + File),
+    return new BufferedImage(TexturePack::getResource("/" + File),
                              filenameHasExtension, bTitleUpdateTexture, drive);
 }
 
@@ -179,7 +180,7 @@ void AbstractTexturePack::loadColourTable() {
 void AbstractTexturePack::loadDefaultColourTable() {
     // Load the file
     File coloursFile(
-        AbstractTexturePack::getPath(true).append(L"res/colours.col"));
+        AbstractTexturePack::getPath(true).append("res/colours.col"));
 
     if (coloursFile.exists()) {
         uint32_t dataLength = coloursFile.length();
@@ -192,15 +193,15 @@ void AbstractTexturePack::loadDefaultColourTable() {
         m_colourTable = new ColourTable(data.data(), dataLength);
 
     } else {
-        app.DebugPrintf("Failed to load the default colours table\n");
-        app.FatalLoadError();
+        Log::info("Failed to load the default colours table\n");
+        gameServices().fatalLoadError();
     }
 }
 
 void AbstractTexturePack::loadDefaultHTMLColourTable() {
-    if (app.hasArchiveFile(L"HTMLColours.col")) {
+    if (gameServices().hasArchiveFile("HTMLColours.col")) {
         std::vector<uint8_t> textColours =
-            app.getArchiveFile(L"HTMLColours.col");
+            gameServices().getArchiveFile("HTMLColours.col");
         m_colourTable->loadColoursFromData(textColours.data(),
                                            textColours.size());
     }
@@ -212,16 +213,17 @@ void AbstractTexturePack::unloadUI() {
     // Do nothing
 }
 
-std::wstring AbstractTexturePack::getXuiRootPath() {
-    const uintptr_t c_ModuleHandle = (uintptr_t)GetModuleHandle(nullptr);
+std::string AbstractTexturePack::getXuiRootPath() {
+    // const uintptr_t c_ModuleHandle = (uintptr_t)GetModuleHandle(nullptr);
+    const uintptr_t c_ModuleHandle = 0; // 4jcraft changed
 
     // Load new skin
     constexpr int LOCATOR_SIZE =
         256;  // Use this to allocate space to hold a ResourceLocator string
-    wchar_t szResourceLocator[LOCATOR_SIZE];
+    char szResourceLocator[LOCATOR_SIZE];
 
-    swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",
-             c_ModuleHandle, L"media", L"media/");
+    snprintf(szResourceLocator, LOCATOR_SIZE, "section://%X,%s#%s",
+             c_ModuleHandle, "media", "media/");
     return szResourceLocator;
 }
 

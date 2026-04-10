@@ -38,17 +38,17 @@ void OreRecipies::addRecipes(Recipes* r) {
         Tile* from = (Tile*)map[i].at(0)->tile;
         ItemInstance* to = (ItemInstance*)map[i].at(1)->iteminstance;
         r->addShapedRecipy(new ItemInstance(from),  //
-                           L"sssczg",
-                           L"###",  //
-                           L"###",  //
-                           L"###",  //
+                           "sssczg",
+                           "###",  //
+                           "###",  //
+                           "###",  //
 
-                           L'#', to, L'D');
+                           '#', to, 'D');
 
         r->addShapedRecipy(to,  //
-                           L"sctg",
-                           L"#",  //
+                           "sctg",
+                           "#",  //
 
-                           L'#', from, L'D');
+                           '#', from, 'D');
     }
 }

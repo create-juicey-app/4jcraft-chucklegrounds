@@ -23,12 +23,12 @@ DropperTile::DropperTile(int id) : DispenserTile(id) {
 }
 
 void DropperTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"furnace_side");
-    iconTop = iconRegister->registerIcon(L"furnace_top");
+    icon = iconRegister->registerIcon("furnace_side");
+    iconTop = iconRegister->registerIcon("furnace_top");
     iconFront =
-        iconRegister->registerIcon(getIconName() + L"_front_horizontal");
+        iconRegister->registerIcon(getIconName() + "_front_horizontal");
     iconFrontVertical =
-        iconRegister->registerIcon(getIconName() + L"_front_vertical");
+        iconRegister->registerIcon(getIconName() + "_front_vertical");
 }
 
 DispenseItemBehavior* DropperTile::getDispenseMethod(

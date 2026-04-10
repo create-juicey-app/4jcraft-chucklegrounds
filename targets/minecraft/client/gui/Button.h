@@ -12,15 +12,15 @@ protected:
 
 public:
     int x, y;
-    std::wstring msg;
+    std::string msg;
     int id;
     bool active;
     bool visible;
 
-    Button(int id, int x, int y, const std::wstring& msg);
-    Button(int id, int x, int y, int w, int h, const std::wstring& msg);
+    Button(int id, int x, int y, const std::string& msg);
+    Button(int id, int x, int y, int w, int h, const std::string& msg);
     void init(int id, int x, int y, int w, int h,
-              const std::wstring& msg);  // 4J - added
+              const std::string& msg);  // 4J - added
 protected:
     virtual int getYImage(bool hovered);
 

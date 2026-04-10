@@ -160,7 +160,7 @@ std::vector<char> MapItemSavedData::HoldingPlayer::nextUpdatePacket(
     return std::vector<char>();
 }
 
-MapItemSavedData::MapItemSavedData(const std::wstring& id) : SavedData(id) {
+MapItemSavedData::MapItemSavedData(const std::string& id) : SavedData(id) {
     x = z = 0;
     dimension = 0;
     scale = 0;
@@ -174,19 +174,19 @@ MapItemSavedData::~MapItemSavedData() {
 }
 
 void MapItemSavedData::load(CompoundTag* tag) {
-    dimension = tag->getByte(L"dimension");
-    x = tag->getInt(L"xCenter");
-    z = tag->getInt(L"zCenter");
-    scale = tag->getByte(L"scale");
+    dimension = tag->getByte("dimension");
+    x = tag->getInt("xCenter");
+    z = tag->getInt("zCenter");
+    scale = tag->getByte("scale");
     if (scale < 0) scale = 0;
     if (scale > MAX_SCALE) scale = MAX_SCALE;
 
-    int width = tag->getShort(L"width");
-    int height = tag->getShort(L"height");
+    int width = tag->getShort("width");
+    int height = tag->getShort("height");
     if (width == MapItem::IMAGE_WIDTH && height == MapItem::IMAGE_HEIGHT) {
-        colors = tag->getByteArray(L"colors");
+        colors = tag->getByteArray("colors");
     } else {
-        std::vector<uint8_t> newColors = tag->getByteArray(L"colors");
+        std::vector<uint8_t> newColors = tag->getByteArray("colors");
         // 4J - vector manages its own memory, no need to delete old colors
         // End4J
         colors =
@@ -207,13 +207,13 @@ void MapItemSavedData::load(CompoundTag* tag) {
 }
 
 void MapItemSavedData::save(CompoundTag* tag) {
-    tag->putByte(L"dimension", dimension);
-    tag->putInt(L"xCenter", x);
-    tag->putInt(L"zCenter", z);
-    tag->putByte(L"scale", scale);
-    tag->putShort(L"width", (short)MapItem::IMAGE_WIDTH);
-    tag->putShort(L"height", (short)MapItem::IMAGE_HEIGHT);
-    tag->putByteArray(L"colors", colors);
+    tag->putByte("dimension", dimension);
+    tag->putInt("xCenter", x);
+    tag->putInt("zCenter", z);
+    tag->putByte("scale", scale);
+    tag->putShort("width", (short)MapItem::IMAGE_WIDTH);
+    tag->putShort("height", (short)MapItem::IMAGE_HEIGHT);
+    tag->putByteArray("colors", colors);
 }
 
 void MapItemSavedData::tickCarriedBy(std::shared_ptr<Player> player,

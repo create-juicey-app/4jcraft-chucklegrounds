@@ -4,7 +4,7 @@
 
 class GuiMessage {
 public:
-    std::wstring string;
+    std::string string;
     int ticks;
-    GuiMessage(const std::wstring& string);
+    GuiMessage(const std::string& string);
 };

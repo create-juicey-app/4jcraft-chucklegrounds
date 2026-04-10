@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
 
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/model/geom/Model.h"
 #include "minecraft/client/model/geom/ModelPart.h"
 #include "minecraft/world/entity/Entity.h"
@@ -19,85 +19,85 @@ DragonModel::DragonModel(float g) : Model() {
     texWidth = 256;
     texHeight = 256;
 
-    setMapTex(L"body.body", 0, 0);
-    setMapTex(L"wing.skin", -56, 88);
-    setMapTex(L"wingtip.skin", -56, 144);
-    setMapTex(L"rearleg.main", 0, 0);
-    setMapTex(L"rearfoot.main", 112, 0);
-    setMapTex(L"rearlegtip.main", 196, 0);
-    setMapTex(L"head.upperhead", 112, 30);
-    setMapTex(L"wing.bone", 112, 88);
-    setMapTex(L"head.upperlip", 176, 44);
-    setMapTex(L"jaw.jaw", 176, 65);
-    setMapTex(L"frontleg.main", 112, 104);
-    setMapTex(L"wingtip.bone", 112, 136);
-    setMapTex(L"frontfoot.main", 144, 104);
-    setMapTex(L"neck.box", 192, 104);
-    setMapTex(L"frontlegtip.main", 226, 138);
-    setMapTex(L"body.scale", 220, 53);
-    setMapTex(L"head.scale", 0, 0);
-    setMapTex(L"neck.scale", 48, 0);
-    setMapTex(L"head.nostril", 112, 0);
+    setMapTex("body.body", 0, 0);
+    setMapTex("wing.skin", -56, 88);
+    setMapTex("wingtip.skin", -56, 144);
+    setMapTex("rearleg.main", 0, 0);
+    setMapTex("rearfoot.main", 112, 0);
+    setMapTex("rearlegtip.main", 196, 0);
+    setMapTex("head.upperhead", 112, 30);
+    setMapTex("wing.bone", 112, 88);
+    setMapTex("head.upperlip", 176, 44);
+    setMapTex("jaw.jaw", 176, 65);
+    setMapTex("frontleg.main", 112, 104);
+    setMapTex("wingtip.bone", 112, 136);
+    setMapTex("frontfoot.main", 144, 104);
+    setMapTex("neck.box", 192, 104);
+    setMapTex("frontlegtip.main", 226, 138);
+    setMapTex("body.scale", 220, 53);
+    setMapTex("head.scale", 0, 0);
+    setMapTex("neck.scale", 48, 0);
+    setMapTex("head.nostril", 112, 0);
 
     float zo = -16;
-    head = new ModelPart(this, L"head");
-    head->addBox(L"upperlip", -6, -1, -8 + zo, 12, 5, 16);
-    head->addBox(L"upperhead", -8, -8, 6 + zo, 16, 16, 16);
+    head = new ModelPart(this, "head");
+    head->addBox("upperlip", -6, -1, -8 + zo, 12, 5, 16);
+    head->addBox("upperhead", -8, -8, 6 + zo, 16, 16, 16);
     head->bMirror = true;
-    head->addBox(L"scale", -1 - 4, -12, 12 + zo, 2, 4, 6);
-    head->addBox(L"nostril", -1 - 4, -3, -6 + zo, 2, 2, 4);
+    head->addBox("scale", -1 - 4, -12, 12 + zo, 2, 4, 6);
+    head->addBox("nostril", -1 - 4, -3, -6 + zo, 2, 2, 4);
     head->bMirror = false;
-    head->addBox(L"scale", -1 + 4, -12, 12 + zo, 2, 4, 6);
-    head->addBox(L"nostril", -1 + 4, -3, -6 + zo, 2, 2, 4);
+    head->addBox("scale", -1 + 4, -12, 12 + zo, 2, 4, 6);
+    head->addBox("nostril", -1 + 4, -3, -6 + zo, 2, 2, 4);
 
-    jaw = new ModelPart(this, L"jaw");
+    jaw = new ModelPart(this, "jaw");
     jaw->setPos(0, 4, 8 + zo);
-    jaw->addBox(L"jaw", -6, 0, -16, 12, 4, 16);
+    jaw->addBox("jaw", -6, 0, -16, 12, 4, 16);
     head->addChild(jaw);
 
-    neck = new ModelPart(this, L"neck");
-    neck->addBox(L"box", -5, -5, -5, 10, 10, 10);
-    neck->addBox(L"scale", -1, -9, -5 + 2, 2, 4, 6);
+    neck = new ModelPart(this, "neck");
+    neck->addBox("box", -5, -5, -5, 10, 10, 10);
+    neck->addBox("scale", -1, -9, -5 + 2, 2, 4, 6);
 
-    body = new ModelPart(this, L"body");
+    body = new ModelPart(this, "body");
     body->setPos(0, 4, 8);
-    body->addBox(L"body", -12, 0, -16, 24, 24, 64);
-    body->addBox(L"scale", -1, -6, -10 + 20 * 0, 2, 6, 12);
-    body->addBox(L"scale", -1, -6, -10 + 20 * 1, 2, 6, 12);
-    body->addBox(L"scale", -1, -6, -10 + 20 * 2, 2, 6, 12);
+    body->addBox("body", -12, 0, -16, 24, 24, 64);
+    body->addBox("scale", -1, -6, -10 + 20 * 0, 2, 6, 12);
+    body->addBox("scale", -1, -6, -10 + 20 * 1, 2, 6, 12);
+    body->addBox("scale", -1, -6, -10 + 20 * 2, 2, 6, 12);
 
-    wing = new ModelPart(this, L"wing");
+    wing = new ModelPart(this, "wing");
     wing->setPos(-12, 5, 2);
-    wing->addBox(L"bone", -56, -4, -4, 56, 8, 8);
-    wing->addBox(L"skin", -56, 0, +2, 56, 0, 56);
-    wingTip = new ModelPart(this, L"wingtip");
+    wing->addBox("bone", -56, -4, -4, 56, 8, 8);
+    wing->addBox("skin", -56, 0, +2, 56, 0, 56);
+    wingTip = new ModelPart(this, "wingtip");
     wingTip->setPos(-56, 0, 0);
-    wingTip->addBox(L"bone", -56, -2, -2, 56, 4, 4);
-    wingTip->addBox(L"skin", -56, 0, +2, 56, 0, 56);
+    wingTip->addBox("bone", -56, -2, -2, 56, 4, 4);
+    wingTip->addBox("skin", -56, 0, +2, 56, 0, 56);
     wing->addChild(wingTip);
 
-    frontLeg = new ModelPart(this, L"frontleg");
+    frontLeg = new ModelPart(this, "frontleg");
     frontLeg->setPos(-12, 20, 2);
-    frontLeg->addBox(L"main", -4, -4, -4, 8, 24, 8);
-    frontLegTip = new ModelPart(this, L"frontlegtip");
+    frontLeg->addBox("main", -4, -4, -4, 8, 24, 8);
+    frontLegTip = new ModelPart(this, "frontlegtip");
     frontLegTip->setPos(0, 20, -1);
-    frontLegTip->addBox(L"main", -3, -1, -3, 6, 24, 6);
+    frontLegTip->addBox("main", -3, -1, -3, 6, 24, 6);
     frontLeg->addChild(frontLegTip);
-    frontFoot = new ModelPart(this, L"frontfoot");
+    frontFoot = new ModelPart(this, "frontfoot");
     frontFoot->setPos(0, 23, 0);
-    frontFoot->addBox(L"main", -4, 0, -12, 8, 4, 16);
+    frontFoot->addBox("main", -4, 0, -12, 8, 4, 16);
     frontLegTip->addChild(frontFoot);
 
-    rearLeg = new ModelPart(this, L"rearleg");
+    rearLeg = new ModelPart(this, "rearleg");
     rearLeg->setPos(-12 - 4, 16, 2 + 40);
-    rearLeg->addBox(L"main", -8, -4, -8, 16, 32, 16);
-    rearLegTip = new ModelPart(this, L"rearlegtip");
+    rearLeg->addBox("main", -8, -4, -8, 16, 32, 16);
+    rearLegTip = new ModelPart(this, "rearlegtip");
     rearLegTip->setPos(0, 32, -4);
-    rearLegTip->addBox(L"main", -6, -2, 0, 12, 32, 12);
+    rearLegTip->addBox("main", -6, -2, 0, 12, 32, 12);
     rearLeg->addChild(rearLegTip);
-    rearFoot = new ModelPart(this, L"rearfoot");
+    rearFoot = new ModelPart(this, "rearfoot");
     rearFoot->setPos(0, 31, 4);
-    rearFoot->addBox(L"main", -9, 0, -20, 18, 6, 24);
+    rearFoot->addBox("main", -9, 0, -20, 18, 6, 24);
     rearLegTip->addChild(rearFoot);
 
     // 4J added - compile now to avoid random performance hit first time cubes

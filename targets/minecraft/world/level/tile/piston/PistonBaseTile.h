@@ -20,11 +20,11 @@ public:
     static const int TRIGGER_EXTEND = 0;
     static const int TRIGGER_CONTRACT = 1;
 
-    static const std::wstring EDGE_TEX;
-    static const std::wstring PLATFORM_TEX;
-    static const std::wstring PLATFORM_STICKY_TEX;
-    static const std::wstring BACK_TEX;
-    static const std::wstring INSIDE_TEX;
+    static const std::string EDGE_TEX;
+    static const std::string PLATFORM_TEX;
+    static const std::string PLATFORM_STICKY_TEX;
+    static const std::string BACK_TEX;
+    static const std::string INSIDE_TEX;
 
 private:
     bool isSticky;
@@ -47,7 +47,7 @@ public:
                              float z1);
 
     virtual Icon* getTexture(int face, int data);
-    static Icon* getTexture(const std::wstring& name);
+    static Icon* getTexture(const std::string& name);
     void registerIcons(IconRegister* iconRegister);
 
     virtual int getRenderShape();

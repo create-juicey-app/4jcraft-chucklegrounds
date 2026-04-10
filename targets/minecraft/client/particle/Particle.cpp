@@ -185,7 +185,7 @@ void Particle::setTex(Textures* textures, Icon* icon) {
     } else {
 #if !defined(_CONTENT_PACKAGE)
         printf("Invalid call to Particle.setTex, use coordinate methods\n");
-        __debugbreak();
+        assert(0);
 #endif
         // throw new RuntimeException("Invalid call to Particle.setTex, use
         // coordinate methods");
@@ -197,7 +197,7 @@ void Particle::setMiscTex(int slotIndex) {
         getParticleTexture() != ParticleEngine::DRAGON_BREATH_TEXTURE) {
 #if !defined(_CONTENT_PACKAGE)
         printf("Invalid call to Particle.setMixTex\n");
-        __debugbreak();
+        assert(0);
         // throw new RuntimeException("Invalid call to Particle.setMiscTex");
 #endif
     }
@@ -210,8 +210,8 @@ void Particle::setNextMiscAnimTex() { texX++; }
 bool Particle::isAttackable() { return false; }
 
 //@Override
-std::wstring Particle::toString() {
-    return L"A particle";  // getClass()->getSimpleName() + ", Pos (" + x + ","
+std::string Particle::toString() {
+    return "A particle";  // getClass()->getSimpleName() + ", Pos (" + x + ","
                            // + y + "," + z + "), RGBA (" + rCol + "," + gCol +
                            // "," + bCol + "," + alpha + "), Age " + age;
 }

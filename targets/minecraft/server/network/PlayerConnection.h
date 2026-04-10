@@ -76,7 +76,7 @@ public:
     virtual void handleChat(std::shared_ptr<ChatPacket> packet);
 
 private:
-    void handleCommand(const std::wstring& message);
+    void handleCommand(const std::string& message);
 
 public:
     virtual void handleAnimate(std::shared_ptr<AnimatePacket> packet);
@@ -84,9 +84,9 @@ public:
         std::shared_ptr<PlayerCommandPacket> packet);
     virtual void handleDisconnect(std::shared_ptr<DisconnectPacket> packet);
     int countDelayedPackets();
-    virtual void info(const std::wstring& string);
-    virtual void warn(const std::wstring& string);
-    virtual std::wstring getConsoleName();
+    virtual void info(const std::string& string);
+    virtual void warn(const std::string& string);
+    virtual std::string getConsoleName();
     virtual void handleInteract(std::shared_ptr<InteractPacket> packet);
     bool canHandleAsyncPackets();
     virtual void handleClientCommand(
@@ -153,8 +153,8 @@ public:
 
     // 4J Added so that we can send on textures that get received after this
     // connection requested them
-    void handleTextureReceived(const std::wstring& textureName);
-    void handleTextureAndGeometryReceived(const std::wstring& textureName);
+    void handleTextureReceived(const std::string& textureName);
+    void handleTextureAndGeometryReceived(const std::string& textureName);
 
     void setShowOnMaps(bool bVal);
 
@@ -166,7 +166,7 @@ public:
 
 private:
     bool m_bCloseOnTick;
-    std::vector<std::wstring> m_texturesRequested;
+    std::vector<std::string> m_texturesRequested;
 
     bool m_bWasKicked;
 };

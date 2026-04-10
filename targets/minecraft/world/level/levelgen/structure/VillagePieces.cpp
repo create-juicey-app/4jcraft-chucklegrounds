@@ -28,30 +28,30 @@ std::vector<WeighedTreasure*> VillagePieces::Smithy::treasureItems;
 
 void VillagePieces::loadStatic() {
     StructureFeatureIO::setPieceId(eStructurePiece_BookHouse, BookHouse::Create,
-                                   L"ViBH");
+                                   "ViBH");
     StructureFeatureIO::setPieceId(eStructurePiece_DoubleFarmland,
-                                   DoubleFarmland::Create, L"ViDF");
+                                   DoubleFarmland::Create, "ViDF");
     StructureFeatureIO::setPieceId(eStructurePiece_Farmland, Farmland::Create,
-                                   L"ViF");
+                                   "ViF");
     StructureFeatureIO::setPieceId(eStructurePiece_LightPost, LightPost::Create,
-                                   L"ViL");
+                                   "ViL");
     StructureFeatureIO::setPieceId(eStructurePiece_PigHouse, PigHouse::Create,
-                                   L"ViPH");
+                                   "ViPH");
     StructureFeatureIO::setPieceId(eStructurePiece_SimpleHouse,
-                                   SimpleHouse::Create, L"ViSH");
+                                   SimpleHouse::Create, "ViSH");
     StructureFeatureIO::setPieceId(eStructurePiece_SmallHut, SmallHut::Create,
-                                   L"ViSmH");
+                                   "ViSmH");
     StructureFeatureIO::setPieceId(eStructurePiece_SmallTemple,
-                                   SmallTemple::Create, L"ViST");
+                                   SmallTemple::Create, "ViST");
     StructureFeatureIO::setPieceId(eStructurePiece_Smithy, Smithy::Create,
-                                   L"ViS");
+                                   "ViS");
     StructureFeatureIO::setPieceId(eStructurePiece_VillageStartPiece,
-                                   StartPiece::Create, L"ViStart");
+                                   StartPiece::Create, "ViStart");
     StructureFeatureIO::setPieceId(eStructurePiece_StraightRoad,
-                                   StraightRoad::Create, L"ViSR");
+                                   StraightRoad::Create, "ViSR");
     StructureFeatureIO::setPieceId(eStructurePiece_TwoRoomHouse,
-                                   TwoRoomHouse::Create, L"ViTRH");
-    StructureFeatureIO::setPieceId(eStructurePiece_Well, Well::Create, L"ViW");
+                                   TwoRoomHouse::Create, "ViTRH");
+    StructureFeatureIO::setPieceId(eStructurePiece_Well, Well::Create, "ViW");
 }
 
 VillagePieces::PieceWeight::PieceWeight(VillagePieces::EPieceClass pieceClass,
@@ -307,15 +307,15 @@ VillagePieces::VillagePiece::VillagePiece(StartPiece* startPiece, int genDepth)
 }
 
 void VillagePieces::VillagePiece::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putInt(L"HPos", heightPosition);
-    tag->putInt(L"VCount", spawnedVillagerCount);
-    tag->putBoolean(L"Desert", isDesertVillage);
+    tag->putInt("HPos", heightPosition);
+    tag->putInt("VCount", spawnedVillagerCount);
+    tag->putBoolean("Desert", isDesertVillage);
 }
 
 void VillagePieces::VillagePiece::readAdditonalSaveData(CompoundTag* tag) {
-    heightPosition = tag->getInt(L"HPos");
-    spawnedVillagerCount = tag->getInt(L"VCount");
-    isDesertVillage = tag->getBoolean(L"Desert");
+    heightPosition = tag->getInt("HPos");
+    spawnedVillagerCount = tag->getInt("VCount");
+    isDesertVillage = tag->getBoolean("Desert");
 }
 
 StructurePiece* VillagePieces::VillagePiece::generateHouseNorthernLeft(
@@ -641,12 +641,12 @@ VillagePieces::StraightRoad::StraightRoad(StartPiece* startPiece, int genDepth,
 
 void VillagePieces::StraightRoad::addAdditonalSaveData(CompoundTag* tag) {
     VillageRoadPiece::addAdditonalSaveData(tag);
-    tag->putInt(L"Length", length);
+    tag->putInt("Length", length);
 }
 
 void VillagePieces::StraightRoad::readAdditonalSaveData(CompoundTag* tag) {
     VillageRoadPiece::readAdditonalSaveData(tag);
-    length = tag->getInt(L"Length");
+    length = tag->getInt("Length");
 }
 
 void VillagePieces::StraightRoad::addChildren(
@@ -788,12 +788,12 @@ VillagePieces::SimpleHouse::SimpleHouse(StartPiece* startPiece, int genDepth,
 
 void VillagePieces::SimpleHouse::addAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Terrace", hasTerrace);
+    tag->putBoolean("Terrace", hasTerrace);
 }
 
 void VillagePieces::SimpleHouse::readAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::readAdditonalSaveData(tag);
-    hasTerrace = tag->getBoolean(L"Terrace");
+    hasTerrace = tag->getBoolean("Terrace");
 }
 
 VillagePieces::SimpleHouse* VillagePieces::SimpleHouse::createPiece(
@@ -1252,14 +1252,14 @@ VillagePieces::SmallHut::SmallHut(StartPiece* startPiece, int genDepth,
 
 void VillagePieces::SmallHut::addAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::addAdditonalSaveData(tag);
-    tag->putInt(L"T", tablePlacement);
-    tag->putBoolean(L"C", lowCeiling);
+    tag->putInt("T", tablePlacement);
+    tag->putBoolean("C", lowCeiling);
 }
 
 void VillagePieces::SmallHut::readAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::readAdditonalSaveData(tag);
-    tablePlacement = tag->getInt(L"T");
-    lowCeiling = tag->getBoolean(L"C");
+    tablePlacement = tag->getInt("T");
+    lowCeiling = tag->getBoolean("C");
 }
 
 VillagePieces::SmallHut* VillagePieces::SmallHut::createPiece(
@@ -1770,12 +1770,12 @@ VillagePieces::Smithy* VillagePieces::Smithy::createPiece(
 
 void VillagePieces::Smithy::addAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Chest", hasPlacedChest);
+    tag->putBoolean("Chest", hasPlacedChest);
 }
 
 void VillagePieces::Smithy::readAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::readAdditonalSaveData(tag);
-    hasPlacedChest = tag->getBoolean(L"Chest");
+    hasPlacedChest = tag->getBoolean("Chest");
 }
 
 bool VillagePieces::Smithy::postProcess(Level* level, Random* random,
@@ -1921,14 +1921,14 @@ int VillagePieces::Farmland::selectCrops(Random* random) {
 
 void VillagePieces::Farmland::addAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::addAdditonalSaveData(tag);
-    tag->putInt(L"CA", cropsA);
-    tag->putInt(L"CB", cropsB);
+    tag->putInt("CA", cropsA);
+    tag->putInt("CB", cropsB);
 }
 
 void VillagePieces::Farmland::readAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::readAdditonalSaveData(tag);
-    cropsA = tag->getInt(L"CA");
-    cropsB = tag->getInt(L"CB");
+    cropsA = tag->getInt("CA");
+    cropsB = tag->getInt("CB");
 }
 
 VillagePieces::Farmland* VillagePieces::Farmland::createPiece(
@@ -2019,18 +2019,18 @@ VillagePieces::DoubleFarmland::DoubleFarmland(StartPiece* startPiece,
 
 void VillagePieces::DoubleFarmland::addAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::addAdditonalSaveData(tag);
-    tag->putInt(L"CA", cropsA);
-    tag->putInt(L"CB", cropsB);
-    tag->putInt(L"CC", cropsC);
-    tag->putInt(L"CD", cropsD);
+    tag->putInt("CA", cropsA);
+    tag->putInt("CB", cropsB);
+    tag->putInt("CC", cropsC);
+    tag->putInt("CD", cropsD);
 }
 
 void VillagePieces::DoubleFarmland::readAdditonalSaveData(CompoundTag* tag) {
     VillagePiece::readAdditonalSaveData(tag);
-    cropsA = tag->getInt(L"CA");
-    cropsB = tag->getInt(L"CB");
-    cropsC = tag->getInt(L"CC");
-    cropsD = tag->getInt(L"CD");
+    cropsA = tag->getInt("CA");
+    cropsB = tag->getInt("CB");
+    cropsC = tag->getInt("CC");
+    cropsD = tag->getInt("CD");
 }
 
 int VillagePieces::DoubleFarmland::selectCrops(Random* random) {

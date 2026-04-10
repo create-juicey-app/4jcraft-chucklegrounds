@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "PendingConnection.h"
 
 #include <stdio.h>
@@ -6,14 +8,14 @@
 #include <vector>
 
 #include "platform/PlatformTypes.h"
-#include "platform/sdl2/Storage.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/BuildVer/BuildVer.h"
-#include "app/common/src/Network/NetworkPlayerInterface.h"
+#include "platform/storage/storage.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/BuildVer/BuildVer.h"
+#include "app/common/Network/NetworkPlayerInterface.h"
 #include "platform/IPlatformNetwork.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/NetTypes.h"
+#include "platform/NetTypes.h"
 #include "PlayerConnection.h"
 #include "ServerConnection.h"
 #include "java/Random.h"
@@ -34,13 +36,13 @@ class Packet;
 Random* PendingConnection::random = new Random();
 
 PendingConnection::PendingConnection(MinecraftServer* server, Socket* socket,
-                                     const std::wstring& id) {
+                                     const std::string& id) {
     // 4J - added initialisers
     done = false;
     _tick = 0;
-    name = L"";
+    name = "";
     acceptedLogin = nullptr;
-    loginKey = L"";
+    loginKey = "";
 
     this->server = server;
     connection = new Connection(socket, id, this);
@@ -66,7 +68,7 @@ void PendingConnection::disconnect(DisconnectPacket::eDisconnectReason reason) {
     //        logger.info("Disconnecting " + getName() + ": " + reason);
     fprintf(stderr, "[PENDING] disconnect called with reason=%d at tick=%d\n",
             reason, _tick);
-    app.DebugPrintf("Pending connection disconnect: %d\n", reason);
+    Log::info("Pending connection disconnect: %d\n", reason);
     connection->send(std::make_shared<DisconnectPacket>(reason));
     connection->sendAndQuit();
     done = true;
@@ -77,7 +79,7 @@ void PendingConnection::disconnect(DisconnectPacket::eDisconnectReason reason) {
 
 void PendingConnection::handlePreLogin(std::shared_ptr<PreLoginPacket> packet) {
     if (packet->m_netcodeVersion != MINECRAFT_NET_VERSION) {
-        app.DebugPrintf("Netcode version is %d not equal to %d\n",
+        Log::info("Netcode version is %d not equal to %d\n",
                         packet->m_netcodeVersion, MINECRAFT_NET_VERSION);
         if (packet->m_netcodeVersion > MINECRAFT_NET_VERSION) {
             disconnect(DisconnectPacket::eDisconnect_OutdatedServer);
@@ -101,7 +103,7 @@ void PendingConnection::sendPreLoginResponse() {
     std::uint8_t ugcFriendsOnlyBits = 0;
     char szUniqueMapName[14];
 
-    StorageManager.GetSaveUniqueFilename(szUniqueMapName);
+    PlatformStorage.GetSaveUniqueFilename(szUniqueMapName);
 
     PlayerList* playerList = MinecraftServer::getInstance()->getPlayers();
     for (auto it = playerList->players.begin(); it != playerList->players.end();
@@ -135,9 +137,9 @@ void PendingConnection::sendPreLoginResponse() {
 
     {
         connection->send(std::shared_ptr<PreLoginPacket>(
-            new PreLoginPacket(L"-", ugcXuids, ugcXuidCount, ugcFriendsOnlyBits,
+            new PreLoginPacket("-", ugcXuids, ugcXuidCount, ugcFriendsOnlyBits,
                                server->m_ugcPlayersVersion, szUniqueMapName,
-                               app.GetGameHostOption(eGameHostOption_All),
+                               gameServices().getGameHostOption(eGameHostOption_All),
                                hostIndex, server->m_texturePackId)));
     }
 }
@@ -147,7 +149,7 @@ void PendingConnection::handleLogin(std::shared_ptr<LoginPacket> packet) {
             packet->clientVersion);
     // name = packet->userName;
     if (packet->clientVersion != SharedConstants::NETWORK_PROTOCOL_VERSION) {
-        app.DebugPrintf("Client version is %d not equal to %d\n",
+        Log::info("Client version is %d not equal to %d\n",
                         packet->clientVersion,
                         SharedConstants::NETWORK_PROTOCOL_VERSION);
         if (packet->clientVersion > SharedConstants::NETWORK_PROTOCOL_VERSION) {
@@ -232,8 +234,8 @@ void PendingConnection::send(std::shared_ptr<Packet> packet) {
     connection->send(packet);
 }
 
-std::wstring PendingConnection::getName() {
-    return L"Unimplemented";
+std::string PendingConnection::getName() {
+    return "Unimplemented";
     //        if (name != null) return name + " [" +
     //        connection.getRemoteAddress().toString() + "]"; return
     //        connection.getRemoteAddress().toString();

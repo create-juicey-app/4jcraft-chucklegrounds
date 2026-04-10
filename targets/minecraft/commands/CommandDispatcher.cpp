@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "CommandDispatcher.h"
 
 #include <string>
@@ -20,11 +21,11 @@ int CommandDispatcher::performCommand(std::shared_ptr<CommandSender> sender,
         } else {
 #ifndef _CONTENT_PACKAGE
             sender->sendMessage(
-                L"\u00A7cYou do not have permission to use this command.");
+                "\u00A7cYou do not have permission to use this command.");
 #endif
         }
     } else {
-        app.DebugPrintf("Command %d not found!\n", command);
+        Log::info("Command %d not found!\n", command);
     }
 
     return 0;

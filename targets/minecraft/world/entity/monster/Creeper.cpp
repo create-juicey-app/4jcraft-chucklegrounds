@@ -92,18 +92,18 @@ void Creeper::defineSynchedData() {
 void Creeper::addAdditonalSaveData(CompoundTag* entityTag) {
     Monster::addAdditonalSaveData(entityTag);
     if (entityData->getByte(DATA_IS_POWERED) == 1)
-        entityTag->putBoolean(L"powered", true);
-    entityTag->putShort(L"Fuse", (short)maxSwell);
-    entityTag->putByte(L"ExplosionRadius", (uint8_t)explosionRadius);
+        entityTag->putBoolean("powered", true);
+    entityTag->putShort("Fuse", (short)maxSwell);
+    entityTag->putByte("ExplosionRadius", (uint8_t)explosionRadius);
 }
 
 void Creeper::readAdditionalSaveData(CompoundTag* tag) {
     Monster::readAdditionalSaveData(tag);
     entityData->set(DATA_IS_POWERED,
-                    (uint8_t)(tag->getBoolean(L"powered") ? 1 : 0));
-    if (tag->contains(L"Fuse")) maxSwell = tag->getShort(L"Fuse");
-    if (tag->contains(L"ExplosionRadius"))
-        explosionRadius = tag->getByte(L"ExplosionRadius");
+                    (uint8_t)(tag->getBoolean("powered") ? 1 : 0));
+    if (tag->contains("Fuse")) maxSwell = tag->getShort("Fuse");
+    if (tag->contains("ExplosionRadius"))
+        explosionRadius = tag->getByte("ExplosionRadius");
 }
 
 void Creeper::tick() {

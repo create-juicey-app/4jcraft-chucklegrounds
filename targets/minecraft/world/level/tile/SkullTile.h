@@ -53,5 +53,5 @@ private:
 public:
     void registerIcons(IconRegister* iconRegister);
     Icon* getTexture(int face, int data);
-    std::wstring getTileItemIconName();
+    std::string getTileItemIconName();
 };

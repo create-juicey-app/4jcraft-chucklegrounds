@@ -28,7 +28,7 @@ private:
 public:
     void setForcedScale(int targetSize);
     //@Override
-    std::wstring toString();
+    std::string toString();
     int compareTo(const TextureHolder* other) const;
 };
 

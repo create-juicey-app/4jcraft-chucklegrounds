@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/Lighting.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Button.h"
@@ -31,7 +31,7 @@ InventoryScreen::InventoryScreen(std::shared_ptr<Player> player)
 void InventoryScreen::init() { buttons.clear(); }
 
 void InventoryScreen::renderLabels() {
-    font->draw(L"Crafting", 84 + 2, 8 * 2, 0x404040);
+    font->draw("Crafting", 84 + 2, 8 * 2, 0x404040);
 }
 
 void InventoryScreen::render(int xm, int ym, float a) {

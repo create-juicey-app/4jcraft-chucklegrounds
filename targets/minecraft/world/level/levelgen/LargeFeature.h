@@ -12,7 +12,7 @@ class Random;
 
 class LargeFeature {
 public:
-    static const std::wstring STRONGHOLD;
+    static const std::string STRONGHOLD;
 
 protected:
     int radius;

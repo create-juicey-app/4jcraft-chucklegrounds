@@ -2,8 +2,8 @@
 #include <string>
 
 #include "AbstractTexturePack.h"
-#include "app/linux/LinuxGame.h"
 #include "java/InputOutputStream/InputStream.h"
+#include "minecraft/IGameServices.h"
 #include "strings.h"
 
 class DefaultTexturePack : public AbstractTexturePack {
@@ -19,15 +19,15 @@ protected:
 
 public:
     //@Override
-    bool hasFile(const std::wstring& name);
+    bool hasFile(const std::string& name);
     bool isTerrainUpdateCompatible();
 
-    std::wstring getDesc1() { return app.GetString(IDS_DEFAULT_TEXTUREPACK); }
+    std::string getDesc1() { return gameServices().getString(IDS_DEFAULT_TEXTUREPACK); }
 
 protected:
     //@Override
     InputStream* getResourceImplementation(
-        const std::wstring& name);  // throws FileNotFoundException
+        const std::string& name);  // throws FileNotFoundException
 
 public:
     virtual bool hasData() { return true; }

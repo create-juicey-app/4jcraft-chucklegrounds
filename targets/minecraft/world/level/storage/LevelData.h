@@ -21,7 +21,7 @@ class LevelData {
 private:
     int64_t seed;
     LevelType* m_pGenerator;  // = LevelType.normal;
-    std::wstring generatorOptions;
+    std::string generatorOptions;
     int xSpawn;
     int ySpawn;
     int zSpawn;
@@ -31,7 +31,7 @@ private:
     int64_t sizeOnDisk;
     //    CompoundTag *loadedPlayerTag;	// 4J removed
     int dimension;
-    std::wstring levelName;
+    std::string levelName;
     int version;
 
     bool raining;
@@ -74,7 +74,7 @@ protected:
 
 public:
     LevelData(CompoundTag* tag);
-    LevelData(LevelSettings* levelSettings, const std::wstring& levelName);
+    LevelData(LevelSettings* levelSettings, const std::string& levelName);
     LevelData(LevelData* copy);
     CompoundTag* createTag();
     CompoundTag* createTag(std::vector<std::shared_ptr<Player> >* players);
@@ -118,8 +118,8 @@ public:
     virtual void setLoadedPlayerTag(CompoundTag* loadedPlayerTag);
     // void setDimension(int dimension); // 4J Removed TU 9 as it's never used
     virtual void setSpawn(int xSpawn, int ySpawn, int zSpawn);
-    virtual std::wstring getLevelName();
-    virtual void setLevelName(const std::wstring& levelName);
+    virtual std::string getLevelName();
+    virtual void setLevelName(const std::string& levelName);
     virtual int getVersion();
     virtual void setVersion(int version);
     virtual int64_t getLastPlayed();
@@ -140,8 +140,8 @@ public:
     virtual void setHasBeenInCreative(bool value);  // 4J Added
     virtual LevelType* getGenerator();
     virtual void setGenerator(LevelType* generator);
-    virtual std::wstring getGeneratorOptions();
-    virtual void setGeneratorOptions(const std::wstring& options);
+    virtual std::string getGeneratorOptions();
+    virtual void setGeneratorOptions(const std::string& options);
     virtual bool isHardcore();
     virtual bool getAllowCommands();
     virtual void setAllowCommands(bool allowCommands);

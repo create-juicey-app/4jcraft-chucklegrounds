@@ -29,7 +29,7 @@ public:
             short value_short;
             float value_float;
         };
-        std::wstring value_wstring;
+        std::string value_wstring;
         std::shared_ptr<ItemInstance> value_itemInstance;
         bool dirty;
 
@@ -38,7 +38,7 @@ public:
         // overloading here instead
         DataItem(int type, int id, uint8_t value);
         DataItem(int type, int id, int value);
-        DataItem(int type, int id, const std::wstring& value);
+        DataItem(int type, int id, const std::string& value);
         DataItem(int type, int id, std::shared_ptr<ItemInstance> itemInstance);
         DataItem(int type, int id, short value);
         DataItem(int type, int id, float value);
@@ -48,13 +48,13 @@ public:
         void setValue(int value);
         void setValue(short value);
         void setValue(float value);
-        void setValue(const std::wstring& value);
+        void setValue(const std::string& value);
         void setValue(std::shared_ptr<ItemInstance> value);
         uint8_t getValue_byte();
         int getValue_int();
         short getValue_short();
         float getValue_float();
-        std::wstring getValue_wstring();
+        std::string getValue_wstring();
         std::shared_ptr<ItemInstance> getValue_itemInstance();
         int getType();
         bool isDirty();
@@ -96,7 +96,7 @@ public:
     // automatic Class to type sort of conversion that's a real pain for us to
     // actually do
     void define(int id, uint8_t value);
-    void define(int id, const std::wstring& value);
+    void define(int id, const std::string& value);
     void define(int id, int value);
     void define(int id, short value);
     void define(int id, float value);
@@ -108,7 +108,7 @@ public:
     short getShort(int id);
     int getInteger(int id);
     float getFloat(int id);
-    std::wstring getString(int id);
+    std::string getString(int id);
     std::shared_ptr<ItemInstance> getItemInstance(int id);
     Pos* getPos(int id);
     // 4J - using overloads rather than template here
@@ -116,7 +116,7 @@ public:
     void set(int id, int value);
     void set(int id, short value);
     void set(int id, float value);
-    void set(int id, const std::wstring& value);
+    void set(int id, const std::string& value);
     void set(int id, std::shared_ptr<ItemInstance>);
     void markDirty(int id);
     bool isDirty();

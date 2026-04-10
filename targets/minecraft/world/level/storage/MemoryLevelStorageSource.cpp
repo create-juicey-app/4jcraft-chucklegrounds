@@ -6,10 +6,10 @@
 
 MemoryLevelStorageSource::MemoryLevelStorageSource() {}
 
-std::wstring MemoryLevelStorageSource::getName() { return L"Memory Storage"; }
+std::string MemoryLevelStorageSource::getName() { return "Memory Storage"; }
 
 std::shared_ptr<LevelStorage> MemoryLevelStorageSource::selectLevel(
-    const std::wstring& levelId, bool createPlayerDir) {
+    const std::string& levelId, bool createPlayerDir) {
         return std::shared_ptr<LevelStorage> () new MemoryLevelStorage());
 }
 
@@ -20,29 +20,29 @@ std::vector<LevelSummary*>* MemoryLevelStorageSource::getLevelList() {
 void MemoryLevelStorageSource::clearAll() {}
 
 LevelData* MemoryLevelStorageSource::getDataTagFor(
-    const std::wstring& levelId) {
+    const std::string& levelId) {
     return nullptr;
 }
 
 bool MemoryLevelStorageSource::isNewLevelIdAcceptable(
-    const std::wstring& levelId) {
+    const std::string& levelId) {
     return true;
 }
 
-void MemoryLevelStorageSource::deleteLevel(const std::wstring& levelId) {}
+void MemoryLevelStorageSource::deleteLevel(const std::string& levelId) {}
 
-void MemoryLevelStorageSource::renameLevel(const std::wstring& levelId,
-                                           const std::wstring& newLevelName) {}
+void MemoryLevelStorageSource::renameLevel(const std::string& levelId,
+                                           const std::string& newLevelName) {}
 
-bool MemoryLevelStorageSource::isConvertible(const std::wstring& levelId) {
+bool MemoryLevelStorageSource::isConvertible(const std::string& levelId) {
     return false;
 }
 
-bool MemoryLevelStorageSource::requiresConversion(const std::wstring& levelId) {
+bool MemoryLevelStorageSource::requiresConversion(const std::string& levelId) {
     return false;
 }
 
-bool MemoryLevelStorageSource::convertLevel(const std::wstring& levelId,
+bool MemoryLevelStorageSource::convertLevel(const std::string& levelId,
                                             ProgressListener* progress) {
     return false;
 }

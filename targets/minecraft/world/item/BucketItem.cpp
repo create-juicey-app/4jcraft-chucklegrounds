@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "BucketItem.h"
 
 #include <memory>
@@ -112,14 +113,14 @@ std::shared_ptr<ItemInstance> BucketItem::use(
         int zt = hr->z;
 
         if (!level->mayInteract(player, xt, yt, zt, content)) {
-            app.DebugPrintf("!!!!!!!!!!! Can't place that here\n");
+            Log::info("!!!!!!!!!!! Can't place that here\n");
             std::shared_ptr<ServerPlayer> servPlayer =
                 std::dynamic_pointer_cast<ServerPlayer>(player);
             if (servPlayer != nullptr) {
-                app.DebugPrintf(
+                Log::info(
                     "Sending ChatPacket::e_ChatCannotPlaceLava to player\n");
                 servPlayer->connection->send(std::shared_ptr<ChatPacket>(
-                    new ChatPacket(L"", ChatPacket::e_ChatCannotPlaceLava)));
+                    new ChatPacket("", ChatPacket::e_ChatCannotPlaceLava)));
             }
 
             delete hr;

@@ -6,12 +6,12 @@
 
 class DummyCriteria : public ObjectiveCriteria {
 private:
-    std::wstring name;
+    std::string name;
 
 public:
-    DummyCriteria(const std::wstring& name);
+    DummyCriteria(const std::string& name);
 
-    virtual std::wstring getName();
+    virtual std::string getName();
     virtual int getScoreModifier(
         std::vector<std::shared_ptr<Player> >* players);
     virtual bool isReadOnly();

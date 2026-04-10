@@ -79,7 +79,7 @@ public:
     void setAngry(bool value);
     int getCollarColor();
     void setCollarColor(int color);
-    void tame(const std::wstring& wsOwnerUUID, bool bDisplayTamingParticles,
+    void tame(const std::string& wsOwnerUUID, bool bDisplayTamingParticles,
               bool bSetSitting);
 
     // For tooltips

@@ -1,5 +1,5 @@
 #pragma once
-#define IDC_XuiEditPartnernetPassword L"XuiEditPartnernetPassword"
-#define IDC_XuiLabel1 L"XuiLabel1"
-#define IDC_XuiOK L"XuiOK"
-#define IDC_PartnernetPassword L"PartnernetPassword"
+#define IDC_XuiEditPartnernetPassword "XuiEditPartnernetPassword"
+#define IDC_XuiLabel1 "XuiLabel1"
+#define IDC_XuiOK "XuiOK"
+#define IDC_PartnernetPassword "PartnernetPassword"

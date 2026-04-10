@@ -21,8 +21,8 @@
 
 class Icon;
 
-const std::wstring CauldronTile::TEXTURE_INSIDE = L"cauldron_inner";
-const std::wstring CauldronTile::TEXTURE_BOTTOM = L"cauldron_bottom";
+const std::string CauldronTile::TEXTURE_INSIDE = "cauldron_inner";
+const std::string CauldronTile::TEXTURE_BOTTOM = "cauldron_bottom";
 
 CauldronTile::CauldronTile(int id) : Tile(id, Material::metal, false) {
     iconInner = nullptr;
@@ -41,13 +41,13 @@ Icon* CauldronTile::getTexture(int face, int data) {
 }
 
 void CauldronTile::registerIcons(IconRegister* iconRegister) {
-    iconInner = iconRegister->registerIcon(L"cauldron_inner");
-    iconTop = iconRegister->registerIcon(L"cauldron_top");
-    iconBottom = iconRegister->registerIcon(L"cauldron_bottom");
-    icon = iconRegister->registerIcon(L"cauldron_side");
+    iconInner = iconRegister->registerIcon("cauldron_inner");
+    iconTop = iconRegister->registerIcon("cauldron_top");
+    iconBottom = iconRegister->registerIcon("cauldron_bottom");
+    icon = iconRegister->registerIcon("cauldron_side");
 }
 
-Icon* CauldronTile::getTexture(const std::wstring& name) {
+Icon* CauldronTile::getTexture(const std::string& name) {
     if (name.compare(TEXTURE_INSIDE) == 0) return Tile::cauldron->iconInner;
     if (name.compare(TEXTURE_BOTTOM) == 0) return Tile::cauldron->iconBottom;
     return nullptr;

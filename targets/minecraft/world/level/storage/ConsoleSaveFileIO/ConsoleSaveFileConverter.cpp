@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "app/common/src/GameRules/GameRuleManager.h"
+#include "app/common/GameRules/GameRuleManager.h"
 #include "java/InputOutputStream/BufferedOutputStream.h"
 #include "java/InputOutputStream/DataInputStream.h"
 #include "java/InputOutputStream/DataOutputStream.h"
@@ -83,7 +83,7 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile* sourceSave,
                                            ConsoleSaveFile* targetSave,
                                            ProgressListener* progress) {
     // Process level.dat
-    ConsoleSavePath ldatPath(std::wstring(L"level.dat"));
+    ConsoleSavePath ldatPath(std::string("level.dat"));
     FileEntry* sourceLdatFe = sourceSave->createFile(ldatPath);
     FileEntry* targetLdatFe = targetSave->createFile(ldatPath);
     printf("Processing level.dat\n");
@@ -115,7 +115,7 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile* sourceSave,
                     sourceSave->createFile(sourcePlayerDatPath);
                 FileEntry* targetFe =
                     targetSave->createFile(targetPlayerDatPath);
-                wprintf(L"Processing player dat file %ls\n",
+                printf("Processing player dat file %s\n",
                         playerFiles->at(fileIdx)->data.filename);
                 ProcessSimpleFile(sourceSave, sourceFe, targetSave, targetFe);
 
@@ -133,7 +133,7 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile* sourceSave,
         ConsoleSaveFileInputStream fis =
             ConsoleSaveFileInputStream(sourceSave, ldatPath);
         CompoundTag* root = NbtIo::readCompressed(&fis);
-        CompoundTag* tag = root->getCompound(L"Data");
+        CompoundTag* tag = root->getCompound("Data");
         LevelData ret(tag);
 
         xzSize = ret.getXZSize();
@@ -164,12 +164,12 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile* sourceSave,
             for (int z = -halfXZSize; z < halfXZSize; ++z) {
                 // printf("Processing overworld chunk %d,%d\n",x,z);
                 DataInputStream* dis =
-                    sourceCache._getChunkDataInputStream(sourceSave, L"", x, z);
+                    sourceCache._getChunkDataInputStream(sourceSave, "", x, z);
 
                 if (dis) {
                     int read = dis->read();
                     DataOutputStream* dos =
-                        targetCache._getChunkDataOutputStream(targetSave, L"",
+                        targetCache._getChunkDataOutputStream(targetSave, "",
                                                               x, z);
                     BufferedOutputStream bos(dos, 1024 * 1024);
                     while (read != -1) {
@@ -209,13 +209,13 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile* sourceSave,
             for (int z = -halfXZSize; z < halfXZSize; ++z) {
                 // printf("Processing nether chunk %d,%d\n",x,z);
                 DataInputStream* dis = sourceCache._getChunkDataInputStream(
-                    sourceSave, L"DIM-1", x, z);
+                    sourceSave, "DIM-1", x, z);
 
                 if (dis) {
                     int read = dis->read();
                     DataOutputStream* dos =
                         targetCache._getChunkDataOutputStream(targetSave,
-                                                              L"DIM-1", x, z);
+                                                              "DIM-1", x, z);
                     BufferedOutputStream bos(dos, 1024 * 1024);
                     while (read != -1) {
                         bos.write(read & 0xff);
@@ -253,13 +253,13 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile* sourceSave,
             for (int z = -halfXZSize; z < halfXZSize; ++z) {
                 // printf("Processing end chunk %d,%d\n",x,z);
                 DataInputStream* dis = sourceCache._getChunkDataInputStream(
-                    sourceSave, L"DIM1/", x, z);
+                    sourceSave, "DIM1/", x, z);
 
                 if (dis) {
                     int read = dis->read();
                     DataOutputStream* dos =
                         targetCache._getChunkDataOutputStream(targetSave,
-                                                              L"DIM1/", x, z);
+                                                              "DIM1/", x, z);
                     BufferedOutputStream bos(dos, 1024 * 1024);
                     while (read != -1) {
                         bos.write(read & 0xff);
@@ -287,22 +287,22 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile* sourceSave,
     // usable for XboxOne style split saves or compressed tile formats Process
     // region files
     std::vector<FileEntry*>* allFilesInSave =
-        sourceSave->getFilesWithPrefix(std::wstring(L""));
+        sourceSave->getFilesWithPrefix(std::string(""));
     for (auto it = allFilesInSave->begin(); it < allFilesInSave->end(); ++it) {
         FileEntry* fe = *it;
         if (fe != sourceLdatFe) {
-            std::wstring fName(fe->data.filename);
-            std::wstring suffix(L".mcr");
+            std::string fName(fe->data.filename);
+            std::string suffix(".mcr");
             if (fName.compare(fName.length() - suffix.length(), suffix.length(),
                               suffix) == 0) {
 #if !defined(_CONTENT_PACKAGE)
-                wprintf(L"Processing a region file: %s\n", fe->data.filename);
+                printf("Processing a region file: %s\n", fe->data.filename);
 #endif
                 ProcessStandardRegionFile(sourceSave, File(fe->data.filename),
                                           targetSave, File(fe->data.filename));
             } else {
 #if !defined(_CONTENT_PACKAGE)
-                wprintf(L"%s is not a region file, ignoring\n",
+                printf("%s is not a region file, ignoring\n",
                         fe->data.filename);
 #endif
             }

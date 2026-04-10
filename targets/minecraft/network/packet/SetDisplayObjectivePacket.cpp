@@ -7,7 +7,7 @@
 
 SetDisplayObjectivePacket::SetDisplayObjectivePacket() {
     slot = 0;
-    objectiveName = L"";
+    objectiveName = "";
 }
 
 SetDisplayObjectivePacket::SetDisplayObjectivePacket(int slot,
@@ -15,7 +15,7 @@ SetDisplayObjectivePacket::SetDisplayObjectivePacket(int slot,
     this->slot = slot;
 
     if (objective == nullptr) {
-        objectiveName = L"";
+        objectiveName = "";
     } else {
         objectiveName = objective->getName();
     }

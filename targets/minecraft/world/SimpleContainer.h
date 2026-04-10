@@ -18,14 +18,14 @@ class ContainerListener;
 class SimpleContainer : public Container {
 private:
     int name;
-    std::wstring stringName;
+    std::string stringName;
     int size;
     std::vector<std::shared_ptr<ItemInstance>>* items;
     std::vector<net_minecraft_world::ContainerListener*>* listeners;
     bool customName;
 
 public:
-    SimpleContainer(int name, std::wstring stringName, bool customName,
+    SimpleContainer(int name, std::string stringName, bool customName,
                     int size);
 
     virtual void addListener(net_minecraft_world::ContainerListener* listener);
@@ -38,10 +38,10 @@ public:
     virtual void setItem(unsigned int slot,
                          std::shared_ptr<ItemInstance> item) override;
     virtual unsigned int getContainerSize() override;
-    virtual std::wstring getName() override;
-    virtual std::wstring getCustomName() override;
+    virtual std::string getName() override;
+    virtual std::string getCustomName() override;
     virtual bool hasCustomName() override;
-    virtual void setCustomName(const std::wstring& name);
+    virtual void setCustomName(const std::string& name);
     virtual int getMaxStackSize() override;
     virtual void setChanged() override;
     virtual bool stillValid(std::shared_ptr<Player> player) override;

@@ -15,5 +15,5 @@ public:
     virtual std::shared_ptr<TileEntity> clone();
 
 public:
-    std::wstring getName();
+    std::string getName();
 };

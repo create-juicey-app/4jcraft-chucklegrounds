@@ -4,9 +4,9 @@
 
 class Hasher {
 private:
-    std::wstring salt;
+    std::string salt;
 
 public:
-    Hasher(std::wstring& salt);
-    std::wstring getHash(std::wstring& name);
+    Hasher(std::string& salt);
+    std::string getHash(std::string& name);
 };

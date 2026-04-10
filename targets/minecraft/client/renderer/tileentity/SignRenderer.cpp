@@ -1,14 +1,15 @@
+#include "minecraft/IGameServices.h"
 #include "SignRenderer.h"
 
 #include <cstdint>
 #include <memory>
 #include <string>
 
-#include "platform/sdl2/Render.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "platform/renderer/renderer.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "app/linux/LinuxGame.h"
-#include "app/include/XboxStubs.h"
+#include "platform/XboxStubs.h"
 
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Font.h"
@@ -57,7 +58,7 @@ void SignRenderer::render(std::shared_ptr<TileEntity> _sign, double x, double y,
         signModel->cube2->visible = false;
     }
 
-    bindTexture(&SIGN_LOCATION);  // 4J was L"/item/sign.png"
+    bindTexture(&SIGN_LOCATION);  // 4J was "/item/sign.png"
 
     glPushMatrix();
     glScalef(size, -size, -size);
@@ -73,7 +74,7 @@ void SignRenderer::render(std::shared_ptr<TileEntity> _sign, double x, double y,
 
     int col = Minecraft::GetInstance()->getColourTable()->getColor(
         eMinecraftColour_Sign_Text);
-    std::wstring msg;
+    std::string msg;
     // need to send the new data
     // Get the current language setting from the console
     std::uint32_t dwLanguage = XGetLanguage();
@@ -86,10 +87,10 @@ void SignRenderer::render(std::shared_ptr<TileEntity> _sign, double x, double y,
                     case XC_LANGUAGE_KOREAN:
                     case XC_LANGUAGE_JAPANESE:
                     case XC_LANGUAGE_TCHINESE:
-                        msg = L"Censored";  // In-game font, so English only
+                        msg = "Censored";  // In-game font, so English only
                         break;
                     default:
-                        msg = app.GetString(IDS_STRINGVERIFY_CENSORED);
+                        msg = gameServices().getString(IDS_STRINGVERIFY_CENSORED);
                         break;
                 }
             } else {
@@ -101,16 +102,16 @@ void SignRenderer::render(std::shared_ptr<TileEntity> _sign, double x, double y,
                 case XC_LANGUAGE_JAPANESE:
                 case XC_LANGUAGE_TCHINESE:
                     msg =
-                        L"Awaiting Approval";  // In-game font, so English only
+                        "Awaiting Approval";  // In-game font, so English only
                     break;
                 default:
-                    msg = app.GetString(IDS_STRINGVERIFY_AWAITING_APPROVAL);
+                    msg = gameServices().getString(IDS_STRINGVERIFY_AWAITING_APPROVAL);
                     break;
             }
         }
 
         if (i == sign->GetSelectedLine()) {
-            msg = L"> " + msg + L" <";
+            msg = "> " + msg + " <";
             font->draw(msg, -font->width(msg) / 2,
                        i * 10 - (MAX_SIGN_LINES) * 5,
                        col);  // 4J - (MAX_SIGN_LINES) was sign.messages.size()

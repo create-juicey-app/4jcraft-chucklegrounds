@@ -4,7 +4,7 @@
 
 #include "Button.h"
 #include "EditBox.h"
-#include "app/include/stubs.h"
+#include "platform/stubs.h"
 #include "util/StringHelpers.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Screen.h"
@@ -12,7 +12,7 @@
 #include "minecraft/world/level/storage/LevelStorageSource.h"
 
 RenameWorldScreen::RenameWorldScreen(Screen* lastScreen,
-                                     const std::wstring& levelId) {
+                                     const std::string& levelId) {
     nameEdit = nullptr;
     this->lastScreen = lastScreen;
     this->levelId = levelId;
@@ -39,7 +39,7 @@ void RenameWorldScreen::buttonClicked(Button* button) {
     }
 }
 
-void RenameWorldScreen::keyPressed(wchar_t ch, int eventKey) {
+void RenameWorldScreen::keyPressed(char ch, int eventKey) {
     nameEdit->keyPressed(ch, eventKey);
     buttons[0]->active = trimString(nameEdit->getValue()).length() > 0;
 
@@ -60,9 +60,9 @@ void RenameWorldScreen::render(int xm, int ym, float a) {
     // fill(0, 0, width, height, 0x40000000);
     renderBackground();
 
-    drawCenteredString(font, language->getElement(L"selectWorld.renameTitle"),
+    drawCenteredString(font, language->getElement("selectWorld.renameTitle"),
                        width / 2, height / 4 - 60 + 20, 0xffffff);
-    drawString(font, language->getElement(L"selectWorld.enterName"),
+    drawString(font, language->getElement("selectWorld.enterName"),
                width / 2 - 100, 47, 0xa0a0a0);
 
     nameEdit->render();

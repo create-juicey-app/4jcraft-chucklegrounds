@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "PlayerChunkMap.h"
 
 #include <assert.h>
@@ -9,8 +10,8 @@
 #include <unordered_set>
 #include <utility>
 
-#include "app/common/src/Network/GameNetworkManager.h"
-#include "app/common/src/Network/NetworkPlayerInterface.h"
+#include "app/common/Network/GameNetworkManager.h"
+#include "app/common/Network/NetworkPlayerInterface.h"
 #include "app/linux/LinuxGame.h"
 #include "ServerChunkCache.h"
 #include "ServerLevel.h"
@@ -64,12 +65,12 @@ void PlayerChunkMap::flagEntitiesToBeRemoved(unsigned int* flags,
 
 void PlayerChunkMap::PlayerChunk::add(std::shared_ptr<ServerPlayer> player,
                                       bool sendPacket /*= true*/) {
-    // app.DebugPrintf("--- Adding player to chunk x=%d\tz=%d\n",x, z);
+    // Log::info("--- Adding player to chunk x=%d\tz=%d\n",x, z);
     if (find(players.begin(), players.end(), player) != players.end()) {
         // 4J-PB - At the start of the game, lots of chunks are added, and we
         // can then move into an area that is outside the diameter of our
         // starting area, but is inside the area loaded at the start.
-        app.DebugPrintf(
+        Log::info(
             "--- Adding player to chunk x=%d\t z=%d, but they are already in "
             "there!\n",
             pos.x, pos.z);
@@ -103,11 +104,11 @@ void PlayerChunkMap::PlayerChunk::add(std::shared_ptr<ServerPlayer> player,
 void PlayerChunkMap::PlayerChunk::remove(std::shared_ptr<ServerPlayer> player) {
     PlayerChunkMap::PlayerChunk* toDelete = nullptr;
 
-    // app.DebugPrintf("--- PlayerChunkMap::PlayerChunk::remove
+    // Log::info("--- PlayerChunkMap::PlayerChunk::remove
     // x=%d\tz=%d\n",x,z);
     auto it = find(players.begin(), players.end(), player);
     if (it == players.end()) {
-        app.DebugPrintf(
+        Log::info(
             "--- INFO - Removing player from chunk x=%d\t z=%d, but they are "
             "not in that chunk!\n",
             pos.x, pos.z);
@@ -164,13 +165,13 @@ void PlayerChunkMap::PlayerChunk::remove(std::shared_ptr<ServerPlayer> player) {
                 }
             }
             if (noOtherPlayersFound) {
-                // wprintf(L"Sending ChunkVisiblity packet false for chunk
-                // (%d,%d) to player %ls\n", x, z, player->name.c_str() );
+                // printf("Sending ChunkVisiblity packet false for chunk
+                // (%d,%d) to player %s\n", x, z, player->name.c_str() );
                 player->connection->send(std::shared_ptr<ChunkVisibilityPacket>(
                     new ChunkVisibilityPacket(pos.x, pos.z, false)));
             }
         } else {
-            // app.DebugPrintf("PlayerChunkMap::PlayerChunk::remove - QNetPlayer
+            // Log::info("PlayerChunkMap::PlayerChunk::remove - QNetPlayer
             // is nullptr\n");
         }
     }

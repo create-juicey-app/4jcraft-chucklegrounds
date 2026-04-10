@@ -4,20 +4,20 @@
 #include <string>
 #include <vector>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 
 // 4J: Simple std::string wrapper that includes basic formatting information
 class HtmlString {
 public:
-    std::wstring text;       // Text content of std::string
+    std::string text;       // Text content of std::string
     eMinecraftColour color;  // Hex color
     bool italics;            // Show text in italics
     bool indent;             // Indent text
 
-    HtmlString(std::wstring text,
+    HtmlString(std::string text,
                eMinecraftColour color = eMinecraftColour_NOT_SET,
                bool italics = false, bool indent = false);
-    std::wstring ToString();
+    std::string ToString();
 
-    static std::wstring Compose(std::vector<HtmlString>* strings);
+    static std::string Compose(std::vector<HtmlString>* strings);
 };

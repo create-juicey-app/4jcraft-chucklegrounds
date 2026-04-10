@@ -7,7 +7,7 @@
 class BufferedReader : public Reader {
 private:
     Reader* reader;
-    wchar_t* buffer;
+    char* buffer;
 
     unsigned int readMark;
     unsigned int bufferedMark;
@@ -23,6 +23,6 @@ public:
 
     virtual void close();
     virtual int read();
-    virtual int read(wchar_t cbuf[], unsigned int off, unsigned int len);
-    std::wstring readLine();
+    virtual int read(char cbuf[], unsigned int off, unsigned int len);
+    std::string readLine();
 };

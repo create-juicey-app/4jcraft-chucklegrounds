@@ -42,14 +42,14 @@ public:
 
     static void logAdminAction(std::shared_ptr<CommandSender> source,
                                ChatPacket::EChatPacketMessage messageType,
-                               const std::wstring& message = L"",
+                               const std::string& message = "",
                                int customData = -1,
-                               const std::wstring& additionalMessage = L"");
+                               const std::string& additionalMessage = "");
     static void logAdminAction(std::shared_ptr<CommandSender> source, int type,
                                ChatPacket::EChatPacketMessage messageType,
-                               const std::wstring& message = L"",
+                               const std::string& message = "",
                                int customData = -1,
-                               const std::wstring& additionalMessage = L"");
+                               const std::string& additionalMessage = "");
     static void setLogger(AdminLogCommand* logger);
 
 protected:

@@ -6,7 +6,7 @@
 #include <numbers>
 #include <optional>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/model/MinecartModel.h"
 #include "minecraft/client/model/geom/Model.h"
 #include "minecraft/client/renderer/Textures.h"
@@ -115,7 +115,7 @@ void MinecartRenderer::render(std::shared_ptr<Entity> _cart, double x, double y,
     if (cart->type != Minecart::RIDEABLE)
     {
     glPushMatrix();
-    bindTexture(TN_TERRAIN);	// 4J was L"/terrain.png"
+    bindTexture(TN_TERRAIN);	// 4J was "/terrain.png"
     float ss = 12 / 16.0f;
     glScalef(ss, ss, ss);
 
@@ -138,7 +138,7 @@ void MinecartRenderer::render(std::shared_ptr<Entity> _cart, double x, double y,
     glColor4f(1, 1, 1, 1);
     }
 
-    bindTexture(TN_ITEM_CART);		// 4J - was L"/item/cart.png"
+    bindTexture(TN_ITEM_CART);		// 4J - was "/item/cart.png"
     glScalef(-1, -1, 1);
     // model.render(0, 0, cart->getLootContent() * 7.1f - 0.1f, 0, 0, 1 /
     // 16.0f);

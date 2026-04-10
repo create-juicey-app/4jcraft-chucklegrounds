@@ -7,11 +7,11 @@
 
 class StatFormatter;
 
-GeneralStat::GeneralStat(int id, const std::wstring& name,
+GeneralStat::GeneralStat(int id, const std::string& name,
                          StatFormatter* formatter)
     : Stat(id, name, formatter) {}
 
-GeneralStat::GeneralStat(int id, const std::wstring& name) : Stat(id, name) {}
+GeneralStat::GeneralStat(int id, const std::string& name) : Stat(id, name) {}
 
 Stat* GeneralStat::postConstruct() {
     Stat::postConstruct();

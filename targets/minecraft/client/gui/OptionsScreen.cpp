@@ -13,7 +13,7 @@
 #include "minecraft/locale/Language.h"
 
 OptionsScreen::OptionsScreen(Screen* lastScreen, Options* options) {
-    title = L"Options";  // 4J added
+    title = "Options";  // 4J added
 
     this->lastScreen = lastScreen;
     this->options = options;
@@ -21,7 +21,7 @@ OptionsScreen::OptionsScreen(Screen* lastScreen, Options* options) {
 
 void OptionsScreen::init() {
     Language* language = Language::getInstance();
-    this->title = language->getElement(L"options.title");
+    this->title = language->getElement("options.title");
 
     int position = 0;
 
@@ -49,12 +49,12 @@ void OptionsScreen::init() {
 
     buttons.push_back(new Button(VIDEO_BUTTON_ID, width / 2 - 100,
                                  height / 6 + 24 * 4 + 12,
-                                 language->getElement(L"options.video")));
+                                 language->getElement("options.video")));
     buttons.push_back(new Button(CONTROLS_BUTTON_ID, width / 2 - 100,
                                  height / 6 + 24 * 5 + 12,
-                                 language->getElement(L"options.controls")));
+                                 language->getElement("options.controls")));
     buttons.push_back(new Button(200, width / 2 - 100, height / 6 + 24 * 7,
-                                 language->getElement(L"gui.done")));
+                                 language->getElement("gui.done")));
 }
 
 void OptionsScreen::buttonClicked(Button* button) {

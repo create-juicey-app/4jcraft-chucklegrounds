@@ -6,7 +6,6 @@
 #include "TileEntity.h"
 #include "java/Class.h"
 #include "minecraft/world/entity/player/Player.h"
-#include "platform/IPlatformInput.h"
 
 struct STRING_VERIFY_RESPONSE;
 
@@ -23,9 +22,9 @@ public:
 public:
     SignTileEntity();
     virtual ~SignTileEntity();
-    std::wstring GetMessage(int i) { return m_wsmessages[i]; }
-    std::wstring* GetMessages() { return m_wsmessages; }
-    void SetMessage(int iIndex, std::wstring& wsText);
+    std::string GetMessage(int i) { return m_wsmessages[i]; }
+    std::string* GetMessages() { return m_wsmessages; }
+    void SetMessage(int iIndex, std::string& wsText);
     int GetSelectedLine() { return m_iSelectedLine; }
     void SetSelectedLine(int iLine) { m_iSelectedLine = iLine; }
     bool IsVerified() { return m_bVerified; }
@@ -41,7 +40,7 @@ private:
     bool m_bCensored;
     int m_iSelectedLine;
 
-    std::wstring m_wsmessages[MAX_SIGN_LINES];
+    std::string m_wsmessages[MAX_SIGN_LINES];
 
 public:
     virtual void save(CompoundTag* tag);

@@ -39,7 +39,7 @@ private:
 
     bool flipped;
     Tickable* soundUpdater;
-    std::wstring name;
+    std::string name;
 
 protected:
     // 4J Added
@@ -128,8 +128,8 @@ public:
     virtual void setDisplayOffset(int offset);
     virtual bool hasCustomDisplay();
     virtual void setCustomDisplay(bool value);
-    virtual void setCustomName(const std::wstring& name);
-    virtual std::wstring getAName();
+    virtual void setCustomName(const std::string& name);
+    virtual std::string getAName();
     virtual bool hasCustomName();
-    virtual std::wstring getCustomName();
+    virtual std::string getCustomName();
 };

@@ -38,24 +38,24 @@ public:
     private:
         const bool _isProgress;
         const bool _isBoolean;
-        const std::wstring captionId;
+        const std::string captionId;
 
     public:
         static const Option* getItem(int id);
 
-        Option(const std::wstring& captionId, bool hasProgress, bool isBoolean);
+        Option(const std::string& captionId, bool hasProgress, bool isBoolean);
         bool isProgress() const;
         bool isBoolean() const;
         int getId() const;
-        std::wstring getCaptionId() const;
+        std::string getCaptionId() const;
     };
 
 private:
-    static const std::wstring RENDER_DISTANCE_NAMES[];
-    static const std::wstring DIFFICULTY_NAMES[];
-    static const std::wstring GUI_SCALE[];
-    static const std::wstring FRAMERATE_LIMITS[];
-    static const std::wstring PARTICLES[];
+    static const std::string RENDER_DISTANCE_NAMES[];
+    static const std::string DIFFICULTY_NAMES[];
+    static const std::string GUI_SCALE[];
+    static const std::string FRAMERATE_LIMITS[];
+    static const std::string PARTICLES[];
 
 public:
     float music;
@@ -70,7 +70,7 @@ public:
     bool fancyGraphics;
     bool ambientOcclusion;
     bool renderClouds;
-    std::wstring skin;
+    std::string skin;
 
     KeyMapping* keyUp;
     KeyMapping* keyLeft;
@@ -101,7 +101,7 @@ public:
     bool hideGui;
     bool thirdPersonView;
     bool renderDebug;
-    std::wstring lastMpIp;
+    std::string lastMpIp;
 
     bool isFlying;
     bool smoothCamera;
@@ -116,18 +116,18 @@ public:
     void init();  // 4J added
     Options(Minecraft* minecraft, File workingDirectory);
     Options();
-    std::wstring getKeyDescription(int i);
-    std::wstring getKeyMessage(int i);
+    std::string getKeyDescription(int i);
+    std::string getKeyMessage(int i);
     void setKey(int i, int key);
     void set(const Options::Option* item, float value);
     void toggle(const Options::Option* option, int dir);
     float getProgressValue(const Options::Option* item);
     bool getBooleanValue(const Options::Option* item);
-    std::wstring getMessage(const Options::Option* item);
+    std::string getMessage(const Options::Option* item);
     void load();
 
 private:
-    float readFloat(std::wstring string);
+    float readFloat(std::string string);
 
 public:
     void save();

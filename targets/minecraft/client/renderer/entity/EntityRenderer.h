@@ -53,9 +53,9 @@ public:
 protected:
     virtual void bindTexture(std::shared_ptr<Entity> entity);
     virtual void bindTexture(ResourceLocation* location);
-    virtual bool bindTexture(const std::wstring& urlTexture, int backupTexture);
-    virtual bool bindTexture(const std::wstring& urlTexture,
-                             const std::wstring& backupTexture);
+    virtual bool bindTexture(const std::string& urlTexture, int backupTexture);
+    virtual bool bindTexture(const std::string& urlTexture,
+                             const std::string& backupTexture);
 
     virtual ResourceLocation* getTextureLocation(std::shared_ptr<Entity> mob);
 

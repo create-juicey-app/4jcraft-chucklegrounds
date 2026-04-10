@@ -21,39 +21,39 @@
 
 void NetherBridgePieces::loadStatic() {
     StructureFeatureIO::setPieceId(eStructurePiece_BridgeCrossing,
-                                   BridgeCrossing::Create, L"NeBCr");
+                                   BridgeCrossing::Create, "NeBCr");
     StructureFeatureIO::setPieceId(eStructurePiece_BridgeEndFiller,
-                                   BridgeEndFiller::Create, L"NeBEF");
+                                   BridgeEndFiller::Create, "NeBEF");
     StructureFeatureIO::setPieceId(eStructurePiece_BridgeStraight,
-                                   BridgeStraight::Create, L"NeBS");
+                                   BridgeStraight::Create, "NeBS");
     StructureFeatureIO::setPieceId(eStructurePiece_CastleCorridorStairsPiece,
-                                   CastleCorridorStairsPiece::Create, L"NeCCS");
+                                   CastleCorridorStairsPiece::Create, "NeCCS");
     StructureFeatureIO::setPieceId(eStructurePiece_CastleCorridorTBalconyPiece,
                                    CastleCorridorTBalconyPiece::Create,
-                                   L"NeCTB");
+                                   "NeCTB");
     StructureFeatureIO::setPieceId(eStructurePiece_CastleEntrance,
-                                   CastleEntrance::Create, L"NeCE");
+                                   CastleEntrance::Create, "NeCE");
     StructureFeatureIO::setPieceId(
         eStructurePiece_CastleSmallCorridorCrossingPiece,
-        CastleSmallCorridorCrossingPiece::Create, L"NeSCSC");
+        CastleSmallCorridorCrossingPiece::Create, "NeSCSC");
     StructureFeatureIO::setPieceId(
         eStructurePiece_CastleSmallCorridorLeftTurnPiece,
-        CastleSmallCorridorLeftTurnPiece::Create, L"NeSCLT");
+        CastleSmallCorridorLeftTurnPiece::Create, "NeSCLT");
     StructureFeatureIO::setPieceId(eStructurePiece_CastleSmallCorridorPiece,
-                                   CastleSmallCorridorPiece::Create, L"NeSC");
+                                   CastleSmallCorridorPiece::Create, "NeSC");
     StructureFeatureIO::setPieceId(
         eStructurePiece_CastleSmallCorridorRightTurnPiece,
-        CastleSmallCorridorRightTurnPiece::Create, L"NeSCRT");
+        CastleSmallCorridorRightTurnPiece::Create, "NeSCRT");
     StructureFeatureIO::setPieceId(eStructurePiece_CastleStalkRoom,
-                                   CastleStalkRoom::Create, L"NeCSR");
+                                   CastleStalkRoom::Create, "NeCSR");
     StructureFeatureIO::setPieceId(eStructurePiece_MonsterThrone,
-                                   MonsterThrone::Create, L"NeMT");
+                                   MonsterThrone::Create, "NeMT");
     StructureFeatureIO::setPieceId(eStructurePiece_RoomCrossing,
-                                   RoomCrossing::Create, L"NeRC");
+                                   RoomCrossing::Create, "NeRC");
     StructureFeatureIO::setPieceId(eStructurePiece_StairsRoom,
-                                   StairsRoom::Create, L"NeSR");
+                                   StairsRoom::Create, "NeSR");
     StructureFeatureIO::setPieceId(eStructurePiece_NetherBridgeStartPiece,
-                                   StartPiece::Create, L"NeStart");
+                                   StartPiece::Create, "NeStart");
 }
 
 NetherBridgePieces::PieceWeight::PieceWeight(EPieceClass pieceClass, int weight,
@@ -605,14 +605,14 @@ void NetherBridgePieces::BridgeEndFiller::readAdditonalSaveData(
     CompoundTag* tag) {
     NetherBridgePiece::readAdditonalSaveData(tag);
 
-    selfSeed = tag->getInt(L"Seed");
+    selfSeed = tag->getInt("Seed");
 }
 
 void NetherBridgePieces::BridgeEndFiller::addAdditonalSaveData(
     CompoundTag* tag) {
     NetherBridgePiece::addAdditonalSaveData(tag);
 
-    tag->putInt(L"Seed", selfSeed);
+    tag->putInt("Seed", selfSeed);
 }
 
 NetherBridgePieces::BridgeCrossing::BridgeCrossing() {
@@ -994,13 +994,13 @@ void NetherBridgePieces::MonsterThrone::readAdditonalSaveData(
     CompoundTag* tag) {
     NetherBridgePiece::readAdditonalSaveData(tag);
 
-    hasPlacedMobSpawner = tag->getBoolean(L"Mob");
+    hasPlacedMobSpawner = tag->getBoolean("Mob");
 }
 
 void NetherBridgePieces::MonsterThrone::addAdditonalSaveData(CompoundTag* tag) {
     NetherBridgePiece::addAdditonalSaveData(tag);
 
-    tag->putBoolean(L"Mob", hasPlacedMobSpawner);
+    tag->putBoolean("Mob", hasPlacedMobSpawner);
 }
 
 bool NetherBridgePieces::MonsterThrone::postProcess(Level* level,
@@ -1054,7 +1054,7 @@ bool NetherBridgePieces::MonsterThrone::postProcess(Level* level,
             std::shared_ptr<MobSpawnerTileEntity> entity =
                 std::dynamic_pointer_cast<MobSpawnerTileEntity>(
                     level->getTileEntity(x, y, z));
-            if (entity != nullptr) entity->getSpawner()->setEntityId(L"Blaze");
+            if (entity != nullptr) entity->getSpawner()->setEntityId("Blaze");
         }
     }
 
@@ -1594,14 +1594,14 @@ void NetherBridgePieces::CastleSmallCorridorRightTurnPiece::
     readAdditonalSaveData(CompoundTag* tag) {
     NetherBridgePiece::readAdditonalSaveData(tag);
 
-    isNeedingChest = tag->getBoolean(L"Chest");
+    isNeedingChest = tag->getBoolean("Chest");
 }
 
 void NetherBridgePieces::CastleSmallCorridorRightTurnPiece::
     addAdditonalSaveData(CompoundTag* tag) {
     NetherBridgePiece::addAdditonalSaveData(tag);
 
-    tag->putBoolean(L"Chest", isNeedingChest);
+    tag->putBoolean("Chest", isNeedingChest);
 }
 
 void NetherBridgePieces::CastleSmallCorridorRightTurnPiece::addChildren(
@@ -1704,14 +1704,14 @@ void NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::
     readAdditonalSaveData(CompoundTag* tag) {
     NetherBridgePiece::readAdditonalSaveData(tag);
 
-    isNeedingChest = tag->getBoolean(L"Chest");
+    isNeedingChest = tag->getBoolean("Chest");
 }
 
 void NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::addAdditonalSaveData(
     CompoundTag* tag) {
     NetherBridgePiece::addAdditonalSaveData(tag);
 
-    tag->putBoolean(L"Chest", isNeedingChest);
+    tag->putBoolean("Chest", isNeedingChest);
 }
 
 void NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::addChildren(

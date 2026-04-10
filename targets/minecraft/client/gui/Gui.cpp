@@ -1,21 +1,23 @@
+#include "minecraft/IGameServices.h"
 #include "Gui.h"
 
 #include <cmath>
 #include <algorithm>
 
 #include "platform/PlatformTypes.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Render.h"
+#include "platform/input/input.h"
+#include "platform/renderer/renderer.h"
 #include "Facing.h"
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/common/App_structs.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Linux_UIController.h"
-#include "app/include/XboxStubs.h"
+#include "platform/XboxStubs.h"
 #include "util/StringHelpers.h"
 #include "java/JavaMath.h"
 #include "java/Random.h"
 #include "java/System.h"
+#include "java/Color.h"
 #include "minecraft/client/ClientConstants.h"
 #include "minecraft/client/GuiMessage.h"
 #include "minecraft/client/Lighting.h"
@@ -55,7 +57,6 @@
 #include "minecraft/world/level/storage/LevelData.h"
 #include "minecraft/world/level/tile/PortalTile.h"
 #include "minecraft/world/level/tile/Tile.h"
-#include "app/include/stubs.h"
 
 #include "strings.h"
 
@@ -103,7 +104,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
                        // scaling above to move the gui out of the way of the
                        // tool tips
     int guiScale;      // = ( minecraft->player->m_iScreenSection ==
-                       // C4JRender::VIEWPORT_TYPE_FULLSCREEN ? 3 : 2 );
+                       // IPlatformRenderer::VIEWPORT_TYPE_FULLSCREEN ? 3 : 2 );
     int iPad = minecraft->player->GetXboxPad();
     int iWidthOffset = 0,
         iHeightOffset = 0;  // used to get the interface looking right on a 2
@@ -111,11 +112,11 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
 
     // 4J-PB - selected the gui scale based on the slider settings
     if (minecraft->player->m_iScreenSection ==
-        C4JRender::VIEWPORT_TYPE_FULLSCREEN) {
-        guiScale = app.GetGameSettings(iPad, eGameSetting_UISize) + 2;
+        IPlatformRenderer::VIEWPORT_TYPE_FULLSCREEN) {
+        guiScale = gameServices().getGameSettings(iPad, eGameSetting_UISize) + 2;
     } else {
         guiScale =
-            app.GetGameSettings(iPad, eGameSetting_UISizeSplitscreen) + 2;
+            gameServices().getGameSettings(iPad, eGameSetting_UISizeSplitscreen) + 2;
     }
 
     ScreenSizeCalculator ssc(minecraft->options, minecraft->width,
@@ -147,14 +148,14 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
 
     // Check which screen section this player is in
     switch (minecraft->player->m_iScreenSection) {
-        case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
+        case IPlatformRenderer::VIEWPORT_TYPE_FULLSCREEN:
             // single player
             iSafezoneXHalf = screenWidth / 20;   // 5%
             iSafezoneYHalf = screenHeight / 20;  // 5%
             iSafezoneTopYHalf = iSafezoneYHalf;
             iTooltipsYOffset = 40 + splitYOffset;
             break;
-        case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
+        case IPlatformRenderer::VIEWPORT_TYPE_SPLIT_TOP:
             iSafezoneXHalf =
                 screenWidth /
                 10;  // 5%  (need to treat the whole screen is 2x this screen)
@@ -167,7 +168,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             bTwoPlayerSplitscreen = true;
             currentGuiScaleFactor *= 0.5f;
             break;
-        case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
+        case IPlatformRenderer::VIEWPORT_TYPE_SPLIT_BOTTOM:
             iSafezoneXHalf =
                 screenWidth /
                 10;  // 5% (need to treat the whole screen is 2x this screen)
@@ -182,7 +183,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             bTwoPlayerSplitscreen = true;
             currentGuiScaleFactor *= 0.5f;
             break;
-        case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
+        case IPlatformRenderer::VIEWPORT_TYPE_SPLIT_LEFT:
             iSafezoneXHalf =
                 screenWidth / 10;  // 5% (the whole screen is 2x this screen)
             iSafezoneYHalf = splitYOffset +
@@ -195,7 +196,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             bTwoPlayerSplitscreen = true;
             currentGuiScaleFactor *= 0.5f;
             break;
-        case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
+        case IPlatformRenderer::VIEWPORT_TYPE_SPLIT_RIGHT:
             iSafezoneXHalf = 0;
             iSafezoneYHalf = splitYOffset +
                              screenHeight / 10;  // 5% (need to treat the whole
@@ -207,7 +208,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             bTwoPlayerSplitscreen = true;
             currentGuiScaleFactor *= 0.5f;
             break;
-        case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
+        case IPlatformRenderer::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
             iSafezoneXHalf =
                 screenWidth / 10;  // 5% (the whole screen is 2x this screen)
             iSafezoneYHalf = splitYOffset;
@@ -215,14 +216,14 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             iTooltipsYOffset = 44;
             currentGuiScaleFactor *= 0.5f;
             break;
-        case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
+        case IPlatformRenderer::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
             iSafezoneXHalf = 0;
             iSafezoneYHalf = splitYOffset;  // 5%
             iSafezoneTopYHalf = screenHeight / 10;
             iTooltipsYOffset = 44;
             currentGuiScaleFactor *= 0.5f;
             break;
-        case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
+        case IPlatformRenderer::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
             iSafezoneXHalf =
                 screenWidth / 10;  // 5%  (the whole screen is 2x this screen)
             iSafezoneYHalf =
@@ -232,7 +233,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             iTooltipsYOffset = 44;
             currentGuiScaleFactor *= 0.5f;
             break;
-        case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
+        case IPlatformRenderer::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
             iSafezoneXHalf = 0;
             iSafezoneYHalf =
                 splitYOffset +
@@ -246,13 +247,13 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
     // 4J-PB - turn off the slot display if a xui menu is up, or if we're
     // autosaving
     bool bDisplayGui = !ui.GetMenuDisplayed(iPad) &&
-                       !(app.GetXuiAction(iPad) ==
+                       !(gameServices().getXuiAction(iPad) ==
                          eAppAction_AutosaveSaveGameCapturedThumbnail);
 
     // if tooltips are off, set the y offset to zero
-    if (app.GetGameSettings(iPad, eGameSetting_Tooltips) == 0 && bDisplayGui) {
+    if (gameServices().getGameSettings(iPad, eGameSetting_Tooltips) == 0 && bDisplayGui) {
         switch (minecraft->player->m_iScreenSection) {
-            case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
+            case IPlatformRenderer::VIEWPORT_TYPE_FULLSCREEN:
                 iTooltipsYOffset = screenHeight / 10;
                 break;
             default:
@@ -274,7 +275,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
 
     // 4J-PB - Turn off interface if eGameSetting_DisplayHUD is off - for screen
     // shots/videos.
-    if (app.GetGameSettings(iPad, eGameSetting_DisplayHUD) == 0) {
+    if (gameServices().getGameSettings(iPad, eGameSetting_DisplayHUD) == 0) {
         bDisplayGui = false;
     }
 
@@ -333,15 +334,15 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
 
         // 4J - this is where to set the blend factor for gui things
         // use the primary player's settings
-        unsigned char ucAlpha = app.GetGameSettings(
-            InputManager.GetPrimaryPad(), eGameSetting_InterfaceOpacity);
+        unsigned char ucAlpha = gameServices().getGameSettings(
+            PlatformInput.GetPrimaryPad(), eGameSetting_InterfaceOpacity);
 
         // If the user has started to navigate their quickselect bar, ignore the
         // alpha setting, and display at default value
         float fVal = fAlphaIncrementPerCent * (float)ucAlpha;
         if (ucAlpha < 80) {
             // check if we have the timer running for the opacity
-            unsigned int uiOpacityTimer = app.GetOpacityTimer(iPad);
+            unsigned int uiOpacityTimer = gameServices().getOpacityTimer(iPad);
             if (uiOpacityTimer != 0) {
                 if (uiOpacityTimer < 10) {
                     float fStep = (80.0f - (float)ucAlpha) / 10.0f;
@@ -357,10 +358,10 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             fVal = fAlphaIncrementPerCent * (float)ucAlpha;
         }
 
-        RenderManager.StateSetBlendFactor(0xffffff |
+        PlatformRenderer.StateSetBlendFactor(0xffffff |
                                           (((unsigned int)fVal) << 24));
         currentGuiBlendFactor = fVal / 255.0f;
-        //	RenderManager.StateSetBlendFactor(0x40ffffff);
+        //	PlatformRenderer.StateSetBlendFactor(0x40ffffff);
         glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
 
         blitOffset = -90;
@@ -371,7 +372,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
         /////////////////////////////////////////////////////////////////////////////////////
         if (bDisplayGui) {
             minecraft->textures->bindTexture(
-                &GUI_GUI_LOCATION);  // 4J was L"/gui/gui.png"
+                &GUI_GUI_LOCATION);  // 4J was "/gui/gui.png"
 
             std::shared_ptr<Inventory> inventory = minecraft->player->inventory;
             if (bTwoPlayerSplitscreen) {
@@ -407,9 +408,9 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
             }
 
             minecraft->textures->bindTexture(
-                &GUI_ICONS_LOCATION);  // L"/gui/icons.png"));
+                &GUI_ICONS_LOCATION);  // "/gui/icons.png"));
             glEnable(GL_BLEND);
-            RenderManager.StateSetBlendFactor(0xffffff |
+            PlatformRenderer.StateSetBlendFactor(0xffffff |
                                               (((unsigned int)fVal) << 24));
             glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
             // glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
@@ -728,7 +729,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
         // positions worked out by hand from the xui implementation of the
         // crouch icon
 
-        if (app.GetGameSettings(iPad, eGameSetting_AnimatedCharacter)) {
+        if (gameServices().getGameSettings(iPad, eGameSetting_AnimatedCharacter)) {
             // int playerIdx = minecraft->player->GetXboxPad();
 
             static int characterDisplayTimer[4] = {0};
@@ -840,7 +841,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
 #if RENDER_HUD
     // 4jcraft: backported item switch tooltip display from 1.6.4
     if (remainingHighlightTicks > 0 && highlightingItemStack != nullptr) {
-        std::wstring displayName = highlightingItemStack->getHoverName();
+        std::string displayName = highlightingItemStack->getHoverName();
         int x = (screenWidth - font->width(displayName)) / 2;
         int y = screenHeight - 89;
 
@@ -869,10 +870,10 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
         if (true) {
             bool blink = false;
             int col = blink ? 0xffffff : 0x80ff20;
-            wchar_t formatted[10];
-            swprintf(formatted, 10, L"%d", minecraft->player->experienceLevel);
+            char formatted[10];
+            snprintf(formatted, 10, "%d", minecraft->player->experienceLevel);
 
-            std::wstring str = formatted;
+            std::string str = formatted;
             int x = iWidthOffset + (screenWidth - font->width(str)) / 2;
             int y = screenHeight - iSafezoneYHalf - iTooltipsYOffset;
             // If we're in creative mode, we don't need to offset the XP display
@@ -950,11 +951,11 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
     if (minecraft->options->renderDebug) {
         glPushMatrix();
         if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
-        font->drawShadow(ClientConstants::VERSION_STRING + L" (" +
-                             minecraft->fpsString + L")",
+        font->drawShadow(ClientConstants::VERSION_STRING + " (" +
+                             minecraft->fpsString + ")",
                          iSafezoneXHalf + 2, 20, 0xffffff);
         font->drawShadow(
-            L"Seed: " +
+            "Seed: " +
                 toWString<int64_t>(minecraft->level->getLevelData()->getSeed()),
             iSafezoneXHalf + 2, 32 + 00, 0xffffff);
         font->drawShadow(minecraft->gatherStats1(), iSafezoneXHalf + 2, 32 + 10,
@@ -970,19 +971,19 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
         int iYPos = 82;
 
         if (minecraft->level->dimension->id == 0) {
-            std::wstring wfeature[eTerrainFeature_Count];
+            std::string wfeature[eTerrainFeature_Count];
 
-            wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
-            wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
-            wfeature[eTerrainFeature_Village] = L"Village: ";
-            wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
+            wfeature[eTerrainFeature_Stronghold] = "Stronghold: ";
+            wfeature[eTerrainFeature_Mineshaft] = "Mineshaft: ";
+            wfeature[eTerrainFeature_Village] = "Village: ";
+            wfeature[eTerrainFeature_Ravine] = "Ravine: ";
 
-            for (int i = 0; i < app.m_vTerrainFeatures.size(); i++) {
-                FEATURE_DATA* pFeatureData = app.m_vTerrainFeatures[i];
+            for (int i = 0; i < gameServices().getTerrainFeatures().size(); i++) {
+                FEATURE_DATA* pFeatureData = gameServices().getTerrainFeatures()[i];
 
-                std::wstring itemInfo =
-                    L"[" + toWString<int>(pFeatureData->x * 16) + L", " +
-                    toWString<int>(pFeatureData->z * 16) + L"] ";
+                std::string itemInfo =
+                    "[" + toWString<int>(pFeatureData->x * 16) + ", " +
+                    toWString<int>(pFeatureData->z * 16) + "] ";
                 wfeature[pFeatureData->eTerrainFeature] += itemInfo;
             }
 
@@ -1014,28 +1015,28 @@ max) + "% (" + (total / 1024 / 1024) + "MB)"; drawString(font, msg, screenWidth
         double yBlockPos = floor(minecraft->player->y);
         double zBlockPos = floor(minecraft->player->z);
         drawString(font,
-                   L"x: " + toWString<double>(minecraft->player->x) +
-                       L"/ Head: " + toWString<double>(xBlockPos) +
-                       L"/ Chunk: " +
+                   "x: " + toWString<double>(minecraft->player->x) +
+                       "/ Head: " + toWString<double>(xBlockPos) +
+                       "/ Chunk: " +
                        toWString<double>(minecraft->player->xChunk),
                    iSafezoneXHalf + 2, iYPos + 8 * 0, 0xe0e0e0);
         drawString(font,
-                   L"y: " + toWString<double>(minecraft->player->y) +
-                       L"/ Head: " + toWString<double>(yBlockPos),
+                   "y: " + toWString<double>(minecraft->player->y) +
+                       "/ Head: " + toWString<double>(yBlockPos),
                    iSafezoneXHalf + 2, iYPos + 8 * 1, 0xe0e0e0);
         drawString(font,
-                   L"z: " + toWString<double>(minecraft->player->z) +
-                       L"/ Head: " + toWString<double>(zBlockPos) +
-                       L"/ Chunk: " +
+                   "z: " + toWString<double>(minecraft->player->z) +
+                       "/ Head: " + toWString<double>(zBlockPos) +
+                       "/ Chunk: " +
                        toWString<double>(minecraft->player->zChunk),
                    iSafezoneXHalf + 2, iYPos + 8 * 2, 0xe0e0e0);
         drawString(
             font,
-            L"f: " +
+            "f: " +
                 toWString<double>(
                     Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) &
                     0x3) +
-                L"/ yRot: " + toWString<double>(minecraft->player->yRot),
+                "/ yRot: " + toWString<double>(minecraft->player->yRot),
             iSafezoneXHalf + 2, iYPos + 8 * 3, 0xe0e0e0);
         iYPos += 8 * 4;
 
@@ -1048,8 +1049,8 @@ max) + "% (" + (total / 1024 / 1024) + "MB)"; drawString(font, msg, screenWidth
             Biome* biome = chunkAt->getBiome(
                 px & 15, pz & 15, minecraft->level->getBiomeSource());
             drawString(font,
-                       L"b: " + biome->m_name + L" (" +
-                           toWString<int>(biome->id) + L")",
+                       "b: " + biome->m_name + " (" +
+                           toWString<int>(biome->id) + ")",
                        iSafezoneXHalf + 2, iYPos, 0xe0e0e0);
         }
 
@@ -1084,7 +1085,7 @@ max) + "% (" + (total / 1024 / 1024) + "MB)"; drawString(font, msg, screenWidth
 
             int col = 0xffffff;
             if (animateOverlayMessageColor) {
-                col = Color::HSBtoRGB(t / 50.0f, 0.7f, 0.6f) & 0xffffff;
+                col = Color::getHSBColor(t / 50.0f, 0.7f, 0.6f).getRGB() & 0xffffff;
             }
             // 4J-PB - this is the string displayed when cds are placed in a
             // jukebox
@@ -1142,7 +1143,7 @@ max) + "% (" + (total / 1024 / 1024) + "MB)"; drawString(font, msg, screenWidth
                         y += iHeightOffset;
                     }
 
-                    std::wstring msg = guiMessages[iPad][i].string;
+                    std::string msg = guiMessages[iPad][i].string;
                     // 4J-PB - fill the black bar across the whole screen,
                     // otherwise it looks odd due to the safe area
                     this->fill(0, y - 1, screenWidth / fScaleFactorWidth, y + 8,
@@ -1198,7 +1199,7 @@ void Gui::renderBossHealth(void) {
     //     blit(xLeft, yo, 0, 79, progress, 5);
     // }
 
-    // std::wstring msg = L"Boss health" /*L"Boss health - NON LOCALISED"*/;
+    // std::string msg = "Boss health" /*"Boss health - NON LOCALISED"*/;
     // font->drawShadow(msg, screenWidth / 2 - font->width(msg) / 2, yo - 10,
     //                  0xff00ff);
     // glColor4f(1, 1, 1, 1);
@@ -1243,7 +1244,7 @@ void Gui::renderVignette(float br, int w, int h) {
     glBindTexture(
         GL_TEXTURE_2D,
         minecraft->textures->loadTexture(
-            TN__BLUR__MISC_VIGNETTE));  // L"%blur%/misc/vignette.png"));
+            TN__BLUR__MISC_VIGNETTE));  // "%blur%/misc/vignette.png"));
     Tesselator* t = Tesselator::getInstance();
     t->begin();
     t->vertexUV((float)(0), (float)(h), (float)(-90), (float)(0), (float)(1));
@@ -1271,7 +1272,7 @@ void Gui::renderTp(float br, int w, int h) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(1, 1, 1, br);
     minecraft->textures->bindTexture(
-        &TextureAtlas::LOCATION_BLOCKS);  // L"/terrain.png"));
+        &TextureAtlas::LOCATION_BLOCKS);  // "/terrain.png"));
 
     Icon* slot = Tile::portalTile->getTexture(Facing::UP);
     float u0 = slot->getU0();
@@ -1368,14 +1369,14 @@ void Gui::clearMessages(int iPad) {
     }
 }
 
-void Gui::addMessage(const std::wstring& _string, int iPad,
+void Gui::addMessage(const std::string& _string, int iPad,
                      bool bIsDeathMessage) {
-    std::wstring string = _string;  // 4J - Take copy of input as it is const
+    std::string string = _string;  // 4J - Take copy of input as it is const
     // int iScale=1;
 
-    // if((minecraft->player->m_iScreenSection==C4JRender::VIEWPORT_TYPE_SPLIT_TOP)
+    // if((minecraft->player->m_iScreenSection==IPlatformRenderer::VIEWPORT_TYPE_SPLIT_TOP)
     // ||
-    //	(minecraft->player->m_iScreenSection==C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM))
+    //	(minecraft->player->m_iScreenSection==IPlatformRenderer::VIEWPORT_TYPE_SPLIT_BOTTOM))
     //{
     //	iScale=2;
     // }
@@ -1389,7 +1390,7 @@ void Gui::addMessage(const std::wstring& _string, int iPad,
     //	{
     //           i++;
     //       }
-    //	int iLast=string.find_last_of(L" ",i);
+    //	int iLast=string.find_last_of(" ",i);
 
     //	// if a space was found, include the space on this line
     //	if(iLast!=i)
@@ -1403,10 +1404,10 @@ void Gui::addMessage(const std::wstring& _string, int iPad,
     int maximumChars;
 
     switch (minecraft->player->m_iScreenSection) {
-        case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-        case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-        case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
-            if (RenderManager.IsHiDef()) {
+        case IPlatformRenderer::VIEWPORT_TYPE_SPLIT_TOP:
+        case IPlatformRenderer::VIEWPORT_TYPE_SPLIT_BOTTOM:
+        case IPlatformRenderer::VIEWPORT_TYPE_FULLSCREEN:
+            if (PlatformRenderer.IsHiDef()) {
                 maximumChars = 105;
             } else {
                 maximumChars = 55;
@@ -1415,7 +1416,7 @@ void Gui::addMessage(const std::wstring& _string, int iPad,
                 case XC_LANGUAGE_JAPANESE:
                 case XC_LANGUAGE_TCHINESE:
                 case XC_LANGUAGE_KOREAN:
-                    if (RenderManager.IsHiDef()) {
+                    if (PlatformRenderer.IsHiDef()) {
                         maximumChars = 70;
                     } else {
                         maximumChars = 35;
@@ -1440,7 +1441,7 @@ void Gui::addMessage(const std::wstring& _string, int iPad,
         while (i < string.length() && (i + 1) <= maximumChars) {
             i++;
         }
-        int iLast = (int)string.find_last_of(L" ", i);
+        int iLast = (int)string.find_last_of(" ", i);
         switch (XGetLanguage()) {
             case XC_LANGUAGE_JAPANESE:
             case XC_LANGUAGE_TCHINESE:
@@ -1448,7 +1449,7 @@ void Gui::addMessage(const std::wstring& _string, int iPad,
                 iLast = maximumChars;
                 break;
             default:
-                iLast = (int)string.find_last_of(L" ", i);
+                iLast = (int)string.find_last_of(" ", i);
                 break;
         }
 
@@ -1465,7 +1466,7 @@ void Gui::addMessage(const std::wstring& _string, int iPad,
         for (int i = 0; i < XUSER_MAX_COUNT; i++) {
             if (minecraft->localplayers[i] &&
                 !(bIsDeathMessage &&
-                  app.GetGameSettings(i, eGameSetting_DeathMessages) == 0)) {
+                  gameServices().getGameSettings(i, eGameSetting_DeathMessages) == 0)) {
                 guiMessages[i].insert(guiMessages[i].begin(),
                                       GuiMessage(string));
                 while (guiMessages[i].size() > 50) {
@@ -1474,7 +1475,7 @@ void Gui::addMessage(const std::wstring& _string, int iPad,
             }
         }
     } else if (!(bIsDeathMessage &&
-                 app.GetGameSettings(iPad, eGameSetting_DeathMessages) == 0)) {
+                 gameServices().getGameSettings(iPad, eGameSetting_DeathMessages) == 0)) {
         guiMessages[iPad].insert(guiMessages[iPad].begin(), GuiMessage(string));
         while (guiMessages[iPad].size() > 50) {
             guiMessages[iPad].pop_back();
@@ -1507,17 +1508,17 @@ float Gui::getJukeboxOpacity(int iPad) {
     return alpha;
 }
 
-void Gui::setNowPlaying(const std::wstring& string) {
-    //	overlayMessageString = L"Now playing: " + string;
-    overlayMessageString = app.GetString(IDS_NOWPLAYING) + string;
+void Gui::setNowPlaying(const std::string& string) {
+    //	overlayMessageString = "Now playing: " + string;
+    overlayMessageString = gameServices().getString(IDS_NOWPLAYING) + string;
     overlayMessageTime = 20 * 3;
     animateOverlayMessageColor = true;
 }
 
 void Gui::displayClientMessage(int messageId, int iPad) {
     // Language *language = Language::getInstance();
-    std::wstring languageString =
-        app.GetString(messageId);  // language->getElement(messageId);
+    std::string languageString =
+        gameServices().getString(messageId);  // language->getElement(messageId);
 
     addMessage(languageString, iPad);
 }

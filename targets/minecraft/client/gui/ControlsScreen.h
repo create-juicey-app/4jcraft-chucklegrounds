@@ -10,7 +10,7 @@ private:
     Screen* lastScreen;
 
 protected:
-    std::wstring title;
+    std::string title;
 
 private:
     Options* options;
@@ -31,7 +31,7 @@ public:
 
 protected:
     void buttonClicked(Button* button) override;
-    void keyPressed(wchar_t eventCharacter, int eventKey) override;
+    void keyPressed(char eventCharacter, int eventKey) override;
 
 public:
     void render(int xm, int ym, float a) override;

@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "Monster.h"
 
 #include <math.h>
@@ -48,7 +49,7 @@ void Monster::tick() {
 
 std::shared_ptr<Entity> Monster::findAttackTarget() {
 #ifndef _FINAL_BUILD
-    if (app.GetMobsDontAttackEnabled()) {
+    if (gameServices().debugMobsDontAttack()) {
         return std::shared_ptr<Player>();
     }
 #endif

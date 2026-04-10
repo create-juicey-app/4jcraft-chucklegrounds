@@ -79,7 +79,7 @@ public:
                                   int y, float fAlpha = 1.0f);
     void renderGuiItemDecorations(Font* font, Textures* textures,
                                   std::shared_ptr<ItemInstance> item, int x,
-                                  int y, const std::wstring& countText,
+                                  int y, const std::string& countText,
                                   float fAlpha = 1.0f);
 
 private:

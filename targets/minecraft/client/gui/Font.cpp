@@ -5,17 +5,17 @@
 #include <utility>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
-#include "app/include/BufferedImage.h"
-#include "util/StringHelpers.h"
 #include "java/Random.h"
 #include "minecraft/SharedConstants.h"
+#include "minecraft/client/BufferedImage.h"
 #include "minecraft/client/Options.h"
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/client/resources/ResourceLocation.h"
+#include "platform/renderer/renderer.h"
+#include "util/StringHelpers.h"
 
-Font::Font(Options* options, const std::wstring& name, Textures* textures,
+Font::Font(Options* options, const std::string& name, Textures* textures,
            bool enforceUnicode, ResourceLocation* textureLocation, int cols,
            int rows, int charWidth, int charHeight,
            unsigned short charMap[] /* = nullptr */)
@@ -123,7 +123,7 @@ Font::Font(Options* options, const std::wstring& name, Textures* textures,
 // take it out for now. Can go back when we have got rid of XUI
 Font::~Font() { delete[] charWidths; }
 
-void Font::renderCharacter(wchar_t c) {
+void Font::renderCharacter(char c) {
     float xOff = c % m_cols * m_charWidth;
     float yOff = c / m_cols * m_charWidth;
 
@@ -153,49 +153,53 @@ void Font::renderCharacter(wchar_t c) {
     xPos += (float)charWidths[c];
 }
 
-void Font::drawShadow(const std::wstring& str, int x, int y, int color) {
+void Font::drawShadow(const std::string& str, int x, int y, int color) {
     draw(str, x + 1, y + 1, color, true);
     draw(str, x, y, color, false);
 }
 
-void Font::drawShadowWordWrap(const std::wstring& str, int x, int y, int w,
+void Font::drawShadowWordWrap(const std::string& str, int x, int y, int w,
                               int color, int h) {
     drawWordWrapInternal(str, x + 1, y + 1, w, color, true, h);
     drawWordWrapInternal(str, x, y, w, color, h);
 }
 
-void Font::draw(const std::wstring& str, int x, int y, int color) {
+void Font::draw(const std::string& str, int x, int y, int color) {
     draw(str, x, y, color, false);
 }
 
-std::wstring Font::reorderBidi(const std::wstring& str) {
+std::string Font::reorderBidi(const std::string& str) {
     // 4J Not implemented
     return str;
 }
 
-void Font::draw(const std::wstring& str, bool dropShadow) {
+void Font::draw(const std::string& str, bool dropShadow) {
     // Bind the texture
     textures->bindTexture(m_textureLocation);
 
     bool noise = false;
-    std::wstring cleanStr = sanitize(str);
+    std::string cleanStr = sanitize(str);
 
     for (int i = 0; i < (int)cleanStr.length(); ++i) {
         // Map character
-        wchar_t c = cleanStr.at(i);
+        unsigned char c = cleanStr.at(i);
 
-        if (c == 167 && i + 1 < cleanStr.length()) {
+        // 4jcraft: this is a check for §. This was easy in UTF-16, since a
+        // single widechar can fit §, but it's encoded as 0xA7 0xC2 in UTF-8, so
+        // we need to check both characters.
+        if (i + 2 < cleanStr.length() && c == '\xC2' &&
+            (unsigned char)cleanStr[i + 1] == '\xA7') {
             // 4J - following block was:
             // int colorN =
-            // L"0123456789abcdefk".indexOf(str.toLowerCase().charAt(i + 1));
-            wchar_t ca = cleanStr[i + 1];
+            // "0123456789abcdefk".indexOf(str.toLowerCase().charAt(i + 1));
+            char ca = cleanStr[i + 1];
             int colorN = 16;
-            if ((ca >= L'0') && (ca <= L'9'))
-                colorN = ca - L'0';
-            else if ((ca >= L'a') && (ca <= L'f'))
-                colorN = (ca - L'a') + 10;
-            else if ((ca >= L'A') && (ca <= L'F'))
-                colorN = (ca - L'A') + 10;
+            if ((ca >= '0') && (ca <= '9'))
+                colorN = ca - '0';
+            else if ((ca >= 'a') && (ca <= 'f'))
+                colorN = (ca - 'a') + 10;
+            else if ((ca >= 'A') && (ca <= 'F'))
+                colorN = (ca - 'A') + 10;
 
             if (colorN == 16) {
                 noise = true;
@@ -228,7 +232,7 @@ void Font::draw(const std::wstring& str, bool dropShadow) {
     }
 }
 
-void Font::draw(const std::wstring& str, int x, int y, int color,
+void Font::draw(const std::string& str, int x, int y, int color,
                 bool dropShadow) {
     if (!str.empty()) {
         if ((color & 0xFC000000) == 0) color |= 0xFF000000;  // force alpha
@@ -248,18 +252,20 @@ void Font::draw(const std::wstring& str, int x, int y, int color,
     }
 }
 
-int Font::width(const std::wstring& str) {
-    std::wstring cleanStr = sanitize(str);
+int Font::width(const std::string& str) {
+    std::string cleanStr = sanitize(str);
 
-    if (cleanStr == L"") return 0;  // 4J - was nullptr comparison
+    if (cleanStr == "") return 0;  // 4J - was nullptr comparison
     int len = 0;
 
     for (int i = 0; i < cleanStr.length(); ++i) {
-        wchar_t c = cleanStr.at(i);
+        unsigned char c = cleanStr.at(i);
 
-        if (c == 167) {
-            // Ignore the character used to define coloured text
-            ++i;
+        // skip § (used for color codes)
+        // 4jcraft: modified for UTF-8
+        if (i + 2 < (int)cleanStr.length() && c == 0xC2 &&
+            (unsigned char)cleanStr[i + 1] == 0xA7) {
+            i += 2;
         } else {
             len += charWidths[c];
         }
@@ -268,8 +274,8 @@ int Font::width(const std::wstring& str) {
     return len;
 }
 
-std::wstring Font::sanitize(const std::wstring& str) {
-    std::wstring sb = str;
+std::string Font::sanitize(const std::string& str) {
+    std::string sb = str;
 
     for (unsigned int i = 0; i < sb.length(); i++) {
         if (CharacterExists(sb[i])) {
@@ -283,7 +289,7 @@ std::wstring Font::sanitize(const std::wstring& str) {
     return sb;
 }
 
-int Font::MapCharacter(wchar_t c) {
+int Font::MapCharacter(char c) {
     if (!m_charMap.empty()) {
         // Don't map space character
         return c == ' ' ? c : m_charMap[c];
@@ -292,7 +298,7 @@ int Font::MapCharacter(wchar_t c) {
     }
 }
 
-bool Font::CharacterExists(wchar_t c) {
+bool Font::CharacterExists(char c) {
     if (!m_charMap.empty()) {
         return m_charMap.find(c) != m_charMap.end();
     } else {
@@ -300,8 +306,8 @@ bool Font::CharacterExists(wchar_t c) {
     }
 }
 
-void Font::drawWordWrap(const std::wstring& string, int x, int y, int w,
-                        int col, int h) {
+void Font::drawWordWrap(const std::string& string, int x, int y, int w, int col,
+                        int h) {
     // if (bidirectional)
     //{
     //	string = reorderBidi(string);
@@ -309,13 +315,13 @@ void Font::drawWordWrap(const std::wstring& string, int x, int y, int w,
     drawWordWrapInternal(string, x, y, w, col, h);
 }
 
-void Font::drawWordWrapInternal(const std::wstring& string, int x, int y, int w,
+void Font::drawWordWrapInternal(const std::string& string, int x, int y, int w,
                                 int col, int h) {
     drawWordWrapInternal(string, x, y, w, col, false, h);
 }
 
-void Font::drawWordWrap(const std::wstring& string, int x, int y, int w,
-                        int col, bool darken, int h) {
+void Font::drawWordWrap(const std::string& string, int x, int y, int w, int col,
+                        bool darken, int h) {
     // if (bidirectional)
     //{
     //	string = reorderBidi(string);
@@ -323,9 +329,9 @@ void Font::drawWordWrap(const std::wstring& string, int x, int y, int w,
     drawWordWrapInternal(string, x, y, w, col, darken, h);
 }
 
-void Font::drawWordWrapInternal(const std::wstring& string, int x, int y, int w,
+void Font::drawWordWrapInternal(const std::string& string, int x, int y, int w,
                                 int col, bool darken, int h) {
-    std::vector<std::wstring> lines = stringSplit(string, L'\n');
+    std::vector<std::string> lines = stringSplit(string, '\n');
     if (lines.size() > 1) {
         auto itEnd = lines.end();
         for (auto it = lines.begin(); it != itEnd; it++) {
@@ -337,12 +343,12 @@ void Font::drawWordWrapInternal(const std::wstring& string, int x, int y, int w,
         }
         return;
     }
-    std::vector<std::wstring> words = stringSplit(string, L' ');
+    std::vector<std::string> words = stringSplit(string, ' ');
     unsigned int pos = 0;
     while (pos < words.size()) {
-        std::wstring line = words[pos++] + L" ";
+        std::string line = words[pos++] + " ";
         while (pos < words.size() && width(line + words[pos]) < w) {
-            line += words[pos++] + L" ";
+            line += words[pos++] + " ";
         }
         while (width(line) > w) {
             int l = 0;
@@ -368,8 +374,8 @@ void Font::drawWordWrapInternal(const std::wstring& string, int x, int y, int w,
     }
 }
 
-int Font::wordWrapHeight(const std::wstring& string, int w) {
-    std::vector<std::wstring> lines = stringSplit(string, L'\n');
+int Font::wordWrapHeight(const std::string& string, int w) {
+    std::vector<std::string> lines = stringSplit(string, '\n');
     if (lines.size() > 1) {
         int h = 0;
         auto itEnd = lines.end();
@@ -378,13 +384,13 @@ int Font::wordWrapHeight(const std::wstring& string, int w) {
         }
         return h;
     }
-    std::vector<std::wstring> words = stringSplit(string, L' ');
+    std::vector<std::string> words = stringSplit(string, ' ');
     unsigned int pos = 0;
     int y = 0;
     while (pos < words.size()) {
-        std::wstring line = words[pos++] + L" ";
+        std::string line = words[pos++] + " ";
         while (pos < words.size() && width(line + words[pos]) < w) {
-            line += words[pos++] + L" ";
+            line += words[pos++] + " ";
         }
         while (width(line) > w) {
             int l = 0;
@@ -412,13 +418,15 @@ void Font::setBidirectional(bool bidirectional) {
     this->bidirectional = bidirectional;
 }
 
-bool Font::AllCharactersValid(const std::wstring& str) {
+bool Font::AllCharactersValid(const std::string& str) {
     for (int i = 0; i < (int)str.length(); ++i) {
-        wchar_t c = str.at(i);
+        unsigned char c = str.at(i);
 
-        if (c == 167 && i + 1 < str.length()) {
-            // skip special color setting
-            i += 1;
+        // skip § (used for color codes)
+        // 4jcraft: modified for UTF-8
+        if (i + 2 < (int)str.length() && c == 0xC2 &&
+            (unsigned char)str[i + 1] == 0xA7) {
+            i += 2;
             continue;
         }
 
@@ -498,9 +506,9 @@ Font::renderFakeCB(IntBuffer *ib)
 
 void Font::loadUnicodePage(int page)
 {
-        wchar_t fileName[25];
+        char fileName[25];
         //String fileName = String.format("/1_2_2/font/glyph_%02X.png", page);
-        swprintf(fileName,25,L"/1_2_2/font/glyph_%02X.png",page);
+        snprintf(fileName,25,"/1_2_2/font/glyph_%02X.png",page);
         BufferedImage *image = new BufferedImage(fileName);
         //try
         //{
@@ -516,7 +524,7 @@ ImageIO.read(Textures.class.getResourceAsStream(fileName.toWString()));
         lastBoundTexture = unicodeTexID[page];
 }
 
-void Font::renderUnicodeCharacter(wchar_t c)
+void Font::renderUnicodeCharacter(char c)
 {
         if (unicodeWidth[c] == 0)
         {

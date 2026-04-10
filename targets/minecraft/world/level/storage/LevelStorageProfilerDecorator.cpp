@@ -40,10 +40,10 @@ PlayerIO* LevelStorageProfilerDecorator::getPlayerIO() {
 void LevelStorageProfilerDecorator::closeAll() { capsulated->closeAll(); }
 
 ConsoleSavePath LevelStorageProfilerDecorator::getDataFile(
-    const std::wstring& id) {
+    const std::string& id) {
     return capsulated->getDataFile(id);
 }
 
-std::wstring LevelStorageProfilerDecorator::getLevelId() {
+std::string LevelStorageProfilerDecorator::getLevelId() {
     return capsulated->getLevelId();
 }

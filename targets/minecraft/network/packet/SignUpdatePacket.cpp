@@ -17,7 +17,7 @@ SignUpdatePacket::SignUpdatePacket() {
 }
 
 SignUpdatePacket::SignUpdatePacket(int x, int y, int z, bool bVerified,
-                                   bool bCensored, std::wstring lines[]) {
+                                   bool bCensored, std::string lines[]) {
     shouldDelay = true;
     this->m_bVerified = bVerified;
     this->m_bCensored = bCensored;

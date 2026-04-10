@@ -7,6 +7,6 @@
 // loaded from a file
 class SimpleIcon : public StitchedTexture {
 public:
-    SimpleIcon(const std::wstring& name, const std::wstring& filename, float u0,
+    SimpleIcon(const std::string& name, const std::string& filename, float u0,
                float v0, float u1, float v1);
 };

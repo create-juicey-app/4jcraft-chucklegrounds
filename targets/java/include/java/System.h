@@ -42,5 +42,5 @@ public:
     static void ReverseULONG(unsigned int* pulVal);
     static void ReverseINT(int* piVal);
     static void ReverseULONGLONG(int64_t* pullVal);
-    static void ReverseWCHARA(wchar_t* pwch, int iLen);
+    static void ReverseWCHARA(char* pwch, int iLen);
 };

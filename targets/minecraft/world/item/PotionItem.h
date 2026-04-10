@@ -18,9 +18,9 @@ private:
     static const int DRINK_DURATION = (int)(20 * 1.6);
 
 public:
-    static const std::wstring DEFAULT_ICON;
-    static const std::wstring THROWABLE_ICON;
-    static const std::wstring CONTENTS_ICON;
+    static const std::string DEFAULT_ICON;
+    static const std::string THROWABLE_ICON;
+    static const std::string CONTENTS_ICON;
 
 private:
     std::unordered_map<int, std::vector<MobEffectInstance*>*> cachedMobEffects;
@@ -56,7 +56,7 @@ public:
     virtual int getColor(std::shared_ptr<ItemInstance> item, int spriteLayer);
     virtual bool hasMultipleSpriteLayers();
     virtual bool hasInstantenousEffects(int itemAuxValue);
-    virtual std::wstring getHoverName(
+    virtual std::string getHoverName(
         std::shared_ptr<ItemInstance> itemInstance);
     virtual void appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
                                  std::shared_ptr<Player> player,
@@ -68,7 +68,7 @@ public:
 
     //@Override
     void registerIcons(IconRegister* iconRegister);
-    static Icon* getTexture(const std::wstring& name);
+    static Icon* getTexture(const std::string& name);
 
     // 4J Stu - Based loosely on a function that gets added in java much later
     // on (1.3)

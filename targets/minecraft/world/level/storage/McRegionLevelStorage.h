@@ -18,7 +18,7 @@ protected:
 
 public:
     McRegionLevelStorage(ConsoleSaveFile* saveFile, File dir,
-                         const std::wstring& levelName, bool createPlayerDir);
+                         const std::string& levelName, bool createPlayerDir);
     ~McRegionLevelStorage();
 
     virtual ChunkStorage* createChunkStorage(Dimension* dimension);

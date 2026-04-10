@@ -19,29 +19,29 @@ private:
     static const int BIT_SEE_INVISIBLES = 1;
 
     Scoreboard* scoreboard;
-    std::wstring name;
-    std::unordered_set<std::wstring> players;
-    std::wstring displayName;
-    std::wstring prefix;
-    std::wstring suffix;
+    std::string name;
+    std::unordered_set<std::string> players;
+    std::string displayName;
+    std::string prefix;
+    std::string suffix;
     bool allowFriendlyFire;
     bool seeFriendlyInvisibles;
 
 public:
-    PlayerTeam(Scoreboard* scoreboard, const std::wstring& name);
+    PlayerTeam(Scoreboard* scoreboard, const std::string& name);
 
     Scoreboard* getScoreboard();
-    std::wstring getName();
-    std::wstring getDisplayName();
-    void setDisplayName(const std::wstring& displayName);
-    std::unordered_set<std::wstring>* getPlayers();
-    std::wstring getPrefix();
-    void setPrefix(const std::wstring& prefix);
-    std::wstring getSuffix();
-    void setSuffix(const std::wstring& suffix);
-    std::wstring getFormattedName(const std::wstring& teamMemberName);
-    static std::wstring formatNameForTeam(PlayerTeam* team);
-    static std::wstring formatNameForTeam(Team* team, const std::wstring& name);
+    std::string getName();
+    std::string getDisplayName();
+    void setDisplayName(const std::string& displayName);
+    std::unordered_set<std::string>* getPlayers();
+    std::string getPrefix();
+    void setPrefix(const std::string& prefix);
+    std::string getSuffix();
+    void setSuffix(const std::string& suffix);
+    std::string getFormattedName(const std::string& teamMemberName);
+    static std::string formatNameForTeam(PlayerTeam* team);
+    static std::string formatNameForTeam(Team* team, const std::string& name);
     bool isAllowFriendlyFire();
     void setAllowFriendlyFire(bool allowFriendlyFire);
     bool canSeeFriendlyInvisibles();

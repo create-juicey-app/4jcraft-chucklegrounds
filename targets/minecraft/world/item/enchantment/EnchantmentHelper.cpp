@@ -30,9 +30,9 @@ int EnchantmentHelper::getEnchantmentLevel(
     }
     for (int i = 0; i < enchantmentTags->size(); i++) {
         int type = enchantmentTags->get(i)->getShort(
-            (wchar_t*)ItemInstance::TAG_ENCH_ID);
+            (char*)ItemInstance::TAG_ENCH_ID);
         int level = enchantmentTags->get(i)->getShort(
-            (wchar_t*)ItemInstance::TAG_ENCH_LEVEL);
+            (char*)ItemInstance::TAG_ENCH_LEVEL);
 
         if (type == enchantmentId) {
             return level;
@@ -52,9 +52,9 @@ std::unordered_map<int, int>* EnchantmentHelper::getEnchantments(
     if (list != nullptr) {
         for (int i = 0; i < list->size(); i++) {
             int type =
-                list->get(i)->getShort((wchar_t*)ItemInstance::TAG_ENCH_ID);
+                list->get(i)->getShort((char*)ItemInstance::TAG_ENCH_ID);
             int level =
-                list->get(i)->getShort((wchar_t*)ItemInstance::TAG_ENCH_LEVEL);
+                list->get(i)->getShort((char*)ItemInstance::TAG_ENCH_LEVEL);
 
             result->insert(
                 std::unordered_map<int, int>::value_type(type, level));
@@ -74,8 +74,8 @@ void EnchantmentHelper::setEnchantments(
         int id = it->first;
         CompoundTag* tag = new CompoundTag();
 
-        tag->putShort((wchar_t*)ItemInstance::TAG_ENCH_ID, (short)id);
-        tag->putShort((wchar_t*)ItemInstance::TAG_ENCH_LEVEL,
+        tag->putShort((char*)ItemInstance::TAG_ENCH_ID, (short)id);
+        tag->putShort((char*)ItemInstance::TAG_ENCH_LEVEL,
                       (short)(int)it->second);
 
         list->add(tag);
@@ -88,10 +88,10 @@ void EnchantmentHelper::setEnchantments(
 
     if (list->size() > 0) {
         if (item->id != Item::enchantedBook_Id) {
-            item->addTagElement(L"ench", list);
+            item->addTagElement("ench", list);
         }
     } else if (item->hasTag()) {
-        item->getTag()->remove(L"ench");
+        item->getTag()->remove("ench");
     }
 }
 
@@ -120,9 +120,9 @@ void EnchantmentHelper::runIterationOnItem(
     }
     for (int i = 0; i < enchantmentTags->size(); i++) {
         int type = enchantmentTags->get(i)->getShort(
-            (wchar_t*)ItemInstance::TAG_ENCH_ID);
+            (char*)ItemInstance::TAG_ENCH_ID);
         int level = enchantmentTags->get(i)->getShort(
-            (wchar_t*)ItemInstance::TAG_ENCH_LEVEL);
+            (char*)ItemInstance::TAG_ENCH_LEVEL);
 
         if (Enchantment::enchantments[type] != nullptr) {
             method.doEnchantment(Enchantment::enchantments[type], level);

@@ -18,7 +18,7 @@ public:
         eRunUpdateThread,
         eRenderChunkUpdateThread,
         eServerThread,
-        eStorageManagerThreads,
+        ePlatformStorageThreads,
         eConnectionReadThreads,
         eConnectionWriteThreads,
         eEventQueueThreads,

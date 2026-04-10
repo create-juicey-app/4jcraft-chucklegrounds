@@ -33,11 +33,11 @@ public:
     std::uint32_t m_texturePackId;
     std::int16_t m_netcodeVersion;
 
-    std::wstring loginKey;
+    std::string loginKey;
 
     PreLoginPacket();
-    PreLoginPacket(std::wstring userName);
-    PreLoginPacket(std::wstring userName, PlayerUID* playerXuids,
+    PreLoginPacket(std::string userName);
+    PreLoginPacket(std::string userName, PlayerUID* playerXuids,
                    std::uint8_t playerCount, std::uint8_t friendsOnlyBits,
                    std::uint32_t ugcPlayersVersion,
                    const char* pszUniqueSaveName, std::uint32_t serverSettings,

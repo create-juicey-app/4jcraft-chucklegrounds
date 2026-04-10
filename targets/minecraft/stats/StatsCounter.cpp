@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "StatsCounter.h"
 
 #include <assert.h>
@@ -9,9 +10,9 @@
 #include <utility>
 #include <vector>
 
-#include "platform/sdl2/Profile.h"
+#include "platform/profile/profile.h"
 #include "app/common/App_structs.h"
-#include "app/common/src/Leaderboards/LeaderboardManager.h"
+#include "app/common/Leaderboards/LeaderboardManager.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/stats/Achievement.h"
 #include "minecraft/stats/Achievements.h"
@@ -47,7 +48,7 @@ void StatsCounter::award(Stat* stat, unsigned int difficulty,
     } else {
         val->second.stats[difficulty] += count;
 
-        if (stat != GenericStats::timePlayed()) app.DebugPrintf("");
+        if (stat != GenericStats::timePlayed()) Log::info("");
 
         // If value has wrapped, cap it to UINT_MAX
         if (val->second.stats[difficulty] <
@@ -67,7 +68,7 @@ void StatsCounter::award(Stat* stat, unsigned int difficulty,
     std::unordered_map<Stat*, int>::iterator leaderboardEntry =
         statBoards.find(stat);
     if (leaderboardEntry != statBoards.end()) {
-        app.DebugPrintf("[StatsCounter] award(): %X\n",
+        Log::info("[StatsCounter] award(): %X\n",
                         leaderboardEntry->second << difficulty);
         modifiedBoards |= (leaderboardEntry->second << difficulty);
         if (flushCounter == 0) flushCounter = FLUSH_DELAY;
@@ -190,7 +191,7 @@ void StatsCounter::save(int player, bool force) {
 
     // Retrieve the data pointer from the profile
     std::uint8_t* pbData = reinterpret_cast<std::uint8_t*>(
-        ProfileManager.GetGameDefinedProfileData(player));
+        PlatformProfile.GetGameDefinedProfileData(player));
     pbData += sizeof(GAME_SETTINGS);
 
     // Pointer to current position in stat array
@@ -253,7 +254,7 @@ void StatsCounter::flushLeaderboards() {
         writeStats();
         LeaderboardManager::Instance()->FlushStats();
     } else {
-        app.DebugPrintf(
+        Log::info(
             "Failed to open a session in order to write to leaderboard\n");
 
         // 4J-JEV: If user was not signed in it would hit this.
@@ -269,7 +270,7 @@ void StatsCounter::saveLeaderboards() {
         writeStats();
         LeaderboardManager::Instance()->CloseSession();
     } else {
-        app.DebugPrintf(
+        Log::info(
             "Failed to open a session in order to write to leaderboard\n");
 
         // 4J-JEV: If user was not signed in it would hit this.
@@ -284,7 +285,7 @@ void StatsCounter::writeStats() {
     // unsigned int locale = XGetLocale();
 
     int viewCount = 0;
-    int iPad = ProfileManager.GetLockedProfile();
+    int iPad = PlatformProfile.GetLockedProfile();
 }
 
 void StatsCounter::setupStatBoards() {
@@ -355,7 +356,7 @@ void StatsCounter::dumpStatsToTTY() {
     std::vector<Stat*>::iterator statsEnd = Stats::all->end();
     for (std::vector<Stat*>::iterator statsIter = Stats::all->begin();
          statsIter != statsEnd; ++statsIter) {
-        app.DebugPrintf("%ls\t\t%u\t%u\t%u\t%u\n", (*statsIter)->name.c_str(),
+        Log::info("%s\t\t%u\t%u\t%u\t%u\n", (*statsIter)->name.c_str(),
                         getValue(*statsIter, 0), getValue(*statsIter, 1),
                         getValue(*statsIter, 2), getValue(*statsIter, 3));
     }

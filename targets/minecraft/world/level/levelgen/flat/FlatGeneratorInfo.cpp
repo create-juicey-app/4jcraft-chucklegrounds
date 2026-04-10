@@ -5,15 +5,15 @@
 #include "minecraft/world/level/levelgen/flat/FlatLayerInfo.h"
 #include "minecraft/world/level/tile/Tile.h"
 
-const std::wstring FlatGeneratorInfo::STRUCTURE_VILLAGE = L"village";
-const std::wstring FlatGeneratorInfo::STRUCTURE_BIOME_SPECIFIC = L"biome_1";
-const std::wstring FlatGeneratorInfo::STRUCTURE_STRONGHOLD = L"stronghold";
-const std::wstring FlatGeneratorInfo::STRUCTURE_MINESHAFT = L"mineshaft";
-const std::wstring FlatGeneratorInfo::STRUCTURE_BIOME_DECORATION =
-    L"decoration";
-const std::wstring FlatGeneratorInfo::STRUCTURE_LAKE = L"lake";
-const std::wstring FlatGeneratorInfo::STRUCTURE_LAVA_LAKE = L"lava_lake";
-const std::wstring FlatGeneratorInfo::STRUCTURE_DUNGEON = L"dungeon";
+const std::string FlatGeneratorInfo::STRUCTURE_VILLAGE = "village";
+const std::string FlatGeneratorInfo::STRUCTURE_BIOME_SPECIFIC = "biome_1";
+const std::string FlatGeneratorInfo::STRUCTURE_STRONGHOLD = "stronghold";
+const std::string FlatGeneratorInfo::STRUCTURE_MINESHAFT = "mineshaft";
+const std::string FlatGeneratorInfo::STRUCTURE_BIOME_DECORATION =
+    "decoration";
+const std::string FlatGeneratorInfo::STRUCTURE_LAKE = "lake";
+const std::string FlatGeneratorInfo::STRUCTURE_LAVA_LAKE = "lava_lake";
+const std::string FlatGeneratorInfo::STRUCTURE_DUNGEON = "dungeon";
 
 FlatGeneratorInfo::FlatGeneratorInfo() { biome = 0; }
 
@@ -27,8 +27,8 @@ int FlatGeneratorInfo::getBiome() { return biome; }
 
 void FlatGeneratorInfo::setBiome(int biome) { this->biome = biome; }
 
-std::unordered_map<std::wstring,
-                   std::unordered_map<std::wstring, std::wstring> >*
+std::unordered_map<std::string,
+                   std::unordered_map<std::string, std::string> >*
 FlatGeneratorInfo::getStructures() {
     return &structures;
 }
@@ -45,19 +45,19 @@ void FlatGeneratorInfo::updateLayers() {
     }
 }
 
-std::wstring FlatGeneratorInfo::toString() { return L""; }
+std::string FlatGeneratorInfo::toString() { return ""; }
 
-FlatLayerInfo* FlatGeneratorInfo::getLayerFromString(const std::wstring& input,
+FlatLayerInfo* FlatGeneratorInfo::getLayerFromString(const std::string& input,
                                                      int yOffset) {
     return nullptr;
 }
 
 std::vector<FlatLayerInfo*>* FlatGeneratorInfo::getLayersFromString(
-    const std::wstring& input) {
+    const std::string& input) {
     if (input.empty()) return nullptr;
 
     std::vector<FlatLayerInfo*>* result = new std::vector<FlatLayerInfo*>();
-    std::vector<std::wstring> depths = stringSplit(input, L',');
+    std::vector<std::string> depths = stringSplit(input, ',');
 
     int yOffset = 0;
 
@@ -71,7 +71,7 @@ std::vector<FlatLayerInfo*>* FlatGeneratorInfo::getLayersFromString(
     return result;
 }
 
-FlatGeneratorInfo* FlatGeneratorInfo::fromValue(const std::wstring& input) {
+FlatGeneratorInfo* FlatGeneratorInfo::fromValue(const std::string& input) {
     return getDefault();
 }
 
@@ -84,7 +84,7 @@ FlatGeneratorInfo* FlatGeneratorInfo::getDefault() {
     result->getLayers()->push_back(new FlatLayerInfo(1, Tile::grass_Id));
     result->updateLayers();
     (*(result->getStructures()))[STRUCTURE_VILLAGE] =
-        std::unordered_map<std::wstring, std::wstring>();
+        std::unordered_map<std::string, std::string>();
 
     return result;
 }

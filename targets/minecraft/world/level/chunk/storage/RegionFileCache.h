@@ -29,38 +29,38 @@ public:
     ~RegionFileCache();
 
     RegionFile* _getRegionFile(ConsoleSaveFile* saveFile,
-                               const std::wstring& prefix, int chunkX,
+                               const std::string& prefix, int chunkX,
                                int chunkZ);  // 4J - TODO was synchronized
     void _clear();                           // 4J - TODO was synchronized
-    int _getSizeDelta(ConsoleSaveFile* saveFile, const std::wstring& prefix,
+    int _getSizeDelta(ConsoleSaveFile* saveFile, const std::string& prefix,
                       int chunkX, int chunkZ);
     DataInputStream* _getChunkDataInputStream(ConsoleSaveFile* saveFile,
-                                              const std::wstring& prefix,
+                                              const std::string& prefix,
                                               int chunkX, int chunkZ);
     DataOutputStream* _getChunkDataOutputStream(ConsoleSaveFile* saveFile,
-                                                const std::wstring& prefix,
+                                                const std::string& prefix,
                                                 int chunkX, int chunkZ);
 
     // Keep static version for general game usage
     static RegionFile* getRegionFile(ConsoleSaveFile* saveFile,
-                                     const std::wstring& prefix, int chunkX,
+                                     const std::string& prefix, int chunkX,
                                      int chunkZ) {
         return s_defaultCache._getRegionFile(saveFile, prefix, chunkX, chunkZ);
     }
     static void clear() { s_defaultCache._clear(); }
     static int getSizeDelta(ConsoleSaveFile* saveFile,
-                            const std::wstring& prefix, int chunkX,
+                            const std::string& prefix, int chunkX,
                             int chunkZ) {
         return s_defaultCache._getSizeDelta(saveFile, prefix, chunkX, chunkZ);
     }
     static DataInputStream* getChunkDataInputStream(ConsoleSaveFile* saveFile,
-                                                    const std::wstring& prefix,
+                                                    const std::string& prefix,
                                                     int chunkX, int chunkZ) {
         return s_defaultCache._getChunkDataInputStream(saveFile, prefix, chunkX,
                                                        chunkZ);
     }
     static DataOutputStream* getChunkDataOutputStream(
-        ConsoleSaveFile* saveFile, const std::wstring& prefix, int chunkX,
+        ConsoleSaveFile* saveFile, const std::string& prefix, int chunkX,
         int chunkZ) {
         return s_defaultCache._getChunkDataOutputStream(saveFile, prefix,
                                                         chunkX, chunkZ);

@@ -20,7 +20,7 @@ private:
 
 public:
     const float x0, y0, z0, x1, y1, z1;
-    std::wstring id;
+    std::string id;
 
 public:
     Cube(ModelPart* modelPart, int xTexOffs, int yTexOffs, float x0, float y0,
@@ -28,5 +28,5 @@ public:
          bool bFlipPoly3UVs = false);  // 4J - added faceMask
 
     void render(Tesselator* t, float scale);
-    Cube* setId(const std::wstring& id);
+    Cube* setId(const std::string& id);
 };

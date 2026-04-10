@@ -1,6 +1,6 @@
 #include "TileRenderer.h"
 
-#include <GL/gl.h>
+
 #include <assert.h>
 #include <stdint.h>
 #include <string.h>
@@ -9,12 +9,12 @@
 #include <cmath>
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "EntityTileRenderer.h"
 #include "GameRenderer.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/include/FrameProfiler.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
+#include "util/FrameProfiler.h"
 #include "Tesselator.h"
 #include "minecraft/Direction.h"
 #include "minecraft/Facing.h"

@@ -173,7 +173,7 @@ void DataOutputStream::writeUnsignedShort(unsigned short a) {
 // first. If no exception is thrown, the counter written is incremented by 2.
 // Parameters:
 // v - a char value to be written.
-void DataOutputStream::writeChar(wchar_t v) {
+void DataOutputStream::writeChar(char v) {
     stream->write((v >> 8) & 0xff);
     stream->write(v & 0xff);
     // TODO 4J Stu - Error handling?
@@ -184,7 +184,7 @@ void DataOutputStream::writeChar(wchar_t v) {
 // Each character is written to the data output stream as if by the writeChar
 // method. If no exception is thrown, the counter written is incremented by
 // twice the length of s. Parameters: s - a String value to be written.
-void DataOutputStream::writeChars(const std::wstring& str) {
+void DataOutputStream::writeChars(const std::string& str) {
     for (unsigned int i = 0; i < str.length(); i++) {
         writeChar(str.at(i));
         // TODO 4J Stu - Error handling?
@@ -212,7 +212,7 @@ void DataOutputStream::writeBoolean(bool b) {
 // of bytes written to the output stream. This will be at least two plus the
 // length of str, and at most two plus thrice the length of str. Parameters: str
 // - a string to be written.
-void DataOutputStream::writeUTF(const std::wstring& str) {
+void DataOutputStream::writeUTF(const std::string& str) {
     int strlen = (int)str.length();
     int utflen = 0;
     int c, count = 0;

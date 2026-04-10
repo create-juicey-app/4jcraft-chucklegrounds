@@ -23,6 +23,6 @@ BeaconConfirmButton::BeaconConfirmButton(BeaconScreen* screen, int id, int x,
 }
 
 void BeaconConfirmButton::renderTooltip(int xm, int ym) {
-    screen->renderTooltip(Language::getInstance()->getElement(L"gui.done"), xm,
+    screen->renderTooltip(Language::getInstance()->getElement("gui.done"), xm,
                           ym);
 }

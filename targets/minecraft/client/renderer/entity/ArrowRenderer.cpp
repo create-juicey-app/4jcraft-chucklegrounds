@@ -4,13 +4,14 @@
 
 #include <memory>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/client/resources/ResourceLocation.h"
 #include "minecraft/world/entity/Entity.h"
 #include "minecraft/world/entity/projectile/Arrow.h"
+
 
 ResourceLocation ArrowRenderer::ARROW_LOCATION =
     ResourceLocation(TN_ITEM_ARROWS);
@@ -21,7 +22,7 @@ void ArrowRenderer::render(std::shared_ptr<Entity> _arrow, double x, double y,
     // type Arrow rather than shared_ptr<Entity>  we have here - do some casting
     // around instead
     std::shared_ptr<Arrow> arrow = std::dynamic_pointer_cast<Arrow>(_arrow);
-    bindTexture(_arrow);  // 4J - was L"/item/arrows.png"
+    bindTexture(_arrow);  // 4J - was "/item/arrows.png"
 
     glPushMatrix();
 

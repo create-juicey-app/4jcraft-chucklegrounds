@@ -48,7 +48,7 @@ public:
     int getPostfixDescriptionId();  // 4J Added
     int hashCode();
 
-    std::wstring toString();
+    std::string toString();
 
     // Was bool equals(Object obj)
     bool equals(MobEffectInstance* obj);

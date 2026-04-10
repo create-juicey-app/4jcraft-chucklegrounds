@@ -8,10 +8,10 @@
 
 class Icon;
 
-const std::wstring SandStoneTile::TEXTURE_TOP = L"sandstone_top";
-const std::wstring SandStoneTile::TEXTURE_BOTTOM = L"sandstone_bottom";
-const std::wstring SandStoneTile::TEXTURE_NAMES[] = {
-    L"sandstone_side", L"sandstone_carved", L"sandstone_smooth"};
+const std::string SandStoneTile::TEXTURE_TOP = "sandstone_top";
+const std::string SandStoneTile::TEXTURE_BOTTOM = "sandstone_bottom";
+const std::string SandStoneTile::TEXTURE_NAMES[] = {
+    "sandstone_side", "sandstone_carved", "sandstone_smooth"};
 
 int SandStoneTile::SANDSTONE_NAMES[SANDSTONE_BLOCK_NAMES] = {
     IDS_TILE_SANDSTONE, IDS_TILE_SANDSTONE_CHISELED, IDS_TILE_SANDSTONE_SMOOTH};

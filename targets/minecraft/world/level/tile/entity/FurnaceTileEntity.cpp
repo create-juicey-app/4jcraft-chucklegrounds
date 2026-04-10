@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "FurnaceTileEntity.h"
 
 #include <stdint.h>
@@ -47,7 +48,7 @@ FurnaceTileEntity::FurnaceTileEntity() : TileEntity() {
     litDuration = 0;
     tickCount = 0;
     m_charcoalUsed = false;
-    name = L"";
+    name = "";
 }
 
 unsigned int FurnaceTileEntity::getContainerSize() { return items.size(); }
@@ -96,56 +97,56 @@ void FurnaceTileEntity::setItem(unsigned int slot,
         item->count = getMaxStackSize();
 }
 
-std::wstring FurnaceTileEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_TILE_FURNACE);
+std::string FurnaceTileEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_TILE_FURNACE);
 }
 
-std::wstring FurnaceTileEntity::getCustomName() {
-    return hasCustomName() ? name : L"";
+std::string FurnaceTileEntity::getCustomName() {
+    return hasCustomName() ? name : "";
 }
 
 bool FurnaceTileEntity::hasCustomName() { return !name.empty(); }
 
-void FurnaceTileEntity::setCustomName(const std::wstring& name) {
+void FurnaceTileEntity::setCustomName(const std::string& name) {
     this->name = name;
 }
 
 void FurnaceTileEntity::load(CompoundTag* base) {
     TileEntity::load(base);
     ListTag<CompoundTag>* inventoryList =
-        (ListTag<CompoundTag>*)base->getList(L"Items");
+        (ListTag<CompoundTag>*)base->getList("Items");
     items = std::vector<std::shared_ptr<ItemInstance>>(getContainerSize());
     for (int i = 0; i < inventoryList->size(); i++) {
         CompoundTag* tag = inventoryList->get(i);
-        unsigned int slot = tag->getByte(L"Slot");
+        unsigned int slot = tag->getByte("Slot");
         if (slot >= 0 && slot < items.size())
             items[slot] = ItemInstance::fromTag(tag);
     }
 
-    litTime = base->getShort(L"BurnTime");
-    tickCount = base->getShort(L"CookTime");
+    litTime = base->getShort("BurnTime");
+    tickCount = base->getShort("CookTime");
     litDuration = getBurnDuration(items[SLOT_FUEL]);
-    if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
-    m_charcoalUsed = base->getBoolean(L"CharcoalUsed");
+    if (base->contains("CustomName")) name = base->getString("CustomName");
+    m_charcoalUsed = base->getBoolean("CharcoalUsed");
 }
 
 void FurnaceTileEntity::save(CompoundTag* base) {
     TileEntity::save(base);
-    base->putShort(L"BurnTime", (short)(litTime));
-    base->putShort(L"CookTime", (short)(tickCount));
+    base->putShort("BurnTime", (short)(litTime));
+    base->putShort("CookTime", (short)(tickCount));
     ListTag<CompoundTag>* listTag = new ListTag<CompoundTag>();
 
     for (unsigned int i = 0; i < items.size(); i++) {
         if (items[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             items[i]->save(tag);
             listTag->add(tag);
         }
     }
-    base->put(L"Items", listTag);
-    if (hasCustomName()) base->putString(L"CustomName", name);
-    base->putBoolean(L"CharcoalUsed", m_charcoalUsed);
+    base->put("Items", listTag);
+    if (hasCustomName()) base->putString("CustomName", name);
+    base->putBoolean("CharcoalUsed", m_charcoalUsed);
 }
 
 int FurnaceTileEntity::getMaxStackSize() {

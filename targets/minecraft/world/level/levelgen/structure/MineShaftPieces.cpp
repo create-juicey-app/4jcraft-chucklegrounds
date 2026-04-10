@@ -57,13 +57,13 @@ void MineShaftPieces::staticCtor() {
 
 void MineShaftPieces::loadStatic() {
     StructureFeatureIO::setPieceId(eStructurePiece_MineShaftCorridor,
-                                   MineShaftCorridor::Create, L"MSCorridor");
+                                   MineShaftCorridor::Create, "MSCorridor");
     StructureFeatureIO::setPieceId(eStructurePiece_MineShaftCrossing,
-                                   MineShaftCrossing::Create, L"MSCrossing");
+                                   MineShaftCrossing::Create, "MSCrossing");
     StructureFeatureIO::setPieceId(eStructurePiece_MineShaftRoom,
-                                   MineShaftRoom::Create, L"MSRoom");
+                                   MineShaftRoom::Create, "MSRoom");
     StructureFeatureIO::setPieceId(eStructurePiece_MineShaftStairs,
-                                   MineShaftStairs::Create, L"MSStairs");
+                                   MineShaftStairs::Create, "MSStairs");
 }
 
 StructurePiece* MineShaftPieces::createRandomShaftPiece(
@@ -257,18 +257,18 @@ bool MineShaftPieces::MineShaftRoom::postProcess(Level* level, Random* random,
 }
 
 void MineShaftPieces::MineShaftRoom::addAdditonalSaveData(CompoundTag* tag) {
-    ListTag<IntArrayTag>* entrances = new ListTag<IntArrayTag>(L"Entrances");
+    ListTag<IntArrayTag>* entrances = new ListTag<IntArrayTag>("Entrances");
     for (auto it = childEntranceBoxes.begin(); it != childEntranceBoxes.end();
          ++it) {
         BoundingBox* bb = *it;
-        entrances->add(bb->createTag(L""));
+        entrances->add(bb->createTag(""));
     }
-    tag->put(L"Entrances", entrances);
+    tag->put("Entrances", entrances);
 }
 
 void MineShaftPieces::MineShaftRoom::readAdditonalSaveData(CompoundTag* tag) {
     ListTag<IntArrayTag>* entrances =
-        (ListTag<IntArrayTag>*)tag->getList(L"Entrances");
+        (ListTag<IntArrayTag>*)tag->getList("Entrances");
     for (int i = 0; i < entrances->size(); i++) {
         childEntranceBoxes.push_back(new BoundingBox(entrances->get(i)->data));
     }
@@ -280,18 +280,18 @@ MineShaftPieces::MineShaftCorridor::MineShaftCorridor() {
 
 void MineShaftPieces::MineShaftCorridor::addAdditonalSaveData(
     CompoundTag* tag) {
-    tag->putBoolean(L"hr", hasRails);
-    tag->putBoolean(L"sc", spiderCorridor);
-    tag->putBoolean(L"hps", hasPlacedSpider);
-    tag->putInt(L"Num", numSections);
+    tag->putBoolean("hr", hasRails);
+    tag->putBoolean("sc", spiderCorridor);
+    tag->putBoolean("hps", hasPlacedSpider);
+    tag->putInt("Num", numSections);
 }
 
 void MineShaftPieces::MineShaftCorridor::readAdditonalSaveData(
     CompoundTag* tag) {
-    hasRails = tag->getBoolean(L"hr");
-    spiderCorridor = tag->getBoolean(L"sc");
-    hasPlacedSpider = tag->getBoolean(L"hps");
-    numSections = tag->getInt(L"Num");
+    hasRails = tag->getBoolean("hr");
+    spiderCorridor = tag->getBoolean("sc");
+    hasPlacedSpider = tag->getBoolean("hps");
+    numSections = tag->getInt("Num");
 }
 
 MineShaftPieces::MineShaftCorridor::MineShaftCorridor(int genDepth,
@@ -596,7 +596,7 @@ bool MineShaftPieces::MineShaftCorridor::postProcess(Level* level,
                     std::dynamic_pointer_cast<MobSpawnerTileEntity>(
                         level->getTileEntity(x, y, newZ));
                 if (entity != nullptr)
-                    entity->getSpawner()->setEntityId(L"CaveSpider");
+                    entity->getSpawner()->setEntityId("CaveSpider");
             }
         }
     }
@@ -632,14 +632,14 @@ MineShaftPieces::MineShaftCrossing::MineShaftCrossing() {
 
 void MineShaftPieces::MineShaftCrossing::addAdditonalSaveData(
     CompoundTag* tag) {
-    tag->putBoolean(L"tf", isTwoFloored);
-    tag->putInt(L"D", direction);
+    tag->putBoolean("tf", isTwoFloored);
+    tag->putInt("D", direction);
 }
 
 void MineShaftPieces::MineShaftCrossing::readAdditonalSaveData(
     CompoundTag* tag) {
-    isTwoFloored = tag->getBoolean(L"tf");
-    direction = tag->getInt(L"D");
+    isTwoFloored = tag->getBoolean("tf");
+    direction = tag->getInt("D");
 }
 
 MineShaftPieces::MineShaftCrossing::MineShaftCrossing(int genDepth,

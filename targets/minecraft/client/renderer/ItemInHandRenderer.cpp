@@ -1,14 +1,16 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "ItemInHandRenderer.h"
 
-#include <GL/gl.h>
+
 
 #include <cmath>
 #include <numbers>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "platform/renderer/renderer.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "app/linux/LinuxGame.h"
 #include "Tesselator.h"
 #include "Textures.h"
@@ -300,7 +302,7 @@ void ItemInHandRenderer::renderItem(std::shared_ptr<LivingEntity> mob,
             LOD = 2;  // Force LOD level 2 to achieve texture reads from 256x256
                       // map
         }
-        RenderManager.StateSetForceLOD(LOD);
+        PlatformRenderer.StateSetForceLOD(LOD);
 
         // 4J Original comment
         // Yes, these are backwards.
@@ -362,7 +364,7 @@ void ItemInHandRenderer::renderItem(std::shared_ptr<LivingEntity> mob,
             glDepthFunc(GL_LEQUAL);
         }
 
-        RenderManager.StateSetForceLOD(-1);
+        PlatformRenderer.StateSetForceLOD(-1);
 
         glDisable(GL_RESCALE_NORMAL);
     }
@@ -415,15 +417,15 @@ void ItemInHandRenderer::render(float a) {
         std::dynamic_pointer_cast<LocalPlayer>(player);
     if (localPlayer) {
         if (localPlayer->m_iScreenSection ==
-                C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM ||
+                IPlatformRenderer::VIEWPORT_TYPE_SPLIT_BOTTOM ||
             localPlayer->m_iScreenSection ==
-                C4JRender::VIEWPORT_TYPE_SPLIT_TOP) {
+                IPlatformRenderer::VIEWPORT_TYPE_SPLIT_TOP) {
             fudgeY = 0.08f;
             splitHoriz = true;
         } else if (localPlayer->m_iScreenSection ==
-                       C4JRender::VIEWPORT_TYPE_SPLIT_LEFT ||
+                       IPlatformRenderer::VIEWPORT_TYPE_SPLIT_LEFT ||
                    localPlayer->m_iScreenSection ==
-                       C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT) {
+                       IPlatformRenderer::VIEWPORT_TYPE_SPLIT_RIGHT) {
             fudgeX = -0.18f;
         }
     }
@@ -464,7 +466,7 @@ void ItemInHandRenderer::render(float a) {
         static int lightmapLogCount = 0;
         if (lightmapLogCount < 8) {
             ++lightmapLogCount;
-            app.DebugPrintf(
+            Log::info(
                 "[linux-lightmap] item-hand raw=0x%08x uv=(%d,%d)\n", col, u,
                 v);
         }
@@ -547,7 +549,7 @@ void ItemInHandRenderer::render(float a) {
                     player->inventory->getSelected();
                 if ((itemInstance &&
                      (itemInstance->getItem()->id == Item::map_Id)) ||
-                    app.GetGameSettings(localPlayer->GetXboxPad(),
+                    gameServices().getGameSettings(localPlayer->GetXboxPad(),
                                         eGameSetting_DisplayHand) != 0) {
                     playerRenderer->renderHand();
                 }
@@ -576,7 +578,7 @@ void ItemInHandRenderer::render(float a) {
         glScalef(s, s, s);
 
         minecraft->textures->bindTexture(
-            &MAP_BACKGROUND_LOCATION);  // 4J was L"/misc/mapbg.png"
+            &MAP_BACKGROUND_LOCATION);  // 4J was "/misc/mapbg.png"
         Tesselator* t = Tesselator::getInstance();
 
         //        glNormal3f(0, 0, -1);	// 4J - changed to use tesselator
@@ -764,7 +766,7 @@ void ItemInHandRenderer::render(float a) {
             player->inventory->getSelected();
 
         if ((itemInstance && (itemInstance->getItem()->id == Item::map_Id)) ||
-            app.GetGameSettings(localPlayer->GetXboxPad(),
+            gameServices().getGameSettings(localPlayer->GetXboxPad(),
                                 eGameSetting_DisplayHand) != 0) {
             playerRenderer->renderHand();
         }
@@ -813,7 +815,7 @@ void ItemInHandRenderer::renderScreenEffect(float a) {
 
     if (minecraft->player->isUnderLiquid(Material::water)) {
         minecraft->textures->bindTexture(
-            &UNDERWATER_LOCATION);  // 4J was L"/misc/water.png"
+            &UNDERWATER_LOCATION);  // 4J was "/misc/water.png"
         renderWater(a);
     }
     glEnable(GL_ALPHA_TEST);

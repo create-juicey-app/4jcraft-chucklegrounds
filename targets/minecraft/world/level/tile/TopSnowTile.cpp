@@ -24,7 +24,7 @@ TopSnowTile::TopSnowTile(int id) : Tile(id, Material::topSnow, false) {
 }
 
 void TopSnowTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"snow");
+    icon = iconRegister->registerIcon("snow");
 }
 
 std::optional<AABB> TopSnowTile::getAABB(Level* level, int x, int y, int z) {

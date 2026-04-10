@@ -18,7 +18,7 @@
 #include "minecraft/world/phys/AABB.h"
 
 PortalTile::PortalTile(int id)
-    : HalfTransparentTile(id, L"portal", Material::portal, false) {
+    : HalfTransparentTile(id, "portal", Material::portal, false) {
     setTicking(true);
 }
 

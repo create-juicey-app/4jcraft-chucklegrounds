@@ -23,7 +23,7 @@ public:
     virtual bool readBoolean();
     virtual uint8_t readByte();
     virtual unsigned char readUnsignedByte();
-    virtual wchar_t readChar();
+    virtual char readChar();
     virtual bool readFully(std::vector<uint8_t>& b);
     virtual bool readFully(std::vector<char>& b);
     virtual double readDouble();
@@ -32,7 +32,7 @@ public:
     virtual int64_t readLong();
     virtual short readShort();
     virtual unsigned short readUnsignedShort();
-    virtual std::wstring readUTF();
+    virtual std::string readUTF();
     void deleteChildStream();
     virtual int readUTFChar();
     virtual unsigned long long readPlayerUID();  // 4J Added

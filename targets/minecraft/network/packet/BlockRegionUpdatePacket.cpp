@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "BlockRegionUpdatePacket.h"
 
 #include <assert.h>
@@ -74,7 +75,7 @@ BlockRegionUpdatePacket::BlockRegionUpdatePacket(int x, int y, int z, int xs,
         Compression::getCompression()->CompressLZXRLE(
             ucTemp, &inputSize, rawBuffer.data(),
             (unsigned int)rawBuffer.size());
-        // app.DebugPrintf("Chunk (%d,%d) compressed from %d to size %d\n",
+        // Log::info("Chunk (%d,%d) compressed from %d to size %d\n",
         // x>>4, z>>4, rawBuffer.size(), inputSize);
         unsigned char* ucTemp2 = new unsigned char[inputSize];
         memcpy(ucTemp2, ucTemp, inputSize);
@@ -118,7 +119,7 @@ void BlockRegionUpdatePacket::read(DataInputStream* dis)  // throws IOException
             Compression::getCompression()->DecompressLZXRLE(
                 buffer.data(), &outputSize, compressedBuffer.data(), size);
         } else {
-            app.DebugPrintf(
+            Log::info(
                 "Not decompressing packet that wasn't fully read\n");
         }
 

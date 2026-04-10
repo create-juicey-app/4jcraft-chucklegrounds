@@ -18,9 +18,9 @@ RedlightTile::RedlightTile(int id, bool isLit)
 
 void RedlightTile::registerIcons(IconRegister* iconRegister) {
     if (isLit) {
-        icon = iconRegister->registerIcon(L"redstoneLight_lit");
+        icon = iconRegister->registerIcon("redstoneLight_lit");
     } else {
-        icon = iconRegister->registerIcon(L"redstoneLight");
+        icon = iconRegister->registerIcon("redstoneLight");
     }
 }
 

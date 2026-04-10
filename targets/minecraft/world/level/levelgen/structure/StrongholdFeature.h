@@ -27,9 +27,9 @@ class TilePos;
 
 class StrongholdFeature : public StructureFeature {
 public:
-    static const std::wstring OPTION_DISTANCE;
-    static const std::wstring OPTION_COUNT;
-    static const std::wstring OPTION_SPREAD;
+    static const std::string OPTION_DISTANCE;
+    static const std::string OPTION_COUNT;
+    static const std::string OPTION_SPREAD;
 
 public:
     static void staticCtor();
@@ -49,10 +49,10 @@ private:
 
 public:
     StrongholdFeature();
-    StrongholdFeature(std::unordered_map<std::wstring, std::wstring> options);
+    StrongholdFeature(std::unordered_map<std::string, std::string> options);
     ~StrongholdFeature();
 
-    std::wstring getFeatureName();
+    std::string getFeatureName();
 
 protected:
     virtual bool isFeatureChunk(int x, int z, bool bIsSuperflat = false);

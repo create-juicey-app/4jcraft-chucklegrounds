@@ -38,7 +38,7 @@ CompoundTag* DerivedLevelData::getLoadedPlayerTag() {
     return wrapped->getLoadedPlayerTag();
 }
 
-std::wstring DerivedLevelData::getLevelName() {
+std::string DerivedLevelData::getLevelName() {
     return wrapped->getLevelName();
 }
 
@@ -76,7 +76,7 @@ void DerivedLevelData::setDimension(int dimension) {}
 
 void DerivedLevelData::setSpawn(int xSpawn, int ySpawn, int zSpawn) {}
 
-void DerivedLevelData::setLevelName(const std::wstring& levelName) {}
+void DerivedLevelData::setLevelName(const std::string& levelName) {}
 
 void DerivedLevelData::setVersion(int version) {}
 

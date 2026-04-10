@@ -8,8 +8,8 @@
 #include "minecraft/client/title/TitleScreen.h"
 #include "minecraft/locale/Language.h"
 
-DisconnectedScreen::DisconnectedScreen(const std::wstring& title,
-                                       const std::wstring reason,
+DisconnectedScreen::DisconnectedScreen(const std::string& title,
+                                       const std::string reason,
                                        void* reasonObjects, ...) {
     Language* language = Language::getInstance();
 
@@ -30,7 +30,7 @@ void DisconnectedScreen::init() {
 
     buttons.clear();
     buttons.push_back(new Button(0, width / 2 - 100, height / 4 + 24 * 5 + 12,
-                                 language->getElement(L"gui.toMenu")));
+                                 language->getElement("gui.toMenu")));
 }
 
 void DisconnectedScreen::buttonClicked(Button* button) {

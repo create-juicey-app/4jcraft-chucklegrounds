@@ -15,7 +15,7 @@ public:
     static const int TYPE_CRACKED = 2;
     static const int TYPE_DETAIL = 3;
 
-    static const std::wstring TEXTURE_NAMES[];
+    static const std::string TEXTURE_NAMES[];
 
     static const int SMOOTH_STONE_BRICK_NAMES_LENGTH = 4;
 

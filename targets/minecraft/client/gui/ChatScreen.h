@@ -5,7 +5,7 @@
 
 class ChatScreen : public Screen {
 protected:
-    std::wstring message;
+    std::string message;
 
 private:
     int frame;
@@ -17,10 +17,10 @@ public:
     virtual void tick() override;
 
 private:
-    static const std::wstring allowedChars;
+    static const std::string allowedChars;
 
 protected:
-    void keyPressed(wchar_t ch, int eventKey) override;
+    void keyPressed(char ch, int eventKey) override;
 
 public:
     void render(int xm, int ym, float a) override;

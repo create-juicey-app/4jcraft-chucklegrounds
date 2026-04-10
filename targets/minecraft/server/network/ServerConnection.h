@@ -30,7 +30,7 @@ private:
 
     // 4J - When the server requests a texture, it should add it to here while
     // we are waiting for it
-    std::vector<std::wstring> m_pendingTextureRequests;
+    std::vector<std::string> m_pendingTextureRequests;
 
 public:
     MinecraftServer* server;
@@ -54,9 +54,9 @@ public:
     void tick();
 
     // 4J Added
-    bool addPendingTextureRequest(const std::wstring& textureName);
-    void handleTextureReceived(const std::wstring& textureName);
-    void handleTextureAndGeometryReceived(const std::wstring& textureName);
+    bool addPendingTextureRequest(const std::string& textureName);
+    void handleTextureReceived(const std::string& textureName);
+    void handleTextureAndGeometryReceived(const std::string& textureName);
     void handleServerSettingsChanged(
         std::shared_ptr<ServerSettingsChangedPacket> packet);
     std::vector<std::shared_ptr<PlayerConnection> >* getPlayers();

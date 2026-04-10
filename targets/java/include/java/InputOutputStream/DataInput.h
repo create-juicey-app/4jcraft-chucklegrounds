@@ -19,8 +19,8 @@ public:
     virtual int readInt() = 0;
     virtual int64_t readLong() = 0;
     virtual short readShort() = 0;
-    virtual wchar_t readChar() = 0;
-    virtual std::wstring readUTF() = 0;
+    virtual char readChar() = 0;
+    virtual std::string readUTF() = 0;
     virtual unsigned long long readPlayerUID() = 0;  // 4J Added
     virtual int skipBytes(int n) = 0;
 };

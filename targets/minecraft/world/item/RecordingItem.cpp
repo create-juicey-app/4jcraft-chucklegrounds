@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "minecraft/stats/GenericStats.h"
 #include "minecraft/util/HtmlString.h"
 #include "minecraft/world/IconRegister.h"
@@ -19,9 +19,9 @@
 #include "minecraft/world/level/tile/LevelEvent.h"
 #include "minecraft/world/level/tile/Tile.h"
 
-std::unordered_map<std::wstring, RecordingItem*> RecordingItem::BY_NAME;
+std::unordered_map<std::string, RecordingItem*> RecordingItem::BY_NAME;
 
-RecordingItem::RecordingItem(int id, const std::wstring& recording)
+RecordingItem::RecordingItem(int id, const std::string& recording)
     : Item(id), recording(recording) {
     this->maxStackSize = 1;
     BY_NAME[recording] = this;
@@ -59,8 +59,8 @@ void RecordingItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
                                     bool advanced) {
     eMinecraftColour color = getRarity(std::shared_ptr<ItemInstance>())->color;
 
-    wchar_t text[256];
-    swprintf(text, 256, L"%ls %ls", L"C418 -", recording.c_str());
+    char text[256];
+    snprintf(text, 256, "%s %s", "C418 -", recording.c_str());
 
     lines->push_back(HtmlString(text, color));
 }
@@ -71,10 +71,10 @@ const Rarity* RecordingItem::getRarity(
 }
 
 void RecordingItem::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"record_" + recording);
+    icon = iconRegister->registerIcon("record_" + recording);
 }
 
-RecordingItem* RecordingItem::getByName(const std::wstring& name) {
+RecordingItem* RecordingItem::getByName(const std::string& name) {
     auto it = BY_NAME.find(name);
     if (it != BY_NAME.end()) {
         return it->second;

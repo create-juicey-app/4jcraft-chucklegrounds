@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "Arrow.h"
 
 #include <math.h>
@@ -182,7 +183,7 @@ void Arrow::lerpMotion(double xd, double yd, double zd) {
         xRotO = xRot = (float)(atan2(yd, sd) * 180 / std::numbers::pi);
         xRotO = xRot;
         yRotO = yRot;
-        app.DebugPrintf("%f %f : 0x%x\n", xRot, yRot, &yRot);
+        Log::info("%f %f : 0x%x\n", xRot, yRot, &yRot);
         moveTo(x, y, z, yRot, xRot);
         life = 0;
     }
@@ -454,34 +455,34 @@ void Arrow::tick() {
 }
 
 void Arrow::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putShort(L"xTile", (short)xTile);
-    tag->putShort(L"yTile", (short)yTile);
-    tag->putShort(L"zTile", (short)zTile);
-    tag->putByte(L"inTile", (uint8_t)lastTile);
-    tag->putByte(L"inData", (uint8_t)lastData);
-    tag->putByte(L"shake", (uint8_t)shakeTime);
-    tag->putByte(L"inGround", (uint8_t)(inGround ? 1 : 0));
-    tag->putByte(L"pickup", (uint8_t)pickup);
-    tag->putDouble(L"damage", baseDamage);
+    tag->putShort("xTile", (short)xTile);
+    tag->putShort("yTile", (short)yTile);
+    tag->putShort("zTile", (short)zTile);
+    tag->putByte("inTile", (uint8_t)lastTile);
+    tag->putByte("inData", (uint8_t)lastData);
+    tag->putByte("shake", (uint8_t)shakeTime);
+    tag->putByte("inGround", (uint8_t)(inGround ? 1 : 0));
+    tag->putByte("pickup", (uint8_t)pickup);
+    tag->putDouble("damage", baseDamage);
 }
 
 void Arrow::readAdditionalSaveData(CompoundTag* tag) {
-    xTile = tag->getShort(L"xTile");
-    yTile = tag->getShort(L"yTile");
-    zTile = tag->getShort(L"zTile");
-    lastTile = tag->getByte(L"inTile") & 0xff;
-    lastData = tag->getByte(L"inData") & 0xff;
-    shakeTime = tag->getByte(L"shake") & 0xff;
-    inGround = tag->getByte(L"inGround") == 1;
-    if (tag->contains(L"damage")) {
-        baseDamage = tag->getDouble(L"damage");
+    xTile = tag->getShort("xTile");
+    yTile = tag->getShort("yTile");
+    zTile = tag->getShort("zTile");
+    lastTile = tag->getByte("inTile") & 0xff;
+    lastData = tag->getByte("inData") & 0xff;
+    shakeTime = tag->getByte("shake") & 0xff;
+    inGround = tag->getByte("inGround") == 1;
+    if (tag->contains("damage")) {
+        baseDamage = tag->getDouble("damage");
     }
 
-    if (tag->contains(L"pickup")) {
-        pickup = tag->getByte(L"pickup");
-    } else if (tag->contains(L"player")) {
+    if (tag->contains("pickup")) {
+        pickup = tag->getByte("pickup");
+    } else if (tag->contains("player")) {
         pickup =
-            tag->getBoolean(L"player") ? PICKUP_ALLOWED : PICKUP_DISALLOWED;
+            tag->getBoolean("player") ? PICKUP_ALLOWED : PICKUP_DISALLOWED;
     }
 }
 

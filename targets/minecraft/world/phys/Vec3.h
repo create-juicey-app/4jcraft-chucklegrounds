@@ -26,7 +26,7 @@ public:
     std::optional<Vec3> clipX(const Vec3& b, double xt) const;
     std::optional<Vec3> clipY(const Vec3& b, double yt) const;
     std::optional<Vec3> clipZ(const Vec3& b, double zt) const;
-    std::wstring toString() const;
+    std::string toString() const;
     Vec3 lerp(const Vec3& v, double a) const;
     void xRot(float degs);
     void yRot(float degs);

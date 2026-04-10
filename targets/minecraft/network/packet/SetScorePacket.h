@@ -14,14 +14,14 @@ public:
     static const int METHOD_CHANGE = 0;
     static const int METHOD_REMOVE = 1;
 
-    std::wstring owner;
-    std::wstring objectiveName;
+    std::string owner;
+    std::string objectiveName;
     int score;
     int method;
 
     SetScorePacket();
     SetScorePacket(Score* score, int method);
-    SetScorePacket(const std::wstring& owner);
+    SetScorePacket(const std::string& owner);
 
     void read(DataInputStream* dis);
     void write(DataOutputStream* dos);

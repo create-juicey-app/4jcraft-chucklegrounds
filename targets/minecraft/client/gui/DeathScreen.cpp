@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "Button.h"
 #include "PauseScreen.h"
 #include "util/StringHelpers.h"
@@ -15,9 +15,9 @@
 void DeathScreen::init() {
     buttons.clear();
     buttons.push_back(
-        new Button(1, width / 2 - 100, height / 4 + 24 * 3, L"Respawn"));
+        new Button(1, width / 2 - 100, height / 4 + 24 * 3, "Respawn"));
     buttons.push_back(
-        new Button(2, width / 2 - 100, height / 4 + 24 * 4, L"Title menu"));
+        new Button(2, width / 2 - 100, height / 4 + 24 * 4, "Title menu"));
 
     if (minecraft->user == nullptr) {
         buttons[1]->active = false;
@@ -50,10 +50,10 @@ void DeathScreen::render(int xm, int ym, float a) {
 
     glPushMatrix();
     glScalef(2, 2, 2);
-    drawCenteredString(font, L"Game over!", width / 2 / 2, 60 / 2, 0xffffff);
+    drawCenteredString(font, "Game over!", width / 2 / 2, 60 / 2, 0xffffff);
     glPopMatrix();
     drawCenteredString(font,
-                       L"Score: &e" + toWString(minecraft->player->getScore()),
+                       "Score: &e" + toWString(minecraft->player->getScore()),
                        width / 2, 100, 0xffffff);
 
     Screen::render(xm, ym, a);

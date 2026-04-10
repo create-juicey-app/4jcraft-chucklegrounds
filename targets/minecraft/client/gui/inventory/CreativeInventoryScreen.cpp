@@ -1,17 +1,17 @@
+#include "minecraft/IGameServices.h"
 #include "CreativeInventoryScreen.h"
 
-#include <GL/gl.h>
+
 
 #include <algorithm>
 #include <string>
 
-#include "platform/InputActions.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Render.h"
+#include "platform/input/input.h"
+#include "platform/renderer/renderer.h"
 #include "AbstractContainerScreen.h"
-#include "app/common/src/UI/All Platforms/IUIScene_CreativeMenu.h"
+#include "app/common/UI/All Platforms/IUIScene_CreativeMenu.h"
 #include "app/linux/LinuxGame.h"
-#include "app/include/stubs.h"
+#include "platform/stubs.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/Lighting.h"
 #include "minecraft/client/gui/Screen.h"
@@ -66,7 +66,7 @@ const int CreativeInventoryScreen::tabIconIds
         Item::bucket_lava_Id};
 
 std::shared_ptr<SimpleContainer> CreativeInventoryScreen::basicInventory =
-    std::make_shared<SimpleContainer>(0, L"", false, ITEMS_PER_PAGE);
+    std::make_shared<SimpleContainer>(0, "", false, ITEMS_PER_PAGE);
 ItemRenderer* CreativeInventoryScreen::itemRenderer = new ItemRenderer();
 std::shared_ptr<ItemInstance> CreativeInventoryScreen::tabIcons
     [IUIScene_CreativeMenu::eCreativeInventoryTab_COUNT];
@@ -254,11 +254,11 @@ void CreativeInventoryScreen::updateEvents() {
         int scrollableRows = totalRows - ROWS;
         if (scrollableRows > 0) {
             float step = 1.0f / (float)scrollableRows;
-            if (InputManager.ButtonDown(0, MINECRAFT_ACTION_LEFT_SCROLL)) {
+            if (PlatformInput.ButtonDown(0, MINECRAFT_ACTION_LEFT_SCROLL)) {
                 currentScroll -= step;
                 currentScroll = std::max(0.0f, std::min(1.0f, currentScroll));
                 container->scrollTo(currentScroll);
-            } else if (InputManager.ButtonDown(0,
+            } else if (PlatformInput.ButtonDown(0,
                                                MINECRAFT_ACTION_RIGHT_SCROLL)) {
                 currentScroll += step;
                 currentScroll = std::max(0.0f, std::min(1.0f, currentScroll));
@@ -274,7 +274,7 @@ void CreativeInventoryScreen::containerTick() {}
 
 void CreativeInventoryScreen::tick() { Screen::tick(); }
 
-void CreativeInventoryScreen::keyPressed(wchar_t eventCharacter, int eventKey) {
+void CreativeInventoryScreen::keyPressed(char eventCharacter, int eventKey) {
     AbstractContainerScreen::keyPressed(eventCharacter, eventKey);
 }
 
@@ -411,7 +411,7 @@ void CreativeInventoryScreen::renderLabels() {
         IUIScene_CreativeMenu::TabSpec* spec =
             IUIScene_CreativeMenu::specs[selectedTabIndex];
         if (spec) {
-            std::wstring tabName = app.GetString(spec->m_descriptionId);
+            std::string tabName = gameServices().getString(spec->m_descriptionId);
             font->draw(tabName, 8, 6, 0x404040);
         }
     }
@@ -589,7 +589,7 @@ bool CreativeInventoryScreen::renderIconTooltip(int tab, int mouseX,
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
         renderTooltip(
-            app.GetString(IUIScene_CreativeMenu::specs[tab]->m_descriptionId),
+            gameServices().getString(IUIScene_CreativeMenu::specs[tab]->m_descriptionId),
             mouseX, mouseY);
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);

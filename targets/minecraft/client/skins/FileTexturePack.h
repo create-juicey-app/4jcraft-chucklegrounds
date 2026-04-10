@@ -22,11 +22,11 @@ public:
 
 protected:
     InputStream* getResourceImplementation(
-        const std::wstring& name);  // throws IOException
+        const std::string& name);  // throws IOException
 
 public:
     //@Override
-    bool hasFile(const std::wstring& name);
+    bool hasFile(const std::string& name);
 
 private:
     void loadZipFile();  // throws IOException

@@ -34,44 +34,44 @@ float Mth::cos(float i) {
 }
 
 // 4J Changed this to remove the use of the actual UUID type
-std::wstring Mth::createInsecureUUID(Random* random) {
-    wchar_t output[33];
+std::string Mth::createInsecureUUID(Random* random) {
+    char output[33];
     output[32] = 0;
     int64_t high = (random->nextLong() & ~UUID_VERSION) | UUID_VERSION_TYPE_4;
     int64_t low = (random->nextLong() & ~UUID_VARIANT) | UUID_VARIANT_2;
     for (int i = 0; i < 16; i++) {
-        wchar_t nybbleHigh = high & 0xf;
-        wchar_t nybbleLow = low & 0xf;
+        char nybbleHigh = high & 0xf;
+        char nybbleLow = low & 0xf;
         nybbleHigh =
-            (nybbleHigh > 9) ? (nybbleHigh + (L'a' - 10)) : (nybbleHigh + L'0');
+            (nybbleHigh > 9) ? (nybbleHigh + ('a' - 10)) : (nybbleHigh + '0');
         nybbleLow =
-            (nybbleLow > 9) ? (nybbleLow + (L'a' - 10)) : (nybbleLow + L'0');
+            (nybbleLow > 9) ? (nybbleLow + ('a' - 10)) : (nybbleLow + '0');
         high >>= 4;
         low >>= 4;
         output[31 - i] = nybbleLow;
         output[15 - i] = nybbleHigh;
     }
-    return std::wstring(output);
+    return std::string(output);
 }
 
-int Mth::getInt(const std::wstring& input, int def) {
-    std::wistringstream stream(input);
+int Mth::getInt(const std::string& input, int def) {
+    std::istringstream stream(input);
     int result;
     return (stream >> result) ? result : def;
 }
 
-int Mth::getInt(const std::wstring& input, int def, int min) {
+int Mth::getInt(const std::string& input, int def, int min) {
     int result = getInt(input, def);
     return result < min ? min : result;
 }
 
-double Mth::getDouble(const std::wstring& input, double def) {
-    std::wistringstream stream(input);
+double Mth::getDouble(const std::string& input, double def) {
+    std::istringstream stream(input);
     double result;
     return (stream >> result) ? result : def;
 }
 
-double Mth::getDouble(const std::wstring& input, double def, double min) {
+double Mth::getDouble(const std::string& input, double def, double min) {
     double result = getDouble(input, def);
     return result < min ? min : result;
 }

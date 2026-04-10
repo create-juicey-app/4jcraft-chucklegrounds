@@ -31,5 +31,5 @@ Icon* CoalItem::getIcon(int auxValue) {
 void CoalItem::registerIcons(IconRegister* iconRegister) {
     Item::registerIcons(iconRegister);
 
-    charcoalIcon = iconRegister->registerIcon(L"charcoal");
+    charcoalIcon = iconRegister->registerIcon("charcoal");
 }

@@ -125,7 +125,7 @@ void SkullTile::onRemove(Level* level, int x, int y, int z, int id, int data) {
         if (entity->getSkullType() == SkullTileEntity::TYPE_CHAR &&
             !entity->getExtraType().empty()) {
             item->setTag(new CompoundTag());
-            item->getTag()->putString(L"SkullOwner", entity->getExtraType());
+            item->getTag()->putString("SkullOwner", entity->getExtraType());
         }
 
         popResource(level, x, y, z, item);
@@ -331,6 +331,6 @@ Icon* SkullTile::getTexture(int face, int data) {
     return Tile::soulsand->getTexture(face);
 }
 
-std::wstring SkullTile::getTileItemIconName() {
-    return getIconName() + L"_" + SkullItem::ICON_NAMES[0];
+std::string SkullTile::getTileItemIconName() {
+    return getIconName() + "_" + SkullItem::ICON_NAMES[0];
 }

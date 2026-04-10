@@ -1,7 +1,7 @@
 #include "ClientConstants.h"
 
-#include "app/common/src/BuildVer/BuildVer.h"
+#include "app/common/BuildVer/BuildVer.h"
 
-const std::wstring ClientConstants::VERSION_STRING =
-    std::wstring(L"Minecraft Xbox ") + VER_FILEVERSION_STR_W +
-    std::wstring(L" (4jcraft)");  //+ SharedConstants::VERSION_STRING;
+const std::string ClientConstants::VERSION_STRING =
+    std::string("Minecraft Xbox ") + VER_FILEVERSION_STR_W +
+    std::string(" (4jcraft)");  //+ SharedConstants::VERSION_STRING;

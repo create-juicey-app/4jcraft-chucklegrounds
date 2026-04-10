@@ -14,9 +14,9 @@
 #include "nbt/CompoundTag.h"
 #include "nbt/ListTag.h"
 
-const std::wstring Villages::VILLAGE_FILE_ID = L"villages";
+const std::string Villages::VILLAGE_FILE_ID = "villages";
 
-Villages::Villages(const std::wstring& id) : SavedData(id) {
+Villages::Villages(const std::string& id) : SavedData(id) {
     _tick = 0;
     level = nullptr;
 }
@@ -205,9 +205,9 @@ bool Villages::isDoor(int x, int y, int z) {
 }
 
 void Villages::load(CompoundTag* tag) {
-    _tick = tag->getInt(L"Tick");
+    _tick = tag->getInt("Tick");
     ListTag<CompoundTag>* villageTags =
-        (ListTag<CompoundTag>*)tag->getList(L"Villages");
+        (ListTag<CompoundTag>*)tag->getList("Villages");
     for (int i = 0; i < villageTags->size(); i++) {
         CompoundTag* compoundTag = villageTags->get(i);
         std::shared_ptr<Village> village = std::make_shared<Village>();
@@ -217,14 +217,14 @@ void Villages::load(CompoundTag* tag) {
 }
 
 void Villages::save(CompoundTag* tag) {
-    tag->putInt(L"Tick", _tick);
-    ListTag<CompoundTag>* villageTags = new ListTag<CompoundTag>(L"Villages");
+    tag->putInt("Tick", _tick);
+    ListTag<CompoundTag>* villageTags = new ListTag<CompoundTag>("Villages");
     // for (Village village : villages)
     for (auto it = villages.begin(); it != villages.end(); ++it) {
         std::shared_ptr<Village> village = *it;
-        CompoundTag* villageTag = new CompoundTag(L"Village");
+        CompoundTag* villageTag = new CompoundTag("Village");
         village->addAdditonalSaveData(villageTag);
         villageTags->add(villageTag);
     }
-    tag->put(L"Villages", villageTags);
+    tag->put("Villages", villageTags);
 }

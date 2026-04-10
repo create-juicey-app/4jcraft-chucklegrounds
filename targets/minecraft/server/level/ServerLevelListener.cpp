@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "ServerLevelListener.h"
 
 #include <memory>
@@ -26,7 +27,7 @@ ServerLevelListener::ServerLevelListener(MinecraftServer* server,
 
 // 4J removed -
 /*
-void ServerLevelListener::addParticle(const wstring& name, double x, double y,
+void ServerLevelListener::addParticle(const string& name, double x, double y,
 double z, double xa, double ya, double za)
 {
 }
@@ -57,7 +58,7 @@ void ServerLevelListener::playSound(int iSound, double x, double y, double z,
                                     float volume, float pitch,
                                     float fClipSoundDist) {
     if (iSound < 0) {
-        app.DebugPrintf(
+        Log::info(
             "ServerLevelListener received request for sound less than 0, so "
             "ignoring\n");
     } else {
@@ -78,7 +79,7 @@ void ServerLevelListener::playSoundExceptPlayer(std::shared_ptr<Player> player,
                                                 float pitch,
                                                 float fSoundClipDist) {
     if (iSound < 0) {
-        app.DebugPrintf(
+        Log::info(
             "ServerLevelListener received request for sound less than 0, so "
             "ignoring\n");
     } else {
@@ -105,7 +106,7 @@ void ServerLevelListener::tileChanged(int x, int y, int z) {
 
 void ServerLevelListener::tileLightChanged(int x, int y, int z) {}
 
-void ServerLevelListener::playStreamingMusic(const std::wstring& name, int x,
+void ServerLevelListener::playStreamingMusic(const std::string& name, int x,
                                              int y, int z) {}
 
 void ServerLevelListener::levelEvent(std::shared_ptr<Player> source, int type,

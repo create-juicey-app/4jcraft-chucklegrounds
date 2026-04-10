@@ -10,7 +10,7 @@ class Entity;
 
 class MobSpawnerRenderer : public TileEntityRenderer {
 private:
-    std::unordered_map<std::wstring, std::shared_ptr<Entity> > models;
+    std::unordered_map<std::string, std::shared_ptr<Entity> > models;
 
 public:
     static void render(BaseMobSpawner* spawner, double x, double y, double z,

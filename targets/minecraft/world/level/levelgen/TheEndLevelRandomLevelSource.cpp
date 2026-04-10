@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "TheEndLevelRandomLevelSource.h"
 
 #include <stdlib.h>
@@ -402,7 +403,7 @@ void TheEndLevelRandomLevelSource::postProcess(ChunkSource* parent, int xt,
 
     HeavyTile::instaFall = false;
 
-    app.processSchematics(parent->getChunk(xt, zt));
+    gameServices().processSchematics(parent->getChunk(xt, zt));
 }
 
 bool TheEndLevelRandomLevelSource::save(bool force,
@@ -414,8 +415,8 @@ bool TheEndLevelRandomLevelSource::tick() { return false; }
 
 bool TheEndLevelRandomLevelSource::shouldSave() { return true; }
 
-std::wstring TheEndLevelRandomLevelSource::gatherStats() {
-    return L"RandomLevelSource";
+std::string TheEndLevelRandomLevelSource::gatherStats() {
+    return "RandomLevelSource";
 }
 
 std::vector<Biome::MobSpawnerData*>* TheEndLevelRandomLevelSource::getMobsAt(
@@ -428,7 +429,7 @@ std::vector<Biome::MobSpawnerData*>* TheEndLevelRandomLevelSource::getMobsAt(
 }
 
 TilePos* TheEndLevelRandomLevelSource::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
     return nullptr;
 }
 

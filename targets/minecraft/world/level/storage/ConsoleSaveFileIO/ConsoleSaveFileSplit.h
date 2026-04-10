@@ -70,7 +70,7 @@ private:
 
     FileEntry* GetRegionFileEntry(unsigned int regionIndex);
 
-    std::wstring m_fileName;
+    std::string m_fileName;
     bool m_autosave;
 
     //	void* hHeap;
@@ -91,9 +91,9 @@ private:
     void PrepareForWrite(FileEntry* file, unsigned int nNumberOfBytesToWrite);
     void MoveDataBeyond(FileEntry* file, unsigned int nNumberOfBytesToWrite);
 
-    bool GetNumericIdentifierFromName(const std::wstring& fileName,
+    bool GetNumericIdentifierFromName(const std::string& fileName,
                                       unsigned int* idOut);
-    std::wstring GetNameFromNumericIdentifier(unsigned int idIn);
+    std::string GetNameFromNumericIdentifier(unsigned int idIn);
     void processSubfilesForWrite();
     void processSubfilesAfterWrite();
 
@@ -102,11 +102,11 @@ public:
     static int SaveRegionFilesCallback(void* lpParam, bool bRes);
 
 private:
-    void _init(const std::wstring& fileName, void* pvSaveData,
+    void _init(const std::string& fileName, void* pvSaveData,
                unsigned int fileSize, ESavePlatform plat);
 
 public:
-    ConsoleSaveFileSplit(const std::wstring& fileName,
+    ConsoleSaveFileSplit(const std::string& fileName,
                          void* pvSaveData = nullptr, unsigned int fileSize = 0,
                          bool forceCleanSave = false,
                          ESavePlatform plat = SAVE_FILE_PLATFORM_LOCAL);
@@ -146,10 +146,10 @@ public:
 #endif
     virtual unsigned int getSizeOnDisk();
 
-    virtual std::wstring getFilename();
+    virtual std::string getFilename();
 
     virtual std::vector<FileEntry*>* getFilesWithPrefix(
-        const std::wstring& prefix);
+        const std::string& prefix);
     virtual std::vector<FileEntry*>* getRegionFilesByDimension(
         unsigned int dimensionIndex);
 

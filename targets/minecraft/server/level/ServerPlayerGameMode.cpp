@@ -1,8 +1,9 @@
+#include "minecraft/IGameServices.h"
 #include "ServerPlayerGameMode.h"
 
 #include <vector>
 
-#include "app/common/src/GameRules/LevelRules/Rules/GameRulesInstance.h"
+#include "app/common/GameRules/LevelRules/Rules/GameRulesInstance.h"
 #include "ServerLevel.h"
 #include "ServerPlayer.h"
 #include "minecraft/client/Minecraft.h"
@@ -151,7 +152,7 @@ void ServerPlayerGameMode::startDestroyBlock(int x, int y, int z, int face) {
 
     if (t > 0 &&
         (progress >=
-         1))  //|| (app.DebugSettingsOn() &&
+         1))  //|| (gameServices().debugSettingsOn() &&
               //(player->GetDebugOptions()&(1L<<eDebugSetting_InstantDestroy)
               //) )))
     {

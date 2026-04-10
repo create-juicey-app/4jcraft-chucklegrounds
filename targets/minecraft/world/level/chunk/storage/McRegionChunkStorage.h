@@ -24,7 +24,7 @@ class LevelChunk;
 
 class McRegionChunkStorage : public ChunkStorage {
 private:
-    const std::wstring m_prefix;
+    const std::string m_prefix;
     ConsoleSaveFile* m_saveFile;
     static std::mutex cs_memory;
 
@@ -35,7 +35,7 @@ private:
     static C4JThread* s_saveThreads[3];
 
 public:
-    McRegionChunkStorage(ConsoleSaveFile* saveFile, const std::wstring& prefix);
+    McRegionChunkStorage(ConsoleSaveFile* saveFile, const std::string& prefix);
     ~McRegionChunkStorage();
     static void staticCtor();
 

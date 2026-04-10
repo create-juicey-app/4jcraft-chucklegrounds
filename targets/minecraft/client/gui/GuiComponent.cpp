@@ -1,10 +1,9 @@
 #include "GuiComponent.h"
 
-#include <GL/gl.h>
+
 #include <math.h>
 
-#include "platform/sdl2/Render.h"
-#include "app/include/stubs.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Font.h"
 #include "minecraft/client/gui/Gui.h"
@@ -93,12 +92,12 @@ void GuiComponent::fillGradient(int x0, int y0, int x1, int y1, int col1,
 
 GuiComponent::GuiComponent() { blitOffset = 0; }
 
-void GuiComponent::drawCenteredString(Font* font, const std::wstring& str,
+void GuiComponent::drawCenteredString(Font* font, const std::string& str,
                                       int x, int y, int color) {
     font->drawShadow(str, x - (font->width(str)) / 2, y, color);
 }
 
-void GuiComponent::drawString(Font* font, const std::wstring& str, int x, int y,
+void GuiComponent::drawString(Font* font, const std::string& str, int x, int y,
                               int color) {
     font->drawShadow(str, x, y, color);
 }

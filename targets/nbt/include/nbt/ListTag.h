@@ -12,8 +12,8 @@ private:
     uint8_t type;
 
 public:
-    ListTag() : Tag(L"") {}
-    ListTag(const std::wstring& name) : Tag(name) {}
+    ListTag() : Tag("") {}
+    ListTag(const std::string& name) : Tag(name) {}
 
     void write(DataOutput* dos) {
         if (list.size() > 0)
@@ -40,7 +40,7 @@ public:
 
         list.clear();
         for (int i = 0; i < size; i++) {
-            std::unique_ptr<Tag> tag(Tag::newTag(type, L""));
+            std::unique_ptr<Tag> tag(Tag::newTag(type, ""));
             tag->load(dis, tagDepth);
             list.push_back(std::move(tag));
         }
@@ -48,14 +48,14 @@ public:
 
     uint8_t getId() { return TAG_List; }
 
-    std::wstring toString() {
-        static wchar_t buf[64];
-        swprintf(buf, 64, L"%zu entries of type %ls", list.size(),
+    std::string toString() {
+        static char buf[64];
+        snprintf(buf, 64, "%zu entries of type %s", list.size(),
                  Tag::getTagName(type));
-        return std::wstring(buf);
+        return std::string(buf);
     }
 
-    void print(char* prefix, std::wostream& out) {
+    void print(char* prefix, std::ostream& out) {
         Tag::print(prefix, out);
 
         out << prefix << "{" << std::endl;
@@ -77,7 +77,7 @@ public:
         // this but this seems the least invasive, most complete fix (covers
         // other items that also use list tags and require equality checks to
         // work) considering we can't change the write/load functions.
-        tag->setName(L"");
+        tag->setName("");
         list.push_back(std::unique_ptr<Tag>(tag));
     }
 

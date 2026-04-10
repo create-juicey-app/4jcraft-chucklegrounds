@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "platform/sdl2/Render.h"
-#include "app/include/stubs.h"
+#include "platform/renderer/renderer.h"
+#include "platform/stubs.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Button.h"
@@ -15,14 +15,14 @@
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/level/tile/entity/SignTileEntity.h"
 
-const std::wstring TextEditScreen::allowedChars =
+const std::string TextEditScreen::allowedChars =
     SharedConstants::acceptableLetters;
 
 TextEditScreen::TextEditScreen(std::shared_ptr<SignTileEntity> sign) {
     // 4J - added initialisers
     line = 0;
     frame = 0;
-    title = L"Edit sign message:";
+    title = "Edit sign message:";
 
     this->sign = sign;
 }
@@ -31,7 +31,7 @@ void TextEditScreen::init() {
     buttons.clear();
     Keyboard::enableRepeatEvents(true);
     buttons.push_back(
-        new Button(0, width / 2 - 100, height / 4 + 24 * 5, L"Done"));
+        new Button(0, width / 2 - 100, height / 4 + 24 * 5, "Done"));
 }
 
 void TextEditScreen::removed() {
@@ -54,16 +54,16 @@ void TextEditScreen::buttonClicked(Button* button) {
     }
 }
 
-void TextEditScreen::keyPressed(wchar_t ch, int eventKey) {
+void TextEditScreen::keyPressed(char ch, int eventKey) {
     if (eventKey == Keyboard::KEY_UP) line = (line - 1) & 3;
     if (eventKey == Keyboard::KEY_DOWN || eventKey == Keyboard::KEY_RETURN)
         line = (line + 1) & 3;
 
-    std::wstring temp = sign->GetMessage(line);
+    std::string temp = sign->GetMessage(line);
     if (eventKey == Keyboard::KEY_BACK && temp.length() > 0) {
         temp = temp.substr(0, temp.length() - 1);
     }
-    if (allowedChars.find(ch) != std::wstring::npos && temp.length() < 15) {
+    if (allowedChars.find(ch) != std::string::npos && temp.length() < 15) {
         temp += ch;
     }
 

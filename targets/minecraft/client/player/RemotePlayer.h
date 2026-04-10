@@ -20,7 +20,7 @@ private:
 
 public:
     Input* input;
-    RemotePlayer(Level* level, const std::wstring& name);
+    RemotePlayer(Level* level, const std::string& name);
 
 protected:
     virtual void setDefaultHeadHeight();

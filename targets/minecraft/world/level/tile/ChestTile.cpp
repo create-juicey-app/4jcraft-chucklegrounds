@@ -385,5 +385,5 @@ int ChestTile::getAnalogOutputSignal(Level* level, int x, int y, int z,
 void ChestTile::registerIcons(IconRegister* iconRegister) {
     // Register wood as the chest's icon, because it's used by the particles
     // when destroying the chest
-    icon = iconRegister->registerIcon(L"planks_oak");
+    icon = iconRegister->registerIcon("planks_oak");
 }

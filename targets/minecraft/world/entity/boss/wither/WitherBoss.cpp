@@ -108,13 +108,13 @@ void WitherBoss::defineSynchedData() {
 void WitherBoss::addAdditonalSaveData(CompoundTag* entityTag) {
     Monster::addAdditonalSaveData(entityTag);
 
-    entityTag->putInt(L"Invul", getInvulnerableTicks());
+    entityTag->putInt("Invul", getInvulnerableTicks());
 }
 
 void WitherBoss::readAdditionalSaveData(CompoundTag* tag) {
     Monster::readAdditionalSaveData(tag);
 
-    setInvulnerableTicks(tag->getInt(L"Invul"));
+    setInvulnerableTicks(tag->getInt("Invul"));
 }
 
 float WitherBoss::getShadowHeightOffs() { return bbHeight / 8; }

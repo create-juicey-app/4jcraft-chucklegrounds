@@ -22,7 +22,7 @@ private:
 public:
     NetherBridgeFeature();
     ~NetherBridgeFeature();
-    std::wstring getFeatureName();
+    std::string getFeatureName();
     std::vector<Biome::MobSpawnerData*>* getBridgeEnemies();
 
 protected:

@@ -192,7 +192,7 @@ std::shared_ptr<PistonPieceEntity> PistonMovingPiece::getEntity(
 void PistonMovingPiece::registerIcons(IconRegister* iconRegister) {
     // don't register null, register piston top instead (to get proper
     // particle effect)
-    icon = iconRegister->registerIcon(L"piston_top");
+    icon = iconRegister->registerIcon("piston_top");
 }
 
 int PistonMovingPiece::cloneTileId(Level* level, int x, int y, int z) {

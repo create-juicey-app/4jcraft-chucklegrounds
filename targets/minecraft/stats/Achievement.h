@@ -16,7 +16,7 @@ public:
     Achievement* prerequisite;
 
 private:
-    const std::wstring desc;
+    const std::string desc;
     DescFormatter* descFormatter;
 
 public:
@@ -27,18 +27,18 @@ private:
     void _init();
 
 public:
-    Achievement(int id, const std::wstring& name, int x, int y, Item* icon,
+    Achievement(int id, const std::string& name, int x, int y, Item* icon,
                 Achievement* prerequisite);
-    Achievement(int id, const std::wstring& name, int x, int y, Tile* icon,
+    Achievement(int id, const std::string& name, int x, int y, Tile* icon,
                 Achievement* prerequisite);
-    Achievement(int id, const std::wstring& name, int x, int y,
+    Achievement(int id, const std::string& name, int x, int y,
                 std::shared_ptr<ItemInstance> icon, Achievement* prerequisite);
 
     Achievement* setAwardLocallyOnly();
     Achievement* setGolden();
     Achievement* postConstruct();
     bool isAchievement();
-    std::wstring getDescription();
+    std::string getDescription();
     Achievement* setDescFormatter(DescFormatter* descFormatter);
     bool isGolden();
     int getAchievementID();

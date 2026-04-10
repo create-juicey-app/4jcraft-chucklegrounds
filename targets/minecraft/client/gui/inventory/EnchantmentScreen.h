@@ -47,14 +47,14 @@ private:
 
     private:
         Random random;
-        std::vector<std::wstring> words;
+        std::vector<std::string> words;
 
         EnchantmentNames();
 
     public:
-        std::wstring getRandomName();
+        std::string getRandomName();
     };
 
-    std::wstring enchantNames[3];
+    std::string enchantNames[3];
     int lastCosts[3];
 };

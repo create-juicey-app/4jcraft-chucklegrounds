@@ -1,7 +1,7 @@
 #include "LevelSummary.h"
 
-LevelSummary::LevelSummary(const std::wstring& levelId,
-                           const std::wstring& levelName, int64_t lastPlayed,
+LevelSummary::LevelSummary(const std::string& levelId,
+                           const std::string& levelName, int64_t lastPlayed,
                            int64_t sizeOnDisk, GameType* gameMode,
                            bool requiresConversion, bool hardcore,
                            bool hasCheats)
@@ -14,9 +14,9 @@ LevelSummary::LevelSummary(const std::wstring& levelId,
       hardcore(hardcore),
       _hasCheats(hasCheats) {}
 
-std::wstring LevelSummary::getLevelId() { return levelId; }
+std::string LevelSummary::getLevelId() { return levelId; }
 
-std::wstring LevelSummary::getLevelName() { return levelName; }
+std::string LevelSummary::getLevelName() { return levelName; }
 
 int64_t LevelSummary::getSizeOnDisk() { return sizeOnDisk; }
 

@@ -5,7 +5,7 @@
 #include <memory>
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/model/geom/Model.h"
 #include "minecraft/client/model/geom/ModelPart.h"
 #include "minecraft/util/Mth.h"

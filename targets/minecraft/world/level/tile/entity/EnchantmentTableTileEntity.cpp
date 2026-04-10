@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "EnchantmentTableTileEntity.h"
 
 #include <cmath>
@@ -25,19 +26,19 @@ EnchantmentTableEntity::EnchantmentTableEntity() {
     rot = 0.0f;
     oRot = 0.0f;
     tRot = 0.0f;
-    name = L"";
+    name = "";
 }
 
 EnchantmentTableEntity::~EnchantmentTableEntity() { delete random; }
 
 void EnchantmentTableEntity::save(CompoundTag* base) {
     TileEntity::save(base);
-    if (hasCustomName()) base->putString(L"CustomName", name);
+    if (hasCustomName()) base->putString("CustomName", name);
 }
 
 void EnchantmentTableEntity::load(CompoundTag* base) {
     TileEntity::load(base);
-    if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
+    if (base->contains("CustomName")) name = base->getString("CustomName");
 }
 
 void EnchantmentTableEntity::tick() {
@@ -92,17 +93,17 @@ void EnchantmentTableEntity::tick() {
     flip = flip + flipA;
 }
 
-std::wstring EnchantmentTableEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_ENCHANT);
+std::string EnchantmentTableEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_ENCHANT);
 }
 
-std::wstring EnchantmentTableEntity::getCustomName() {
-    return hasCustomName() ? name : L"";
+std::string EnchantmentTableEntity::getCustomName() {
+    return hasCustomName() ? name : "";
 }
 
 bool EnchantmentTableEntity::hasCustomName() { return !name.empty(); }
 
-void EnchantmentTableEntity::setCustomName(const std::wstring& name) {
+void EnchantmentTableEntity::setCustomName(const std::string& name) {
     this->name = name;
 }
 

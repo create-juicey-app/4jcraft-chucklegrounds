@@ -107,7 +107,7 @@ public:
     void move(std::shared_ptr<ServerPlayer> player);
     void remove(std::shared_ptr<ServerPlayer> player);
     std::shared_ptr<ServerPlayer> getPlayerForLogin(
-        PendingConnection* pendingConnection, const std::wstring& userName,
+        PendingConnection* pendingConnection, const std::string& userName,
         PlayerUID xuid, PlayerUID OnlineXuid);
     std::shared_ptr<ServerPlayer> respawn(
         std::shared_ptr<ServerPlayer> serverPlayer, int targetDimension,
@@ -123,29 +123,29 @@ public:
     void broadcastAll(std::shared_ptr<Packet> packet);
     void broadcastAll(std::shared_ptr<Packet> packet, int dimension);
 
-    std::wstring getPlayerNames();
+    std::string getPlayerNames();
 
 public:
-    bool isWhiteListed(const std::wstring& name);
-    bool isOp(const std::wstring& name);
+    bool isWhiteListed(const std::string& name);
+    bool isOp(const std::string& name);
     bool isOp(std::shared_ptr<ServerPlayer> player);  // 4J Added
-    std::shared_ptr<ServerPlayer> getPlayer(const std::wstring& name);
+    std::shared_ptr<ServerPlayer> getPlayer(const std::string& name);
     std::shared_ptr<ServerPlayer> getPlayer(PlayerUID uid);
     std::shared_ptr<ServerPlayer> getNearestPlayer(Pos* position, int range);
     std::vector<ServerPlayer>* getPlayers(
         Pos* position, int rangeMin, int rangeMax, int count, int mode,
         int levelMin, int levelMax,
-        std::unordered_map<std::wstring, int>* scoreRequirements,
-        const std::wstring& playerName, const std::wstring& teamName,
+        std::unordered_map<std::string, int>* scoreRequirements,
+        const std::string& playerName, const std::string& teamName,
         Level* level);
 
 private:
     bool meetsScoreRequirements(
         std::shared_ptr<Player> player,
-        std::unordered_map<std::wstring, int> scoreRequirements);
+        std::unordered_map<std::string, int> scoreRequirements);
 
 public:
-    void sendMessage(const std::wstring& name, const std::wstring& message);
+    void sendMessage(const std::string& name, const std::string& message);
     void broadcast(double x, double y, double z, double range, int dimension,
                    std::shared_ptr<Packet> packet);
     void broadcast(std::shared_ptr<Player> except, double x, double y, double z,
@@ -154,8 +154,8 @@ public:
     // param
     void saveAll(ProgressListener* progressListener,
                  bool bDeleteGuestMaps = false);
-    void whiteList(const std::wstring& playerName);
-    void blackList(const std::wstring& playerName);
+    void whiteList(const std::string& playerName);
+    void blackList(const std::string& playerName);
     //    Set<String> getWhiteList();		/ 4J removed
     void reloadWhitelist();
     void sendLevelInfo(std::shared_ptr<ServerPlayer> player,

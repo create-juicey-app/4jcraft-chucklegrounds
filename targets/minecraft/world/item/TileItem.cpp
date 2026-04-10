@@ -1,10 +1,12 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 
 
 #include "TileItem.h"
 
 #include <string>
 
-#include "app/common/src/Console_Debug_enum.h"
+#include "app/common/Console_Debug_enum.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Class.h"
 #include "minecraft/Facing.h"
@@ -153,9 +155,9 @@ bool TileItem::useOn(std::shared_ptr<ItemInstance> instance,
                 // 					pMinecraft->soundEngine->GetSoundName(szStepSoundName,iStepSound);
                 // 				}
 
-                // app.DebugPrintf("Place Sound - %s, Step Sound -
+                // Log::info("Place Sound - %s, Step Sound -
                 // %s\n",szPlaceSoundName,szStepSoundName);
-                app.DebugPrintf("Place Sound - %d, Step Sound - %d\n",
+                Log::info("Place Sound - %d, Step Sound - %d\n",
                                 iPlaceSound, iStepSound);
 #endif
                 level->playSound(x + 0.5f, y + 0.5f, z + 0.5f,
@@ -165,8 +167,8 @@ bool TileItem::useOn(std::shared_ptr<ItemInstance> instance,
 #ifndef _FINAL_BUILD
                 // 4J-PB - If we have the debug option on, don't reduce the
                 // number of this item
-                if (!(app.DebugSettingsOn() &&
-                      app.GetGameSettingsDebugMask() &
+                if (!(gameServices().debugSettingsOn() &&
+                      gameServices().debugGetMask() &
                           (1L << eDebugSetting_CraftAnything)))
 #endif
                 {
@@ -223,7 +225,7 @@ unsigned int TileItem::getUseDescriptionId() {
 }
 
 void TileItem::registerIcons(IconRegister* iconRegister) {
-    std::wstring iconName = Tile::tiles[tileId]->getTileItemIconName();
+    std::string iconName = Tile::tiles[tileId]->getTileItemIconName();
     if (!iconName.empty()) {
         itemIcon = iconRegister->registerIcon(iconName);
     }

@@ -24,15 +24,15 @@ private:
     int brewTime;
     int lastPotionCount;
     int ingredientId;
-    std::wstring name;
+    std::string name;
 
 public:
     BrewingStandTileEntity();
     ~BrewingStandTileEntity();
-    virtual std::wstring getName();
-    virtual std::wstring getCustomName();
+    virtual std::string getName();
+    virtual std::string getCustomName();
     virtual bool hasCustomName();
-    virtual void setCustomName(const std::wstring& name);
+    virtual void setCustomName(const std::string& name);
     virtual unsigned int getContainerSize();
     virtual void tick();
 

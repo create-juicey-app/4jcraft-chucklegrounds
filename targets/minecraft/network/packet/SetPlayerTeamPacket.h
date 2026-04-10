@@ -20,17 +20,17 @@ public:
     static const int METHOD_JOIN = 3;
     static const int METHOD_LEAVE = 4;
 
-    std::wstring name;
-    std::wstring displayName;
-    std::wstring prefix;
-    std::wstring suffix;
-    std::vector<std::wstring> players;
+    std::string name;
+    std::string displayName;
+    std::string prefix;
+    std::string suffix;
+    std::vector<std::string> players;
     int method;
     int options;
 
     SetPlayerTeamPacket();
     SetPlayerTeamPacket(PlayerTeam* team, int method);
-    SetPlayerTeamPacket(PlayerTeam* team, std::vector<std::wstring>* players,
+    SetPlayerTeamPacket(PlayerTeam* team, std::vector<std::string>* players,
                         int method);
     void read(DataInputStream* dis);
     void write(DataOutputStream* dos);

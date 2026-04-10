@@ -1,11 +1,13 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "VillageFeature.h"
 
 #include <list>
 #include <utility>
 #include <vector>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "VillagePieces.h"
 #include "java/Random.h"
@@ -19,8 +21,8 @@
 #include "minecraft/world/level/levelgen/structure/StructureStart.h"
 #include "nbt/CompoundTag.h"
 
-const std::wstring VillageFeature::OPTION_SIZE_MODIFIER = L"size";
-const std::wstring VillageFeature::OPTION_SPACING = L"distance";
+const std::string VillageFeature::OPTION_SIZE_MODIFIER = "size";
+const std::string VillageFeature::OPTION_SPACING = "distance";
 
 std::vector<Biome*> VillageFeature::allowedBiomes;
 
@@ -40,7 +42,7 @@ void VillageFeature::_init(int iXZSize) {
 VillageFeature::VillageFeature(int iXZSize) { _init(iXZSize); }
 
 VillageFeature::VillageFeature(
-    std::unordered_map<std::wstring, std::wstring> options, int iXZSize) {
+    std::unordered_map<std::string, std::string> options, int iXZSize) {
     _init(iXZSize);
 
     for (auto it = options.begin(); it != options.end(); ++it) {
@@ -54,7 +56,7 @@ VillageFeature::VillageFeature(
     }
 }
 
-std::wstring VillageFeature::getFeatureName() { return L"Village"; }
+std::string VillageFeature::getFeatureName() { return "Village"; }
 
 bool VillageFeature::isFeatureChunk(int x, int z, bool bIsSuperflat) {
     int townSpacing = this->townSpacing;
@@ -84,7 +86,7 @@ bool VillageFeature::isFeatureChunk(int x, int z, bool bIsSuperflat) {
     z = zz;
 
     bool forcePlacement = false;
-    LevelGenerationOptions* levelGenOptions = app.getLevelGenerationOptions();
+    LevelGenerationOptions* levelGenOptions = gameServices().getLevelGenerationOptions();
     if (levelGenOptions != nullptr) {
         forcePlacement =
             levelGenOptions->isFeatureChunk(x, z, eFeature_Village);
@@ -94,7 +96,7 @@ bool VillageFeature::isFeatureChunk(int x, int z, bool bIsSuperflat) {
         bool biomeOk = level->getBiomeSource()->containsOnly(
             x * 16 + 8, z * 16 + 8, 0, allowedBiomes);
         if (biomeOk) {
-            // app.DebugPrintf("Biome ok for Village at %d, %d\n",(x * 16 +
+            // Log::info("Biome ok for Village at %d, %d\n",(x * 16 +
             // 8),(z * 16 + 8));
             return true;
         }
@@ -105,7 +107,7 @@ bool VillageFeature::isFeatureChunk(int x, int z, bool bIsSuperflat) {
 
 StructureStart* VillageFeature::createStructureStart(int x, int z) {
     // 4J added
-    app.AddTerrainFeaturePosition(eTerrainFeature_Village, x, z);
+    gameServices().addTerrainFeaturePosition(eTerrainFeature_Village, x, z);
 
     return new VillageStart(level, random, x, z, villageSizeModifier,
                             m_iXZSize);
@@ -180,10 +182,10 @@ bool VillageFeature::VillageStart::isValid() {
 void VillageFeature::VillageStart::addAdditonalSaveData(CompoundTag* tag) {
     StructureStart::addAdditonalSaveData(tag);
 
-    tag->putBoolean(L"Valid", valid);
+    tag->putBoolean("Valid", valid);
 }
 
 void VillageFeature::VillageStart::readAdditonalSaveData(CompoundTag* tag) {
     StructureStart::readAdditonalSaveData(tag);
-    valid = tag->getBoolean(L"Valid");
+    valid = tag->getBoolean("Valid");
 }

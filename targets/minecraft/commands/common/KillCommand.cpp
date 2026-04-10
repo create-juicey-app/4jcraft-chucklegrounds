@@ -19,6 +19,6 @@ void KillCommand::execute(std::shared_ptr<CommandSender> source,
 
     player->hurt(DamageSource::outOfWorld, std::numeric_limits<float>::max());
 
-    source->sendMessage(L"Ouch. That look like it hurt.");
+    source->sendMessage("Ouch. That look like it hurt.");
     // source.sendMessage(ChatMessageComponent.forTranslation("commands.kill.success"));
 }

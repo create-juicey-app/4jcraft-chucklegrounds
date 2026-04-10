@@ -7,7 +7,7 @@
 
 RepairContainer::RepairContainer(AnvilMenu* menu, int name, bool customName,
                                  int size)
-    : SimpleContainer(name, L"", customName, size) {
+    : SimpleContainer(name, "", customName, size) {
     m_menu = menu;
 }
 

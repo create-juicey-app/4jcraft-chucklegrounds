@@ -171,15 +171,15 @@ bool ExperienceOrb::hurt(DamageSource* source, float damage) {
 }
 
 void ExperienceOrb::addAdditonalSaveData(CompoundTag* entityTag) {
-    entityTag->putShort(L"Health", (uint8_t)health);
-    entityTag->putShort(L"Age", (short)age);
-    entityTag->putShort(L"Value", (short)value);
+    entityTag->putShort("Health", (uint8_t)health);
+    entityTag->putShort("Age", (short)age);
+    entityTag->putShort("Value", (short)value);
 }
 
 void ExperienceOrb::readAdditionalSaveData(CompoundTag* tag) {
-    health = tag->getShort(L"Health") & 0xff;
-    age = tag->getShort(L"Age");
-    value = tag->getShort(L"Value");
+    health = tag->getShort("Health") & 0xff;
+    age = tag->getShort("Age");
+    value = tag->getShort("Value");
 }
 
 void ExperienceOrb::playerTouch(std::shared_ptr<Player> player) {

@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "McRegionLevelStorage.h"
 
 #include <stdint.h>
@@ -19,7 +21,7 @@
 #include "minecraft/world/level/storage/LevelStorage.h"
 
 McRegionLevelStorage::McRegionLevelStorage(ConsoleSaveFile* saveFile, File dir,
-                                           const std::wstring& levelName,
+                                           const std::string& levelName,
                                            bool createPlayerDir)
     : DirectoryLevelStorage(saveFile, dir, levelName, createPlayerDir) {
     RegionFileCache::clear();
@@ -36,7 +38,7 @@ ChunkStorage* McRegionLevelStorage::createChunkStorage(Dimension* dimension) {
     // File folder = getFolder();
 
     if (dynamic_cast<HellDimension*>(dimension) != nullptr) {
-        if (app.GetResetNether()) {
+        if (gameServices().getResetNether()) {
 #ifdef SPLIT_SAVES
             std::vector<FileEntry*>* netherFiles =
                 m_saveFile->getRegionFilesByDimension(1);
@@ -79,7 +81,7 @@ ChunkStorage* McRegionLevelStorage::createChunkStorage(Dimension* dimension) {
             // For versions before TU9 (TU7 and 8) we generate a part of The
             // End, but we want to scrap it if it exists so that it is replaced
             // with the TU9+ version
-            app.DebugPrintf(
+            Log::info(
                 "Loaded save version number is: %d, required to keep The End "
                 "is: %d\n",
                 m_saveFile->getSaveVersion(), SAVE_FILE_VERSION_NEW_END);
@@ -98,7 +100,7 @@ ChunkStorage* McRegionLevelStorage::createChunkStorage(Dimension* dimension) {
         return new McRegionChunkStorage(m_saveFile, LevelStorage::ENDER_FOLDER);
     }
 
-    return new McRegionChunkStorage(m_saveFile, L"");
+    return new McRegionChunkStorage(m_saveFile, "");
 }
 
 void McRegionLevelStorage::saveLevelData(

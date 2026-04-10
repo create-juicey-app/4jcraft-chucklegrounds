@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "OldChunkStorage.h"
 
 #include <assert.h>
@@ -10,8 +12,8 @@
 #include <unordered_map>
 #include <utility>
 
-#include "IPlatformInput.h"
-#include "app/common/src/Console_Debug_enum.h"
+#include "platform/input/input.h"
+#include "app/common/Console_Debug_enum.h"
 #include "app/linux/LinuxGame.h"
 #include "util/Definitions.h"
 #include "java/File.h"
@@ -31,7 +33,6 @@
 #include "nbt/CompoundTag.h"
 #include "nbt/ListTag.h"
 #include "nbt/NbtIo.h"
-#include "platform/PlatformServices.h"
 
 thread_local OldChunkStorage::ThreadStorage* OldChunkStorage::m_tlsStorage =
     nullptr;
@@ -73,49 +74,49 @@ OldChunkStorage::OldChunkStorage(File dir, bool create) {
 }
 
 File OldChunkStorage::getFile(int x, int z) {
-    wchar_t name[MAX_PATH_SIZE];
-    wchar_t path1[MAX_PATH_SIZE];
-    wchar_t path2[MAX_PATH_SIZE];
+    char name[MAX_PATH_SIZE];
+    char path1[MAX_PATH_SIZE];
+    char path2[MAX_PATH_SIZE];
 
-    wchar_t xRadix36[64];
-    wchar_t zRadix36[64];
+    char xRadix36[64];
+    char zRadix36[64];
 #if defined(__linux__)
     assert(0);  // need a gcc verison of _itow ?
 #else
     _itow(x, xRadix36, 36);
     _itow(z, zRadix36, 36);
-    swprintf(name, MAX_PATH_SIZE, L"c.%ls.%ls.dat", xRadix36, zRadix36);
+    snprintf(name, MAX_PATH_SIZE, "c.%s.%s.dat", xRadix36, zRadix36);
     _itow(x & 63, path1, 36);
     _itow(z & 63, path2, 36);
 #endif
     // sprintf(file,"%s\\%s",dir,path1);
-    File file(dir, std::wstring(path1));
+    File file(dir, std::string(path1));
     if (!file.exists()) {
         if (create)
             file.mkdir();
         else {
-            return File(L"");
+            return File("");
         }
     }
 
     // strcat(file,"\\");
     // strcat(file,path2);
-    file = File(file, std::wstring(path2));
+    file = File(file, std::string(path2));
     if (!file.exists()) {
         if (create)
             file.mkdir();
         else {
-            return File(L"");
+            return File("");
         }
     }
 
     // strcat(file,"\\");
     // strcat(file,name);
     // sprintf(file,"%s\\%s",file,name);
-    file = File(file, std::wstring(name));
+    file = File(file, std::string(name));
     if (!file.exists()) {
         if (!create) {
-            return File(L"");
+            return File("");
         }
     }
     return file;
@@ -129,35 +130,35 @@ LevelChunk* OldChunkStorage::load(Level* level, int x, int z) {
         //                System.out.println("Loading chunk "+x+", "+z);
         FileInputStream fis = FileInputStream(file);
         CompoundTag* tag = NbtIo::readCompressed(&fis);
-        if (!tag->contains(L"Level")) {
+        if (!tag->contains("Level")) {
             char buf[256];
             sprintf(buf,
                     "Chunk file at %d, %d is missing level data, skipping\n", x,
                     z);
-            app.DebugPrintf(buf);
+            Log::info(buf);
             return nullptr;
         }
-        if (!tag->getCompound(L"Level")->contains(L"Blocks")) {
+        if (!tag->getCompound("Level")->contains("Blocks")) {
             char buf[256];
             sprintf(buf,
                     "Chunk file at %d, %d is missing block data, skipping\n", x,
                     z);
-            app.DebugPrintf(buf);
+            Log::info(buf);
             return nullptr;
         }
         LevelChunk* levelChunk =
-            OldChunkStorage::load(level, tag->getCompound(L"Level"));
+            OldChunkStorage::load(level, tag->getCompound("Level"));
         if (!levelChunk->isAt(x, z)) {
             char buf[256];
             sprintf(buf,
                     "Chunk fileat %d, %d is in the wrong location; relocating. "
                     "Expected %d, %d, got %d, %d\n",
                     x, z, x, z, levelChunk->x, levelChunk->z);
-            app.DebugPrintf(buf);
-            tag->putInt(L"xPos", x);
-            tag->putInt(L"zPos", z);
+            Log::info(buf);
+            tag->putInt("xPos", x);
+            tag->putInt("zPos", z);
             levelChunk =
-                OldChunkStorage::load(level, tag->getCompound(L"Level"));
+                OldChunkStorage::load(level, tag->getCompound("Level"));
         }
 
         return levelChunk;
@@ -180,14 +181,14 @@ void OldChunkStorage::save(Level* level, LevelChunk* levelChunk) {
     //    try {
     // char tmpFileName[MAX_PATH_SIZE];
     // sprintf(tmpFileName,"%s\\%s",dir,"tmp_chunk.dat");
-    File tmpFile(dir, L"tmp_chunk.dat");
+    File tmpFile(dir, "tmp_chunk.dat");
     //            System.out.println("Saving chunk "+levelChunk.x+",
     //            "+levelChunk.z);
 
     FileOutputStream fos = FileOutputStream(tmpFile);
     CompoundTag* tag = new CompoundTag();
     CompoundTag* levelData = new CompoundTag();
-    tag->put(L"Level", levelData);
+    tag->put("Level", levelData);
     OldChunkStorage::save(levelChunk, level, levelData);
     NbtIo::writeCompressed(tag, &fos);
     fos.close();
@@ -232,7 +233,7 @@ bool OldChunkStorage::saveEntities(LevelChunk* lc, Level* level,
         }
     }
 
-    tag->put(L"Entities", entityTags);
+    tag->put("Entities", entityTags);
 
     return lc->lastSaveHadEntities;
 }
@@ -273,7 +274,7 @@ void OldChunkStorage::save(LevelChunk* lc, Level* level,
         te->save(teTag);
         tileEntityTags->add(teTag);
     }
-    tag->put(L"TileEntities", tileEntityTags);
+    tag->put("TileEntities", tileEntityTags);
 
     std::vector<TickNextTickData>* ticksInChunk =
         level->fetchTicksInChunk(lc, false);
@@ -284,15 +285,15 @@ void OldChunkStorage::save(LevelChunk* lc, Level* level,
         for (int i = 0; i < ticksInChunk->size(); i++) {
             TickNextTickData td = ticksInChunk->at(i);
             CompoundTag* teTag = new CompoundTag();
-            teTag->putInt(L"i", td.tileId);
-            teTag->putInt(L"x", td.x);
-            teTag->putInt(L"y", td.y);
-            teTag->putInt(L"z", td.z);
-            teTag->putInt(L"t", (int)(td.m_delay - levelTime));
+            teTag->putInt("i", td.tileId);
+            teTag->putInt("x", td.x);
+            teTag->putInt("y", td.y);
+            teTag->putInt("z", td.z);
+            teTag->putInt("t", (int)(td.m_delay - levelTime));
 
             tickTags->add(teTag);
         }
-        tag->put(L"TileTicks", tickTags);
+        tag->put("TileTicks", tickTags);
     }
     delete ticksInChunk;
 
@@ -302,10 +303,10 @@ void OldChunkStorage::save(LevelChunk* lc, Level* level,
 
 void OldChunkStorage::save(LevelChunk* lc, Level* level, CompoundTag* tag) {
     level->checkSession();
-    tag->putInt(L"xPos", lc->x);
-    tag->putInt(L"zPos", lc->z);
-    tag->putLong(L"LastUpdate", level->getGameTime());
-    tag->putLong(L"InhabitedTime", lc->inhabitedTime);
+    tag->putInt("xPos", lc->x);
+    tag->putInt("zPos", lc->z);
+    tag->putLong("LastUpdate", level->getGameTime());
+    tag->putLong("InhabitedTime", lc->inhabitedTime);
     // 4J - changes here for new storage. Now have static storage for getting
     // lighting data for block, data, and sky & block lighting. This wasn't
     // required in the original version as we could just reference the
@@ -322,27 +323,27 @@ void OldChunkStorage::save(LevelChunk* lc, Level* level, CompoundTag* tag) {
 
     // static std::vector<uint8_t> blockData = std::vector<uint8_t>(32768);
     lc->getBlockData(tls->blockData);
-    tag->putByteArray(L"Blocks", tls->blockData);
+    tag->putByteArray("Blocks", tls->blockData);
 
     // static std::vector<uint8_t> dataData = std::vector<uint8_t>(16384);
     lc->getDataData(tls->dataData);
-    tag->putByteArray(L"Data", tls->dataData);
+    tag->putByteArray("Data", tls->dataData);
 
     // static std::vector<uint8_t> skyLightData = std::vector<uint8_t>(16384);
     // static std::vector<uint8_t> blockLightData = std::vector<uint8_t>(16384);
     lc->getSkyLightData(tls->skyLightData);
     lc->getBlockLightData(tls->blockLightData);
-    tag->putByteArray(L"SkyLight", tls->skyLightData);
-    tag->putByteArray(L"BlockLight", tls->blockLightData);
+    tag->putByteArray("SkyLight", tls->skyLightData);
+    tag->putByteArray("BlockLight", tls->blockLightData);
 
-    tag->putByteArray(L"HeightMap", lc->heightmap);
+    tag->putByteArray("HeightMap", lc->heightmap);
     tag->putShort(
-        L"TerrainPopulatedFlags",
+        "TerrainPopulatedFlags",
         lc->terrainPopulated);  // 4J - changed from "TerrainPopulated" to
                                 // "TerrainPopulatedFlags" as now stores a
                                 // bitfield, java stores a bool
     std::vector<uint8_t> biomeData = lc->getBiomes();
-    tag->putByteArray(L"Biomes", biomeData);
+    tag->putByteArray("Biomes", biomeData);
 
 #if !defined(SPLIT_SAVES)
     saveEntities(lc, level, tag);
@@ -360,7 +361,7 @@ void OldChunkStorage::save(LevelChunk* lc, Level* level, CompoundTag* tag) {
         te->save(teTag);
         tileEntityTags->add(teTag);
     }
-    tag->put(L"TileEntities", tileEntityTags);
+    tag->put("TileEntities", tileEntityTags);
 
     std::vector<TickNextTickData>* ticksInChunk =
         level->fetchTicksInChunk(lc, false);
@@ -371,16 +372,16 @@ void OldChunkStorage::save(LevelChunk* lc, Level* level, CompoundTag* tag) {
         for (int i = 0; i < ticksInChunk->size(); i++) {
             TickNextTickData td = ticksInChunk->at(i);
             CompoundTag* teTag = new CompoundTag();
-            teTag->putInt(L"i", td.tileId);
-            teTag->putInt(L"x", td.x);
-            teTag->putInt(L"y", td.y);
-            teTag->putInt(L"z", td.z);
-            teTag->putInt(L"t", (int)(td.m_delay - levelTime));
-            teTag->putInt(L"p", td.priorityTilt);
+            teTag->putInt("i", td.tileId);
+            teTag->putInt("x", td.x);
+            teTag->putInt("y", td.y);
+            teTag->putInt("z", td.z);
+            teTag->putInt("t", (int)(td.m_delay - levelTime));
+            teTag->putInt("p", td.priorityTilt);
 
             tickTags->add(teTag);
         }
-        tag->put(L"TileTicks", tickTags);
+        tag->put("TileTicks", tickTags);
     }
     delete ticksInChunk;
 }
@@ -388,7 +389,7 @@ void OldChunkStorage::save(LevelChunk* lc, Level* level, CompoundTag* tag) {
 void OldChunkStorage::loadEntities(LevelChunk* lc, Level* level,
                                    CompoundTag* tag) {
     ListTag<CompoundTag>* entityTags =
-        (ListTag<CompoundTag>*)tag->getList(L"Entities");
+        (ListTag<CompoundTag>*)tag->getList("Entities");
     if (entityTags != nullptr) {
         for (int i = 0; i < entityTags->size(); i++) {
             CompoundTag* teTag = entityTags->get(i);
@@ -401,7 +402,7 @@ void OldChunkStorage::loadEntities(LevelChunk* lc, Level* level,
     }
 
     ListTag<CompoundTag>* tileEntityTags =
-        (ListTag<CompoundTag>*)tag->getList(L"TileEntities");
+        (ListTag<CompoundTag>*)tag->getList("TileEntities");
     if (tileEntityTags != nullptr) {
         for (int i = 0; i < tileEntityTags->size(); i++) {
             CompoundTag* teTag = tileEntityTags->get(i);
@@ -445,8 +446,8 @@ LevelChunk* OldChunkStorage::load(Level* level, DataInputStream* dis) {
     }
 
 #if !defined(_CONTENT_PACKAGE)
-    if (app.DebugSettingsOn() &&
-        app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn() &&
+        gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_EnableBiomeOverride)) {
         // Read the biome data from the stream, but don't use it
         std::vector<uint8_t> dummyBiomes(levelChunk->biomes.size());
@@ -461,18 +462,18 @@ LevelChunk* OldChunkStorage::load(Level* level, DataInputStream* dis) {
 
     loadEntities(levelChunk, level, tag);
 
-    if (tag->contains(L"TileTicks")) {
+    if (tag->contains("TileTicks")) {
         ListTag<CompoundTag>* tileTicks =
-            (ListTag<CompoundTag>*)tag->getList(L"TileTicks");
+            (ListTag<CompoundTag>*)tag->getList("TileTicks");
 
         if (tileTicks != nullptr) {
             for (int i = 0; i < tileTicks->size(); i++) {
                 CompoundTag* teTag = tileTicks->get(i);
 
                 level->forceAddTileTick(
-                    teTag->getInt(L"x"), teTag->getInt(L"y"),
-                    teTag->getInt(L"z"), teTag->getInt(L"i"),
-                    teTag->getInt(L"t"), teTag->getInt(L"p"));
+                    teTag->getInt("x"), teTag->getInt("y"),
+                    teTag->getInt("z"), teTag->getInt("i"),
+                    teTag->getInt("t"), teTag->getInt("p"));
             }
         }
     }
@@ -483,34 +484,34 @@ LevelChunk* OldChunkStorage::load(Level* level, DataInputStream* dis) {
 }
 
 LevelChunk* OldChunkStorage::load(Level* level, CompoundTag* tag) {
-    int x = tag->getInt(L"xPos");
-    int z = tag->getInt(L"zPos");
+    int x = tag->getInt("xPos");
+    int z = tag->getInt("zPos");
 
     LevelChunk* levelChunk = new LevelChunk(level, x, z);
     // 4J - the original code uses the data in the tag directly, but this is now
     // just used as a source when creating the compressed data, so we need to
     // free up the data in the tag once we are done
     {
-        auto blocks = tag->getByteArray(L"Blocks");
+        auto blocks = tag->getByteArray("Blocks");
         levelChunk->setBlockData(blocks);
     }
-    //	levelChunk->blocks = tag->getByteArray(L"Blocks");
+    //	levelChunk->blocks = tag->getByteArray("Blocks");
 
     // 4J - the original code uses the data in the tag directly, but this is now
     // just used as a source when creating the compressed data, so we need to
     // free up the data in the tag once we are done
     {
-        auto data = tag->getByteArray(L"Data");
+        auto data = tag->getByteArray("Data");
         levelChunk->setDataData(data);
     }
 
     // 4J - changed to use our new methods for accessing lighting
     {
-        auto skyLight = tag->getByteArray(L"SkyLight");
+        auto skyLight = tag->getByteArray("SkyLight");
         levelChunk->setSkyLightData(skyLight);
     }
     {
-        auto blockLight = tag->getByteArray(L"BlockLight");
+        auto blockLight = tag->getByteArray("BlockLight");
         levelChunk->setBlockLightData(blockLight);
     }
 
@@ -519,17 +520,17 @@ LevelChunk* OldChunkStorage::load(Level* level, CompoundTag* tag) {
     // new setSkyLightData/setBlockLightData take a copy of the data so we need
     // to delete the local one now
 
-    //	levelChunk->skyLight = new DataLayer(tag->getByteArray(L"SkyLight"),
+    //	levelChunk->skyLight = new DataLayer(tag->getByteArray("SkyLight"),
     // level->depthBits); 	levelChunk->blockLight = new
-    // DataLayer(tag->getByteArray(L"BlockLight"), level->depthBits);
+    // DataLayer(tag->getByteArray("BlockLight"), level->depthBits);
 
-    levelChunk->heightmap = tag->getByteArray(L"HeightMap");
+    levelChunk->heightmap = tag->getByteArray("HeightMap");
     // 4J - TerrainPopulated was a bool (java), then changed to be a byte
     // bitfield, then replaced with TerrainPopulatedShort to store a wider
     // bitfield
-    if (tag->get(L"TerrainPopulated")) {
+    if (tag->get("TerrainPopulated")) {
         // Java bool type or byte bitfield
-        levelChunk->terrainPopulated = tag->getByte(L"TerrainPopulated");
+        levelChunk->terrainPopulated = tag->getByte("TerrainPopulated");
         if (levelChunk->terrainPopulated >= 1)
             levelChunk->terrainPopulated =
                 LevelChunk::sTerrainPopulatedAllNeighbours |
@@ -537,7 +538,7 @@ LevelChunk* OldChunkStorage::load(Level* level, CompoundTag* tag) {
                                                         // type to new bitfield
     } else {
         // New style short
-        levelChunk->terrainPopulated = tag->getShort(L"TerrainPopulatedFlags");
+        levelChunk->terrainPopulated = tag->getShort("TerrainPopulatedFlags");
         // If all neighbours have been post-processed, then we should have done
         // the post-post-processing now. Check that this is set as if it isn't
         // then we won't be able to send network data for chunks, and we won't
@@ -555,33 +556,33 @@ LevelChunk* OldChunkStorage::load(Level* level, CompoundTag* tag) {
     // 4J removed - we shouldn't need this any more
 
 #if !defined(_CONTENT_PACKAGE)
-    if (app.DebugSettingsOn() &&
-        app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn() &&
+        gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_EnableBiomeOverride)) {
         // Do nothing
     } else
 #endif
     {
-        if (tag->contains(L"Biomes")) {
-            auto biomes = tag->getByteArray(L"Biomes");
+        if (tag->contains("Biomes")) {
+            auto biomes = tag->getByteArray("Biomes");
             levelChunk->setBiomes(biomes);
         }
     }
 
     loadEntities(levelChunk, level, tag);
 
-    if (tag->contains(L"TileTicks")) {
+    if (tag->contains("TileTicks")) {
         ListTag<CompoundTag>* tileTicks =
-            (ListTag<CompoundTag>*)tag->getList(L"TileTicks");
+            (ListTag<CompoundTag>*)tag->getList("TileTicks");
 
         if (tileTicks != nullptr) {
             for (int i = 0; i < tileTicks->size(); i++) {
                 CompoundTag* teTag = tileTicks->get(i);
 
                 level->forceAddTileTick(
-                    teTag->getInt(L"x"), teTag->getInt(L"y"),
-                    teTag->getInt(L"z"), teTag->getInt(L"i"),
-                    teTag->getInt(L"t"), teTag->getInt(L"p"));
+                    teTag->getInt("x"), teTag->getInt("y"),
+                    teTag->getInt("z"), teTag->getInt("i"),
+                    teTag->getInt("t"), teTag->getInt("p"));
             }
         }
     }

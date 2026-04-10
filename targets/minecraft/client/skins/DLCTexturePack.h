@@ -5,7 +5,7 @@
 
 #include "platform/PlatformTypes.h"
 #include "AbstractTexturePack.h"
-#include "app/common/src/Localisation/StringTable.h"
+#include "app/common/Localisation/StringTable.h"
 
 class DLCPack;
 class StringTable;
@@ -29,16 +29,16 @@ public:
     DLCTexturePack(std::uint32_t id, DLCPack* pack, TexturePack* fallback);
     ~DLCTexturePack() {};
 
-    virtual std::wstring getResource(const std::wstring& name);
+    virtual std::string getResource(const std::string& name);
     virtual DLCPack* getDLCPack();
-    virtual std::wstring getDesc1() {
-        return m_stringTable->getString(L"IDS_TP_DESCRIPTION");
+    virtual std::string getDesc1() {
+        return m_stringTable->getString("IDS_TP_DESCRIPTION");
     }
-    virtual std::wstring getName() {
-        return m_stringTable->getString(L"IDS_DISPLAY_NAME");
+    virtual std::string getName() {
+        return m_stringTable->getString("IDS_DISPLAY_NAME");
     }
-    virtual std::wstring getWorldName() {
-        return m_stringTable->getString(L"IDS_WORLD_NAME");
+    virtual std::string getWorldName() {
+        return m_stringTable->getString("IDS_WORLD_NAME");
     }
 
     // Added for sound banks with MashUp packs
@@ -49,30 +49,30 @@ protected:
     void loadName();
     void loadDescription();
     InputStream* getResourceImplementation(
-        const std::wstring& name);  // throws IOException
+        const std::string& name);  // throws IOException
 
 public:
     //@Override
-    bool hasFile(const std::wstring& name);
+    bool hasFile(const std::string& name);
     bool isTerrainUpdateCompatible();
 
     // 4J Added
-    virtual std::wstring getPath(bool bTitleUpdateTexture = false,
+    virtual std::string getPath(bool bTitleUpdateTexture = false,
                                  const char* pchBDPatchFilename = nullptr);
-    virtual std::wstring getAnimationString(const std::wstring& textureName,
-                                            const std::wstring& path);
-    virtual BufferedImage* getImageResource(const std::wstring& File,
+    virtual std::string getAnimationString(const std::string& textureName,
+                                            const std::string& path);
+    virtual BufferedImage* getImageResource(const std::string& File,
                                             bool filenameHasExtension = false,
                                             bool bTitleUpdateTexture = false,
-                                            const std::wstring& drive = L"");
+                                            const std::string& drive = "");
     virtual void loadColourTable();
     virtual bool hasData() { return m_bHasLoadedData; }
     virtual bool isLoadingData() { return m_bLoadingData; }
 
 private:
-    static std::wstring getRootPath(std::uint32_t packId, bool allowOverride,
+    static std::string getRootPath(std::uint32_t packId, bool allowOverride,
                                     bool bAddDataFolder);
-    static std::wstring getFilePath(std::uint32_t packId, std::wstring filename,
+    static std::string getFilePath(std::uint32_t packId, std::string filename,
                                     bool bAddDataFolder = true);
 
 public:
@@ -81,7 +81,7 @@ public:
     virtual void loadData();
     virtual void loadUI();
     virtual void unloadUI();
-    virtual std::wstring getXuiRootPath();
+    virtual std::string getXuiRootPath();
     virtual ArchiveFile* getArchiveFile() { return m_archiveFile; }
 
     virtual unsigned int getDLCParentPackId();

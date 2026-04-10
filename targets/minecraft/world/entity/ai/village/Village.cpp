@@ -272,7 +272,7 @@ std::shared_ptr<Player> Village::getClosestBadStandingPlayer(
 
     // for (String player : playerStanding.keySet())
     for (auto it = playerStanding.begin(); it != playerStanding.end(); ++it) {
-        std::wstring player = it->first;
+        std::string player = it->first;
         if (isVeryBadStanding(player)) {
             std::shared_ptr<Player> mob = level->getPlayerByName(player);
             if (mob != nullptr) {
@@ -353,7 +353,7 @@ void Village::calcInfo() {
     radius = std::max(doorDist, (int)sqrt((float)maxRadiusSqr) + 1);
 }
 
-int Village::getStanding(const std::wstring& playerName) {
+int Village::getStanding(const std::string& playerName) {
     auto it = playerStanding.find(playerName);
     if (it != playerStanding.end()) {
         return it->second;
@@ -361,98 +361,98 @@ int Village::getStanding(const std::wstring& playerName) {
     return 0;
 }
 
-int Village::modifyStanding(const std::wstring& playerName, int delta) {
+int Village::modifyStanding(const std::string& playerName, int delta) {
     int current = getStanding(playerName);
     int newValue = Mth::clamp(current + delta, -30, 10);
-    playerStanding.insert(std::pair<std::wstring, int>(playerName, newValue));
+    playerStanding.insert(std::pair<std::string, int>(playerName, newValue));
     return newValue;
 }
 
-bool Village::isGoodStanding(const std::wstring& playerName) {
+bool Village::isGoodStanding(const std::string& playerName) {
     return getStanding(playerName) >= 0;
 }
 
-bool Village::isBadStanding(const std::wstring& playerName) {
+bool Village::isBadStanding(const std::string& playerName) {
     return getStanding(playerName) <= -5;
 }
 
-bool Village::isVeryBadStanding(const std::wstring playerName) {
+bool Village::isVeryBadStanding(const std::string playerName) {
     return getStanding(playerName) <= -15;
 }
 
 void Village::readAdditionalSaveData(CompoundTag* tag) {
-    populationSize = tag->getInt(L"PopSize");
-    radius = tag->getInt(L"Radius");
-    golemCount = tag->getInt(L"Golems");
-    stableSince = tag->getInt(L"Stable");
-    _tick = tag->getInt(L"Tick");
-    noBreedTimer = tag->getInt(L"MTick");
-    center->x = tag->getInt(L"CX");
-    center->y = tag->getInt(L"CY");
-    center->z = tag->getInt(L"CZ");
-    accCenter->x = tag->getInt(L"ACX");
-    accCenter->y = tag->getInt(L"ACY");
-    accCenter->z = tag->getInt(L"ACZ");
+    populationSize = tag->getInt("PopSize");
+    radius = tag->getInt("Radius");
+    golemCount = tag->getInt("Golems");
+    stableSince = tag->getInt("Stable");
+    _tick = tag->getInt("Tick");
+    noBreedTimer = tag->getInt("MTick");
+    center->x = tag->getInt("CX");
+    center->y = tag->getInt("CY");
+    center->z = tag->getInt("CZ");
+    accCenter->x = tag->getInt("ACX");
+    accCenter->y = tag->getInt("ACY");
+    accCenter->z = tag->getInt("ACZ");
 
     ListTag<CompoundTag>* doorTags =
-        (ListTag<CompoundTag>*)tag->getList(L"Doors");
+        (ListTag<CompoundTag>*)tag->getList("Doors");
     for (int i = 0; i < doorTags->size(); i++) {
         CompoundTag* dTag = doorTags->get(i);
 
         std::shared_ptr<DoorInfo> door = std::make_shared<DoorInfo>(
-            dTag->getInt(L"X"), dTag->getInt(L"Y"), dTag->getInt(L"Z"),
-            dTag->getInt(L"IDX"), dTag->getInt(L"IDZ"), dTag->getInt(L"TS"));
+            dTag->getInt("X"), dTag->getInt("Y"), dTag->getInt("Z"),
+            dTag->getInt("IDX"), dTag->getInt("IDZ"), dTag->getInt("TS"));
         doorInfos.push_back(door);
     }
 
     ListTag<CompoundTag>* playerTags =
-        (ListTag<CompoundTag>*)tag->getList(L"Players");
+        (ListTag<CompoundTag>*)tag->getList("Players");
     for (int i = 0; i < playerTags->size(); i++) {
         CompoundTag* pTag = playerTags->get(i);
-        playerStanding.insert(std::pair<std::wstring, int>(
-            pTag->getString(L"Name"), pTag->getInt(L"S")));
+        playerStanding.insert(std::pair<std::string, int>(
+            pTag->getString("Name"), pTag->getInt("S")));
     }
 }
 
 void Village::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putInt(L"PopSize", populationSize);
-    tag->putInt(L"Radius", radius);
-    tag->putInt(L"Golems", golemCount);
-    tag->putInt(L"Stable", stableSince);
-    tag->putInt(L"Tick", _tick);
-    tag->putInt(L"MTick", noBreedTimer);
-    tag->putInt(L"CX", center->x);
-    tag->putInt(L"CY", center->y);
-    tag->putInt(L"CZ", center->z);
-    tag->putInt(L"ACX", accCenter->x);
-    tag->putInt(L"ACY", accCenter->y);
-    tag->putInt(L"ACZ", accCenter->z);
+    tag->putInt("PopSize", populationSize);
+    tag->putInt("Radius", radius);
+    tag->putInt("Golems", golemCount);
+    tag->putInt("Stable", stableSince);
+    tag->putInt("Tick", _tick);
+    tag->putInt("MTick", noBreedTimer);
+    tag->putInt("CX", center->x);
+    tag->putInt("CY", center->y);
+    tag->putInt("CZ", center->z);
+    tag->putInt("ACX", accCenter->x);
+    tag->putInt("ACY", accCenter->y);
+    tag->putInt("ACZ", accCenter->z);
 
-    ListTag<CompoundTag>* doorTags = new ListTag<CompoundTag>(L"Doors");
+    ListTag<CompoundTag>* doorTags = new ListTag<CompoundTag>("Doors");
     // for (DoorInfo dm : doorInfos)
     for (auto it = doorInfos.begin(); it != doorInfos.end(); ++it) {
         std::shared_ptr<DoorInfo> dm = *it;
-        CompoundTag* doorTag = new CompoundTag(L"Door");
-        doorTag->putInt(L"X", dm->x);
-        doorTag->putInt(L"Y", dm->y);
-        doorTag->putInt(L"Z", dm->z);
-        doorTag->putInt(L"IDX", dm->insideDx);
-        doorTag->putInt(L"IDZ", dm->insideDz);
-        doorTag->putInt(L"TS", dm->timeStamp);
+        CompoundTag* doorTag = new CompoundTag("Door");
+        doorTag->putInt("X", dm->x);
+        doorTag->putInt("Y", dm->y);
+        doorTag->putInt("Z", dm->z);
+        doorTag->putInt("IDX", dm->insideDx);
+        doorTag->putInt("IDZ", dm->insideDz);
+        doorTag->putInt("TS", dm->timeStamp);
         doorTags->add(doorTag);
     }
-    tag->put(L"Doors", doorTags);
+    tag->put("Doors", doorTags);
 
-    ListTag<CompoundTag>* playerTags = new ListTag<CompoundTag>(L"Players");
+    ListTag<CompoundTag>* playerTags = new ListTag<CompoundTag>("Players");
     // for (String player : playerStanding.keySet())
     for (auto it = playerStanding.begin(); it != playerStanding.end(); ++it) {
-        std::wstring player = it->first;
+        std::string player = it->first;
         CompoundTag* playerTag = new CompoundTag(player);
-        playerTag->putString(L"Name", player);
-        playerTag->putInt(L"S", it->second);
+        playerTag->putString("Name", player);
+        playerTag->putInt("S", it->second);
         playerTags->add(playerTag);
     }
-    tag->put(L"Players", playerTags);
+    tag->put("Players", playerTags);
 }
 
 void Village::resetNoBreedTimer() { noBreedTimer = _tick; }

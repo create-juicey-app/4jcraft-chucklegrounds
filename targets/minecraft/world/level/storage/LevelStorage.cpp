@@ -1,4 +1,4 @@
 #include "LevelStorage.h"
 
-const std::wstring LevelStorage::NETHER_FOLDER = L"DIM-1";
-const std::wstring LevelStorage::ENDER_FOLDER = L"DIM1/";
+const std::string LevelStorage::NETHER_FOLDER = "DIM-1";
+const std::string LevelStorage::ENDER_FOLDER = "DIM1/";

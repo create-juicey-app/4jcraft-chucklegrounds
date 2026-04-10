@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "StructureFeatureIO.h"
 
 #include <string>
@@ -21,42 +22,42 @@
 
 class Level;
 
-std::unordered_map<std::wstring, structureStartCreateFn>
+std::unordered_map<std::string, structureStartCreateFn>
     StructureFeatureIO::startIdClassMap;
-std::unordered_map<unsigned int, std::wstring>
+std::unordered_map<unsigned int, std::string>
     StructureFeatureIO::startClassIdMap;
 
-std::unordered_map<std::wstring, structurePieceCreateFn>
+std::unordered_map<std::string, structurePieceCreateFn>
     StructureFeatureIO::pieceIdClassMap;
-std::unordered_map<unsigned int, std::wstring>
+std::unordered_map<unsigned int, std::string>
     StructureFeatureIO::pieceClassIdMap;
 
 void StructureFeatureIO::setStartId(EStructureStart clas,
                                     structureStartCreateFn createFn,
-                                    const std::wstring& id) {
+                                    const std::string& id) {
     startIdClassMap[id] = createFn;
     startClassIdMap[clas] = id;
 }
 
 void StructureFeatureIO::setPieceId(EStructurePiece clas,
                                     structurePieceCreateFn createFn,
-                                    const std::wstring& id) {
+                                    const std::string& id) {
     pieceIdClassMap[id] = createFn;
     pieceClassIdMap[clas] = id;
 }
 
 void StructureFeatureIO::staticCtor() {
     setStartId(eStructureStart_MineShaftStart, MineShaftStart::Create,
-               L"Mineshaft");
+               "Mineshaft");
     setStartId(eStructureStart_VillageStart,
-               VillageFeature::VillageStart::Create, L"Village");
+               VillageFeature::VillageStart::Create, "Village");
     setStartId(eStructureStart_NetherBridgeStart,
-               NetherBridgeFeature::NetherBridgeStart::Create, L"Fortress");
+               NetherBridgeFeature::NetherBridgeStart::Create, "Fortress");
     setStartId(eStructureStart_StrongholdStart,
-               StrongholdFeature::StrongholdStart::Create, L"Stronghold");
+               StrongholdFeature::StrongholdStart::Create, "Stronghold");
     setStartId(eStructureStart_ScatteredFeatureStart,
                RandomScatteredLargeFeature::ScatteredFeatureStart::Create,
-               L"Temple");
+               "Temple");
 
     MineShaftPieces::loadStatic();
     VillagePieces::loadStatic();
@@ -65,21 +66,21 @@ void StructureFeatureIO::staticCtor() {
     ScatteredFeaturePieces::loadStatic();
 }
 
-std::wstring StructureFeatureIO::getEncodeId(StructureStart* start) {
+std::string StructureFeatureIO::getEncodeId(StructureStart* start) {
     auto it = startClassIdMap.find(start->GetType());
     if (it != startClassIdMap.end()) {
         return it->second;
     } else {
-        return L"";
+        return "";
     }
 }
 
-std::wstring StructureFeatureIO::getEncodeId(StructurePiece* piece) {
+std::string StructureFeatureIO::getEncodeId(StructurePiece* piece) {
     auto it = pieceClassIdMap.find(piece->GetType());
     if (it != pieceClassIdMap.end()) {
         return it->second;
     } else {
-        return L"";
+        return "";
     }
 }
 
@@ -87,7 +88,7 @@ StructureStart* StructureFeatureIO::loadStaticStart(CompoundTag* tag,
                                                     Level* level) {
     StructureStart* start = nullptr;
 
-    auto it = startIdClassMap.find(tag->getString(L"id"));
+    auto it = startIdClassMap.find(tag->getString("id"));
     if (it != startIdClassMap.end()) {
         start = (it->second)();
     }
@@ -95,8 +96,8 @@ StructureStart* StructureFeatureIO::loadStaticStart(CompoundTag* tag,
     if (start != nullptr) {
         start->load(level, tag);
     } else {
-        app.DebugPrintf("Skipping Structure with id %ls",
-                        tag->getString(L"id").c_str());
+        Log::info("Skipping Structure with id %s",
+                        tag->getString("id").c_str());
     }
     return start;
 }
@@ -105,7 +106,7 @@ StructurePiece* StructureFeatureIO::loadStaticPiece(CompoundTag* tag,
                                                     Level* level) {
     StructurePiece* piece = nullptr;
 
-    auto it = pieceIdClassMap.find(tag->getString(L"id"));
+    auto it = pieceIdClassMap.find(tag->getString("id"));
     if (it != pieceIdClassMap.end()) {
         piece = (it->second)();
     }
@@ -113,8 +114,8 @@ StructurePiece* StructureFeatureIO::loadStaticPiece(CompoundTag* tag,
     if (piece != nullptr) {
         piece->load(level, tag);
     } else {
-        app.DebugPrintf("Skipping Piece with id %ls",
-                        tag->getString(L"id").c_str());
+        Log::info("Skipping Piece with id %s",
+                        tag->getString("id").c_str());
     }
     return piece;
 }

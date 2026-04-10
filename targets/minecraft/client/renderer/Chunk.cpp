@@ -1,6 +1,6 @@
 #include "Chunk.h"
 
-#include <GL/gl.h>
+
 #include <string.h>
 
 #include <mutex>
@@ -9,10 +9,10 @@
 #include <utility>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "LevelRenderer.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/FrameProfiler.h"
+#include "util/FrameProfiler.h"
 #include "TileRenderer.h"
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/culling/Culler.h"
@@ -142,7 +142,9 @@ void Chunk::setPos(int x, int y, int z) {
 
     clipChunk->globalIdx =
         LevelRenderer::getGlobalIndexForChunk(x, y, z, level);
+#ifdef OCCLUSION_MODE_BFS
     levelRenderer->setGlobalChunkConnectivity(clipChunk->globalIdx, ~0ULL);
+#endif
 
     // 4J - we're not using offsetted renderlists anymore, so just set the full
     // position of this chunk into x/y/zRenderOffs where it will be used
@@ -412,14 +414,16 @@ void Chunk::rebuild() {
             levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level,
                                               LevelRenderer::CHUNK_FLAG_EMPTY0,
                                               currentLayer);
-            RenderManager.CBuffClear(lists + currentLayer);
+            PlatformRenderer.CBuffClear(lists + currentLayer);
         }
 
+#ifdef OCCLUSION_MODE_BFS
         int globalIdx = levelRenderer->getGlobalIndexForChunk(this->x, this->y,
                                                               this->z, level);
         levelRenderer->setGlobalChunkConnectivity(globalIdx, ~0ULL);
         levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level,
                                           LevelRenderer::CHUNK_FLAG_COMPILED);
+#endif
 
         delete region;
         delete tileRenderer;
@@ -523,12 +527,12 @@ void Chunk::rebuild() {
             levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level,
                                               LevelRenderer::CHUNK_FLAG_EMPTY0,
                                               currentLayer);
-            RenderManager.CBuffClear(lists + currentLayer);
+            PlatformRenderer.CBuffClear(lists + currentLayer);
         }
         if ((currentLayer == 0) && (!renderNextLayer)) {
             levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level,
                                               LevelRenderer::CHUNK_FLAG_EMPTY1);
-            RenderManager.CBuffClear(lists + 1);
+            PlatformRenderer.CBuffClear(lists + 1);
             break;
         }
     }
@@ -538,10 +542,12 @@ void Chunk::rebuild() {
     bb = {bounds.boundingBox[0], bounds.boundingBox[1], bounds.boundingBox[2],
           bounds.boundingBox[3], bounds.boundingBox[4], bounds.boundingBox[5]};
 
+#ifdef OCCLUSION_MODE_BFS
     uint64_t conn = computeConnectivity(tileIds);  // pass tileIds
     int globalIdx =
         levelRenderer->getGlobalIndexForChunk(this->x, this->y, this->z, level);
     levelRenderer->setGlobalChunkConnectivity(globalIdx, conn);
+#endif
 
     delete tileRenderer;
     delete region;
@@ -586,6 +592,7 @@ float Chunk::squishedDistanceToSqr(std::shared_ptr<Entity> player) {
     return xd * xd + yd * yd + zd * zd;
 }
 
+#ifdef OCCLUSION_MODE_BFS
 uint64_t Chunk::computeConnectivity(const uint8_t* tileIds) {
     const int W = 16;
     const int H = 16;
@@ -722,6 +729,8 @@ uint64_t Chunk::computeConnectivity(const uint8_t* tileIds) {
 
     return result;
 }
+#endif
+
 void Chunk::reset() {
     if (assigned) {
         int oldKey = -1;
@@ -744,7 +753,7 @@ void Chunk::reset() {
                     for (int i = 0; i < 2; i++) {
                         // 4J - added - clear any renderer data associated with
                         // this unused list
-                        RenderManager.CBuffClear(lists + i);
+                        PlatformRenderer.CBuffClear(lists + i);
                     }
                     levelRenderer->setGlobalChunkFlags(x, y, z, level, 0);
                 }
@@ -797,7 +806,7 @@ bool Chunk::isEmpty() {
 void Chunk::setDirty() {
     // 4J - not used, but if this starts being used again then we'll need to
     // investigate how best to handle it.
-    __debugbreak();
+    assert(0);
     levelRenderer->setGlobalChunkFlag(x, y, z, level,
                                       LevelRenderer::CHUNK_FLAG_DIRTY);
 }

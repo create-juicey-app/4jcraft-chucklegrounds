@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "CompoundContainer.h"
 
 #include "app/linux/LinuxGame.h"
@@ -25,16 +26,16 @@ bool CompoundContainer::contains(std::shared_ptr<Container> c) {
     return c1 == c || c2 == c;
 }
 
-std::wstring CompoundContainer::getName() {
+std::string CompoundContainer::getName() {
     if (c1->hasCustomName()) return c1->getName();
     if (c2->hasCustomName()) return c2->getName();
-    return app.GetString(name);
+    return gameServices().getString(name);
 }
 
-std::wstring CompoundContainer::getCustomName() {
+std::string CompoundContainer::getCustomName() {
     if (c1->hasCustomName()) return c1->getName();
     if (c2->hasCustomName()) return c2->getName();
-    return L"";
+    return "";
 }
 
 bool CompoundContainer::hasCustomName() {

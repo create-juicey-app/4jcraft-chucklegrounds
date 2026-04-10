@@ -18,7 +18,7 @@ private:
 
 public:
     ServerLevelListener(MinecraftServer* server, ServerLevel* level);
-    // 4J removed - virtual void addParticle(const std::wstring& name, double x,
+    // 4J removed - virtual void addParticle(const std::string& name, double x,
     // double y, double z, double xa, double ya, double za);
     virtual void addParticle(ePARTICLE_TYPE name, double x, double y, double z,
                              double xa, double ya, double za);  // 4J added
@@ -40,7 +40,7 @@ public:
     virtual void skyColorChanged();
     virtual void tileChanged(int x, int y, int z);
     virtual void tileLightChanged(int x, int y, int z);
-    virtual void playStreamingMusic(const std::wstring& name, int x, int y,
+    virtual void playStreamingMusic(const std::string& name, int x, int y,
                                     int z);
     virtual void levelEvent(std::shared_ptr<Player> source, int type, int x,
                             int y, int z, int data);

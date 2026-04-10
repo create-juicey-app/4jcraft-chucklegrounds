@@ -15,96 +15,96 @@ void ClothDyeRecipes::addRecipes(Recipes* r) {
         r->addShapelessRecipy(
             new ItemInstance(Tile::wool, 1,
                              ColoredTile::getItemAuxValueForTileData(i)),  //
-            L"zzg", new ItemInstance(Item::dye_powder, 1, i),
-            new ItemInstance(Item::items[Tile::wool_Id], 1, 0), L'D');
+            "zzg", new ItemInstance(Item::dye_powder, 1, i),
+            new ItemInstance(Item::items[Tile::wool_Id], 1, 0), 'D');
         r->addShapedRecipy(
             new ItemInstance(Tile::clayHardened_colored, 8,
                              ColoredTile::getItemAuxValueForTileData(i)),  //
-            L"sssczczg", L"###", L"#X#", L"###", L'#',
-            new ItemInstance(Tile::clayHardened), L'X',
-            new ItemInstance(Item::dye_powder, 1, i), L'D');
+            "sssczczg", "###", "#X#", "###", '#',
+            new ItemInstance(Tile::clayHardened), 'X',
+            new ItemInstance(Item::dye_powder, 1, i), 'D');
     }
 
     // some dye recipes
     r->addShapelessRecipy(
-        new ItemInstance(Item::dye_powder, 2, DyePowderItem::YELLOW), L"tg",
-        Tile::flower, L'D');
+        new ItemInstance(Item::dye_powder, 2, DyePowderItem::YELLOW), "tg",
+        Tile::flower, 'D');
 
     r->addShapelessRecipy(
-        new ItemInstance(Item::dye_powder, 2, DyePowderItem::RED), L"tg",
-        Tile::rose, L'D');
+        new ItemInstance(Item::dye_powder, 2, DyePowderItem::RED), "tg",
+        Tile::rose, 'D');
 
     r->addShapelessRecipy(
-        new ItemInstance(Item::dye_powder, 3, DyePowderItem::WHITE), L"ig",
-        Item::bone, L'D');
+        new ItemInstance(Item::dye_powder, 3, DyePowderItem::WHITE), "ig",
+        Item::bone, 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::PINK),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::ORANGE),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::YELLOW), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::YELLOW), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::LIME),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::GREEN),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::GREEN),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::GRAY),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLACK),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLACK),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::SILVER),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::GRAY),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::GRAY),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 3, DyePowderItem::SILVER),  //
-        L"zzzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLACK),
+        "zzzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLACK),
         new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), L'D');
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::LIGHT_BLUE),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::CYAN),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::GREEN), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::GREEN), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::PURPLE),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 2, DyePowderItem::MAGENTA),  //
-        L"zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::PURPLE),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::PINK), L'D');
+        "zzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::PURPLE),
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::PINK), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 3, DyePowderItem::MAGENTA),  //
-        L"zzzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
+        "zzzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
         new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::PINK), L'D');
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::PINK), 'D');
 
     r->addShapelessRecipy(
         new ItemInstance(Item::dye_powder, 4, DyePowderItem::MAGENTA),  //
-        L"zzzzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
+        "zzzzg", new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE),
         new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED),
         new ItemInstance(Item::dye_powder, 1, DyePowderItem::RED),
-        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), L'D');
+        new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE), 'D');
 
     for (int i = 0; i < 16; i++) {
-        r->addShapedRecipy(new ItemInstance(Tile::woolCarpet, 3, i), L"sczg",
-                           L"##", L'#', new ItemInstance(Tile::wool, 1, i),
-                           L'D');
+        r->addShapedRecipy(new ItemInstance(Tile::woolCarpet, 3, i), "sczg",
+                           "##", '#', new ItemInstance(Tile::wool, 1, i),
+                           'D');
     }
 }

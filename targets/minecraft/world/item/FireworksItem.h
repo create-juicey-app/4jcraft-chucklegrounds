@@ -8,15 +8,15 @@
 
 class FireworksItem : public Item {
 public:
-    static const std::wstring TAG_FIREWORKS;
-    static const std::wstring TAG_EXPLOSION;
-    static const std::wstring TAG_EXPLOSIONS;
-    static const std::wstring TAG_FLIGHT;
-    static const std::wstring TAG_E_TYPE;
-    static const std::wstring TAG_E_TRAIL;
-    static const std::wstring TAG_E_FLICKER;
-    static const std::wstring TAG_E_COLORS;
-    static const std::wstring TAG_E_FADECOLORS;
+    static const std::string TAG_FIREWORKS;
+    static const std::string TAG_EXPLOSION;
+    static const std::string TAG_EXPLOSIONS;
+    static const std::string TAG_FLIGHT;
+    static const std::string TAG_E_TYPE;
+    static const std::string TAG_E_TRAIL;
+    static const std::string TAG_E_FLICKER;
+    static const std::string TAG_E_COLORS;
+    static const std::string TAG_E_FADECOLORS;
 
     static const uint8_t TYPE_SMALL = 0;
     static const uint8_t TYPE_BIG = 1;

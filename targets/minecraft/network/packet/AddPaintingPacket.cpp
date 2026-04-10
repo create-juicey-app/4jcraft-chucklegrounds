@@ -11,7 +11,7 @@ AddPaintingPacket::AddPaintingPacket() {
     y = 0;
     z = 0;
     dir = 0;
-    motive = L"";
+    motive = "";
 }
 
 AddPaintingPacket::AddPaintingPacket(std::shared_ptr<Painting> e) {

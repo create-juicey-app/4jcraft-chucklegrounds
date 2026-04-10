@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "Spider.h"
 
 #include <math.h>
@@ -60,7 +61,7 @@ void Spider::registerAttributes() {
 std::shared_ptr<Entity> Spider::findAttackTarget() {
 #ifndef _FINAL_BUILD
 #ifdef _DEBUG_MENUS_ENABLED
-    if (app.GetMobsDontAttackEnabled()) {
+    if (gameServices().debugMobsDontAttack()) {
         return std::shared_ptr<Player>();
     }
 #endif

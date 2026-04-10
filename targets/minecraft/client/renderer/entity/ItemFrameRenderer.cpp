@@ -1,11 +1,11 @@
-#include <GL/gl.h>
+
 
 #include <string>
 
 #include "EntityRenderDispatcher.h"
 #include "minecraft/client/renderer/TileRenderer.h"
 // #include "ItemFrame"
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "ItemFrameRenderer.h"
 #include "minecraft/Direction.h"
 #include "minecraft/Facing.h"
@@ -34,7 +34,7 @@ ResourceLocation ItemFrameRenderer::MAP_BACKGROUND_LOCATION =
     ResourceLocation(TN_MISC_MAPBG);
 
 void ItemFrameRenderer::registerTerrainTextures(IconRegister* iconRegister) {
-    backTexture = iconRegister->registerIcon(L"itemframe_back");
+    backTexture = iconRegister->registerIcon("itemframe_back");
 }
 
 void ItemFrameRenderer::render(std::shared_ptr<Entity> _itemframe, double x,

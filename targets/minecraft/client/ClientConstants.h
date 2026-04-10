@@ -11,7 +11,7 @@ class ClientConstants {
 
     // INTERNAL DEVELOPMENT SETTINGS
 public:
-    static const std::wstring VERSION_STRING;
+    static const std::string VERSION_STRING;
 
     static const bool DEADMAU5_CAMERA_CHEATS = false;
     static const bool IS_DEMO_VERSION = false;

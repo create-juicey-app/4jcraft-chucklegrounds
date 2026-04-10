@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "FireworksItem.h"
 
 #include <memory>
@@ -17,15 +18,15 @@
 #include "nbt/ListTag.h"
 #include "strings.h"
 
-const std::wstring FireworksItem::TAG_FIREWORKS = L"Fireworks";
-const std::wstring FireworksItem::TAG_EXPLOSION = L"Explosion";
-const std::wstring FireworksItem::TAG_EXPLOSIONS = L"Explosions";
-const std::wstring FireworksItem::TAG_FLIGHT = L"Flight";
-const std::wstring FireworksItem::TAG_E_TYPE = L"Type";
-const std::wstring FireworksItem::TAG_E_TRAIL = L"Trail";
-const std::wstring FireworksItem::TAG_E_FLICKER = L"Flicker";
-const std::wstring FireworksItem::TAG_E_COLORS = L"Colors";
-const std::wstring FireworksItem::TAG_E_FADECOLORS = L"FadeColors";
+const std::string FireworksItem::TAG_FIREWORKS = "Fireworks";
+const std::string FireworksItem::TAG_EXPLOSION = "Explosion";
+const std::string FireworksItem::TAG_EXPLOSIONS = "Explosions";
+const std::string FireworksItem::TAG_FLIGHT = "Flight";
+const std::string FireworksItem::TAG_E_TYPE = "Type";
+const std::string FireworksItem::TAG_E_TRAIL = "Trail";
+const std::string FireworksItem::TAG_E_FLICKER = "Flicker";
+const std::string FireworksItem::TAG_E_COLORS = "Colors";
+const std::string FireworksItem::TAG_E_FADECOLORS = "FadeColors";
 
 FireworksItem::FireworksItem(int id) : Item(id) {}
 
@@ -65,7 +66,7 @@ void FireworksItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
     }
     if (fireTag->contains(TAG_FLIGHT)) {
         lines->push_back(
-            std::wstring(app.GetString(IDS_ITEM_FIREWORKS_FLIGHT)) + L" " +
+            std::string(gameServices().getString(IDS_ITEM_FIREWORKS_FLIGHT)) + " " +
             toWString<int>((fireTag->getByte(TAG_FLIGHT))));
     }
 

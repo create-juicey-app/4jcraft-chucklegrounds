@@ -91,7 +91,7 @@ int NetherWartTile::cloneTileId(Level* level, int x, int y, int z) {
 
 void NetherWartTile::registerIcons(IconRegister* iconRegister) {
     for (int i = 0; i < NETHER_STALK_TEXTURE_COUNT; i++) {
-        icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" +
+        icons[i] = iconRegister->registerIcon(getIconName() + "_stage_" +
                                               toWString<int>(i));
     }
 }

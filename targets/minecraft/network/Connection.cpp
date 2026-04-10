@@ -7,9 +7,9 @@
 #include <vector>
 
 #include "platform/ShutdownManager.h"
-#include "app/common/src/Network/GameNetworkManager.h"
-#include "app/common/src/Network/NetworkPlayerInterface.h"
-#include "app/common/src/Network/Socket.h"
+#include "app/common/Network/GameNetworkManager.h"
+#include "app/common/Network/NetworkPlayerInterface.h"
+#include "app/common/Network/Socket.h"
 #include "util/StringHelpers.h"
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/compression.h"
 #include "java/InputOutputStream/BufferedOutputStream.h"
@@ -82,7 +82,7 @@ Connection::~Connection() {
     dis = nullptr;
 }
 
-Connection::Connection(Socket* socket, const std::wstring& id,
+Connection::Connection(Socket* socket, const std::string& id,
                        PacketListener* packetListener)  // throws IOException
 {
     _init();
@@ -116,7 +116,7 @@ Connection::Connection(Socket* socket, const std::wstring& id,
     m_hWakeReadThread = new C4JThread::Event;
     m_hWakeWriteThread = new C4JThread::Event;
 
-    std::string szId = wstringtofilename(id);
+    std::string szId = id;
     char readThreadName[256];
     char writeThreadName[256];
     sprintf(readThreadName, "%s read\n", szId.c_str());
@@ -130,7 +130,7 @@ Connection::Connection(Socket* socket, const std::wstring& id,
     writeThread->run();
 
     /* 4J JEV, java:
-    new Thread(wstring(id).append(L" read thread")) {
+    new Thread(string(id).append(" read thread")) {
 
     };
 
@@ -371,7 +371,7 @@ void Connection::close(DisconnectPacket::eDisconnectReason reason) {
     //	printf("Con:0x%x close doing something\n",this);
     disconnected = true;
 
-    disconnectReason = reason;  // va_arg( input, const wstring );
+    disconnectReason = reason;  // va_arg( input, const string );
     disconnectReasonObjects = nullptr;
 
     //	int count = 0, sum = 0, i = first;

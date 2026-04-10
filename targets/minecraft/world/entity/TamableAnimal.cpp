@@ -22,28 +22,28 @@ TamableAnimal::~TamableAnimal() {
 void TamableAnimal::defineSynchedData() {
     Animal::defineSynchedData();
     entityData->define(DATA_FLAGS_ID, (uint8_t)0);
-    entityData->define(DATA_OWNERUUID_ID, L"");
+    entityData->define(DATA_OWNERUUID_ID, "");
 }
 
 void TamableAnimal::addAdditonalSaveData(CompoundTag* tag) {
     Animal::addAdditonalSaveData(tag);
     if (getOwnerUUID().empty()) {
-        tag->putString(L"Owner", L"");
+        tag->putString("Owner", "");
     } else {
-        tag->putString(L"Owner", getOwnerUUID());
+        tag->putString("Owner", getOwnerUUID());
     }
-    tag->putBoolean(L"Sitting", isSitting());
+    tag->putBoolean("Sitting", isSitting());
 }
 
 void TamableAnimal::readAdditionalSaveData(CompoundTag* tag) {
     Animal::readAdditionalSaveData(tag);
-    std::wstring owner = tag->getString(L"Owner");
+    std::string owner = tag->getString("Owner");
     if (owner.length() > 0) {
         setOwnerUUID(owner);
         setTame(true);
     }
-    sitGoal->wantToSit(tag->getBoolean(L"Sitting"));
-    setSitting(tag->getBoolean(L"Sitting"));
+    sitGoal->wantToSit(tag->getBoolean("Sitting"));
+    setSitting(tag->getBoolean("Sitting"));
 }
 
 void TamableAnimal::spawnTamingParticles(bool success) {
@@ -98,11 +98,11 @@ void TamableAnimal::setSitting(bool value) {
     }
 }
 
-std::wstring TamableAnimal::getOwnerUUID() {
+std::string TamableAnimal::getOwnerUUID() {
     return entityData->getString(DATA_OWNERUUID_ID);
 }
 
-void TamableAnimal::setOwnerUUID(const std::wstring& name) {
+void TamableAnimal::setOwnerUUID(const std::string& name) {
     entityData->set(DATA_OWNERUUID_ID, name);
 }
 

@@ -66,10 +66,10 @@ Icon* CakeTile::getTexture(int face, int data) {
 }
 
 void CakeTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"cake_side");
-    iconInner = iconRegister->registerIcon(L"cake_inner");
-    iconTop = iconRegister->registerIcon(L"cake_top");
-    iconBottom = iconRegister->registerIcon(L"cake_bottom");
+    icon = iconRegister->registerIcon("cake_side");
+    iconInner = iconRegister->registerIcon("cake_inner");
+    iconTop = iconRegister->registerIcon("cake_top");
+    iconBottom = iconRegister->registerIcon("cake_bottom");
 }
 
 bool CakeTile::isCubeShaped() { return false; }

@@ -12,7 +12,7 @@ private:
     Screen* lastScreen;
 
 protected:
-    std::wstring title;
+    std::string title;
 
 private:
     Options* options;

@@ -365,21 +365,21 @@ void FishingHook::tick() {
 }
 
 void FishingHook::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putShort(L"xTile", (short)xTile);
-    tag->putShort(L"yTile", (short)yTile);
-    tag->putShort(L"zTile", (short)zTile);
-    tag->putByte(L"inTile", (uint8_t)lastTile);
-    tag->putByte(L"shake", (uint8_t)shakeTime);
-    tag->putByte(L"inGround", (uint8_t)(inGround ? 1 : 0));
+    tag->putShort("xTile", (short)xTile);
+    tag->putShort("yTile", (short)yTile);
+    tag->putShort("zTile", (short)zTile);
+    tag->putByte("inTile", (uint8_t)lastTile);
+    tag->putByte("shake", (uint8_t)shakeTime);
+    tag->putByte("inGround", (uint8_t)(inGround ? 1 : 0));
 }
 
 void FishingHook::readAdditionalSaveData(CompoundTag* tag) {
-    xTile = tag->getShort(L"xTile");
-    yTile = tag->getShort(L"yTile");
-    zTile = tag->getShort(L"zTile");
-    lastTile = tag->getByte(L"inTile") & 0xff;
-    shakeTime = tag->getByte(L"shake") & 0xff;
-    inGround = tag->getByte(L"inGround") == 1;
+    xTile = tag->getShort("xTile");
+    yTile = tag->getShort("yTile");
+    zTile = tag->getShort("zTile");
+    lastTile = tag->getByte("inTile") & 0xff;
+    shakeTime = tag->getByte("shake") & 0xff;
+    inGround = tag->getByte("inGround") == 1;
 }
 
 float FishingHook::getShadowHeightOffs() { return 0; }

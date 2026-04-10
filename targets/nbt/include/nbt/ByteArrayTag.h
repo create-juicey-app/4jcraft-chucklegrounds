@@ -7,8 +7,8 @@ public:
     std::vector<uint8_t> data;
     bool m_ownData;
 
-    ByteArrayTag(const std::wstring& name) : Tag(name) { m_ownData = false; }
-    ByteArrayTag(const std::wstring& name, std::vector<uint8_t>& data,
+    ByteArrayTag(const std::string& name) : Tag(name) { m_ownData = false; }
+    ByteArrayTag(const std::string& name, std::vector<uint8_t>& data,
                  bool ownData = false)
         : Tag(name) {
         this->data = data;
@@ -30,10 +30,10 @@ public:
 
     uint8_t getId() { return TAG_Byte_Array; }
 
-    std::wstring toString() {
-        static wchar_t buf[32];
-        swprintf(buf, 32, L"[%d bytes]", data.size());
-        return std::wstring(buf);
+    std::string toString() {
+        static char buf[32];
+        snprintf(buf, 32, "[%d bytes]", data.size());
+        return std::string(buf);
     }
 
     bool equals(Tag* obj) {

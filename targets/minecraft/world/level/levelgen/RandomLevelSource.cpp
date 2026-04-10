@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "RandomLevelSource.h"
 
 #include <stdlib.h>
@@ -5,7 +6,7 @@
 
 #include <cstdint>
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "util/Timer.h"
 #include "java/Random.h"
@@ -408,7 +409,7 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs,
             uint8_t top = b->topMaterial;
             uint8_t material = b->material;
 
-            LevelGenerationOptions* lgo = app.getLevelGenerationOptions();
+            LevelGenerationOptions* lgo = gameServices().getLevelGenerationOptions();
             if (lgo != nullptr) {
                 lgo->getBiomeOverride(b->id, material, top);
             }
@@ -798,7 +799,7 @@ void RandomLevelSource::postProcess(ChunkSource* parent, int xt, int zt) {
 
     biome->decorate(level, pprandom, xo, zo);
 
-    app.processSchematics(parent->getChunk(xt, zt));
+    gameServices().processSchematics(parent->getChunk(xt, zt));
 
     MobSpawner::postProcessSpawnMobs(level, biome, xo + 8, zo + 8, 16, 16,
                                      pprandom);
@@ -832,7 +833,7 @@ bool RandomLevelSource::tick() { return false; }
 
 bool RandomLevelSource::shouldSave() { return true; }
 
-std::wstring RandomLevelSource::gatherStats() { return L"RandomLevelSource"; }
+std::string RandomLevelSource::gatherStats() { return "RandomLevelSource"; }
 
 std::vector<Biome::MobSpawnerData*>* RandomLevelSource::getMobsAt(
     MobCategory* mobCategory, int x, int y, int z) {
@@ -848,7 +849,7 @@ std::vector<Biome::MobSpawnerData*>* RandomLevelSource::getMobsAt(
 }
 
 TilePos* RandomLevelSource::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
     if (LargeFeature::STRONGHOLD == featureName &&
         strongholdFeature != nullptr) {
         return strongholdFeature->getNearestGeneratedFeature(level, x, y, z);

@@ -3,17 +3,18 @@
 #include <memory>
 #include <string>
 
-#include "platform/sdl2/Render.h"
+
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/model/geom/ModelPart.h"
 
 EnderCrystalModel::EnderCrystalModel(float g) {
-    glass = new ModelPart(this, L"glass");
+    glass = new ModelPart(this, "glass");
     glass->texOffs(0, 0)->addBox(-4, -4, -4, 8, 8, 8);
 
-    cube = new ModelPart(this, L"cube");
+    cube = new ModelPart(this, "cube");
     cube->texOffs(32, 0)->addBox(-4, -4, -4, 8, 8, 8);
 
-    base = new ModelPart(this, L"base");
+    base = new ModelPart(this, "base");
     base->texOffs(0, 16)->addBox(-6, 0, -6, 12, 4, 12);
 
     // 4J added - compile now to avoid random performance hit first time cubes

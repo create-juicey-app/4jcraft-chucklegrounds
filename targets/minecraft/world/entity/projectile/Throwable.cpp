@@ -29,7 +29,7 @@ void Throwable::_throwableInit() {
     owner = nullptr;
     life = 0;
     flightTime = 0;
-    ownerName = L"";
+    ownerName = "";
 }
 
 Throwable::Throwable(Level* level) : Entity(level) {
@@ -242,30 +242,30 @@ void Throwable::tick() {
 float Throwable::getGravity() { return 0.03f; }
 
 void Throwable::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putShort(L"xTile", (short)xTile);
-    tag->putShort(L"yTile", (short)yTile);
-    tag->putShort(L"zTile", (short)zTile);
-    tag->putByte(L"inTile", (uint8_t)lastTile);
-    tag->putByte(L"shake", (uint8_t)shakeTime);
-    tag->putByte(L"inGround", (uint8_t)(inGround ? 1 : 0));
+    tag->putShort("xTile", (short)xTile);
+    tag->putShort("yTile", (short)yTile);
+    tag->putShort("zTile", (short)zTile);
+    tag->putByte("inTile", (uint8_t)lastTile);
+    tag->putByte("shake", (uint8_t)shakeTime);
+    tag->putByte("inGround", (uint8_t)(inGround ? 1 : 0));
 
     if (ownerName.empty() && (owner != nullptr) &&
         owner->instanceof(eTYPE_PLAYER)) {
         ownerName = owner->getAName();
     }
 
-    tag->putString(L"ownerName", ownerName.empty() ? L"" : ownerName);
+    tag->putString("ownerName", ownerName.empty() ? "" : ownerName);
 }
 
 void Throwable::readAdditionalSaveData(CompoundTag* tag) {
-    xTile = tag->getShort(L"xTile");
-    yTile = tag->getShort(L"yTile");
-    zTile = tag->getShort(L"zTile");
-    lastTile = tag->getByte(L"inTile") & 0xff;
-    shakeTime = tag->getByte(L"shake") & 0xff;
-    inGround = tag->getByte(L"inGround") == 1;
-    ownerName = tag->getString(L"ownerName");
-    if (ownerName.empty()) ownerName = L"";
+    xTile = tag->getShort("xTile");
+    yTile = tag->getShort("yTile");
+    zTile = tag->getShort("zTile");
+    lastTile = tag->getByte("inTile") & 0xff;
+    shakeTime = tag->getByte("shake") & 0xff;
+    inGround = tag->getByte("inGround") == 1;
+    ownerName = tag->getString("ownerName");
+    if (ownerName.empty()) ownerName = "";
 }
 
 float Throwable::getShadowHeightOffs() { return 0; }

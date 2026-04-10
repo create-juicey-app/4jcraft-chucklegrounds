@@ -2,8 +2,8 @@
 
 #include <utility>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/JavaMath.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/Minecraft.h"
@@ -54,43 +54,43 @@ const int PotionBrewing::DEFAULT_APPEARANCES[] = {
  * Therefore if bit 13 is on, don't use netherwart!
  * Added "&!13" which requires that bit 13 be turned off.
  */
-const std::wstring PotionBrewing::MOD_NETHERWART = L"+4&!13";  // L"+4"
+const std::string PotionBrewing::MOD_NETHERWART = "+4&!13";  // "+4"
 
 #if _SIMPLIFIED_BREWING
-const std::wstring PotionBrewing::MOD_WATER = L"";
-const std::wstring PotionBrewing::MOD_SUGAR = L"-0+1-2-3&4-4+13";
-const std::wstring PotionBrewing::MOD_GHASTTEARS = L"+0-1-2-3&4-4+13";
-const std::wstring PotionBrewing::MOD_SPIDEREYE = L"-0-1+2-3&4-4+13";
-const std::wstring PotionBrewing::MOD_FERMENTEDEYE = L"-0+3-4+13";
-const std::wstring PotionBrewing::MOD_SPECKLEDMELON = L"+0-1+2-3&4-4+13";
-const std::wstring PotionBrewing::MOD_BLAZEPOWDER = L"+0-1-2+3&4-4+13";
-const std::wstring PotionBrewing::MOD_GOLDENCARROT = L"-0+1+2-3+13&4-4";
-const std::wstring PotionBrewing::MOD_MAGMACREAM = L"+0+1-2-3&4-4+13";
-const std::wstring PotionBrewing::MOD_REDSTONE =
-    L"-5+6-7";  // redstone increases duration
-const std::wstring PotionBrewing::MOD_GLOWSTONE =
-    L"+5-6-7";  // glowstone increases amplification
+const std::string PotionBrewing::MOD_WATER = "";
+const std::string PotionBrewing::MOD_SUGAR = "-0+1-2-3&4-4+13";
+const std::string PotionBrewing::MOD_GHASTTEARS = "+0-1-2-3&4-4+13";
+const std::string PotionBrewing::MOD_SPIDEREYE = "-0-1+2-3&4-4+13";
+const std::string PotionBrewing::MOD_FERMENTEDEYE = "-0+3-4+13";
+const std::string PotionBrewing::MOD_SPECKLEDMELON = "+0-1+2-3&4-4+13";
+const std::string PotionBrewing::MOD_BLAZEPOWDER = "+0-1-2+3&4-4+13";
+const std::string PotionBrewing::MOD_GOLDENCARROT = "-0+1+2-3+13&4-4";
+const std::string PotionBrewing::MOD_MAGMACREAM = "+0+1-2-3&4-4+13";
+const std::string PotionBrewing::MOD_REDSTONE =
+    "-5+6-7";  // redstone increases duration
+const std::string PotionBrewing::MOD_GLOWSTONE =
+    "+5-6-7";  // glowstone increases amplification
 // 4J Stu - Don't require bit 13 to be set. We don't use it in the creative
 // menu. Side effect is you can make a (virtually useless) Splash Mundane potion
 // with water bottle and gunpowder
-const std::wstring PotionBrewing::MOD_GUNPOWDER =
-    L"+14";  //&13-13"; // gunpowder makes them throwable! // gunpowder requires
+const std::string PotionBrewing::MOD_GUNPOWDER =
+    "+14";  //&13-13"; // gunpowder makes them throwable! // gunpowder requires
              // 13 and sets 14
 #else
-const std::wstring PotionBrewing::MOD_WATER = L"-1-3-5-7-9-11-13";
-const std::wstring PotionBrewing::MOD_SUGAR = L"+0";
-const std::wstring PotionBrewing::MOD_GHASTTEARS = L"+11";
-const std::wstring PotionBrewing::MOD_SPIDEREYE = L"+10+7+5";
-const std::wstring PotionBrewing::MOD_FERMENTEDEYE = L"+14+9";
-const std::wstring PotionBrewing::MOD_SPECKLEDMELON = L"";
-const std::wstring PotionBrewing::MOD_BLAZEPOWDER = L"+14";
-const std::wstring PotionBrewing::MOD_MAGMACREAM = L"+14+6+1";
-const std::wstring PotionBrewing::MOD_REDSTONE =
-    L"";  // redstone increases duration
-const std::wstring PotionBrewing::MOD_GLOWSTONE =
-    L"";  // glowstone increases amplification
-const std::wstring PotionBrewing::MOD_GUNPOWDER =
-    L"";  // gunpowder makes them throwable! // gunpowder requires 13 and sets
+const std::string PotionBrewing::MOD_WATER = "-1-3-5-7-9-11-13";
+const std::string PotionBrewing::MOD_SUGAR = "+0";
+const std::string PotionBrewing::MOD_GHASTTEARS = "+11";
+const std::string PotionBrewing::MOD_SPIDEREYE = "+10+7+5";
+const std::string PotionBrewing::MOD_FERMENTEDEYE = "+14+9";
+const std::string PotionBrewing::MOD_SPECKLEDMELON = "";
+const std::string PotionBrewing::MOD_BLAZEPOWDER = "+14";
+const std::string PotionBrewing::MOD_MAGMACREAM = "+14+6+1";
+const std::string PotionBrewing::MOD_REDSTONE =
+    "";  // redstone increases duration
+const std::string PotionBrewing::MOD_GLOWSTONE =
+    "";  // glowstone increases amplification
+const std::string PotionBrewing::MOD_GUNPOWDER =
+    "";  // gunpowder makes them throwable! // gunpowder requires 13 and sets
           // 14
 #endif
 
@@ -102,45 +102,45 @@ std::unordered_map<int, int> PotionBrewing::cachedColors;
 void PotionBrewing::staticCtor() {
 #if _SIMPLIFIED_BREWING
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::regeneration->getId(), L"0 & !1 & !2 & !3 & 0+6"));
+        MobEffect::regeneration->getId(), "0 & !1 & !2 & !3 & 0+6"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::movementSpeed->getId(), L"!0 & 1 & !2 & !3 & 1+6"));
+        MobEffect::movementSpeed->getId(), "!0 & 1 & !2 & !3 & 1+6"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::fireResistance->getId(), L"0 & 1 & !2 & !3 & 0+6"));
+        MobEffect::fireResistance->getId(), "0 & 1 & !2 & !3 & 0+6"));
     potionEffectDuration.insert(
-        intStringMap::value_type(MobEffect::heal->getId(), L"0 & !1 & 2 & !3"));
+        intStringMap::value_type(MobEffect::heal->getId(), "0 & !1 & 2 & !3"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::poison->getId(), L"!0 & !1 & 2 & !3 & 2+6"));
+        MobEffect::poison->getId(), "!0 & !1 & 2 & !3 & 2+6"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::weakness->getId(), L"!0 & !1 & !2 & 3 & 3+6"));
+        MobEffect::weakness->getId(), "!0 & !1 & !2 & 3 & 3+6"));
     potionEffectDuration.insert(
-        intStringMap::value_type(MobEffect::harm->getId(), L"!0 & !1 & 2 & 3"));
+        intStringMap::value_type(MobEffect::harm->getId(), "!0 & !1 & 2 & 3"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::movementSlowdown->getId(), L"!0 & 1 & !2 & 3 & 3+6"));
+        MobEffect::movementSlowdown->getId(), "!0 & 1 & !2 & 3 & 3+6"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::damageBoost->getId(), L"0 & !1 & !2 & 3 & 3+6"));
+        MobEffect::damageBoost->getId(), "0 & !1 & !2 & 3 & 3+6"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::nightVision->getId(), L"!0 & 1 & 2 & !3 & 2+6"));
+        MobEffect::nightVision->getId(), "!0 & 1 & 2 & !3 & 2+6"));
     potionEffectDuration.insert(intStringMap::value_type(
-        MobEffect::invisibility->getId(), L"!0 & 1 & 2 & 3 & 2+6"));
+        MobEffect::invisibility->getId(), "!0 & 1 & 2 & 3 & 2+6"));
 
     // glowstone increases amplification
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::movementSpeed->getId(), L"5"));
+        intStringMap::value_type(MobEffect::movementSpeed->getId(), "5"));
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::digSpeed->getId(), L"5"));
+        intStringMap::value_type(MobEffect::digSpeed->getId(), "5"));
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::damageBoost->getId(), L"5"));
+        intStringMap::value_type(MobEffect::damageBoost->getId(), "5"));
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::regeneration->getId(), L"5"));
+        intStringMap::value_type(MobEffect::regeneration->getId(), "5"));
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::harm->getId(), L"5"));
+        intStringMap::value_type(MobEffect::harm->getId(), "5"));
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::heal->getId(), L"5"));
+        intStringMap::value_type(MobEffect::heal->getId(), "5"));
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::damageResistance->getId(), L"5"));
+        intStringMap::value_type(MobEffect::damageResistance->getId(), "5"));
     potionEffectAmplifier.insert(
-        intStringMap::value_type(MobEffect::poison->getId(), L"5"));
+        intStringMap::value_type(MobEffect::poison->getId(), "5"));
 #else
     potionEffectDuration.put(movementSpeed.getId(),
                              "!10 & !4 & 5*2+0 & >1 | !7 & !4 & 5*2+0 & >1");
@@ -319,14 +319,14 @@ int PotionBrewing::countOnes(int brew) {
 #if _SIMPLIFIED_BREWING
 // 4J Stu - Trimmed this function to remove all the unused features for
 // simplified brewing
-int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
+int PotionBrewing::parseEffectFormulaValue(const std::string& definition,
                                            int start, int end, int brew) {
     if (start >= definition.length() || end < 0 || start >= end) {
         return 0;
     }
 
     // split by and
-    int andIndex = (int)definition.find_first_of(L'&', start);
+    int andIndex = (int)definition.find_first_of('&', start);
     if (andIndex >= 0 && andIndex < end) {
         int leftSide =
             parseEffectFormulaValue(definition, start, andIndex - 1, brew);
@@ -356,11 +356,11 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
     int result = 0;
     for (int i = start; i < end; i++) {
         char current = definition.at(i);
-        if (current >= L'0' && current <= L'9') {
+        if (current >= '0' && current <= '9') {
             valuePart *= 10;
-            valuePart += (int)(current - L'0');
+            valuePart += (int)(current - '0');
             hasValue = true;
-        } else if (current == L'!') {
+        } else if (current == '!') {
             if (hasValue) {
                 result +=
                     constructParsedValue(isNot, hasMultiplier, isNeg, bitCount,
@@ -370,7 +370,7 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
             }
 
             isNot = true;
-        } else if (current == L'-') {
+        } else if (current == '-') {
             if (hasValue) {
                 result +=
                     constructParsedValue(isNot, hasMultiplier, isNeg, bitCount,
@@ -380,7 +380,7 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
             }
 
             isNeg = true;
-        } else if (current == L'+') {
+        } else if (current == '+') {
             if (hasValue) {
                 result +=
                     constructParsedValue(isNot, hasMultiplier, isNeg, bitCount,
@@ -398,14 +398,14 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
     return result;
 }
 #else
-int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
+int PotionBrewing::parseEffectFormulaValue(const std::string& definition,
                                            int start, int end, int brew) {
     if (start >= definition.length() || end < 0 || start >= end) {
         return 0;
     }
 
     // split by or
-    int orIndex = definition.find_first_of(L'|', start);
+    int orIndex = definition.find_first_of('|', start);
     if (orIndex >= 0 && orIndex < end) {
         int leftSide =
             parseEffectFormulaValue(definition, start, orIndex - 1, brew);
@@ -421,7 +421,7 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
         return 0;
     }
     // split by and
-    int andIndex = definition.find_first_of(L'&', start);
+    int andIndex = definition.find_first_of('&', start);
     if (andIndex >= 0 && andIndex < end) {
         int leftSide =
             parseEffectFormulaValue(definition, start, andIndex - 1, brew);
@@ -452,18 +452,18 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
     int result = 0;
     for (int i = start; i < end; i++) {
         char current = definition.at(i);
-        if (current >= L'0' && current <= L'9') {
+        if (current >= '0' && current <= '9') {
             if (isMultiplier) {
-                multiplierPart = (int)(current - L'0');
+                multiplierPart = (int)(current - '0');
                 hasMultiplier = true;
             } else {
                 valuePart *= 10;
-                valuePart += (int)(current - L'0');
+                valuePart += (int)(current - '0');
                 hasValue = true;
             }
-        } else if (current == L'*') {
+        } else if (current == '*') {
             isMultiplier = true;
-        } else if (current == L'!') {
+        } else if (current == '!') {
             if (hasValue) {
                 result +=
                     constructParsedValue(isNot, hasMultiplier, isNeg, bitCount,
@@ -474,7 +474,7 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
             }
 
             isNot = true;
-        } else if (current == L'-') {
+        } else if (current == '-') {
             if (hasValue) {
                 result +=
                     constructParsedValue(isNot, hasMultiplier, isNeg, bitCount,
@@ -485,7 +485,7 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
             }
 
             isNeg = true;
-        } else if (current == L'=' || current == L'<' || current == L'>') {
+        } else if (current == '=' || current == '<' || current == '>') {
             if (hasValue) {
                 result +=
                     constructParsedValue(isNot, hasMultiplier, isNeg, bitCount,
@@ -495,14 +495,14 @@ int PotionBrewing::parseEffectFormulaValue(const std::wstring& definition,
                 bitCount = NO_COUNT;
             }
 
-            if (current == L'=') {
+            if (current == '=') {
                 bitCount = EQUAL_COUNT;
-            } else if (current == L'<') {
+            } else if (current == '<') {
                 bitCount = LESS_COUNT;
-            } else if (current == L'>') {
+            } else if (current == '>') {
                 bitCount = GREATER_COUNT;
             }
-        } else if (current == L'+') {
+        } else if (current == '+') {
             if (hasValue) {
                 result +=
                     constructParsedValue(isNot, hasMultiplier, isNeg, bitCount,
@@ -533,12 +533,12 @@ std::vector<MobEffectInstance*>* PotionBrewing::getEffects(
             (effect->isDisabled() && !includeDisabledEffects)) {
             continue;
         }
-        // wstring durationString = potionEffectDuration.get(effect->getId());
+        // string durationString = potionEffectDuration.get(effect->getId());
         auto effIt = potionEffectDuration.find(effect->getId());
         if (effIt == potionEffectDuration.end()) {
             continue;
         }
-        std::wstring durationString = effIt->second;
+        std::string durationString = effIt->second;
 
         int duration = parseEffectFormulaValue(
             durationString, 0, (int)durationString.length(), brew);
@@ -546,7 +546,7 @@ std::vector<MobEffectInstance*>* PotionBrewing::getEffects(
             int amplifier = 0;
             auto ampIt = potionEffectAmplifier.find(effect->getId());
             if (ampIt != potionEffectAmplifier.end()) {
-                std::wstring amplifierString = ampIt->second;
+                std::string amplifierString = ampIt->second;
                 amplifier = parseEffectFormulaValue(
                     amplifierString, 0, (int)amplifierString.length(), brew);
                 if (amplifier < 0) {
@@ -687,7 +687,7 @@ int PotionBrewing::applyBrewBit(int currentBrew, int bit, bool isNeg,
     return currentBrew;
 }
 
-int PotionBrewing::applyBrew(int currentBrew, const std::wstring& formula) {
+int PotionBrewing::applyBrew(int currentBrew, const std::string& formula) {
     int start = 0;
     int end = (int)formula.length();
 
@@ -698,11 +698,11 @@ int PotionBrewing::applyBrew(int currentBrew, const std::wstring& formula) {
     int valuePart = 0;
     for (int i = start; i < end; i++) {
         char current = formula.at(i);
-        if (current >= L'0' && current <= L'9') {
+        if (current >= '0' && current <= '9') {
             valuePart *= 10;
-            valuePart += (int)(current - L'0');
+            valuePart += (int)(current - '0');
             hasValue = true;
-        } else if (current == L'!') {
+        } else if (current == '!') {
             if (hasValue) {
                 currentBrew = applyBrewBit(currentBrew, valuePart, isNeg, isNot,
                                            isRequired);
@@ -711,7 +711,7 @@ int PotionBrewing::applyBrew(int currentBrew, const std::wstring& formula) {
             }
 
             isNot = true;
-        } else if (current == L'-') {
+        } else if (current == '-') {
             if (hasValue) {
                 currentBrew = applyBrewBit(currentBrew, valuePart, isNeg, isNot,
                                            isRequired);
@@ -720,14 +720,14 @@ int PotionBrewing::applyBrew(int currentBrew, const std::wstring& formula) {
             }
 
             isNeg = true;
-        } else if (current == L'+') {
+        } else if (current == '+') {
             if (hasValue) {
                 currentBrew = applyBrewBit(currentBrew, valuePart, isNeg, isNot,
                                            isRequired);
                 hasValue = isNeg = isNot = isRequired = false;
                 valuePart = 0;
             }
-        } else if (current == L'&') {
+        } else if (current == '&') {
             if (hasValue) {
                 currentBrew = applyBrewBit(currentBrew, valuePart, isNeg, isNot,
                                            isRequired);
@@ -763,15 +763,15 @@ int PotionBrewing::valueOf(int brew, int p1, int p2, int p3, int p4, int p5) {
            (isLit(brew, p5) ? 0x01 : 0);
 }
 
-std::wstring PotionBrewing::toString(int brew) {
-    std::wstring string;
+std::string PotionBrewing::toString(int brew) {
+    std::string string;
 
     int bit = NUM_BITS - 1;
     while (bit >= 0) {
         if ((brew & (1 << bit)) != 0) {
-            string.append(L"O");
+            string.append("O");
         } else {
-            string.append(L"x");
+            string.append("x");
         }
         bit--;
     }

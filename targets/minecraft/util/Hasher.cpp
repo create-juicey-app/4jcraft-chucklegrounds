@@ -9,13 +9,13 @@
 
 #include "Hasher.h"
 
-Hasher::Hasher(std::wstring& salt) { this->salt = salt; }
+Hasher::Hasher(std::string& salt) { this->salt = salt; }
 
-std::wstring Hasher::getHash(std::wstring& name) {
+std::string Hasher::getHash(std::string& name) {
 #if defined(_WIN32)
     // 4J Stu - Removed try/catch
     // try {
-    std::wstring s = std::wstring(salt).append(name);
+    std::string s = std::string(salt).append(name);
     // MessageDigest m;
     // m = MessageDigest.getInstance("MD5");
     // m.update(s.getBytes(), 0, s.length());
@@ -30,7 +30,7 @@ std::wstring Hasher::getHash(std::wstring& name) {
     //}
 #else
     // adapted from a SSL example
-    std::wstring combined = salt + name;
+    std::string combined = salt + name;
     std::string combined_str(combined.begin(), combined.end());
     unsigned char result[EVP_MAX_MD_SIZE];
     EVP_MD_CTX* md5_ctx = EVP_MD_CTX_new();
@@ -44,6 +44,6 @@ std::wstring Hasher::getHash(std::wstring& name) {
         ss << std::setw(2) << std::setfill('0') << std::hex << (int)result[i];
     }
     std::string hash_str = ss.str();
-    return std::wstring(hash_str.begin(), hash_str.end());
+    return std::string(hash_str.begin(), hash_str.end());
 #endif
 }

@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "TextureManager.h"
 
 #include <wchar.h>
@@ -6,7 +7,7 @@
 #include <vector>
 
 #include "app/linux/LinuxGame.h"
-#include "app/include/BufferedImage.h"
+#include "minecraft/client/BufferedImage.h"
 #include "Stitcher.h"
 #include "Texture.h"
 #include "java/File.h"
@@ -24,7 +25,7 @@ TextureManager::TextureManager() { nextID = 0; }
 
 int TextureManager::createTextureID() { return nextID++; }
 
-Texture* TextureManager::getTexture(const std::wstring& name) {
+Texture* TextureManager::getTexture(const std::string& name) {
     if (stringToIDMap.find(name) != stringToIDMap.end()) {
         return idToTextureMap.find(stringToIDMap.find(name)->second)->second;
     }
@@ -32,7 +33,7 @@ Texture* TextureManager::getTexture(const std::wstring& name) {
     return nullptr;
 }
 
-void TextureManager::registerName(const std::wstring& name, Texture* texture) {
+void TextureManager::registerName(const std::string& name, Texture* texture) {
     stringToIDMap.insert(
         stringIntMap::value_type(name, texture->getManagerId()));
 
@@ -48,7 +49,7 @@ void TextureManager::registerTexture(Texture* texture) {
             // Minecraft.getInstance().getLogger().warning("TextureManager.registerTexture
             // called, but this texture has " + "already been registered.
             // ignoring.");
-            app.DebugPrintf(
+            Log::info(
                 "TextureManager.registerTexture called, but this texture has "
                 "already been registered. ignoring.");
             return;
@@ -59,7 +60,7 @@ void TextureManager::registerTexture(Texture* texture) {
         intTextureMap::value_type(texture->getManagerId(), texture));
 }
 
-void TextureManager::unregisterTexture(const std::wstring& name,
+void TextureManager::unregisterTexture(const std::string& name,
                                        Texture* texture) {
     auto it = idToTextureMap.find(texture->getManagerId());
     if (it != idToTextureMap.end()) idToTextureMap.erase(it);
@@ -68,14 +69,14 @@ void TextureManager::unregisterTexture(const std::wstring& name,
     if (it2 != stringToIDMap.end()) stringToIDMap.erase(it2);
 }
 
-Stitcher* TextureManager::createStitcher(const std::wstring& name) {
+Stitcher* TextureManager::createStitcher(const std::string& name) {
     int maxTextureSize = Minecraft::maxSupportedTextureSize();
 
     return new Stitcher(name, maxTextureSize, maxTextureSize, true);
 }
 
 std::vector<Texture*>* TextureManager::createTextures(
-    const std::wstring& filename, bool mipmap) {
+    const std::string& filename, bool mipmap) {
     std::vector<Texture*>* result = new std::vector<Texture*>();
     TexturePack* texturePack = Minecraft::GetInstance()->skins->getSelected();
     // try {
@@ -88,9 +89,9 @@ std::vector<Texture*>* TextureManager::createTextures(
     int minFilter = Texture::TFLT_NEAREST;
     int magFilter = Texture::TFLT_NEAREST;
 
-    std::wstring drive = L"";
+    std::string drive = "";
 
-    if (texturePack->hasFile(L"res/" + filename, false)) {
+    if (texturePack->hasFile("res/" + filename, false)) {
         drive = texturePack->getPath(true);
     } else {
         {
@@ -99,16 +100,16 @@ std::vector<Texture*>* TextureManager::createTextures(
         }
     }
 
-    // BufferedImage *image = new BufferedImage(texturePack->getResource(L"/" +
+    // BufferedImage *image = new BufferedImage(texturePack->getResource("/" +
     // filename),false,true,drive);
-    // //ImageIO::read(texturePack->getResource(L"/" + filename));
+    // //ImageIO::read(texturePack->getResource("/" + filename));
 
     BufferedImage* image =
         texturePack->getImageResource(filename, false, true, drive);
     int height = image->getHeight();
     int width = image->getWidth();
 
-    std::wstring texName = getTextureNameFromPath(filename);
+    std::string texName = getTextureNameFromPath(filename);
 
     if (isAnimation(filename, texturePack)) {
         // TODO: Read this information from the animation file later
@@ -139,9 +140,9 @@ std::vector<Texture*>* TextureManager::createTextures(
             // Skipping " + filename + " because of broken aspect ratio and not
             // animation");
 #if !defined(_CONTENT_PACKAGE)
-            wprintf(
-                L"TextureManager.createTexture: Skipping %ls because of broken "
-                L"aspect ratio and not animation\n",
+            printf(
+                "TextureManager.createTexture: Skipping %s because of broken "
+                "aspect ratio and not animation\n",
                 filename.c_str());
 #endif
         }
@@ -160,22 +161,22 @@ std::vector<Texture*>* TextureManager::createTextures(
     return result;
 }
 
-std::wstring TextureManager::getTextureNameFromPath(
-    const std::wstring& filename) {
+std::string TextureManager::getTextureNameFromPath(
+    const std::string& filename) {
     File file(filename);
-    return file.getName().substr(0, file.getName().find_last_of(L'.'));
+    return file.getName().substr(0, file.getName().find_last_of('.'));
 }
 
-bool TextureManager::isAnimation(const std::wstring& filename,
+bool TextureManager::isAnimation(const std::string& filename,
                                  TexturePack* texturePack) {
-    std::wstring dataFileName =
-        L"/" + filename.substr(0, filename.find_last_of(L'.')) + L".txt";
-    bool hasOriginalImage = texturePack->hasFile(L"/" + filename, false);
+    std::string dataFileName =
+        "/" + filename.substr(0, filename.find_last_of('.')) + ".txt";
+    bool hasOriginalImage = texturePack->hasFile("/" + filename, false);
     return Minecraft::GetInstance()->skins->getSelected()->hasFile(
         dataFileName, !hasOriginalImage);
 }
 
-Texture* TextureManager::createTexture(const std::wstring& name, int mode,
+Texture* TextureManager::createTexture(const std::string& name, int mode,
                                        int width, int height, int wrap,
                                        int format, int minFilter, int magFilter,
                                        bool mipmap, BufferedImage* image) {
@@ -185,7 +186,7 @@ Texture* TextureManager::createTexture(const std::wstring& name, int mode,
     return newTex;
 }
 
-Texture* TextureManager::createTexture(const std::wstring& name, int mode,
+Texture* TextureManager::createTexture(const std::string& name, int mode,
                                        int width, int height, int format,
                                        bool mipmap) {
     // 4J Stu - Don't clamp as it causes issues with how we signal

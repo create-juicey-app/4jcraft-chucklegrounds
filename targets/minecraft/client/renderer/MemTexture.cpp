@@ -1,13 +1,13 @@
-#include "app/include/MemTexture.h"
+#include "minecraft/client/renderer/MemTexture.h"
 
 #include <cstdint>
 #include <string>
 
-#include "app/include/BufferedImage.h"
+#include "minecraft/client/BufferedImage.h"
 
 class MemTextureProcessor;
 
-MemTexture::MemTexture(const std::wstring& _url, std::uint8_t* pbData,
+MemTexture::MemTexture(const std::string& _url, std::uint8_t* pbData,
                        std::uint32_t dataBytes,
                        MemTextureProcessor* processor) {
     // 4J - added

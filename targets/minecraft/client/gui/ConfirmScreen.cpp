@@ -7,22 +7,22 @@
 #include "minecraft/client/gui/Screen.h"
 #include "minecraft/locale/Language.h"
 
-ConfirmScreen::ConfirmScreen(Screen* parent, const std::wstring& title1,
-                             const std::wstring& title2, int id) {
+ConfirmScreen::ConfirmScreen(Screen* parent, const std::string& title1,
+                             const std::string& title2, int id) {
     this->parent = parent;
     this->title1 = title1;
     this->title2 = title2;
     this->id = id;
 
     Language* language = Language::getInstance();
-    yesButton = language->getElement(L"gui.yes");
-    noButton = language->getElement(L"gui.no");
+    yesButton = language->getElement("gui.yes");
+    noButton = language->getElement("gui.no");
 }
 
-ConfirmScreen::ConfirmScreen(Screen* parent, const std::wstring& title1,
-                             const std::wstring& title2,
-                             const std::wstring& yesButton,
-                             const std::wstring& noButton, int id) {
+ConfirmScreen::ConfirmScreen(Screen* parent, const std::string& title1,
+                             const std::string& title2,
+                             const std::string& yesButton,
+                             const std::string& noButton, int id) {
     this->parent = parent;
     this->title1 = title1;
     this->title2 = title2;

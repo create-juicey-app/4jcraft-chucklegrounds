@@ -15,7 +15,7 @@ public:
 
     virtual void allChanged() = 0;
 
-    // virtual void playSound(const wstring& name, double x, double y, double z,
+    // virtual void playSound(const string& name, double x, double y, double z,
     // float volume, float pitch) = 0;
     virtual void playSound(int iSound, double x, double y, double z,
                            float volume, float pitch,
@@ -25,7 +25,7 @@ public:
                                        float volume, float pitch,
                                        float fSoundClipDist = 16.0f) = 0;
 
-    // 4J removed - virtual void addParticle(const wstring& name, double x,
+    // 4J removed - virtual void addParticle(const string& name, double x,
     // double y, double z, double xa, double ya, double za) = 0;
 
     virtual void addParticle(ePARTICLE_TYPE name, double x, double y, double z,
@@ -42,7 +42,7 @@ public:
 
     virtual void skyColorChanged() = 0;
 
-    virtual void playStreamingMusic(const std::wstring& name, int x, int y,
+    virtual void playStreamingMusic(const std::string& name, int x, int y,
                                     int z) = 0;
     virtual void globalLevelEvent(int type, int sourceX, int sourceY,
                                   int sourceZ, int data) = 0;

@@ -46,11 +46,11 @@ public:
     virtual bool tick();
     virtual bool shouldSave();
     virtual void postProcess(ChunkSource* parent, int x, int z);
-    virtual std::wstring gatherStats();
+    virtual std::string gatherStats();
     virtual std::vector<Biome::MobSpawnerData*>* getMobsAt(
         MobCategory* mobCategory, int x, int y, int z);
     virtual TilePos* findNearestMapFeature(Level* level,
-                                           const std::wstring& featureName,
+                                           const std::string& featureName,
                                            int x, int y, int z);
     virtual void recreateLogicStructuresForChunk(int chunkX, int chunkZ);
     virtual void dataReceived(int x, int z);  // 4J added

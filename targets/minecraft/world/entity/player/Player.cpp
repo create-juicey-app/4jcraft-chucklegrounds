@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 // 4J TODO
 
 // All the instanceof s from Java have been converted to dynamic_cast in this
@@ -20,11 +22,11 @@
 #include <vector>
 
 #include "Inventory.h"
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/common/App_structs.h"
 #include "app/common/Minecraft_Macros.h"
-#include "app/common/src/DLC/DLCManager.h"
-#include "app/common/src/DLC/DLCSkinFile.h"
+#include "app/common/DLC/DLCManager.h"
+#include "app/common/DLC/DLCSkinFile.h"
 #include "app/linux/LinuxGame.h"
 #include "java/JavaMath.h"
 #include "java/Random.h"
@@ -104,8 +106,8 @@ void Player::_init() {
 
     m_isSleeping = false;
 
-    customTextureUrl = L"";
-    customTextureUrl2 = L"";
+    customTextureUrl = "";
+    customTextureUrl2 = "";
     m_uiPlayerCurrentSkin = 0;
 
     bedPosition = nullptr;
@@ -152,7 +154,7 @@ void Player::_init() {
     m_bAwardedOnARail = false;
 }
 
-Player::Player(Level* level, const std::wstring& name) : LivingEntity(level) {
+Player::Player(Level* level, const std::string& name) : LivingEntity(level) {
     // 4J Stu - This function call had to be moved here from the Entity ctor to
     // ensure that the derived version of the function is called
     this->defineSynchedData();
@@ -182,7 +184,7 @@ Player::Player(Level* level, const std::wstring& name) : LivingEntity(level) {
     m_OnlineXuid = INVALID_XUID;
     // m_bShownOnMaps = true;
     setShowOnMaps(
-        app.GetGameHostOption(eGameHostOption_Gamertags) != 0 ? true : false);
+        gameServices().getGameHostOption(eGameHostOption_Gamertags) != 0 ? true : false);
     m_bIsGuest = false;
 
     // 4J: Set UUID to name on none-XB1 consoles, may change in future but for
@@ -481,7 +483,7 @@ void Player::spawnEatParticles(std::shared_ptr<ItemInstance> useItem,
                                p.x, p.y, p.z, d.x, d.y + 0.05, d.z);
         }
 
-        // 4J Stu - Was L"mob.eat" which doesnt exist
+        // 4J Stu - Was "mob.eat" which doesnt exist
         playSound(eSoundType_RANDOM_EAT, 0.5f + 0.5f * random->nextInt(2),
                   (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
     }
@@ -533,14 +535,14 @@ void Player::ride(std::shared_ptr<Entity> e) {
 
 void Player::setPlayerDefaultSkin(EDefaultSkins skin) {
 #if !defined(_CONTENT_PACKAGE)
-    wprintf(L"Setting default skin to %d for player %ls\n", std::to_underlying(skin), name.c_str());
+    printf("Setting default skin to %d for player %s\n", std::to_underlying(skin), name.c_str());
 #endif
     m_skinIndex = skin;
 }
 
 void Player::setCustomSkin(std::uint32_t skinId) {
 #if !defined(_CONTENT_PACKAGE)
-    wprintf(L"Attempting to set skin to %08X for player %ls\n", skinId,
+    printf("Attempting to set skin to %08X for player %s\n", skinId,
             name.c_str());
 #endif
     EDefaultSkins playerSkin = EDefaultSkins::ServerSelected;
@@ -569,34 +571,34 @@ void Player::setCustomSkin(std::uint32_t skinId) {
     setPlayerDefaultSkin(playerSkin);
 
     m_dwSkinId = skinId;
-    this->customTextureUrl = app.getSkinPathFromId(skinId);
+    this->customTextureUrl = gameServices().getSkinPathFromId(skinId);
 
     // set the new player additional boxes
-    /*vector<ModelPart *> *pvModelParts=app.GetAdditionalModelParts(m_dwSkinId);
+    /*vector<ModelPart *> *pvModelParts=gameServices().getAdditionalModelParts(m_dwSkinId);
 
     if(pvModelParts==nullptr)
     {
     // we don't have the data from the dlc skin yet
-    app.DebugPrintf("Couldn't get model parts for skin %X\n",m_dwSkinId);
+    Log::info("Couldn't get model parts for skin %X\n",m_dwSkinId);
 
     // do we have it from the DLC pack?
     DLCSkinFile *pDLCSkinFile =
-    app.m_dlcManager.getSkinFile(this->customTextureUrl);
+    gameServices().getDLCSkinFile(this->customTextureUrl);
 
     if(pDLCSkinFile!=nullptr)
     {
             const int additionalBoxCount =
     pDLCSkinFile->getAdditionalBoxesCount(); if(additionalBoxCount != 0)
     {
-    app.DebugPrintf("Got model parts from DLCskin for skin %X\n",m_dwSkinId);
-    pvModelParts=app.SetAdditionalSkinBoxes(m_dwSkinId,pDLCSkinFile->getAdditionalBoxes());
+    Log::info("Got model parts from DLCskin for skin %X\n",m_dwSkinId);
+    pvModelParts=gameServices().setAdditionalSkinBoxesFromVec(m_dwSkinId,pDLCSkinFile->getAdditionalBoxes());
     this->SetAdditionalModelParts(pvModelParts);
     }
     else
     {
     this->SetAdditionalModelParts(nullptr);
     }
-    app.SetAnimOverrideBitmask(pDLCSkinFile->getSkinID(),pDLCSkinFile->getAnimOverrideBitmask());
+    gameServices().setAnimOverrideBitmask(pDLCSkinFile->getSkinID(),pDLCSkinFile->getAnimOverrideBitmask());
     }
     else
     {
@@ -605,7 +607,7 @@ void Player::setCustomSkin(std::uint32_t skinId) {
     }
     else
     {
-    app.DebugPrintf("Got model parts from app.GetAdditionalModelParts for skin
+    Log::info("Got model parts from app.GetAdditionalModelParts for skin
     %X\n",m_dwSkinId);
 
     this->SetAdditionalModelParts(pvModelParts);
@@ -650,7 +652,7 @@ unsigned int Player::getSkinAnimOverrideBitmask(std::uint32_t skinId) {
             default:
                 // This is not one of the prefined skins
                 // Does the app have an anim override for this skin?
-                bitmask = app.GetAnimOverrideBitmask(skinId);
+                bitmask = gameServices().getAnimOverrideBitmask(skinId);
                 break;
         }
     }
@@ -661,7 +663,7 @@ void Player::setXuid(PlayerUID xuid) { m_xuid = xuid; }
 
 void Player::setCustomCape(std::uint32_t capeId) {
 #if !defined(_CONTENT_PACKAGE)
-    wprintf(L"Attempting to set cape to %08X for player %s\n", capeId,
+    printf("Attempting to set cape to %08X for player %s\n", capeId,
             name.c_str());
 #endif
 
@@ -670,41 +672,41 @@ void Player::setCustomCape(std::uint32_t capeId) {
     if (capeId > 0) {
         this->customTextureUrl2 = Player::getCapePathFromId(capeId);
     } else {
-        MOJANG_DATA* pMojangData = app.GetMojangDataForXuid(getOnlineXuid());
+        MOJANG_DATA* pMojangData = gameServices().getMojangDataForXuid(getOnlineXuid());
         if (pMojangData) {
             // Cape
             if (pMojangData->wchCape[0] != 0) {
                 this->customTextureUrl2 = pMojangData->wchCape;
             } else {
-                if (app.DefaultCapeExists()) {
-                    this->customTextureUrl2 = std::wstring(L"Special_Cape.png");
+                if (gameServices().defaultCapeExists()) {
+                    this->customTextureUrl2 = std::string("Special_Cape.png");
                 } else {
-                    this->customTextureUrl2 = std::wstring(L"");
+                    this->customTextureUrl2 = std::string("");
                 }
             }
 
         } else {
             // if there is a custom default cloak, then set it here
-            if (app.DefaultCapeExists()) {
-                this->customTextureUrl2 = std::wstring(L"Special_Cape.png");
+            if (gameServices().defaultCapeExists()) {
+                this->customTextureUrl2 = std::string("Special_Cape.png");
             } else {
-                this->customTextureUrl2 = std::wstring(L"");
+                this->customTextureUrl2 = std::string("");
             }
         }
     }
 }
 
-std::uint32_t Player::getCapeIdFromPath(const std::wstring& cape) {
+std::uint32_t Player::getCapeIdFromPath(const std::string& cape) {
     bool dlcCape = false;
     std::uint32_t capeId = 0;
 
     if (cape.size() >= 14) {
-        dlcCape = cape.substr(0, 3).compare(L"dlc") == 0;
+        dlcCape = cape.substr(0, 3).compare("dlc") == 0;
 
-        std::wstring capeValue = cape.substr(7, cape.size());
-        capeValue = capeValue.substr(0, capeValue.find_first_of(L'.'));
+        std::string capeValue = cape.substr(7, cape.size());
+        capeValue = capeValue.substr(0, capeValue.find_first_of('.'));
 
-        std::wstringstream ss;
+        std::stringstream ss;
         // 4J Stu - dlc skins are numbered using decimal to make it easier for
         // artists/people to number manually Everything else is numbered using
         // hex
@@ -719,15 +721,15 @@ std::uint32_t Player::getCapeIdFromPath(const std::wstring& cape) {
     return capeId;
 }
 
-std::wstring Player::getCapePathFromId(std::uint32_t capeId) {
+std::string Player::getCapePathFromId(std::uint32_t capeId) {
     // 4J Stu - This function maps the encoded uint32_t we store in the player
     // profile to a filename that is stored as a memory texture and shared
     // between systems in game
-    wchar_t chars[256];
+    char chars[256];
     if (GET_IS_DLC_SKIN_FROM_BITMASK(capeId)) {
         // 4J Stu - DLC skins are numbered using decimal rather than hex to make
         // it easier to number manually
-        swprintf(chars, 256, L"dlccape%08d.png",
+        snprintf(chars, 256, "dlccape%08d.png",
                  GET_DLC_SKIN_ID_FROM_BITMASK(capeId));
 
     } else {
@@ -735,32 +737,32 @@ std::wstring Player::getCapePathFromId(std::uint32_t capeId) {
         std::uint32_t defaultCapeIndex =
             GET_DEFAULT_SKIN_ID_FROM_BITMASK(capeId);
         if (ugcCapeIndex == 0) {
-            swprintf(chars, 256, L"defcape%08X.png", defaultCapeIndex);
+            snprintf(chars, 256, "defcape%08X.png", defaultCapeIndex);
         } else {
-            swprintf(chars, 256, L"ugccape%08X.png", ugcCapeIndex);
+            snprintf(chars, 256, "ugccape%08X.png", ugcCapeIndex);
         }
     }
     return chars;
 }
 
 void Player::ChangePlayerSkin() {
-    if (app.vSkinNames.size() > 0) {
+    if (gameServices().getSkinNames().size() > 0) {
         m_uiPlayerCurrentSkin++;
-        if (m_uiPlayerCurrentSkin > app.vSkinNames.size()) {
+        if (m_uiPlayerCurrentSkin > gameServices().getSkinNames().size()) {
             m_uiPlayerCurrentSkin = 0;
-            this->customTextureUrl = L"";
+            this->customTextureUrl = "";
         } else {
             if (m_uiPlayerCurrentSkin > 0) {
                 // change this players custom texture url
                 this->customTextureUrl =
-                    app.vSkinNames[m_uiPlayerCurrentSkin - 1];
+                    gameServices().getSkinNames()[m_uiPlayerCurrentSkin - 1];
             }
         }
     }
 }
 
 void Player::prepareCustomTextures() {
-    MOJANG_DATA* pMojangData = app.GetMojangDataForXuid(getOnlineXuid());
+    MOJANG_DATA* pMojangData = gameServices().getMojangDataForXuid(getOnlineXuid());
 
     if (pMojangData) {
         // Skin
@@ -776,32 +778,32 @@ void Player::prepareCustomTextures() {
         //}
         // else
         //{
-        //	if(app.DefaultCapeExists())
+        //	if(gameServices().defaultCapeExists())
         //	{
-        //		this->customTextureUrl2= wstring(L"Default_Cape.png");
+        //		this->customTextureUrl2= string("Default_Cape.png");
         //	}
         //	else
         //	{
-        //		this->customTextureUrl2= wstring(L"");
+        //		this->customTextureUrl2= string("");
         //	}
         //}
 
     } else {
         // 4J Stu - Don't update the cape here, it gets set elsewhere
         // if there is a custom default cloak, then set it here
-        // if(app.DefaultCapeExists())
+        // if(gameServices().defaultCapeExists())
         //{
-        //	this->customTextureUrl2= wstring(L"Default_Cape.png");
+        //	this->customTextureUrl2= string("Default_Cape.png");
         //}
         // else
         //{
-        //	this->customTextureUrl2 =wstring(L"");
+        //	this->customTextureUrl2 =string("");
         //}
     }
 
     /*cloakTexture =
-     * wstring(L"http://s3.amazonaws.com/MinecraftCloaks/").append( name
-     * ).append( L".png" );*/
+     * string("http://s3.amazonaws.com/MinecraftCloaks/").append( name
+     * ).append( ".png" );*/
     // this->customTextureUrl2 = cloakTexture;
 }
 
@@ -933,7 +935,7 @@ void Player::die(DamageSource* source) {
     yd = 0.1f;
 
     // 4J - TODO need to use a xuid
-    if (app.isXuidNotch(m_xuid)) {
+    if (gameServices().isXuidNotch(m_xuid)) {
         drop(std::make_shared<ItemInstance>(Item::apple, 1), true);
     }
     if (!level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY)) {
@@ -1080,69 +1082,69 @@ bool Player::canDestroy(Tile* tile) { return inventory->canDestroy(tile); }
 void Player::readAdditionalSaveData(CompoundTag* entityTag) {
     LivingEntity::readAdditionalSaveData(entityTag);
     ListTag<CompoundTag>* inventoryList =
-        (ListTag<CompoundTag>*)entityTag->getList(L"Inventory");
+        (ListTag<CompoundTag>*)entityTag->getList("Inventory");
     inventory->load(inventoryList);
-    inventory->selected = entityTag->getInt(L"SelectedItemSlot");
-    m_isSleeping = entityTag->getBoolean(L"Sleeping");
-    sleepCounter = entityTag->getShort(L"SleepTimer");
+    inventory->selected = entityTag->getInt("SelectedItemSlot");
+    m_isSleeping = entityTag->getBoolean("Sleeping");
+    sleepCounter = entityTag->getShort("SleepTimer");
 
-    experienceProgress = entityTag->getFloat(L"XpP");
-    experienceLevel = entityTag->getInt(L"XpLevel");
-    totalExperience = entityTag->getInt(L"XpTotal");
-    setScore(entityTag->getInt(L"Score"));
+    experienceProgress = entityTag->getFloat("XpP");
+    experienceLevel = entityTag->getInt("XpLevel");
+    totalExperience = entityTag->getInt("XpTotal");
+    setScore(entityTag->getInt("Score"));
 
     if (m_isSleeping) {
         bedPosition = new Pos(Mth::floor(x), Mth::floor(y), Mth::floor(z));
         stopSleepInBed(true, true, false);
     }
 
-    if (entityTag->contains(L"SpawnX") && entityTag->contains(L"SpawnY") &&
-        entityTag->contains(L"SpawnZ")) {
+    if (entityTag->contains("SpawnX") && entityTag->contains("SpawnY") &&
+        entityTag->contains("SpawnZ")) {
         respawnPosition =
-            new Pos(entityTag->getInt(L"SpawnX"), entityTag->getInt(L"SpawnY"),
-                    entityTag->getInt(L"SpawnZ"));
-        respawnForced = entityTag->getBoolean(L"SpawnForced");
+            new Pos(entityTag->getInt("SpawnX"), entityTag->getInt("SpawnY"),
+                    entityTag->getInt("SpawnZ"));
+        respawnForced = entityTag->getBoolean("SpawnForced");
     }
 
     foodData.readAdditionalSaveData(entityTag);
     abilities.loadSaveData(entityTag);
 
-    if (entityTag->contains(L"EnderItems")) {
+    if (entityTag->contains("EnderItems")) {
         ListTag<CompoundTag>* enderItemsList =
-            (ListTag<CompoundTag>*)entityTag->getList(L"EnderItems");
+            (ListTag<CompoundTag>*)entityTag->getList("EnderItems");
         enderChestInventory->setItemsByTag(enderItemsList);
     }
 
     // 4J Added
-    m_uiGamePrivileges = entityTag->getInt(L"GamePrivileges");
+    m_uiGamePrivileges = entityTag->getInt("GamePrivileges");
 }
 
 void Player::addAdditonalSaveData(CompoundTag* entityTag) {
     LivingEntity::addAdditonalSaveData(entityTag);
-    entityTag->put(L"Inventory", inventory->save(new ListTag<CompoundTag>()));
-    entityTag->putInt(L"SelectedItemSlot", inventory->selected);
-    entityTag->putBoolean(L"Sleeping", m_isSleeping);
-    entityTag->putShort(L"SleepTimer", (short)sleepCounter);
+    entityTag->put("Inventory", inventory->save(new ListTag<CompoundTag>()));
+    entityTag->putInt("SelectedItemSlot", inventory->selected);
+    entityTag->putBoolean("Sleeping", m_isSleeping);
+    entityTag->putShort("SleepTimer", (short)sleepCounter);
 
-    entityTag->putFloat(L"XpP", experienceProgress);
-    entityTag->putInt(L"XpLevel", experienceLevel);
-    entityTag->putInt(L"XpTotal", totalExperience);
-    entityTag->putInt(L"Score", getScore());
+    entityTag->putFloat("XpP", experienceProgress);
+    entityTag->putInt("XpLevel", experienceLevel);
+    entityTag->putInt("XpTotal", totalExperience);
+    entityTag->putInt("Score", getScore());
 
     if (respawnPosition != nullptr) {
-        entityTag->putInt(L"SpawnX", respawnPosition->x);
-        entityTag->putInt(L"SpawnY", respawnPosition->y);
-        entityTag->putInt(L"SpawnZ", respawnPosition->z);
-        entityTag->putBoolean(L"SpawnForced", respawnForced);
+        entityTag->putInt("SpawnX", respawnPosition->x);
+        entityTag->putInt("SpawnY", respawnPosition->y);
+        entityTag->putInt("SpawnZ", respawnPosition->z);
+        entityTag->putBoolean("SpawnForced", respawnForced);
     }
 
     foodData.addAdditonalSaveData(entityTag);
     abilities.addSaveData(entityTag);
 
-    entityTag->put(L"EnderItems", enderChestInventory->createTag());
+    entityTag->put("EnderItems", enderChestInventory->createTag());
 
     // 4J Added
-    entityTag->putInt(L"GamePrivileges", m_uiGamePrivileges);
+    entityTag->putInt("GamePrivileges", m_uiGamePrivileges);
 }
 
 bool Player::openContainer(std::shared_ptr<Container> container) {
@@ -1162,7 +1164,7 @@ bool Player::openHorseInventory(std::shared_ptr<EntityHorse> horse,
     return true;
 }
 
-bool Player::startEnchanting(int x, int y, int z, const std::wstring& name) {
+bool Player::startEnchanting(int x, int y, int z, const std::string& name) {
     return true;
 }
 
@@ -1227,7 +1229,7 @@ bool Player::canHarmPlayer(std::shared_ptr<Player> target) {
     return team->isAllowFriendlyFire();
 }
 
-bool Player::canHarmPlayer(std::wstring targetName) { return true; }
+bool Player::canHarmPlayer(std::string targetName) { return true; }
 
 void Player::hurtArmor(float damage) { inventory->hurtArmor(damage); }
 
@@ -1282,7 +1284,7 @@ bool Player::openBeacon(std::shared_ptr<BeaconTileEntity> beacon) {
 }
 
 bool Player::openTrading(std::shared_ptr<Merchant> traderTarget,
-                         const std::wstring& name) {
+                         const std::string& name) {
     return true;
 }
 
@@ -2081,7 +2083,7 @@ void Player::causeFoodExhaustion(float amount) {
 
     // 4J Stu - Added 1.8.2 bug fix (TU6) - If players cannot eat, then their
     // food bar should not decrease due to exhaustion
-    if (app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0 &&
+    if (gameServices().getGameHostOption(eGameHostOption_TrustPlayers) == 0 &&
         getPlayerGamePrivilege(Player::ePlayerGamePrivilege_CannotBuild) != 0)
         return;
 
@@ -2171,7 +2173,7 @@ bool Player::isAlwaysExperienceDropper() {
     return true;
 }
 
-std::wstring Player::getAName() { return name; }
+std::string Player::getAName() { return name; }
 
 bool Player::shouldShowName() { return true; }
 
@@ -2206,16 +2208,16 @@ void Player::onUpdateAbilities() {}
 
 void Player::setGameMode(GameType* mode) {}
 
-std::wstring Player::getName() { return name; }
+std::string Player::getName() { return name; }
 
-std::wstring Player::getDisplayName() {
+std::string Player::getDisplayName() {
     // PlayerTeam.formatNameForTeam(getTeam(), name);
 
     // If player display name is not set, return name
     return m_displayName.size() > 0 ? m_displayName : name;
 }
 
-std::wstring Player::getNetworkName() {
+std::string Player::getNetworkName() {
     // 4J: We can only transmit gamertag in network packets
     return name;
 }
@@ -2267,30 +2269,30 @@ float Player::getAbsorptionAmount() {
 int Player::getTexture() {
     switch (m_skinIndex) {
         case EDefaultSkins::Skin0:
-            return TN_MOB_CHAR;  // 4J - was L"/mob/char.png";
+            return TN_MOB_CHAR;  // 4J - was "/mob/char.png";
         case EDefaultSkins::Skin1:
-            return TN_MOB_CHAR1;  // 4J - was L"/mob/char1.png";
+            return TN_MOB_CHAR1;  // 4J - was "/mob/char1.png";
         case EDefaultSkins::Skin2:
-            return TN_MOB_CHAR2;  // 4J - was L"/mob/char2.png";
+            return TN_MOB_CHAR2;  // 4J - was "/mob/char2.png";
         case EDefaultSkins::Skin3:
-            return TN_MOB_CHAR3;  // 4J - was L"/mob/char3.png";
+            return TN_MOB_CHAR3;  // 4J - was "/mob/char3.png";
         case EDefaultSkins::Skin4:
-            return TN_MOB_CHAR4;  // 4J - was L"/mob/char4.png";
+            return TN_MOB_CHAR4;  // 4J - was "/mob/char4.png";
         case EDefaultSkins::Skin5:
-            return TN_MOB_CHAR5;  // 4J - was L"/mob/char5.png";
+            return TN_MOB_CHAR5;  // 4J - was "/mob/char5.png";
         case EDefaultSkins::Skin6:
-            return TN_MOB_CHAR6;  // 4J - was L"/mob/char6.png";
+            return TN_MOB_CHAR6;  // 4J - was "/mob/char6.png";
         case EDefaultSkins::Skin7:
-            return TN_MOB_CHAR7;  // 4J - was L"/mob/char7.png";
+            return TN_MOB_CHAR7;  // 4J - was "/mob/char7.png";
 
         default:
-            return TN_MOB_CHAR;  // 4J - was L"/mob/char.png";
+            return TN_MOB_CHAR;  // 4J - was "/mob/char.png";
     }
 }
 
 int Player::hash_fnct(const std::shared_ptr<Player> k) {
     // TODO 4J Stu - Should we just be using the pointers and hashing them?
-    return (int)std::hash<std::wstring>()(k->name);
+    return (int)std::hash<std::string>()(k->name);
 }
 
 bool Player::eq_test(const std::shared_ptr<Player> x,
@@ -2387,7 +2389,7 @@ void Player::setPlayerGamePrivilege(unsigned int& uiGamePrivileges,
 bool Player::isAllowedToUse(Tile* tile) {
     bool allowed = true;
     if (tile != nullptr &&
-        app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0) {
+        gameServices().getGameHostOption(eGameHostOption_TrustPlayers) == 0) {
         allowed = false;
 
         if (getPlayerGamePrivilege(
@@ -2458,7 +2460,7 @@ bool Player::isAllowedToUse(Tile* tile) {
 bool Player::isAllowedToUse(std::shared_ptr<ItemInstance> item) {
     bool allowed = true;
     if (item != nullptr &&
-        app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0) {
+        gameServices().getGameHostOption(eGameHostOption_TrustPlayers) == 0) {
         if (getPlayerGamePrivilege(Player::ePlayerGamePrivilege_CannotBuild) !=
             0) {
             allowed = false;
@@ -2502,7 +2504,7 @@ bool Player::isAllowedToUse(std::shared_ptr<ItemInstance> item) {
 
 bool Player::isAllowedToInteract(std::shared_ptr<Entity> target) {
     bool allowed = true;
-    if (app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0) {
+    if (gameServices().getGameHostOption(eGameHostOption_TrustPlayers) == 0) {
         if (target->instanceof(eTYPE_MINECART)) {
             if (getPlayerGamePrivilege(
                     Player::ePlayerGamePrivilege_CanUseContainers) == 0) {
@@ -2530,7 +2532,7 @@ bool Player::isAllowedToInteract(std::shared_ptr<Entity> target) {
 
 bool Player::isAllowedToMine() {
     bool allowed = true;
-    if (app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0) {
+    if (gameServices().getGameHostOption(eGameHostOption_TrustPlayers) == 0) {
         if (getPlayerGamePrivilege(Player::ePlayerGamePrivilege_CannotMine) !=
             0) {
             allowed = false;
@@ -2542,7 +2544,7 @@ bool Player::isAllowedToMine() {
 bool Player::isAllowedToAttackPlayers() {
     bool allowed = true;
     if (hasInvisiblePrivilege() ||
-        ((app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0) &&
+        ((gameServices().getGameHostOption(eGameHostOption_TrustPlayers) == 0) &&
          getPlayerGamePrivilege(
              Player::ePlayerGamePrivilege_CannotAttackPlayers))) {
         allowed = false;
@@ -2552,7 +2554,7 @@ bool Player::isAllowedToAttackPlayers() {
 
 bool Player::isAllowedToAttackAnimals() {
     bool allowed = true;
-    if ((app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0) &&
+    if ((gameServices().getGameHostOption(eGameHostOption_TrustPlayers) == 0) &&
         getPlayerGamePrivilege(
             Player::ePlayerGamePrivilege_CannotAttackAnimals)) {
         allowed = false;
@@ -2586,7 +2588,7 @@ bool Player::isAllowedToHurtEntity(std::shared_ptr<Entity> target) {
 
 bool Player::isAllowedToFly() {
     bool allowed = false;
-    if (app.GetGameHostOption(eGameHostOption_HostCanFly) != 0 &&
+    if (gameServices().getGameHostOption(eGameHostOption_HostCanFly) != 0 &&
         getPlayerGamePrivilege(Player::ePlayerGamePrivilege_CanFly) != 0) {
         allowed = true;
     }
@@ -2595,7 +2597,7 @@ bool Player::isAllowedToFly() {
 
 bool Player::isAllowedToIgnoreExhaustion() {
     bool allowed = false;
-    if ((app.GetGameHostOption(eGameHostOption_HostCanChangeHunger) != 0 &&
+    if ((gameServices().getGameHostOption(eGameHostOption_HostCanChangeHunger) != 0 &&
          getPlayerGamePrivilege(Player::ePlayerGamePrivilege_ClassicHunger) !=
              0) ||
         (isAllowedToFly() && abilities.flying)) {
@@ -2615,7 +2617,7 @@ bool Player::isAllowedToTeleport() {
 
 bool Player::hasInvisiblePrivilege() {
     bool enabled = false;
-    if (app.GetGameHostOption(eGameHostOption_HostCanBeInvisible) != 0 &&
+    if (gameServices().getGameHostOption(eGameHostOption_HostCanBeInvisible) != 0 &&
         getPlayerGamePrivilege(Player::ePlayerGamePrivilege_Invisible) != 0) {
         enabled = true;
     }
@@ -2624,7 +2626,7 @@ bool Player::hasInvisiblePrivilege() {
 
 bool Player::hasInvulnerablePrivilege() {
     bool enabled = false;
-    if (app.GetGameHostOption(eGameHostOption_HostCanBeInvisible) != 0 &&
+    if (gameServices().getGameHostOption(eGameHostOption_HostCanBeInvisible) != 0 &&
         getPlayerGamePrivilege(Player::ePlayerGamePrivilege_Invulnerable) !=
             0) {
         enabled = true;
@@ -2668,17 +2670,17 @@ std::vector<ModelPart*>* Player::GetAdditionalModelParts() {
     if (m_ppAdditionalModelParts == nullptr && !m_bCheckedForModelParts) {
         bool hasCustomTexture = !customTextureUrl.empty();
         bool customTextureIsDefaultSkin =
-            customTextureUrl.substr(0, 3).compare(L"def") == 0;
+            customTextureUrl.substr(0, 3).compare("def") == 0;
 
         // see if we can find the parts
-        m_ppAdditionalModelParts = app.GetAdditionalModelParts(m_dwSkinId);
+        m_ppAdditionalModelParts = gameServices().getAdditionalModelParts(m_dwSkinId);
 
         // If it's a default texture (which has no parts), we have the parts, or
         // we already have the texture (in which case we should have parts if
         // there are any) then we are done
         if (!hasCustomTexture || customTextureIsDefaultSkin ||
             m_ppAdditionalModelParts != nullptr ||
-            app.IsFileInMemoryTextures(customTextureUrl)) {
+            gameServices().isFileInMemoryTextures(customTextureUrl)) {
             m_bCheckedForModelParts = true;
         }
         if (m_ppAdditionalModelParts == nullptr &&
@@ -2686,28 +2688,28 @@ std::vector<ModelPart*>* Player::GetAdditionalModelParts() {
             m_bCheckedDLCForModelParts = true;
 
             // we don't have the data from the dlc skin yet
-            app.DebugPrintf(
+            Log::info(
                 "m_bCheckedForModelParts Couldn't get model parts for skin "
                 "%X\n",
                 m_dwSkinId);
 
             // do we have it from the DLC pack?
             DLCSkinFile* pDLCSkinFile =
-                app.m_dlcManager.getSkinFile(this->customTextureUrl);
+                gameServices().getDLCSkinFile(this->customTextureUrl);
 
             if (pDLCSkinFile != nullptr) {
                 const int additionalBoxCount =
                     pDLCSkinFile->getAdditionalBoxesCount();
                 if (additionalBoxCount != 0) {
-                    app.DebugPrintf(
+                    Log::info(
                         "m_bCheckedForModelParts Got model parts from DLCskin "
                         "for skin %X\n",
                         m_dwSkinId);
-                    m_ppAdditionalModelParts = app.SetAdditionalSkinBoxes(
+                    m_ppAdditionalModelParts = gameServices().setAdditionalSkinBoxesFromVec(
                         m_dwSkinId, pDLCSkinFile->getAdditionalBoxes());
                 }
 
-                app.SetAnimOverrideBitmask(
+                gameServices().setAnimOverrideBitmask(
                     pDLCSkinFile->getSkinID(),
                     pDLCSkinFile->getAnimOverrideBitmask());
 

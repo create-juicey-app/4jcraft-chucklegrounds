@@ -14,12 +14,12 @@ int QuartzBlockTile::BLOCK_NAMES[QUARTZ_BLOCK_NAMES] = {
     IDS_TILE_QUARTZ_BLOCK_LINES, IDS_TILE_QUARTZ_BLOCK_LINES,
     IDS_TILE_QUARTZ_BLOCK_LINES};
 
-const std::wstring QuartzBlockTile::TEXTURE_TOP = L"top";
-const std::wstring QuartzBlockTile::TEXTURE_CHISELED_TOP = L"chiseled_top";
-const std::wstring QuartzBlockTile::TEXTURE_LINES_TOP = L"lines_top";
-const std::wstring QuartzBlockTile::TEXTURE_BOTTOM = L"bottom";
-const std::wstring QuartzBlockTile::TEXTURE_NAMES[QUARTZ_BLOCK_TEXTURES] = {
-    L"side", L"chiseled", L"lines", L"", L""};
+const std::string QuartzBlockTile::TEXTURE_TOP = "top";
+const std::string QuartzBlockTile::TEXTURE_CHISELED_TOP = "chiseled_top";
+const std::string QuartzBlockTile::TEXTURE_LINES_TOP = "lines_top";
+const std::string QuartzBlockTile::TEXTURE_BOTTOM = "bottom";
+const std::string QuartzBlockTile::TEXTURE_NAMES[QUARTZ_BLOCK_TEXTURES] = {
+    "side", "chiseled", "lines", "", ""};
 
 QuartzBlockTile::QuartzBlockTile(int id) : Tile(id, Material::stone) {}
 
@@ -97,16 +97,16 @@ void QuartzBlockTile::registerIcons(IconRegister* iconRegister) {
         if (TEXTURE_NAMES[i].empty()) {
             icons[i] = icons[i - 1];
         } else {
-            icons[i] = iconRegister->registerIcon(getIconName() + L"_" +
+            icons[i] = iconRegister->registerIcon(getIconName() + "_" +
                                                   TEXTURE_NAMES[i]);
         }
     }
 
-    iconTop = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_TOP);
+    iconTop = iconRegister->registerIcon(getIconName() + "_" + TEXTURE_TOP);
     iconChiseledTop =
-        iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_CHISELED_TOP);
+        iconRegister->registerIcon(getIconName() + "_" + TEXTURE_CHISELED_TOP);
     iconLinesTop =
-        iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_LINES_TOP);
+        iconRegister->registerIcon(getIconName() + "_" + TEXTURE_LINES_TOP);
     iconBottom =
-        iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_BOTTOM);
+        iconRegister->registerIcon(getIconName() + "_" + TEXTURE_BOTTOM);
 }

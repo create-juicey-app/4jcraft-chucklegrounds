@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/gui/Button.h"
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/client/resources/ResourceLocation.h"
@@ -14,7 +14,7 @@ extern ResourceLocation GUI_BEACON_LOCATION;
 #endif
 
 AbstractBeaconButton::AbstractBeaconButton(int id, int x, int y)
-    : Button(id, x, y, 22, 22, L"") {
+    : Button(id, x, y, 22, 22, "") {
     hovered = false;
     selected = false;
     iconRes = nullptr;

@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "app/include/SkinBox.h"
+#include "minecraft/client/model/SkinBox.h"
 #include "java/Random.h"
 
 class Mob;
@@ -20,7 +20,7 @@ public:
     bool riding;
     std::vector<ModelPart*> cubes;
     bool young;
-    std::unordered_map<std::wstring, TexOffs*> mappedTexOffs;
+    std::unordered_map<std::string, TexOffs*> mappedTexOffs;
     int texWidth;
     int texHeight;
 
@@ -39,8 +39,8 @@ public:
     }
     virtual ModelPart* AddOrRetrievePart(SKIN_BOX* pBox) { return nullptr; }
 
-    void setMapTex(std::wstring id, int x, int y);
-    TexOffs* getMapTex(std::wstring id);
+    void setMapTex(std::string id, int x, int y);
+    TexOffs* getMapTex(std::string id);
 
 protected:
     float yHeadOffs;

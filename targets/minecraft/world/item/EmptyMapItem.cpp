@@ -15,7 +15,7 @@ std::shared_ptr<ItemInstance> EmptyMapItem::use(
     std::shared_ptr<ItemInstance> itemInstance, Level* level,
     std::shared_ptr<Player> player) {
     // shared_ptr<ItemInstance> map = shared_ptr<ItemInstance>( new
-    // ItemInstance(Item::map, 1, level->getFreeAuxValueFor(L"map")) );
+    // ItemInstance(Item::map, 1, level->getFreeAuxValueFor("map")) );
 
     // String id = "map_" + map.getAuxValue();
     // MapItemSavedData data = new MapItemSavedData(id);

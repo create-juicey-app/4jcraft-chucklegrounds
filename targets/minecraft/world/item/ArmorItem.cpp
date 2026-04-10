@@ -5,7 +5,7 @@
 #include <format>
 #include <vector>
 
-#include "app/common/src/Colours/ColourTable.h"
+#include "app/common/Colours/ColourTable.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "java/Class.h"
 #include "minecraft/client/Minecraft.h"
@@ -29,13 +29,13 @@ class Icon;
 
 const int ArmorItem::healthPerSlot[] = {11, 16, 15, 13};
 
-const std::wstring ArmorItem::LEATHER_OVERLAYS[] = {
-    L"helmetCloth_overlay", L"chestplateCloth_overlay",
-    L"leggingsCloth_overlay", L"bootsCloth_overlay"};
+const std::string ArmorItem::LEATHER_OVERLAYS[] = {
+    "helmetCloth_overlay", "chestplateCloth_overlay",
+    "leggingsCloth_overlay", "bootsCloth_overlay"};
 
-const std::wstring ArmorItem::TEXTURE_EMPTY_SLOTS[] = {
-    L"slot_empty_helmet", L"slot_empty_chestplate", L"slot_empty_leggings",
-    L"slot_empty_boots"};
+const std::string ArmorItem::TEXTURE_EMPTY_SLOTS[] = {
+    "slot_empty_helmet", "slot_empty_chestplate", "slot_empty_leggings",
+    "slot_empty_boots"};
 
 std::shared_ptr<ItemInstance> ArmorItem::ArmorDispenseItemBehavior::execute(
     BlockSource* source, std::shared_ptr<ItemInstance> dispensed,
@@ -160,8 +160,8 @@ const _ArmorMaterial* ArmorItem::getMaterial() { return armorType; }
 bool ArmorItem::hasCustomColor(std::shared_ptr<ItemInstance> item) {
     if (armorType != ArmorMaterial::CLOTH) return false;
     if (!item->hasTag()) return false;
-    if (!item->getTag()->contains(L"display")) return false;
-    if (!item->getTag()->getCompound(L"display")->contains(L"color"))
+    if (!item->getTag()->contains("display")) return false;
+    if (!item->getTag()->getCompound("display")->contains("color"))
         return false;
 
     return true;
@@ -174,13 +174,13 @@ int ArmorItem::getColor(std::shared_ptr<ItemInstance> item) {
     if (tag == nullptr)
         return Minecraft::GetInstance()->getColourTable()->getColor(
             DEFAULT_LEATHER_COLOR);
-    CompoundTag* display = tag->getCompound(L"display");
+    CompoundTag* display = tag->getCompound("display");
     if (display == nullptr)
         return Minecraft::GetInstance()->getColourTable()->getColor(
             DEFAULT_LEATHER_COLOR);
 
-    if (display->contains(L"color")) {
-        return display->getInt(L"color");
+    if (display->contains("color")) {
+        return display->getInt("color");
     } else {
         return Minecraft::GetInstance()->getColourTable()->getColor(
             DEFAULT_LEATHER_COLOR);
@@ -198,15 +198,15 @@ void ArmorItem::clearColor(std::shared_ptr<ItemInstance> item) {
     if (armorType != ArmorMaterial::CLOTH) return;
     CompoundTag* tag = item->getTag();
     if (tag == nullptr) return;
-    CompoundTag* display = tag->getCompound(L"display");
-    if (display->contains(L"color")) display->remove(L"color");
+    CompoundTag* display = tag->getCompound("display");
+    if (display->contains("color")) display->remove("color");
 }
 
 void ArmorItem::setColor(std::shared_ptr<ItemInstance> item, int color) {
     if (armorType != ArmorMaterial::CLOTH) {
 #ifndef _CONTENT_PACKAGE
         printf("Can't dye non-leather!");
-        __debugbreak();
+        assert(0);
 #endif
         // throw new UnsupportedOperationException("Can't dye non-leather!");
     }
@@ -218,10 +218,10 @@ void ArmorItem::setColor(std::shared_ptr<ItemInstance> item, int color) {
         item->setTag(tag);
     }
 
-    CompoundTag* display = tag->getCompound(L"display");
-    if (!tag->contains(L"display")) tag->putCompound(L"display", display);
+    CompoundTag* display = tag->getCompound("display");
+    if (!tag->contains("display")) tag->putCompound("display", display);
 
-    display->putInt(L"color", color);
+    display->putInt("color", color);
 }
 
 bool ArmorItem::isValidRepairItem(std::shared_ptr<ItemInstance> source,

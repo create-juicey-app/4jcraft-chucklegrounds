@@ -10,22 +10,22 @@
 #include "minecraft/world/level/tile/Tile.h"
 
 // 4J-PB - adding "" on the end of these so we can detect it
-std::wstring ToolRecipies::shapes[][4] = {
-    {L"XXX",   //
-     L" # ",   //
-     L" # "},  //
+std::string ToolRecipies::shapes[][4] = {
+    {"XXX",   //
+     " # ",   //
+     " # "},  //
 
-    {L"X",   //
-     L"#",   //
-     L"#"},  //
+    {"X",   //
+     "#",   //
+     "#"},  //
 
-    {L"XX",   //
-     L"X#",   //
-     L" #"},  //
+    {"XX",   //
+     "X#",   //
+     " #"},  //
 
-    {L"XX",   //
-     L" #",   //
-     L" #"},  //
+    {"XX",   //
+     " #",   //
+     " #"},  //
 };
 
 void ToolRecipies::_init() {
@@ -63,7 +63,7 @@ void ToolRecipies::_init() {
 }
 
 void ToolRecipies::addRecipes(Recipes* r) {
-    wchar_t wchTypes[7];
+    char wchTypes[7];
     wchTypes[6] = 0;
 
     for (unsigned int m = 0; m < map[0].size(); m++) {
@@ -72,29 +72,29 @@ void ToolRecipies::addRecipes(Recipes* r) {
         for (int t = 0; t < MAX_TOOL_RECIPES - 1; t++) {
             Item* target = map[t + 1].at(m)->item;
 
-            wchTypes[0] = L'w';
-            wchTypes[1] = L'c';
-            wchTypes[2] = L'i';
-            wchTypes[3] = L'c';
-            wchTypes[5] = L'g';
+            wchTypes[0] = 'w';
+            wchTypes[1] = 'c';
+            wchTypes[2] = 'i';
+            wchTypes[3] = 'c';
+            wchTypes[5] = 'g';
             if (pObjMaterial->GetType() == eType_TILE) {
-                wchTypes[4] = L't';
+                wchTypes[4] = 't';
                 r->addShapedRecipy(
                     new ItemInstance(target), wchTypes, shapes[t],
 
-                    L'#', Item::stick, L'X', pObjMaterial->tile, L'T');
+                    '#', Item::stick, 'X', pObjMaterial->tile, 'T');
             } else {
                 // must be Item
-                wchTypes[4] = L'i';
+                wchTypes[4] = 'i';
                 r->addShapedRecipy(
                     new ItemInstance(target), wchTypes, shapes[t],
 
-                    L'#', Item::stick, L'X', pObjMaterial->item, L'T');
+                    '#', Item::stick, 'X', pObjMaterial->item, 'T');
             }
         }
     }
-    r->addShapedRecipy(new ItemInstance((Item*)Item::shears), L"sscig",
-                       L" #",  //
-                       L"# ",  //
-                       L'#', Item::ironIngot, L'T');
+    r->addShapedRecipy(new ItemInstance((Item*)Item::shears), "sscig",
+                       " #",  //
+                       "# ",  //
+                       '#', Item::ironIngot, 'T');
 }

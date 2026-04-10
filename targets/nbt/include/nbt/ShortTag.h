@@ -4,8 +4,8 @@
 class ShortTag : public Tag {
 public:
     short data;
-    ShortTag(const std::wstring& name) : Tag(name) {}
-    ShortTag(const std::wstring& name, int data) : Tag(name) {
+    ShortTag(const std::string& name) : Tag(name) {}
+    ShortTag(const std::string& name, int data) : Tag(name) {
         this->data = data;
     }
 
@@ -13,10 +13,10 @@ public:
     void load(DataInput* dis, int tagDepth) { data = dis->readShort(); }
 
     uint8_t getId() { return TAG_Short; }
-    std::wstring toString() {
-        static wchar_t buf[32];
-        swprintf(buf, 32, L"%d", data);
-        return std::wstring(buf);
+    std::string toString() {
+        static char buf[32];
+        snprintf(buf, 32, "%d", data);
+        return std::string(buf);
     }
 
     Tag* copy() { return new ShortTag(getName(), data); }

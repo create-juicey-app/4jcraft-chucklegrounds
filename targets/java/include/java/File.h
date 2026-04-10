@@ -11,16 +11,16 @@ class FileFilter;
 class File {
 public:
     // The system-dependent path-separator character
-    static const wchar_t pathSeparator;
+    static const char pathSeparator;
 
     // 4J Jev, the start of the file root
-    static const std::wstring pathRoot;
+    static const std::string pathRoot;
 
-    File() { m_abstractPathName = L""; }
+    File() { m_abstractPathName = ""; }
 
-    File(const File& parent, const std::wstring& child);
-    File(const std::wstring& pathname);
-    File(const std::wstring& parent, const std::wstring& child);
+    File(const File& parent, const std::string& child);
+    File(const std::string& pathname);
+    File(const std::string& parent, const std::string& child);
     bool _delete();
     bool mkdir() const;
     bool mkdirs() const;
@@ -32,19 +32,19 @@ public:
     bool isDirectory() const;
     int64_t length();
     int64_t lastModified();
-    const std::wstring getPath() const;  // 4J Jev: TODO
-    std::wstring getName() const;
+    const std::string getPath() const;  // 4J Jev: TODO
+    std::string getName() const;
 
     static int hash_fnct(const File& k);
     static bool eq_test(const File& x, const File& y);
 
 private:
     void _init();
-    std::wstring m_abstractPathName;
+    std::string m_abstractPathName;
 
     // 4J Jev, just helper functions, change between paths and
     // std::vector<string>
-    // File(std::vector<std::wstring> *path);
+    // File(std::vector<std::string> *path);
 };
 
 struct FileKeyHash {

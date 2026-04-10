@@ -21,8 +21,8 @@ public:
     virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot) = 0;
     virtual void setItem(unsigned int slot,
                          std::shared_ptr<ItemInstance> item) = 0;
-    virtual std::wstring getName() = 0;
-    virtual std::wstring
+    virtual std::string getName() = 0;
+    virtual std::string
     getCustomName() = 0;  // 4J Stu added for sending over the network
     virtual bool hasCustomName() = 0;
     virtual int getMaxStackSize() = 0;

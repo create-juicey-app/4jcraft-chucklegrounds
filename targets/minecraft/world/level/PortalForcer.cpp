@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "PortalForcer.h"
 
 #include <utility>
@@ -261,20 +262,20 @@ bool PortalForcer::createPortal(std::shared_ptr<Entity> e) {
 
     // Move the positions that we want to check away from the edge of the world
     if ((xc - r) < -XZOFFSET) {
-        app.DebugPrintf(
+        Log::info(
             "Adjusting portal creation x due to being too close to the edge\n");
         xc -= ((xc - r) + XZOFFSET);
     } else if ((xc + r) >= XZOFFSET) {
-        app.DebugPrintf(
+        Log::info(
             "Adjusting portal creation x due to being too close to the edge\n");
         xc -= ((xc + r) - XZOFFSET);
     }
     if ((zc - r) < -XZOFFSET) {
-        app.DebugPrintf(
+        Log::info(
             "Adjusting portal creation z due to being too close to the edge\n");
         zc -= ((zc - r) + XZOFFSET);
     } else if ((zc + r) >= XZOFFSET) {
-        app.DebugPrintf(
+        Log::info(
             "Adjusting portal creation z due to being too close to the edge\n");
         zc -= ((zc + r) - XZOFFSET);
     }
@@ -321,7 +322,7 @@ bool PortalForcer::createPortal(std::shared_ptr<Entity> e) {
                                             (xt >= XZOFFSET) ||
                                             (zt < -XZOFFSET) ||
                                             (zt >= XZOFFSET)) {
-                                            app.DebugPrintf(
+                                            Log::info(
                                                 "Skipping possible portal "
                                                 "location as at least one "
                                                 "block is too close to the "
@@ -383,7 +384,7 @@ bool PortalForcer::createPortal(std::shared_ptr<Entity> e) {
                                     // inside the bedrock
                                     if ((xt < -XZOFFSET) || (xt >= XZOFFSET) ||
                                         (zt < -XZOFFSET) || (zt >= XZOFFSET)) {
-                                        app.DebugPrintf(
+                                        Log::info(
                                             "Skipping possible portal location "
                                             "as at least one block is too "
                                             "close to the edge\n");

@@ -124,7 +124,7 @@ public:
     };
 
 public:
-    std::vector<std::wstring> m_stringArgs;
+    std::vector<std::string> m_stringArgs;
     std::vector<int> m_intArgs;
     EChatPacketMessage m_messageType;
 
@@ -133,13 +133,13 @@ public:
     // 4J: Seperated the one convoluted ctor into three more readable ctors. The
     // last two ctors are only used for death messages and I'd really like to
     // consolodate them and/or the logic that uses them at some point.
-    ChatPacket(const std::wstring& message,
+    ChatPacket(const std::string& message,
                EChatPacketMessage type = e_ChatCustom, int customData = -1);
-    ChatPacket(const std::wstring& message, EChatPacketMessage type,
-               int sourceEntityType, const std::wstring& sourceName);
-    ChatPacket(const std::wstring& message, EChatPacketMessage type,
-               int sourceEntityType, const std::wstring& sourceName,
-               const std::wstring& itemName);
+    ChatPacket(const std::string& message, EChatPacketMessage type,
+               int sourceEntityType, const std::string& sourceName);
+    ChatPacket(const std::string& message, EChatPacketMessage type,
+               int sourceEntityType, const std::string& sourceName,
+               const std::string& itemName);
 
     virtual void read(DataInputStream* dis);
     virtual void write(DataOutputStream* dos);

@@ -25,14 +25,14 @@ void DemoMode::tick() {
             {
             if (day <= (DEMO_DAYS + 1))
                     {
-                minecraft->gui->displayClientMessage(L"demo.day." +
+                minecraft->gui->displayClientMessage("demo.day." +
        toWString<int64_t>(day));
             }
         }
             else if (day == 1)
             {
             Options *options = minecraft->options;
-            wstring message;
+            string message;
 
             if (time == 100) {
                 minecraft.gui.addMessage("Seed: " + minecraft.level.getSeed());

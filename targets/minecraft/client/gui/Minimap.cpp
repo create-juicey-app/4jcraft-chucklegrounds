@@ -1,17 +1,17 @@
 #include "Minimap.h"
 
-#include <GL/gl.h>
+
 #include <math.h>
 #include <string.h>
 #include <wchar.h>
 
 #include <string>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "Font.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/include/BufferedImage.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
+#include "minecraft/client/BufferedImage.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/Textures.h"
@@ -29,7 +29,7 @@ Minimap::Minimap(Font* font, Options* options, Textures* textures,
     this->font = font;
     BufferedImage* img = new BufferedImage(w, h, BufferedImage::TYPE_INT_ARGB);
     mapTexture =
-        textures->getTexture(img, C4JRender::TEXTURE_FORMAT_RxGyBzAw,
+        textures->getTexture(img, IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw,
                              false);  // 4J - make sure we aren't mipmapping as
                                       // we never set the data for mipmaps
     delete img;
@@ -131,7 +131,7 @@ void Minimap::render(std::shared_ptr<Player> player, Textures* textures,
     glDisable(GL_BLEND);
 
     textures->bind(
-        textures->loadTexture(TN_MISC_MAPICONS));  // L"/misc/mapicons.png"));
+        textures->loadTexture(TN_MISC_MAPICONS));  // "/misc/mapicons.png"));
 
     auto itEnd = data->decorations.end();
 
@@ -253,12 +253,12 @@ void Minimap::render(std::shared_ptr<Player> player, Textures* textures,
     // 4J Stu - TU-1 hotfix
     // DCR: Render the players current position here instead
     if (player != nullptr) {
-        wchar_t playerPosText[32];
-        memset(&playerPosText, 0, sizeof(wchar_t) * 32);
+        char playerPosText[32];
+        memset(&playerPosText, 0, sizeof(char) * 32);
         int posx = floor(player->x);
         int posy = floor(player->y);
         int posz = floor(player->z);
-        swprintf(playerPosText, 32, L"X: %d, Y: %d, Z: %d", posx, posy, posz);
+        snprintf(playerPosText, 32, "X: %d, Y: %d, Z: %d", posx, posy, posz);
 
         font->draw(playerPosText, x, y,
                    Minecraft::GetInstance()->getColourTable()->getColour(

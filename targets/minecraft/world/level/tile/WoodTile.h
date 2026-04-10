@@ -13,7 +13,7 @@ public:
     static const int WOOD_NAMES_LENGTH = 4;
 
     static const unsigned int WOOD_NAMES[WOOD_NAMES_LENGTH];
-    static const std::wstring TEXTURE_NAMES[];
+    static const std::string TEXTURE_NAMES[];
 
 private:
     Icon** icons;

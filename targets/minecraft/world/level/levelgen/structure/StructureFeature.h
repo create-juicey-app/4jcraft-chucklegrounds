@@ -38,7 +38,7 @@ public:
     StructureFeature();
     ~StructureFeature();
 
-    virtual std::wstring getFeatureName() = 0;
+    virtual std::string getFeatureName() = 0;
 
     virtual void addFeature(Level* level, int x, int z, int xOffs, int zOffs,
                             std::vector<uint8_t>& blocks);

@@ -11,20 +11,20 @@
 #include "minecraft/world/item/ItemInstance.h"
 
 // 4J-PB - adding "" on the end of these so we can detect it
-std::wstring ArmorRecipes::shapes[][4] = {
-    {L"XXX",        //
-     L"X X", L""},  //
+std::string ArmorRecipes::shapes[][4] = {
+    {"XXX",        //
+     "X X", ""},  //
 
-    {L"X X",        //
-     L"XXX",        //
-     L"XXX", L""},  //
+    {"X X",        //
+     "XXX",        //
+     "XXX", ""},  //
 
-    {L"XXX",        //
-     L"X X",        //
-     L"X X", L""},  //
+    {"XXX",        //
+     "X X",        //
+     "X X", ""},  //
 
-    {L"X X",        //
-     L"X X", L""},  //
+    {"X X",        //
+     "X X", ""},  //
 };
 
 /*
@@ -117,7 +117,7 @@ ArmorRecipes::_eArmorType ArmorRecipes::GetArmorType(int iId) {
 }
 
 void ArmorRecipes::addRecipes(Recipes* r) {
-    wchar_t wchTypes[5];
+    char wchTypes[5];
     wchTypes[4] = 0;
 
     for (unsigned int m = 0; m < map[0].size(); m++) {
@@ -126,22 +126,22 @@ void ArmorRecipes::addRecipes(Recipes* r) {
         for (int t = 0; t < MAX_ARMOUR_RECIPES - 1; t++) {
             Item* target = map[t + 1].at(m)->item;
 
-            wchTypes[0] = L'w';
-            wchTypes[1] = L'c';
-            wchTypes[3] = L'g';
+            wchTypes[0] = 'w';
+            wchTypes[1] = 'c';
+            wchTypes[3] = 'g';
             if (pObjMaterial->GetType() == eType_TILE) {
-                wchTypes[2] = L't';
+                wchTypes[2] = 't';
                 r->addShapedRecipy(new ItemInstance(target), wchTypes,
                                    shapes[t],
 
-                                   L'X', pObjMaterial->tile, L'A');
+                                   'X', pObjMaterial->tile, 'A');
             } else {
                 // must be Item
-                wchTypes[2] = L'i';
+                wchTypes[2] = 'i';
                 r->addShapedRecipy(new ItemInstance(target), wchTypes,
                                    shapes[t],
 
-                                   L'X', pObjMaterial->item, L'A');
+                                   'X', pObjMaterial->item, 'A');
             }
         }
     }

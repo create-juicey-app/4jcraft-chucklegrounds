@@ -1,8 +1,8 @@
 #include "AchievementPopup.h"
 
-#include <GL/gl.h>
 
-#include "platform/sdl2/Render.h"
+
+#include "platform/renderer/renderer.h"
 #include "java/System.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Font.h"
@@ -25,7 +25,7 @@ AchievementPopup::AchievementPopup(Minecraft* mc) {
 }
 
 void AchievementPopup::popup(Achievement* ach) {
-    title = I18n::get(L"achievement.get");
+    title = I18n::get("achievement.get");
     desc = ach->name;
     startTime = System::currentTimeMillis();
     this->ach = ach;
@@ -44,7 +44,7 @@ void AchievementPopup::permanent(Achievement* ach) {
 void AchievementPopup::prepareWindow() {
     {
         int fbw, fbh;
-        RenderManager.GetFramebufferSize(fbw, fbh);
+        PlatformRenderer.GetFramebufferSize(fbw, fbh);
         glViewport(0, 0, fbw, fbh);
     }  // just future proofing
     glMatrixMode(GL_PROJECTION);
@@ -76,10 +76,10 @@ void AchievementPopup::render() {
         Lighting::turnOff();
         prepareWindow();
 
-        std::wstring title = L"Minecraft " + SharedConstants::VERSION_STRING +
-                             L"   Unlicensed Copy :(";
-        std::wstring msg1 = L"(Or logged in from another location)";
-        std::wstring msg2 = L"Purchase at minecraft.net";
+        std::string title = "Minecraft " + SharedConstants::VERSION_STRING +
+                             "   Unlicensed Copy :(";
+        std::string msg1 = "(Or logged in from another location)";
+        std::string msg2 = "Purchase at minecraft.net";
 
         mc->font->drawShadow(title, 2, 2 + 9 * 0, 0xffffff);
         mc->font->drawShadow(msg1, 2, 2 + 9 * 1, 0xffffff);

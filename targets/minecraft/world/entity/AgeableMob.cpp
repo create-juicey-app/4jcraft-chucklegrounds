@@ -91,12 +91,12 @@ void AgableMob::setAge(int age) {
 
 void AgableMob::addAdditonalSaveData(CompoundTag* tag) {
     PathfinderMob::addAdditonalSaveData(tag);
-    tag->putInt(L"Age", getAge());
+    tag->putInt("Age", getAge());
 }
 
 void AgableMob::readAdditionalSaveData(CompoundTag* tag) {
     PathfinderMob::readAdditionalSaveData(tag);
-    setAge(tag->getInt(L"Age"));
+    setAge(tag->getInt("Age"));
 }
 
 void AgableMob::aiStep() {

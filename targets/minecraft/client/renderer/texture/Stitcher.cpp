@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "Stitcher.h"
 
 #include <algorithm>
@@ -9,7 +10,7 @@
 #include "TextureHolder.h"
 #include "TextureManager.h"
 
-void Stitcher::_init(const std::wstring& name, int maxWidth, int maxHeight,
+void Stitcher::_init(const std::string& name, int maxWidth, int maxHeight,
                      bool forcePowerOfTwo, int forcedScale) {
     this->name = name;
     this->maxWidth = maxWidth;
@@ -23,12 +24,12 @@ void Stitcher::_init(const std::wstring& name, int maxWidth, int maxHeight,
     stitchedTexture = nullptr;
 }
 
-Stitcher::Stitcher(const std::wstring& name, int maxWidth, int maxHeight,
+Stitcher::Stitcher(const std::string& name, int maxWidth, int maxHeight,
                    bool forcePowerOfTwo) {
     _init(name, maxWidth, maxHeight, forcePowerOfTwo, 0);
 }
 
-Stitcher::Stitcher(const std::wstring& name, int maxWidth, int maxHeight,
+Stitcher::Stitcher(const std::string& name, int maxWidth, int maxHeight,
                    bool forcePowerOfTwo, int forcedScale) {
     _init(name, maxWidth, maxHeight, forcePowerOfTwo, forcedScale);
 }
@@ -81,9 +82,9 @@ void Stitcher::stitch() {
         TextureHolder* textureHolder = *it;  // textureHolders[i];
 
         if (!addToStorage(textureHolder)) {
-            app.DebugPrintf("Stitcher exception!\n");
+            Log::info("Stitcher exception!\n");
 #ifndef _CONTENT_PACKAGE
-            __debugbreak();
+            assert(0);
 #endif
             // throw new StitcherException(textureHolder);
         }

@@ -94,7 +94,7 @@ private:
     static const int END_PORTAL_DECORATION_KEY;
 
 public:
-    MapItemSavedData(const std::wstring& id);
+    MapItemSavedData(const std::string& id);
     ~MapItemSavedData();
 
     virtual void load(CompoundTag* tag);

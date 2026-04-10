@@ -6,7 +6,7 @@
 #include <numbers>
 #include <string>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/model/geom/ModelPart.h"
 #include "minecraft/world/entity/LivingEntity.h"
 #include "minecraft/world/entity/animal/Ocelot.h"
@@ -31,16 +31,16 @@ const float OcelotModel::frontLegZ = 4.f + zo;
 OcelotModel::OcelotModel() {
     state = WALK_STATE;
 
-    setMapTex(L"head.main", 0, 0);
-    setMapTex(L"head.nose", 0, 24);
-    setMapTex(L"head.ear1", 0, 10);
-    setMapTex(L"head.ear2", 6, 10);
+    setMapTex("head.main", 0, 0);
+    setMapTex("head.nose", 0, 24);
+    setMapTex("head.ear1", 0, 10);
+    setMapTex("head.ear2", 6, 10);
 
-    head = new ModelPart(this, L"head");
-    head->addBox(L"main", -2.5f, -2, -3, 5, 4, 5);
-    head->addBox(L"nose", -1.5f, 0, -4, 3, 2, 2);
-    head->addBox(L"ear1", -2, -3, 0, 1, 1, 2);
-    head->addBox(L"ear2", 1, -3, 0, 1, 1, 2);
+    head = new ModelPart(this, "head");
+    head->addBox("main", -2.5f, -2, -3, 5, 4, 5);
+    head->addBox("nose", -1.5f, 0, -4, 3, 2, 2);
+    head->addBox("ear1", -2, -3, 0, 1, 1, 2);
+    head->addBox("ear2", 1, -3, 0, 1, 1, 2);
     head->setPos(0 + xo, headWalkY, headWalkZ);
 
     body = new ModelPart(this, 20, 0);

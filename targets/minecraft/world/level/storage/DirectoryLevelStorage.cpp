@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "DirectoryLevelStorage.h"
 
 #include <assert.h>
@@ -10,10 +12,10 @@
 #include <memory>
 #include <utility>
 
-#include "IPlatformInput.h"
+#include "platform/input/input.h"
 #include "LevelData.h"
-#include "app/common/src/Console_Debug_enum.h"
-#include "app/common/src/GameRules/GameRuleManager.h"
+#include "app/common/Console_Debug_enum.h"
+#include "app/common/GameRules/GameRuleManager.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "util/StringHelpers.h"
@@ -40,10 +42,9 @@
 #include "nbt/DoubleTag.h"
 #include "nbt/ListTag.h"
 #include "nbt/NbtIo.h"
-#include "platform/IPlatformStorage.h"
-#include "platform/PlatformServices.h"
+#include "platform/storage/storage.h"
 
-const std::wstring DirectoryLevelStorage::sc_szPlayerDir(L"players/");
+const std::string DirectoryLevelStorage::sc_szPlayerDir("players/");
 
 _MapDataMappings::_MapDataMappings() {
     memset(xuids, 0, sizeof(PlayerUID) * MAXIMUM_MAP_SAVE_DATA);
@@ -69,7 +70,7 @@ int _MapDataMappings::getDimension(int id) {
         default:
 #if !defined(_CONTENT_PACKAGE)
             printf("Read invalid dimension from MapDataMapping\n");
-            __debugbreak();
+            assert(0);
 #endif
             break;
     }
@@ -97,7 +98,7 @@ void _MapDataMappings::setMapping(int id, PlayerUID xuid, int dimension) {
 #if !defined(_CONTENT_PACKAGE)
             printf(
                 "Trinyg to set a MapDataMapping for an invalid dimension.\n");
-            __debugbreak();
+            assert(0);
 #endif
             break;
     }
@@ -131,7 +132,7 @@ void DirectoryLevelStorage::PlayerMappings::addMapping(int id, int centreX,
                     (((int64_t)(centreX & 0x1FFFFFFF)) << 5) |
                     ((scale & 0x7) << 2) | (dimension & 0x3);
     m_mappings[index] = id;
-    // app.DebugPrintf("Adding mapping: %d - (%d,%d)/%d/%d [%I64d -
+    // Log::info("Adding mapping: %d - (%d,%d)/%d/%d [%I64d -
     // 0x%016llx]\n", id, centreX, centreZ, dimension, scale, index, index);
 }
 
@@ -143,7 +144,7 @@ bool DirectoryLevelStorage::PlayerMappings::getMapping(int& id, int centreX,
     // int64_t xMasked = centreX & 0x1FFFFFFF;
     // int64_t zShifted = zMasked << 34;
     // int64_t xShifted = xMasked << 5;
-    //  app.DebugPrintf("xShifted = %d (0x%016x), zShifted = %I64d
+    //  Log::info("xShifted = %d (0x%016x), zShifted = %I64d
     //  (0x%016llx)\n", xShifted, xShifted, zShifted, zShifted);
     int64_t index = (((int64_t)(centreZ & 0x1FFFFFFF)) << 34) |
                     (((int64_t)(centreX & 0x1FFFFFFF)) << 5) |
@@ -151,11 +152,11 @@ bool DirectoryLevelStorage::PlayerMappings::getMapping(int& id, int centreX,
     auto it = m_mappings.find(index);
     if (it != m_mappings.end()) {
         id = it->second;
-        // app.DebugPrintf("Found mapping: %d - (%d,%d)/%d/%d [%I64d -
+        // Log::info("Found mapping: %d - (%d,%d)/%d/%d [%I64d -
         // 0x%016llx]\n", id, centreX, centreZ, dimension, scale, index, index);
         return true;
     } else {
-        // app.DebugPrintf("Failed to find mapping: (%d,%d)/%d/%d [%I64d -
+        // Log::info("Failed to find mapping: (%d,%d)/%d/%d [%I64d -
         // 0x%016llx]\n", centreX, centreZ, dimension, scale, index, index);
         return false;
     }
@@ -165,7 +166,7 @@ void DirectoryLevelStorage::PlayerMappings::writeMappings(
     DataOutputStream* dos) {
     dos->writeInt(m_mappings.size());
     for (auto it = m_mappings.begin(); it != m_mappings.end(); ++it) {
-        app.DebugPrintf("    -- %lld (0x%016llx) = %d\n", it->first, it->first,
+        Log::info("    -- %lld (0x%016llx) = %d\n", it->first, it->first,
                         it->second);
         dos->writeLong(it->first);
         dos->writeInt(it->second);
@@ -178,19 +179,19 @@ void DirectoryLevelStorage::PlayerMappings::readMappings(DataInputStream* dis) {
         int64_t index = dis->readLong();
         int id = dis->readInt();
         m_mappings[index] = id;
-        app.DebugPrintf("    -- %lld (0x%016llx) = %d\n", index, index, id);
+        Log::info("    -- %lld (0x%016llx) = %d\n", index, index, id);
     }
 }
 #endif
 
 DirectoryLevelStorage::DirectoryLevelStorage(ConsoleSaveFile* saveFile,
                                              const File dir,
-                                             const std::wstring& levelId,
+                                             const std::string& levelId,
                                              bool createPlayerDir)
     : sessionId(System::currentTimeMillis()),
-      dir(L""),
+      dir(""),
       playerDir(sc_szPlayerDir),
-      dataDir(std::wstring(L"data/")),
+      dataDir(std::string("data/")),
       levelId(levelId) {
     m_saveFile = saveFile;
     m_bHasLoadedMapDataMappings = false;
@@ -212,7 +213,7 @@ DirectoryLevelStorage::~DirectoryLevelStorage() {
 void DirectoryLevelStorage::initiateSession() {
     // 4J Jev, removed try/catch.
 
-    File dataFile = File(dir, std::wstring(L"session.lock"));
+    File dataFile = File(dir, std::string("session.lock"));
     FileOutputStream fos = FileOutputStream(dataFile);
     DataOutputStream dos = DataOutputStream(&fos);
     dos.writeLong(sessionId);
@@ -225,7 +226,7 @@ void DirectoryLevelStorage::checkSession() {
     // 4J-PB - Not in the Xbox game
 
     /*
-    File dataFile = File( dir, wstring(L"session.lock"));
+    File dataFile = File( dir, string("session.lock"));
     FileInputStream fis = FileInputStream(dataFile);
     DataInputStream dis = DataInputStream(&fis);
     dis.close();
@@ -252,9 +253,9 @@ ChunkStorage* DirectoryLevelStorage::createChunkStorage(Dimension* dimension) {
 LevelData* DirectoryLevelStorage::prepareLevel() {
     // 4J Stu Added
 #if defined(_LARGE_WORLDS)
-    ConsoleSavePath mapFile = getDataFile(L"largeMapDataMappings");
+    ConsoleSavePath mapFile = getDataFile("largeMapDataMappings");
 #else
-    ConsoleSavePath mapFile = getDataFile(L"mapDataMappings");
+    ConsoleSavePath mapFile = getDataFile("mapDataMappings");
 #endif
     if (!m_bHasLoadedMapDataMappings && !mapFile.getName().empty() &&
         getSaveFile()->doesFileExist(mapFile)) {
@@ -275,16 +276,16 @@ LevelData* DirectoryLevelStorage::prepareLevel() {
             ByteArrayInputStream bais(data);
             DataInputStream dis(&bais);
             int count = dis.readInt();
-            app.DebugPrintf("Loading %d mappings\n", count);
+            Log::info("Loading %d mappings\n", count);
             for (unsigned int i = 0; i < count; ++i) {
                 PlayerUID playerUid = dis.readPlayerUID();
 #if defined(_WINDOWS64) || defined(__linux__)
-                app.DebugPrintf("  -- %d\n", playerUid);
+                Log::info("  -- %d\n", playerUid);
 #else
 #if defined(__linux__)
-                app.DebugPrintf("  -- %d\n", playerUid);
+                Log::info("  -- %d\n", playerUid);
 #else
-                app.DebugPrintf("  -- %ls\n", playerUid.toWString().c_str());
+                Log::info("  -- %s\n", playerUid.toWString().c_str());
 #endif
 #endif
                 m_playerMappings[playerUid].readMappings(&dis);
@@ -333,13 +334,13 @@ LevelData* DirectoryLevelStorage::prepareLevel() {
 
     // 4J Jev, removed try/catch
 
-    ConsoleSavePath dataFile = ConsoleSavePath(std::wstring(L"level.dat"));
+    ConsoleSavePath dataFile = ConsoleSavePath(std::string("level.dat"));
 
     if (m_saveFile->doesFileExist(dataFile)) {
         ConsoleSaveFileInputStream fis =
             ConsoleSaveFileInputStream(m_saveFile, dataFile);
         CompoundTag* root = NbtIo::readCompressed(&fis);
-        CompoundTag* tag = root->getCompound(L"Data");
+        CompoundTag* tag = root->getCompound("Data");
         LevelData* ret = new LevelData(tag);
         delete root;
         return ret;
@@ -355,9 +356,9 @@ void DirectoryLevelStorage::saveLevelData(
     CompoundTag* dataTag = levelData->createTag(players);
 
     CompoundTag* root = new CompoundTag();
-    root->put(L"Data", dataTag);
+    root->put("Data", dataTag);
 
-    ConsoleSavePath currentFile = ConsoleSavePath(std::wstring(L"level.dat"));
+    ConsoleSavePath currentFile = ConsoleSavePath(std::string("level.dat"));
 
     ConsoleSaveFileOutputStream fos =
         ConsoleSaveFileOutputStream(m_saveFile, currentFile);
@@ -372,9 +373,9 @@ void DirectoryLevelStorage::saveLevelData(LevelData* levelData) {
     CompoundTag* dataTag = levelData->createTag();
 
     CompoundTag* root = new CompoundTag();
-    root->put(L"Data", dataTag);
+    root->put("Data", dataTag);
 
-    ConsoleSavePath currentFile = ConsoleSavePath(std::wstring(L"level.dat"));
+    ConsoleSavePath currentFile = ConsoleSavePath(std::string("level.dat"));
 
     ConsoleSaveFileOutputStream fos =
         ConsoleSaveFileOutputStream(m_saveFile, currentFile);
@@ -390,7 +391,7 @@ void DirectoryLevelStorage::save(std::shared_ptr<Player> player) {
         CompoundTag* tag = new CompoundTag();
         player->saveWithoutId(tag);
         ConsoleSavePath realFile = ConsoleSavePath(
-            playerDir.getName() + toWString(player->getXuid()) + L".dat");
+            playerDir.getName() + toWString(player->getXuid()) + ".dat");
         // If saves are disabled (e.g. because we are writing the save buffer to
         // disk) then cache this player data
         if (PlatformStorage.GetSaveDisabled()) {
@@ -402,8 +403,8 @@ void DirectoryLevelStorage::save(std::shared_ptr<Player> player) {
                 delete it->second;
             }
             m_cachedSaveData[realFile.getName()] = bos;
-            app.DebugPrintf(
-                "Cached saving of file %ls due to saves being disabled\n",
+            Log::info(
+                "Cached saving of file %s due to saves being disabled\n",
                 realFile.getName().c_str());
         } else {
             ConsoleSaveFileOutputStream fos =
@@ -412,7 +413,7 @@ void DirectoryLevelStorage::save(std::shared_ptr<Player> player) {
         }
         delete tag;
     } else if (playerXuid != INVALID_XUID) {
-        app.DebugPrintf("Not saving player as their XUID is a guest\n");
+        Log::info("Not saving player as their XUID is a guest\n");
         dontSaveMapMappingForPlayer(playerXuid);
     }
 }
@@ -429,14 +430,14 @@ CompoundTag* DirectoryLevelStorage::load(std::shared_ptr<Player> player) {
 CompoundTag* DirectoryLevelStorage::loadPlayerDataTag(PlayerUID xuid) {
     // 4J Jev, removed try/catch.
     ConsoleSavePath realFile =
-        ConsoleSavePath(playerDir.getName() + toWString(xuid) + L".dat");
+        ConsoleSavePath(playerDir.getName() + toWString(xuid) + ".dat");
     auto it = m_cachedSaveData.find(realFile.getName());
     if (it != m_cachedSaveData.end()) {
         ByteArrayOutputStream* bos = it->second;
         ByteArrayInputStream bis(bos->buf, 0, bos->size());
         CompoundTag* tag = NbtIo::readCompressed(&bis);
         bis.reset();
-        app.DebugPrintf("Loaded player data from cached file %ls\n",
+        Log::info("Loaded player data from cached file %s\n",
                         realFile.getName().c_str());
         return tag;
     } else if (m_saveFile->doesFileExist(realFile)) {
@@ -456,14 +457,14 @@ void DirectoryLevelStorage::clearOldPlayerFiles() {
 
     if (playerFiles != nullptr) {
 #if !defined(_FINAL_BUILD)
-        if (app.DebugSettingsOn() &&
-            app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+        if (gameServices().debugSettingsOn() &&
+            gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
                 (1L << eDebugSetting_DistributableSave)) {
             for (unsigned int i = 0; i < playerFiles->size(); ++i) {
                 FileEntry* file = playerFiles->at(i);
-                std::wstring xuidStr = replaceAll(
-                    replaceAll(file->data.filename, playerDir.getName(), L""),
-                    L".dat", L"");
+                std::string xuidStr = replaceAll(
+                    replaceAll(file->data.filename, playerDir.getName(), ""),
+                    ".dat", "");
                 PlayerUID xuid = fromWString<PlayerUID>(xuidStr);
                 deleteMapFilesForPlayer(xuid);
                 m_saveFile->deleteFile(playerFiles->at(i));
@@ -477,9 +478,9 @@ void DirectoryLevelStorage::clearOldPlayerFiles() {
             for (unsigned int i = MAX_PLAYER_DATA_SAVES;
                  i < playerFiles->size(); ++i) {
                 FileEntry* file = playerFiles->at(i);
-                std::wstring xuidStr = replaceAll(
-                    replaceAll(file->data.filename, playerDir.getName(), L""),
-                    L".dat", L"");
+                std::string xuidStr = replaceAll(
+                    replaceAll(file->data.filename, playerDir.getName(), ""),
+                    ".dat", "");
                 PlayerUID xuid = fromWString<PlayerUID>(xuidStr);
                 deleteMapFilesForPlayer(xuid);
                 m_saveFile->deleteFile(playerFiles->at(i));
@@ -494,16 +495,16 @@ PlayerIO* DirectoryLevelStorage::getPlayerIO() { return this; }
 
 void DirectoryLevelStorage::closeAll() {}
 
-ConsoleSavePath DirectoryLevelStorage::getDataFile(const std::wstring& id) {
-    return ConsoleSavePath(dataDir.getName() + id + L".dat");
+ConsoleSavePath DirectoryLevelStorage::getDataFile(const std::string& id) {
+    return ConsoleSavePath(dataDir.getName() + id + ".dat");
 }
 
-std::wstring DirectoryLevelStorage::getLevelId() { return levelId; }
+std::string DirectoryLevelStorage::getLevelId() { return levelId; }
 
 void DirectoryLevelStorage::flushSaveFile(bool autosave) {
 #if !defined(_CONTENT_PACKAGE)
-    if (app.DebugSettingsOn() &&
-        app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn() &&
+        gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_DistributableSave)) {
         // Delete gamerules files if it exists
         ConsoleSavePath gameRulesFiles(GAME_RULE_SAVENAME);
@@ -518,7 +519,7 @@ void DirectoryLevelStorage::flushSaveFile(bool autosave) {
 
 // 4J Added
 void DirectoryLevelStorage::resetNetherPlayerPositions() {
-    if (app.GetResetNether()) {
+    if (gameServices().getResetNether()) {
         std::vector<FileEntry*>* playerFiles =
             m_saveFile->getFilesWithPrefix(playerDir.getName());
 
@@ -534,12 +535,12 @@ void DirectoryLevelStorage::resetNetherPlayerPositions() {
                     // above the top of the nether This will force the player to
                     // be spawned in a valid position in the overworld when they
                     // are loaded
-                    if (tag->contains(L"Dimension") &&
-                        tag->getInt(L"Dimension") ==
+                    if (tag->contains("Dimension") &&
+                        tag->getInt("Dimension") ==
                             LevelData::DIMENSION_NETHER &&
-                        tag->contains(L"Pos")) {
+                        tag->contains("Pos")) {
                         ListTag<DoubleTag>* pos =
-                            (ListTag<DoubleTag>*)tag->getList(L"Pos");
+                            (ListTag<DoubleTag>*)tag->getList("Pos");
                         pos->get(1)->data = DBL_MAX;
 
                         ConsoleSaveFileOutputStream fos =
@@ -602,7 +603,7 @@ int DirectoryLevelStorage::getAuxValueForMap(PlayerUID xuid, int dimension,
 
         // If we had an old map file for a mapping that is no longer valid,
         // delete it
-        std::wstring id = std::wstring(L"map_") + toWString(mapId);
+        std::string id = std::string("map_") + toWString(mapId);
         ConsoleSavePath file = getDataFile(id);
 
         if (m_saveFile->doesFileExist(file)) {
@@ -621,9 +622,9 @@ void DirectoryLevelStorage::saveMapIdLookup() {
     if (PlatformStorage.GetSaveDisabled()) return;
 
 #if defined(_LARGE_WORLDS)
-    ConsoleSavePath file = getDataFile(L"largeMapDataMappings");
+    ConsoleSavePath file = getDataFile("largeMapDataMappings");
 #else
-    ConsoleSavePath file = getDataFile(L"mapDataMappings");
+    ConsoleSavePath file = getDataFile("mapDataMappings");
 #endif
 
     if (!file.getName().empty()) {
@@ -635,16 +636,16 @@ void DirectoryLevelStorage::saveMapIdLookup() {
         ByteArrayOutputStream baos;
         DataOutputStream dos(&baos);
         dos.writeInt(m_playerMappings.size());
-        app.DebugPrintf("Saving %d mappings\n", m_playerMappings.size());
+        Log::info("Saving %d mappings\n", m_playerMappings.size());
         for (auto it = m_playerMappings.begin(); it != m_playerMappings.end();
              ++it) {
 #if defined(_WINDOWS64) || defined(__linux__)
-            app.DebugPrintf("  -- %d\n", it->first);
+            Log::info("  -- %d\n", it->first);
 #else
 #if defined(__linux__)
-            app.DebugPrintf("  -- %d\n", it->first);
+            Log::info("  -- %d\n", it->first);
 #else
-            app.DebugPrintf("  -- %ls\n", it->first.toWString().c_str());
+            Log::info("  -- %s\n", it->first.toWString().c_str());
 #endif
 #endif
             dos.writePlayerUID(it->first);
@@ -701,7 +702,7 @@ void DirectoryLevelStorage::deleteMapFilesForPlayer(PlayerUID xuid) {
     if (it != m_playerMappings.end()) {
         for (auto itMap = it->second.m_mappings.begin();
              itMap != it->second.m_mappings.end(); ++itMap) {
-            std::wstring id = std::wstring(L"map_") + toWString(itMap->second);
+            std::string id = std::string("map_") + toWString(itMap->second);
             ConsoleSavePath file = getDataFile(id);
 
             if (m_saveFile->doesFileExist(file)) {
@@ -725,7 +726,7 @@ void DirectoryLevelStorage::deleteMapFilesForPlayer(PlayerUID xuid) {
         if (m_mapDataMappings.xuids[i] == xuid) {
             changed = true;
 
-            std::wstring id = std::wstring(L"map_") + toWString(i);
+            std::string id = std::string("map_") + toWString(i);
             ConsoleSavePath file = getDataFile(id);
 
             if (m_saveFile->doesFileExist(file)) {
@@ -756,7 +757,7 @@ void DirectoryLevelStorage::saveAllCachedData() {
         ConsoleSaveFileOutputStream fos =
             ConsoleSaveFileOutputStream(m_saveFile, realFile);
 
-        app.DebugPrintf("Actually writing cached file %ls\n",
+        Log::info("Actually writing cached file %s\n",
                         it->first.c_str());
         fos.write(bos->buf, 0, bos->size());
         delete bos;
@@ -765,7 +766,7 @@ void DirectoryLevelStorage::saveAllCachedData() {
 
     for (auto it = m_mapFilesToDelete.begin(); it != m_mapFilesToDelete.end();
          ++it) {
-        std::wstring id = std::wstring(L"map_") + toWString(*it);
+        std::string id = std::string("map_") + toWString(*it);
         ConsoleSavePath file = getDataFile(id);
         if (m_saveFile->doesFileExist(file)) {
             m_saveFile->deleteFile(m_saveFile->createFile(file));

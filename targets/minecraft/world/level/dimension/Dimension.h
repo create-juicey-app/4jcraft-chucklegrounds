@@ -21,7 +21,7 @@ public:
 
     Level* level;
     LevelType* levelType;
-    std::wstring levelTypeOptions;
+    std::string levelTypeOptions;
     BiomeSource* biomeSource;
     bool ultraWarm;
     bool hasCeiling;

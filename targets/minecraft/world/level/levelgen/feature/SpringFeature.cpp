@@ -1,6 +1,8 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "SpringFeature.h"
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/world/level/Level.h"
 #include "minecraft/world/level/tile/Tile.h"
@@ -10,12 +12,12 @@ SpringFeature::SpringFeature(int tile) { this->tile = tile; }
 bool SpringFeature::place(Level* level, Random* random, int x, int y, int z) {
     // 4J Stu Added to stop spring features generating areas previously place by
     // game rule generation
-    if (app.getLevelGenerationOptions() != nullptr) {
+    if (gameServices().getLevelGenerationOptions() != nullptr) {
         LevelGenerationOptions* levelGenOptions =
-            app.getLevelGenerationOptions();
+            gameServices().getLevelGenerationOptions();
         bool intersects = levelGenOptions->checkIntersects(x, y, z, x, y, z);
         if (intersects) {
-            // app.DebugPrintf("Skipping spring feature generation as it
+            // Log::info("Skipping spring feature generation as it
             // overlaps a game rule structure\n");
             return false;
         }

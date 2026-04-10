@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "GameCommandPacket.h"
 
 #include <limits>
@@ -23,9 +24,9 @@ GameCommandPacket::GameCommandPacket(EGameCommand command,
         length = data.size();
 
         if (length > std::numeric_limits<short>::max()) {
-            app.DebugPrintf("Payload may not be larger than 32K\n");
+            Log::info("Payload may not be larger than 32K\n");
 #ifndef _CONTENT_PACKAGE
-            __debugbreak();
+            assert(0);
 #endif
             // throw new IllegalArgumentException("Payload may not be larger
             // than 32k");

@@ -2,5 +2,5 @@
 
 class StatFormatter {
 public:
-    virtual std::wstring format(int value) = 0;
+    virtual std::string format(int value) = 0;
 };

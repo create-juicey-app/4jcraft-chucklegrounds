@@ -24,8 +24,8 @@ public:
     virtual unsigned int getContainerSize();
     virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
     std::shared_ptr<ItemInstance> getItem(unsigned int x, unsigned int y);
-    virtual std::wstring getName();
-    virtual std::wstring getCustomName();
+    virtual std::string getName();
+    virtual std::string getCustomName();
     virtual bool hasCustomName();
     virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
     virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot,

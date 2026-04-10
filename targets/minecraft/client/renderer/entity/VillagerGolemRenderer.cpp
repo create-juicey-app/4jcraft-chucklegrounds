@@ -4,7 +4,7 @@
 #include <memory>
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/model/VillagerGolemModel.h"

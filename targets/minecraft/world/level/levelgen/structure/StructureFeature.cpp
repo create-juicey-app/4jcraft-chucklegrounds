@@ -270,9 +270,9 @@ void StructureFeature::restoreSavedData(Level* level) {
                 if (featureTag->getId() == Tag::TAG_Compound) {
                     CompoundTag* ct = (CompoundTag*)featureTag;
 
-                    if (ct->contains(L"ChunkX") && ct->contains(L"ChunkZ")) {
-                        int cx = ct->getInt(L"ChunkX");
-                        int cz = ct->getInt(L"ChunkZ");
+                    if (ct->contains("ChunkX") && ct->contains("ChunkZ")) {
+                        int cx = ct->getInt("ChunkX");
+                        int cz = ct->getInt("ChunkZ");
 
                         StructureStart* start =
                             StructureFeatureIO::loadStaticStart(ct, level);

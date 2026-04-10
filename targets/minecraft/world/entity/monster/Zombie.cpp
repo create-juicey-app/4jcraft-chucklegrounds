@@ -312,19 +312,19 @@ void Zombie::populateDefaultEquipmentSlots() {
 void Zombie::addAdditonalSaveData(CompoundTag* tag) {
     Monster::addAdditonalSaveData(tag);
 
-    if (isBaby()) tag->putBoolean(L"IsBaby", true);
-    if (isVillager()) tag->putBoolean(L"IsVillager", true);
-    tag->putInt(L"ConversionTime",
+    if (isBaby()) tag->putBoolean("IsBaby", true);
+    if (isVillager()) tag->putBoolean("IsVillager", true);
+    tag->putInt("ConversionTime",
                 isConverting() ? villagerConversionTime : -1);
 }
 
 void Zombie::readAdditionalSaveData(CompoundTag* tag) {
     Monster::readAdditionalSaveData(tag);
 
-    if (tag->getBoolean(L"IsBaby")) setBaby(true);
-    if (tag->getBoolean(L"IsVillager")) setVillager(true);
-    if (tag->contains(L"ConversionTime") && tag->getInt(L"ConversionTime") > -1)
-        startConverting(tag->getInt(L"ConversionTime"));
+    if (tag->getBoolean("IsBaby")) setBaby(true);
+    if (tag->getBoolean("IsVillager")) setVillager(true);
+    if (tag->contains("ConversionTime") && tag->getInt("ConversionTime") > -1)
+        startConverting(tag->getInt("ConversionTime"));
 }
 
 void Zombie::killed(std::shared_ptr<LivingEntity> mob) {

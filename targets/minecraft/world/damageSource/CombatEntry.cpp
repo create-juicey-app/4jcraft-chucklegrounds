@@ -42,9 +42,9 @@ bool CombatEntry::isCombatRelated() {
 
 CombatTracker::eLOCATION CombatEntry::getLocation() { return location; }
 
-std::wstring CombatEntry::getAttackerName() {
+std::string CombatEntry::getAttackerName() {
     return getSource()->getEntity() == nullptr
-               ? L""
+               ? ""
                : getSource()->getEntity()->getNetworkName();
 }
 

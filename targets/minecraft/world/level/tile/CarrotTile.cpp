@@ -26,7 +26,7 @@ int CarrotTile::getBasePlantId() { return Item::carrots_Id; }
 
 void CarrotTile::registerIcons(IconRegister* iconRegister) {
     for (int i = 0; i < 4; i++) {
-        icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" +
+        icons[i] = iconRegister->registerIcon(getIconName() + "_stage_" +
                                               toWString(i));
     }
 }

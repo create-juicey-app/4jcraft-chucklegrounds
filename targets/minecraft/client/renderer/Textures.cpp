@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "Textures.h"
 
 #include <assert.h>
@@ -7,13 +8,14 @@
 #include <string>
 #include <utility>
 
-#include "platform/sdl2/Render.h"
+
+#include "platform/renderer/renderer.h"
 #include "HttpTexture.h"
 #include "app/linux/LinuxGame.h"
-#include "app/include/BufferedImage.h"
-#include "app/include/MemTexture.h"
-#include "app/include/MemTextureProcessor.h"
-#include "app/include/MobSkinMemTextureProcessor.h"
+#include "minecraft/client/BufferedImage.h"
+#include "minecraft/client/renderer/MemTexture.h"
+#include "minecraft/client/renderer/MemTextureProcessor.h"
+#include "minecraft/client/renderer/MobSkinMemTextureProcessor.h"
 #include "util/StringHelpers.h"
 
 #include "java/Buffer.h"
@@ -38,262 +40,262 @@
 // Mesa/Nvidia drivers) and the per-level crispBlend loop is both wasteful and
 // still causes visible blurring.
 bool Textures::MIPMAP = false;
-C4JRender::eTextureFormat Textures::TEXTURE_FORMAT =
-    C4JRender::TEXTURE_FORMAT_RxGyBzAw;
+IPlatformRenderer::eTextureFormat Textures::TEXTURE_FORMAT =
+    IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw;
 
 int Textures::preLoadedIdx[TN_COUNT];
-const wchar_t* Textures::preLoaded[TN_COUNT] = {
-    L"%blur%misc/pumpkinblur",
-    L"%clamp%misc/shadow",
-    L"art/kz",
-    L"environment/clouds",
-    L"environment/rain",
-    L"environment/snow",
-    L"gui/gui",
-    L"gui/icons",
-    L"item/arrows",
-    L"item/boat",
-    L"item/cart",
-    L"item/sign",
-    L"misc/mapbg",
-    L"misc/mapicons",
-    L"misc/water",
-    L"misc/footprint",
-    L"mob/saddle",
-    L"mob/sheep_fur",
-    L"mob/spider_eyes",
-    L"particles",
-    L"mob/chicken",
-    L"mob/cow",
-    L"mob/pig",
-    L"mob/sheep",
-    L"mob/squid",
-    L"mob/wolf",
-    L"mob/wolf_tame",
-    L"mob/wolf_angry",
-    L"mob/creeper",
-    L"mob/ghast",
-    L"mob/ghast_fire",
-    L"mob/zombie",
-    L"mob/pigzombie",
-    L"mob/skeleton",
-    L"mob/slime",
-    L"mob/spider",
-    L"mob/char",
-    L"mob/char1",
-    L"mob/char2",
-    L"mob/char3",
-    L"mob/char4",
-    L"mob/char5",
-    L"mob/char6",
-    L"mob/char7",
-    L"terrain/moon",
-    L"terrain/sun",
-    L"armor/power",
+const char* Textures::preLoaded[TN_COUNT] = {
+    "%blur%misc/pumpkinblur",
+    "%clamp%misc/shadow",
+    "art/kz",
+    "environment/clouds",
+    "environment/rain",
+    "environment/snow",
+    "gui/gui",
+    "gui/icons",
+    "item/arrows",
+    "item/boat",
+    "item/cart",
+    "item/sign",
+    "misc/mapbg",
+    "misc/mapicons",
+    "misc/water",
+    "misc/footprint",
+    "mob/saddle",
+    "mob/sheep_fur",
+    "mob/spider_eyes",
+    "particles",
+    "mob/chicken",
+    "mob/cow",
+    "mob/pig",
+    "mob/sheep",
+    "mob/squid",
+    "mob/wolf",
+    "mob/wolf_tame",
+    "mob/wolf_angry",
+    "mob/creeper",
+    "mob/ghast",
+    "mob/ghast_fire",
+    "mob/zombie",
+    "mob/pigzombie",
+    "mob/skeleton",
+    "mob/slime",
+    "mob/spider",
+    "mob/char",
+    "mob/char1",
+    "mob/char2",
+    "mob/char3",
+    "mob/char4",
+    "mob/char5",
+    "mob/char6",
+    "mob/char7",
+    "terrain/moon",
+    "terrain/sun",
+    "armor/power",
 
     // 1.8.2
-    L"mob/cavespider",
-    L"mob/enderman",
-    L"mob/silverfish",
-    L"mob/enderman_eyes",
-    L"misc/explosion",
-    L"item/xporb",
-    L"item/chest",
-    L"item/largechest",
+    "mob/cavespider",
+    "mob/enderman",
+    "mob/silverfish",
+    "mob/enderman_eyes",
+    "misc/explosion",
+    "item/xporb",
+    "item/chest",
+    "item/largechest",
 
     // 1.3.2
-    L"item/enderchest",
+    "item/enderchest",
 
     // 1.0.1
-    L"mob/redcow",
-    L"mob/snowman",
-    L"mob/enderdragon/ender",
-    L"mob/fire",
-    L"mob/lava",
-    L"mob/villager/villager",
-    L"mob/villager/farmer",
-    L"mob/villager/librarian",
-    L"mob/villager/priest",
-    L"mob/villager/smith",
-    L"mob/villager/butcher",
-    L"mob/enderdragon/crystal",
-    L"mob/enderdragon/shuffle",
-    L"mob/enderdragon/beam",
-    L"mob/enderdragon/ender_eyes",
-    L"%blur%misc/glint",
-    L"item/book",
-    L"misc/tunnel",
-    L"misc/particlefield",
-    L"terrain/moon_phases",
+    "mob/redcow",
+    "mob/snowman",
+    "mob/enderdragon/ender",
+    "mob/fire",
+    "mob/lava",
+    "mob/villager/villager",
+    "mob/villager/farmer",
+    "mob/villager/librarian",
+    "mob/villager/priest",
+    "mob/villager/smith",
+    "mob/villager/butcher",
+    "mob/enderdragon/crystal",
+    "mob/enderdragon/shuffle",
+    "mob/enderdragon/beam",
+    "mob/enderdragon/ender_eyes",
+    "%blur%misc/glint",
+    "item/book",
+    "misc/tunnel",
+    "misc/particlefield",
+    "terrain/moon_phases",
 
     // 1.2.3
-    L"mob/ozelot",
-    L"mob/cat_black",
-    L"mob/cat_red",
-    L"mob/cat_siamese",
-    L"mob/villager_golem",
-    L"mob/skeleton_wither",
+    "mob/ozelot",
+    "mob/cat_black",
+    "mob/cat_red",
+    "mob/cat_siamese",
+    "mob/villager_golem",
+    "mob/skeleton_wither",
 
     // TU 14
-    L"mob/wolf_collar",
-    L"mob/zombie_villager",
+    "mob/wolf_collar",
+    "mob/zombie_villager",
 
     // 1.6.4
-    L"item/lead_knot",
+    "item/lead_knot",
 
-    L"misc/beacon_beam",
+    "misc/beacon_beam",
 
-    L"mob/bat",
+    "mob/bat",
 
-    L"mob/horse/donkey",
-    L"mob/horse/horse_black",
-    L"mob/horse/horse_brown",
-    L"mob/horse/horse_chestnut",
-    L"mob/horse/horse_creamy",
-    L"mob/horse/horse_darkbrown",
-    L"mob/horse/horse_gray",
-    L"mob/horse/horse_markings_blackdots",
-    L"mob/horse/horse_markings_white",
-    L"mob/horse/horse_markings_whitedots",
-    L"mob/horse/horse_markings_whitefield",
-    L"mob/horse/horse_skeleton",
-    L"mob/horse/horse_white",
-    L"mob/horse/horse_zombie",
-    L"mob/horse/mule",
+    "mob/horse/donkey",
+    "mob/horse/horse_black",
+    "mob/horse/horse_brown",
+    "mob/horse/horse_chestnut",
+    "mob/horse/horse_creamy",
+    "mob/horse/horse_darkbrown",
+    "mob/horse/horse_gray",
+    "mob/horse/horse_markings_blackdots",
+    "mob/horse/horse_markings_white",
+    "mob/horse/horse_markings_whitedots",
+    "mob/horse/horse_markings_whitefield",
+    "mob/horse/horse_skeleton",
+    "mob/horse/horse_white",
+    "mob/horse/horse_zombie",
+    "mob/horse/mule",
 
-    L"mob/horse/armor/horse_armor_diamond",
-    L"mob/horse/armor/horse_armor_gold",
-    L"mob/horse/armor/horse_armor_iron",
+    "mob/horse/armor/horse_armor_diamond",
+    "mob/horse/armor/horse_armor_gold",
+    "mob/horse/armor/horse_armor_iron",
 
-    L"mob/witch",
+    "mob/witch",
 
-    L"mob/wither/wither",
-    L"mob/wither/wither_armor",
-    L"mob/wither/wither_invulnerable",
+    "mob/wither/wither",
+    "mob/wither/wither_armor",
+    "mob/wither/wither_invulnerable",
 
-    L"item/trapped",
-    L"item/trapped_double",
+    "item/trapped",
+    "item/trapped_double",
 
 // 4jcraft: java UI specific
 #ifdef ENABLE_JAVA_GUIS
-    L"%blur%/misc/vignette",
-    L"/achievement/bg",
-    L"gui/background",
-    L"gui/inventory",
-    L"gui/container",
-    L"gui/crafting",
-    L"gui/furnace",
-    L"gui/creative_inventory/tabs",
-    L"gui/creative_inventory/tab_items",
-    L"gui/creative_inventory/tab_inventory",
-    L"gui/creative_inventory/tab_item_search",
-    L"title/mclogo",
-    L"gui/horse",
-    L"gui/anvil",
-    L"gui/trap",
-    L"gui/beacon",
-    L"gui/hopper",
-    L"gui/enchant",
-    L"gui/villager",
-    L"gui/brewing_stand",
-    L"title/bg/panorama",
-    L"title/bg/panorama0",
-    L"title/bg/panorama1",
-    L"title/bg/panorama2",
-    L"title/bg/panorama3",
-    L"title/bg/panorama4",
-    L"title/bg/panorama5",
+    "%blur%/misc/vignette",
+    "/achievement/bg",
+    "gui/background",
+    "gui/inventory",
+    "gui/container",
+    "gui/crafting",
+    "gui/furnace",
+    "gui/creative_inventory/tabs",
+    "gui/creative_inventory/tab_items",
+    "gui/creative_inventory/tab_inventory",
+    "gui/creative_inventory/tab_item_search",
+    "title/mclogo",
+    "gui/horse",
+    "gui/anvil",
+    "gui/trap",
+    "gui/beacon",
+    "gui/hopper",
+    "gui/enchant",
+    "gui/villager",
+    "gui/brewing_stand",
+    "title/bg/panorama",
+    "title/bg/panorama0",
+    "title/bg/panorama1",
+    "title/bg/panorama2",
+    "title/bg/panorama3",
+    "title/bg/panorama4",
+    "title/bg/panorama5",
 #endif
-// L"item/christmas",
-// L"item/christmas_double",
+// "item/christmas",
+// "item/christmas_double",
 
 #if defined(_LARGE_WORLDS)
-    L"misc/additionalmapicons",
+    "misc/additionalmapicons",
 #endif
 
-    L"font/Default",
-    L"font/alternate",
+    "font/Default",
+    "font/alternate",
 
     // skin packs
-    /*	L"/SP1",
-            L"/SP2",
-            L"/SP3",
-            L"/SPF",
+    /*	"/SP1",
+            "/SP2",
+            "/SP3",
+            "/SPF",
 
             // themes
-            L"/ThSt",
-            L"/ThIr",
-            L"/ThGo",
-            L"/ThDi",
+            "/ThSt",
+            "/ThIr",
+            "/ThGo",
+            "/ThDi",
 
             // gamerpics
-            L"/GPAn",
-            L"/GPCo",
-            L"/GPEn",
-            L"/GPFo",
-            L"/GPTo",
-            L"/GPBA",
-            L"/GPFa",
-            L"/GPME",
-            L"/GPMF",
-            L"/GPMM",
-            L"/GPSE",
+            "/GPAn",
+            "/GPCo",
+            "/GPEn",
+            "/GPFo",
+            "/GPTo",
+            "/GPBA",
+            "/GPFa",
+            "/GPME",
+            "/GPMF",
+            "/GPMM",
+            "/GPSE",
 
             // avatar items
 
-            L"/AH_0006",
-            L"/AH_0003",
-            L"/AH_0007",
-            L"/AH_0005",
-            L"/AH_0004",
-            L"/AH_0001",
-            L"/AH_0002",
-            L"/AT_0001",
-            L"/AT_0002",
-            L"/AT_0003",
-            L"/AT_0004",
-            L"/AT_0005",
-            L"/AT_0006",
-            L"/AT_0007",
-            L"/AT_0008",
-            L"/AT_0009",
-            L"/AT_0010",
-            L"/AT_0011",
-            L"/AT_0012",
-            L"/AP_0001",
-            L"/AP_0002",
-            L"/AP_0003",
-            L"/AP_0004",
-            L"/AP_0005",
-            L"/AP_0006",
-            L"/AP_0007",
-            L"/AP_0009",
-            L"/AP_0010",
-            L"/AP_0011",
-            L"/AP_0012",
-            L"/AP_0013",
-            L"/AP_0014",
-            L"/AP_0015",
-            L"/AP_0016",
-            L"/AP_0017",
-            L"/AP_0018",
-            L"/AA_0001",
-            L"/AT_0013",
-            L"/AT_0014",
-            L"/AT_0015",
-            L"/AT_0016",
-            L"/AT_0017",
-            L"/AT_0018",
-            L"/AP_0019",
-            L"/AP_0020",
-            L"/AP_0021",
-            L"/AP_0022",
-            L"/AP_0023",
-            L"/AH_0008",
-            L"/AH_0009",*/
+            "/AH_0006",
+            "/AH_0003",
+            "/AH_0007",
+            "/AH_0005",
+            "/AH_0004",
+            "/AH_0001",
+            "/AH_0002",
+            "/AT_0001",
+            "/AT_0002",
+            "/AT_0003",
+            "/AT_0004",
+            "/AT_0005",
+            "/AT_0006",
+            "/AT_0007",
+            "/AT_0008",
+            "/AT_0009",
+            "/AT_0010",
+            "/AT_0011",
+            "/AT_0012",
+            "/AP_0001",
+            "/AP_0002",
+            "/AP_0003",
+            "/AP_0004",
+            "/AP_0005",
+            "/AP_0006",
+            "/AP_0007",
+            "/AP_0009",
+            "/AP_0010",
+            "/AP_0011",
+            "/AP_0012",
+            "/AP_0013",
+            "/AP_0014",
+            "/AP_0015",
+            "/AP_0016",
+            "/AP_0017",
+            "/AP_0018",
+            "/AA_0001",
+            "/AT_0013",
+            "/AT_0014",
+            "/AT_0015",
+            "/AT_0016",
+            "/AT_0017",
+            "/AT_0018",
+            "/AP_0019",
+            "/AP_0020",
+            "/AP_0021",
+            "/AP_0022",
+            "/AP_0023",
+            "/AH_0008",
+            "/AH_0009",*/
 
-    L"gui/items",
-    L"terrain",
+    "gui/items",
+    "terrain",
 };
 
 Textures::Textures(TexturePackRepository* skins, Options* options) {
@@ -322,10 +324,10 @@ g.dispose();
     */
 
     // 4J Stu - Changed these to our PreStitchedTextureMap from TextureMap
-    terrain = new PreStitchedTextureMap(Icon::TYPE_TERRAIN, L"terrain",
-                                        L"textures/blocks/", missingNo, true);
-    items = new PreStitchedTextureMap(Icon::TYPE_ITEM, L"items",
-                                      L"textures/items/", missingNo, true);
+    terrain = new PreStitchedTextureMap(Icon::TYPE_TERRAIN, "terrain",
+                                        "textures/blocks/", missingNo, true);
+    items = new PreStitchedTextureMap(Icon::TYPE_ITEM, "items",
+                                      "textures/items/", missingNo, true);
 
     // 4J - added - preload a set of commonly used textures that can then be
     // referenced directly be an enumerated type rather by string
@@ -337,12 +339,12 @@ void Textures::loadIndexedTextures() {
     // referenced directly be an enumerated type rather by string
     for (int i = 0; i < TN_COUNT - 2; i++) {
         preLoadedIdx[i] =
-            loadTexture((TEXTURE_NAME)i, std::wstring(preLoaded[i]) + L".png");
+            loadTexture((TEXTURE_NAME)i, std::string(preLoaded[i]) + ".png");
     }
 }
 
 std::vector<int> Textures::loadTexturePixels(TEXTURE_NAME texId,
-                                             const std::wstring& resourceName) {
+                                             const std::string& resourceName) {
     TexturePack* skin = skins->getSelected();
 
     {
@@ -355,7 +357,7 @@ std::vector<int> Textures::loadTexturePixels(TEXTURE_NAME texId,
     // 4J - removed try/catch
     //    try {
     std::vector<int> res;
-    // wstring in = skin->getResource(resourceName);
+    // string in = skin->getResource(resourceName);
     if (false)  // 4J - removed - was ( in == nullptr)
     {
         res = loadTexturePixels(missingNo);
@@ -412,14 +414,14 @@ int Textures::loadTexture(int idx) {
 // 4J added - textures default to standard 32-bit RGBA format, but where we can,
 // use an 8-bit format. There's 3 different varieties of these currently in the
 // renderer that map the single 8-bit channel to RGBA differently.
-void Textures::setTextureFormat(const std::wstring& resourceName) {
+void Textures::setTextureFormat(const std::string& resourceName) {
     // 4J Stu - These texture formats are not currently in the render header
     {
-        TEXTURE_FORMAT = C4JRender::TEXTURE_FORMAT_RxGyBzAw;
+        TEXTURE_FORMAT = IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw;
     }
 }
 
-void Textures::bindTexture(const std::wstring& resourceName) {
+void Textures::bindTexture(const std::string& resourceName) {
     bind(loadTexture(TN_COUNT, resourceName));
 }
 
@@ -439,11 +441,11 @@ void Textures::bindTextureLayers(ResourceLocation* resource) {
     // Hack: 4JLibs on Windows does not currently reproduce Minecraft's layered
     // horse texture path reliably. Merge the layers on the CPU and bind the
     // cached result as a normal single texture instead.
-    std::wstring cacheKey = L"%layered%";
+    std::string cacheKey = "%layered%";
     int layers = resource->getTextureCount();
     for (int i = 0; i < layers; i++) {
-        cacheKey += std::to_wstring(resource->getTexture(i));
-        cacheKey += L"/";
+        cacheKey += std::to_string(resource->getTexture(i));
+        cacheKey += "/";
     }
 
     int id = -1;
@@ -464,8 +466,8 @@ void Textures::bindTextureLayers(ResourceLocation* resource) {
                 continue;
             }
 
-            std::wstring resourceName =
-                std::wstring(preLoaded[textureName]) + L".png";
+            std::string resourceName =
+                std::string(preLoaded[textureName]) + ".png";
             BufferedImage* image = readImage(textureName, resourceName);
             if (image == nullptr) {
                 continue;
@@ -524,7 +526,7 @@ void Textures::bindTextureLayers(ResourceLocation* resource) {
                 mergedWidth, mergedHeight, BufferedImage::TYPE_INT_ARGB);
             memcpy(mergedImage->getData(), mergedPixels.data(),
                    mergedWidth * mergedHeight * sizeof(int));
-            id = getTexture(mergedImage, C4JRender::TEXTURE_FORMAT_RxGyBzAw,
+            id = getTexture(mergedImage, IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw,
                             false);
         } else {
             id = 0;
@@ -533,7 +535,7 @@ void Textures::bindTextureLayers(ResourceLocation* resource) {
         idMap[cacheKey] = id;
     }
 
-    RenderManager.TextureBind(id);
+    PlatformRenderer.TextureBind(id);
 }
 
 void Textures::bind(int id) {
@@ -572,17 +574,17 @@ ResourceLocation* Textures::getTextureLocation(int iconType) {
 void Textures::clearLastBoundId() { lastBoundId = -1; }
 
 int Textures::loadTexture(TEXTURE_NAME texId,
-                          const std::wstring& resourceName) {
+                          const std::string& resourceName) {
     // 	char buf[256];
-    // 	wcstombs(buf, resourceName.c_str(), 256);
+    // 	strncpy(buf, resourceName.c_str(), 256);
     // 	printf("Textures::loadTexture name - %s\n",buf);
 
-    // if (resourceName.compare(L"/terrain.png") == 0)
+    // if (resourceName.compare("/terrain.png") == 0)
     //{
     //	terrain->getStitchedTexture()->bind(0);
     //	return terrain->getStitchedTexture()->getGlId();
     // }
-    // if (resourceName.compare(L"/gui/items.png") == 0)
+    // if (resourceName.compare("/gui/items.png") == 0)
     //{
     //	items->getStitchedTexture()->bind(0);
     //	return items->getStitchedTexture()->getGlId();
@@ -597,16 +599,16 @@ int Textures::loadTexture(TEXTURE_NAME texId,
         if (inMap) return id;
     }
 
-    std::wstring pathName = resourceName;
+    std::string pathName = resourceName;
 
     // 4J - added special cases to avoid mipmapping on clouds & shadows
-    if ((resourceName == L"environment/clouds.png") ||
-        (resourceName == L"%clamp%misc/shadow.png") ||
-        (resourceName == L"%blur%misc/pumpkinblur.png") ||
-        (resourceName == L"%clamp%misc/shadow.png") ||
-        (resourceName == L"gui/icons.png") ||
-        (resourceName == L"gui/gui.png") ||
-        (resourceName == L"misc/footprint.png")) {
+    if ((resourceName == "environment/clouds.png") ||
+        (resourceName == "%clamp%misc/shadow.png") ||
+        (resourceName == "%blur%misc/pumpkinblur.png") ||
+        (resourceName == "%clamp%misc/shadow.png") ||
+        (resourceName == "gui/icons.png") ||
+        (resourceName == "gui/gui.png") ||
+        (resourceName == "misc/footprint.png")) {
         MIPMAP = false;
     }
     setTextureFormat(resourceName);
@@ -615,17 +617,17 @@ int Textures::loadTexture(TEXTURE_NAME texId,
     //    try {
     int id = MemoryTracker::genTextures();
 
-    std::wstring prefix = L"%blur%";
+    std::string prefix = "%blur%";
     bool blur = resourceName.substr(0, prefix.size()).compare(prefix) ==
                 0;  // resourceName.startsWith("%blur%");
     if (blur) pathName = resourceName.substr(6);
 
-    prefix = L"%clamp%";
+    prefix = "%clamp%";
     bool clamp = resourceName.substr(0, prefix.size()).compare(prefix) ==
                  0;  // resourceName.startsWith("%clamp%");
     if (clamp) pathName = resourceName.substr(7);
 
-    // wstring in = skins->getSelected()->getResource(pathName);
+    // string in = skins->getSelected()->getResource(pathName);
     if (false)  // 4J - removed was ( in == nullptr)
     {
         loadTexture(missingNo, id, blur, clamp);
@@ -638,7 +640,7 @@ int Textures::loadTexture(TEXTURE_NAME texId,
 
     idMap[resourceName] = id;
     MIPMAP = true;  // 4J added
-    TEXTURE_FORMAT = C4JRender::TEXTURE_FORMAT_RxGyBzAw;
+    TEXTURE_FORMAT = IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw;
     return id;
     /*
 } catch (IOException e) {
@@ -652,13 +654,13 @@ return id;
 */
 }
 
-int Textures::getTexture(BufferedImage* img, C4JRender::eTextureFormat format,
+int Textures::getTexture(BufferedImage* img, IPlatformRenderer::eTextureFormat format,
                          bool mipmap) {
     int id = MemoryTracker::genTextures();
     TEXTURE_FORMAT = format;
     MIPMAP = mipmap;
     loadTexture(img, id);
-    TEXTURE_FORMAT = C4JRender::TEXTURE_FORMAT_RxGyBzAw;
+    TEXTURE_FORMAT = IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw;
     MIPMAP = true;
     loadedImages[id] = img;
     return id;
@@ -741,11 +743,11 @@ void Textures::loadTexture(BufferedImage* img, int id, bool blur, bool clamp) {
         while ((8 << iHeightMips) < h) iHeightMips++;
 
         iMipLevels = (iWidthMips < iHeightMips) ? iWidthMips : iHeightMips;
-        // RenderManager.TextureSetTextureLevels(5);	// 4J added
+        // PlatformRenderer.TextureSetTextureLevels(5);	// 4J added
         if (iMipLevels > 5) iMipLevels = 5;
-        RenderManager.TextureSetTextureLevels(iMipLevels);  // 4J added
+        PlatformRenderer.TextureSetTextureLevels(iMipLevels);  // 4J added
     }
-    RenderManager.TextureData(w, h, pixels->getBuffer(), 0, TEXTURE_FORMAT);
+    PlatformRenderer.TextureData(w, h, pixels->getBuffer(), 0, TEXTURE_FORMAT);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL12.GL_BGRA,
     // GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
 
@@ -802,7 +804,7 @@ void Textures::loadTexture(BufferedImage* img, int id, bool blur, bool clamp) {
                     pixels->putInt((x + y * ww) * 4, tempData[x + y * ww]);
                 }
             delete[] tempData;
-            RenderManager.TextureData(ww, hh, pixels->getBuffer(), level,
+            PlatformRenderer.TextureData(ww, hh, pixels->getBuffer(), level,
                                       TEXTURE_FORMAT);
         }
     }
@@ -879,7 +881,7 @@ void Textures::replaceTexture(std::vector<int>& rawPixels, int w, int h,
     // New
     // glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL12.GL_BGRA,
     // GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixels);
-    RenderManager.TextureDataUpdate(0, 0, w, h, pixels->getBuffer(), 0);
+    PlatformRenderer.TextureDataUpdate(0, 0, w, h, pixels->getBuffer(), 0);
     // Old
     // glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE,
     // pixels);
@@ -902,7 +904,7 @@ void Textures::replaceTextureDirect(const std::vector<int>& rawPixels, int w,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    RenderManager.TextureDataUpdate(0, 0, w, h,
+    PlatformRenderer.TextureDataUpdate(0, 0, w, h,
                                     const_cast<int*>(rawPixels.data()), 0);
 }
 
@@ -922,7 +924,7 @@ void Textures::replaceTextureDirect(const std::vector<short>& rawPixels, int w,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    RenderManager.TextureDataUpdate(0, 0, w, h,
+    PlatformRenderer.TextureDataUpdate(0, 0, w, h,
                                     const_cast<short*>(rawPixels.data()), 0);
 }
 
@@ -931,8 +933,8 @@ void Textures::releaseTexture(int id) {
     glDeleteTextures(id);
 }
 
-int Textures::loadHttpTexture(const std::wstring& url,
-                              const std::wstring& backup) {
+int Textures::loadHttpTexture(const std::string& url,
+                              const std::string& backup) {
     HttpTexture* texture = httpTextures[url];
     if (texture != nullptr) {
         if (texture->loadedImage != nullptr && !texture->isLoaded) {
@@ -951,7 +953,7 @@ int Textures::loadHttpTexture(const std::wstring& url,
     return texture->id;
 }
 
-int Textures::loadHttpTexture(const std::wstring& url, int backup) {
+int Textures::loadHttpTexture(const std::string& url, int backup) {
     HttpTexture* texture = httpTextures[url];
     if (texture != nullptr) {
         if (texture->loadedImage != nullptr && !texture->isLoaded) {
@@ -969,11 +971,11 @@ int Textures::loadHttpTexture(const std::wstring& url, int backup) {
     return texture->id;
 }
 
-bool Textures::hasHttpTexture(const std::wstring& url) {
+bool Textures::hasHttpTexture(const std::string& url) {
     return httpTextures.find(url) != httpTextures.end();
 }
 
-HttpTexture* Textures::addHttpTexture(const std::wstring& url,
+HttpTexture* Textures::addHttpTexture(const std::string& url,
                                       HttpTextureProcessor* processor) {
     HttpTexture* texture = httpTextures[url];
     if (texture == nullptr) {
@@ -984,7 +986,7 @@ HttpTexture* Textures::addHttpTexture(const std::wstring& url,
     return texture;
 }
 
-void Textures::removeHttpTexture(const std::wstring& url) {
+void Textures::removeHttpTexture(const std::string& url) {
     HttpTexture* texture = httpTextures[url];
     if (texture != nullptr) {
         texture->count--;
@@ -996,14 +998,14 @@ void Textures::removeHttpTexture(const std::wstring& url) {
 }
 
 // 4J-PB - adding for texture in memory (from global title storage)
-int Textures::loadMemTexture(const std::wstring& url,
-                             const std::wstring& backup) {
+int Textures::loadMemTexture(const std::string& url,
+                             const std::string& backup) {
     MemTexture* texture = nullptr;
     auto it = memTextures.find(url);
     if (it != memTextures.end()) {
         texture = (*it).second;
     }
-    if (texture == nullptr && app.IsFileInMemoryTextures(url)) {
+    if (texture == nullptr && gameServices().isFileInMemoryTextures(url)) {
         // If we haven't loaded it yet, but we have the data for it then add it
         texture = addMemTexture(url, new MobSkinMemTextureProcessor());
     }
@@ -1011,15 +1013,15 @@ int Textures::loadMemTexture(const std::wstring& url,
         if (texture->loadedImage != nullptr && !texture->isLoaded) {
             // 4J - Disable mipmapping in general for skins & capes. Have seen
             // problems with edge-on polys for some eg mumbo jumbo
-            if ((url.substr(0, 7) == L"dlcskin") ||
-                (url.substr(0, 7) == L"dlccape")) {
+            if ((url.substr(0, 7) == "dlcskin") ||
+                (url.substr(0, 7) == "dlccape")) {
                 MIPMAP = false;
             }
 
             if (texture->id < 0) {
                 texture->id =
                     getTexture(texture->loadedImage,
-                               C4JRender::TEXTURE_FORMAT_RxGyBzAw, MIPMAP);
+                               IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw, MIPMAP);
             } else {
                 loadTexture(texture->loadedImage, texture->id);
             }
@@ -1034,13 +1036,13 @@ int Textures::loadMemTexture(const std::wstring& url,
     return texture->id;
 }
 
-int Textures::loadMemTexture(const std::wstring& url, int backup) {
+int Textures::loadMemTexture(const std::string& url, int backup) {
     MemTexture* texture = nullptr;
     auto it = memTextures.find(url);
     if (it != memTextures.end()) {
         texture = (*it).second;
     }
-    if (texture == nullptr && app.IsFileInMemoryTextures(url)) {
+    if (texture == nullptr && gameServices().isFileInMemoryTextures(url)) {
         // If we haven't loaded it yet, but we have the data for it then add it
         texture = addMemTexture(url, new MobSkinMemTextureProcessor());
     }
@@ -1049,14 +1051,14 @@ int Textures::loadMemTexture(const std::wstring& url, int backup) {
         if (texture->loadedImage != nullptr && !texture->isLoaded) {
             // 4J - Disable mipmapping in general for skins & capes. Have seen
             // problems with edge-on polys for some eg mumbo jumbo
-            if ((url.substr(0, 7) == L"dlcskin") ||
-                (url.substr(0, 7) == L"dlccape")) {
+            if ((url.substr(0, 7) == "dlcskin") ||
+                (url.substr(0, 7) == "dlccape")) {
                 MIPMAP = false;
             }
             if (texture->id < 0) {
                 texture->id =
                     getTexture(texture->loadedImage,
-                               C4JRender::TEXTURE_FORMAT_RxGyBzAw, MIPMAP);
+                               IPlatformRenderer::TEXTURE_FORMAT_RxGyBzAw, MIPMAP);
             } else {
                 loadTexture(texture->loadedImage, texture->id);
             }
@@ -1070,7 +1072,7 @@ int Textures::loadMemTexture(const std::wstring& url, int backup) {
     return texture->id;
 }
 
-MemTexture* Textures::addMemTexture(const std::wstring& name,
+MemTexture* Textures::addMemTexture(const std::string& name,
                                     MemTextureProcessor* processor) {
     MemTexture* texture = nullptr;
     auto it = memTextures.find(name);
@@ -1081,7 +1083,7 @@ MemTexture* Textures::addMemTexture(const std::wstring& name,
         // can we find it in the app mem files?
         std::uint8_t* pbData = nullptr;
         unsigned int dwBytes = 0;
-        app.GetMemFileDetails(name, &pbData, &dwBytes);
+        gameServices().getMemFileDetails(name, &pbData, &dwBytes);
 
         if (dwBytes != 0) {
             texture = new MemTexture(name, pbData, dwBytes, processor);
@@ -1100,7 +1102,7 @@ MemTexture* Textures::addMemTexture(const std::wstring& name,
     return texture;
 }
 
-// MemTexture *Textures::getMemTexture(const wstring& url, MemTextureProcessor
+// MemTexture *Textures::getMemTexture(const string& url, MemTextureProcessor
 // *processor)
 // {
 // 	MemTexture *texture = memTextures[url];
@@ -1111,7 +1113,7 @@ MemTexture* Textures::addMemTexture(const std::wstring& name,
 // 	return texture;
 // }
 
-void Textures::removeMemTexture(const std::wstring& url) {
+void Textures::removeMemTexture(const std::string& url) {
     MemTexture* texture = nullptr;
     auto it = memTextures.find(url);
     if (it != memTextures.end()) {
@@ -1147,10 +1149,10 @@ void Textures::tick(
         // 4J - added - tell renderer that we're about to do a block of dynamic
         // texture updates, so we can unlock the resources after they are done
         // rather than a series of locks/unlocks
-        // RenderManager.TextureDynamicUpdateStart();
+        // PlatformRenderer.TextureDynamicUpdateStart();
         terrain->cycleAnimationFrames();
         items->cycleAnimationFrames();
-        // RenderManager.TextureDynamicUpdateEnd();	// 4J added - see
+        // PlatformRenderer.TextureDynamicUpdateEnd();	// 4J added - see
         // comment above
     }
 
@@ -1185,9 +1187,9 @@ void Textures::reloadAll() {
 
     pixelsMap.clear();
     // 4J Stu - These are not used any more
-    // WaterColor::init(loadTexturePixels(L"misc/watercolor.png"));
-    // GrassColor::init(loadTexturePixels(L"misc/grasscolor.png"));
-    // FoliageColor::init(loadTexturePixels(L"misc/foliagecolor.png"));
+    // WaterColor::init(loadTexturePixels("misc/watercolor.png"));
+    // GrassColor::init(loadTexturePixels("misc/grasscolor.png"));
+    // FoliageColor::init(loadTexturePixels("misc/foliagecolor.png"));
 
     stitch();
 
@@ -1214,15 +1216,15 @@ Icon* Textures::getMissingIcon(int type) {
 }
 
 BufferedImage* Textures::readImage(
-    TEXTURE_NAME texId, const std::wstring& name)  // 4J was InputStream *in
+    TEXTURE_NAME texId, const std::string& name)  // 4J was InputStream *in
 {
     BufferedImage* img = nullptr;
     // is this image one of the Title Update ones?
     bool isTu = IsTUImage(texId, name);
-    std::wstring drive = L"";
+    std::string drive = "";
 
     if (!skins->isUsingDefaultSkin() &&
-        skins->getSelected()->hasFile(L"res/" + name, false)) {
+        skins->getSelected()->hasFile("res/" + name, false)) {
         drive = skins->getSelected()->getPath(isTu);
         img = skins->getSelected()->getImageResource(
             name, false, isTu,
@@ -1238,8 +1240,8 @@ BufferedImage* Textures::readImage(
                 drive);  // new BufferedImage(name,false,isTu,drive);
         } else {
             img = skins->getDefault()->getImageResource(
-                L"1_2_2/" + name, false, isTu,
-                drive);  // new BufferedImage(L"/1_2_2" +
+                "1_2_2/" + name, false, isTu,
+                drive);  // new BufferedImage("/1_2_2" +
                          // name,false,isTu,drive);
         }
     }
@@ -1301,18 +1303,18 @@ TEXTURE_NAME TUImages[] = {
 };
 
 // This is for any TU textures that aren't part of our enum indexed preload set
-const wchar_t* const TUImagePaths[] = {
-    L"font/Default", L"font/Mojangles_7", L"font/Mojangles_11",
+const char* const TUImagePaths[] = {
+    "font/Default", "font/Mojangles_7", "font/Mojangles_11",
 
     // TU12
-    L"armor/cloth_1.png", L"armor/cloth_1_b.png", L"armor/cloth_2.png",
-    L"armor/cloth_2_b.png",
+    "armor/cloth_1.png", "armor/cloth_1_b.png", "armor/cloth_2.png",
+    "armor/cloth_2_b.png",
 
     //
 
     nullptr};
 
-bool Textures::IsTUImage(TEXTURE_NAME texId, const std::wstring& name) {
+bool Textures::IsTUImage(TEXTURE_NAME texId, const std::string& name) {
     int i = 0;
     if (texId < TN_COUNT) {
         while (TUImages[i] < TN_COUNT) {
@@ -1340,11 +1342,11 @@ TEXTURE_NAME OriginalImages[] = {TN_MOB_CHAR,   TN_MOB_CHAR1, TN_MOB_CHAR2,
 
                                  TN_COUNT};
 
-const wchar_t* const OriginalImagesPaths[] = {L"misc/watercolor.png",
+const char* const OriginalImagesPaths[] = {"misc/watercolor.png",
 
                                               nullptr};
 
-bool Textures::IsOriginalImage(TEXTURE_NAME texId, const std::wstring& name) {
+bool Textures::IsOriginalImage(TEXTURE_NAME texId, const std::string& name) {
     int i = 0;
     if (texId < TN_COUNT) {
         while (OriginalImages[i] < TN_COUNT) {

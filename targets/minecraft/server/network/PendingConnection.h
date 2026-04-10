@@ -31,13 +31,13 @@ public:
 private:
     MinecraftServer* server;
     int _tick;
-    std::wstring name;
+    std::string name;
     std::shared_ptr<LoginPacket> acceptedLogin;
-    std::wstring loginKey;
+    std::string loginKey;
 
 public:
     PendingConnection(MinecraftServer* server, Socket* socket,
-                      const std::wstring& id);
+                      const std::string& id);
     ~PendingConnection();
     void tick();
     void disconnect(DisconnectPacket::eDisconnectReason reason);
@@ -50,7 +50,7 @@ public:
     virtual void handleKeepAlive(std::shared_ptr<KeepAlivePacket> packet);
     virtual void onUnhandledPacket(std::shared_ptr<Packet> packet);
     void send(std::shared_ptr<Packet> packet);
-    std::wstring getName();
+    std::string getName();
     virtual bool isServerPacketListener();
     virtual bool isDisconnected();
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "minecraft/world/entity/ai/attributes/AttributeModifier.h"
 
 class Mob;
@@ -117,7 +117,7 @@ public:
     bool hasIcon();
     EMobEffectIcon getIcon();  // 4J changed return type
     bool isHarmful();
-    static std::wstring formatDuration(MobEffectInstance* instance);
+    static std::string formatDuration(MobEffectInstance* instance);
 
 protected:
     MobEffect* setDurationModifier(double durationModifier);

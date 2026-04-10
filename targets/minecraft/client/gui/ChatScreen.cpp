@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "app/include/stubs.h"
+#include "platform/stubs.h"
 #include "util/StringHelpers.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/Minecraft.h"
@@ -10,7 +10,7 @@
 #include "minecraft/client/gui/Screen.h"
 #include "minecraft/client/multiplayer/MultiPlayerLocalPlayer.h"
 
-const std::wstring ChatScreen::allowedChars =
+const std::string ChatScreen::allowedChars =
     SharedConstants::acceptableLetters;
 
 ChatScreen::ChatScreen() { frame = 0; }
@@ -21,15 +21,15 @@ void ChatScreen::removed() { Keyboard::enableRepeatEvents(false); }
 
 void ChatScreen::tick() { frame++; }
 
-void ChatScreen::keyPressed(wchar_t ch, int eventKey) {
+void ChatScreen::keyPressed(char ch, int eventKey) {
     if (eventKey == Keyboard::KEY_ESCAPE) {
         minecraft->setScreen(nullptr);
         return;
     }
     if (eventKey == Keyboard::KEY_RETURN) {
-        std::wstring msg = trimString(message);
+        std::string msg = trimString(message);
         if (msg.length() > 0) {
-            std::wstring trim = trimString(message);
+            std::string trim = trimString(message);
             if (!minecraft->handleClientSideCommand(trim)) {
                 minecraft->player->chat(trim);
             }
@@ -47,7 +47,7 @@ void ChatScreen::keyPressed(wchar_t ch, int eventKey) {
 
 void ChatScreen::render(int xm, int ym, float a) {
     fill(2, height - 14, width - 2, height - 2, 0x80000000);
-    drawString(font, L"> " + message + (frame / 6 % 2 == 0 ? L"_" : L""), 4,
+    drawString(font, "> " + message + (frame / 6 % 2 == 0 ? "_" : ""), 4,
                height - 12, 0xe0e0e0);
 
     Screen::render(xm, ym, a);
@@ -55,10 +55,10 @@ void ChatScreen::render(int xm, int ym, float a) {
 
 void ChatScreen::mouseClicked(int x, int y, int buttonNum) {
     if (buttonNum == 0) {
-        if (minecraft->gui->selectedName != L"")  // 4J - was nullptr comparison
+        if (minecraft->gui->selectedName != "")  // 4J - was nullptr comparison
         {
-            if (message.length() > 0 && message[message.length() - 1] != L' ') {
-                message += L" ";
+            if (message.length() > 0 && message[message.length() - 1] != ' ') {
+                message += " ";
             }
             message += minecraft->gui->selectedName;
             unsigned int maxLength = SharedConstants::maxChatLength;

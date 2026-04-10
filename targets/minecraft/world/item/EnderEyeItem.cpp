@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "EnderEyeItem.h"
 
 #include <memory>
@@ -165,7 +166,7 @@ bool EnderEyeItem::TestUse(std::shared_ptr<ItemInstance> itemInstance,
             // 				level->getLevelData()->setZStronghold(z);
             // 				level->getLevelData()->setHasStronghold();
             //
-            // 				app.DebugPrintf("=== FOUND stronghold in
+            // 				Log::info("=== FOUND stronghold in
             // terrain features list\n");
             //
             // 				app.SetXuiServerAction(PlatformInput.GetPrimaryPad(),eXuiServerAction_StrongholdPosition);
@@ -174,7 +175,7 @@ bool EnderEyeItem::TestUse(std::shared_ptr<ItemInstance> itemInstance,
             {
                 // can't find the stronghold position in the terrain feature
                 // list. Do we have to run a post-process?
-                app.DebugPrintf(
+                Log::info(
                     "=== Can't find stronghold in terrain features list\n");
             }
         }

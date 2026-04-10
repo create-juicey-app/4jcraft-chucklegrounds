@@ -19,7 +19,7 @@ WindowsGame app;
 WindowsGame::WindowsGame() : Game() {}
 
 void WindowsGame::SetRichPresenceContext(int iPad, int contextId) {
-    ProfileManager.SetRichPresenceContextValue(iPad, CONTEXT_GAME_STATE,
+    PlatformProfile.SetRichPresenceContextValue(iPad, CONTEXT_GAME_STATE,
                                                contextId);
 }
 
@@ -45,8 +45,8 @@ void WindowsGame::TemporaryCreateGameStart() {
     // From CScene_Main::RunPlayGame
     Minecraft* pMinecraft = Minecraft::GetInstance();
     app.ReleaseSaveThumbnail();
-    ProfileManager.SetLockedProfile(0);
-    pMinecraft->user->name = L"Windows";
+    PlatformProfile.SetLockedProfile(0);
+    pMinecraft->user->name = "Windows";
     app.ApplyGameSettingsChanged(0);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,10 +61,10 @@ void WindowsGame::TemporaryCreateGameStart() {
     /// From CScene_MultiGameCreate::CreateGame
 
     app.ClearTerrainFeaturePosition();
-    std::wstring wWorldName = L"TestWorld";
+    std::string wWorldName = "TestWorld";
 
-    StorageManager.ResetSaveData();
-    StorageManager.SetSaveTitle(wWorldName.c_str());
+    PlatformStorage.ResetSaveData();
+    PlatformStorage.SetSaveTitle(wWorldName.c_str());
 
     bool isFlat = false;
     int64_t seedValue =
@@ -112,15 +112,15 @@ void WindowsGame::TemporaryCreateGameStart() {
     thread->run();
 }
 
-int WindowsGame::GetLocalTMSFileIndex(wchar_t* wchTMSFile,
+int WindowsGame::GetLocalTMSFileIndex(char* wchTMSFile,
                                                bool bFilenameIncludesExtension,
                                                eFileExtensionType eEXT) {
     return -1;
 }
 
-int WindowsGame::LoadLocalTMSFile(wchar_t* wchTMSFile) { return -1; }
+int WindowsGame::LoadLocalTMSFile(char* wchTMSFile) { return -1; }
 
-int WindowsGame::LoadLocalTMSFile(wchar_t* wchTMSFile,
+int WindowsGame::LoadLocalTMSFile(char* wchTMSFile,
                                            eFileExtensionType eExt) {
     return -1;
 }

@@ -1,12 +1,12 @@
 #include "BeaconScreen.h"
 
-#include <GL/gl.h>
+
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "BeaconCancelButton.h"
 #include "BeaconConfirmButton.h"
 #include "BeaconPowerButton.h"
@@ -154,12 +154,12 @@ void BeaconScreen::tick() {
 void BeaconScreen::removed() { AbstractContainerScreen::removed(); }
 
 void BeaconScreen::renderLabels() {
-    std::wstring primaryLabel =
-        Language::getInstance()->getElement(L"tile.beacon.primary");
+    std::string primaryLabel =
+        Language::getInstance()->getElement("tile.beacon.primary");
     font->drawShadow(primaryLabel, 25, 10, 0xE1E1E1);
 
-    std::wstring secondaryLabel =
-        Language::getInstance()->getElement(L"tile.beacon.secondary");
+    std::string secondaryLabel =
+        Language::getInstance()->getElement("tile.beacon.secondary");
     font->drawShadow(secondaryLabel, 125, 10, 0xE1E1E1);
 }
 

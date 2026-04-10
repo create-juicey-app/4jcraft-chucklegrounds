@@ -63,7 +63,7 @@ int Node::hashCode() { return hash; }
 
 bool Node::inOpenSet() { return heapIdx >= 0; }
 
-std::wstring Node::toString() {
-    return toWString<int>(x) + L", " + toWString<int>(y) + L", " +
+std::string Node::toString() {
+    return toWString<int>(x) + ", " + toWString<int>(y) + ", " +
            toWString<int>(z);
 }

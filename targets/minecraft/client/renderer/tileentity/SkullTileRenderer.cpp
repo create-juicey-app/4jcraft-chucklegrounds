@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 
 #include "minecraft/Facing.h"
 #include "minecraft/client/model/SkeletonHeadModel.h"
@@ -55,7 +55,7 @@ void SkullTileRenderer::init(
 
 void SkullTileRenderer::renderSkull(float x, float y, float z, int face,
                                     float rot, int type,
-                                    const std::wstring& extra) {
+                                    const std::string& extra) {
     Model* model = skeletonModel;
 
     switch (type) {
@@ -69,7 +69,7 @@ void SkullTileRenderer::renderSkull(float x, float y, float z, int face,
         case SkullTileEntity::TYPE_CHAR:
             // if (!extra.empty())
             //{
-            //	wstring url = "http://skins.minecraft.net/MinecraftSkins/" +
+            //	string url = "http://skins.minecraft.net/MinecraftSkins/" +
             // StringUtil.stripColor(extra) + ".png";
 
             //	if

@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 
 #include "minecraft/world/level/biome/BiomeDecorator.h"
 
@@ -34,9 +35,9 @@ BiomeDecorator::BiomeDecorator(Biome* biome) {
 
 void BiomeDecorator::decorate(Level* level, Random* random, int xo, int zo) {
     if (this->level != nullptr) {
-        app.DebugPrintf("BiomeDecorator::decorate - Already decorating!!\n");
+        Log::info("BiomeDecorator::decorate - Already decorating!!\n");
 #ifndef _CONTENT_PACKAGE
-        __debugbreak();
+        assert(0);
         // throw new RuntimeException("Already decorating!!");
 #endif
     }

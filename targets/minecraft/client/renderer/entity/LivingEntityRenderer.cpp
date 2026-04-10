@@ -1,12 +1,13 @@
+#include "minecraft/IGameServices.h"
 #include "LivingEntityRenderer.h"
 
 #include <cmath>
 #include <numbers>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "EntityRenderDispatcher.h"
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 
 #include "java/Class.h"
@@ -282,8 +283,8 @@ void LivingEntityRenderer::setupRotations(std::shared_ptr<LivingEntity> mob,
         if (fall > 1) fall = 1;
         glRotatef(fall * getFlipDegrees(mob), 0, 0, 1);
     } else {
-        std::wstring name = mob->getAName();
-        if (name == L"Dinnerbone" || name == L"Grumm") {
+        std::string name = mob->getAName();
+        if (name == "Dinnerbone" || name == "Grumm") {
             if (!mob->instanceof(eTYPE_PLAYER) ||
                 !std::dynamic_pointer_cast<Player>(mob)->isCapeHidden()) {
                 glTranslatef(0, mob->bbHeight + 0.1f, 0);
@@ -384,16 +385,16 @@ void LivingEntityRenderer::renderName(std::shared_ptr<LivingEntity> mob,
         float maxDist = mob->isSneaking() ? 32 : 64;
 
         if (dist < maxDist * maxDist) {
-            std::wstring msg = mob->getDisplayName();
+            std::string msg = mob->getDisplayName();
 
             if (!msg.empty()) {
                 if (mob->isSneaking()) {
-                    if (app.GetGameSettings(eGameSetting_DisplayHUD) == 0) {
+                    if (gameServices().getGameSettings(eGameSetting_DisplayHUD) == 0) {
                         // 4J-PB - turn off gamertag render
                         return;
                     }
 
-                    if (app.GetGameHostOption(eGameHostOption_Gamertags) == 0) {
+                    if (gameServices().getGameHostOption(eGameHostOption_Gamertags) == 0) {
                         // turn off gamertags if the host has set them off
                         return;
                     }
@@ -449,7 +450,7 @@ bool LivingEntityRenderer::shouldShowName(std::shared_ptr<LivingEntity> mob) {
 
 void LivingEntityRenderer::renderNameTags(std::shared_ptr<LivingEntity> mob,
                                           double x, double y, double z,
-                                          const std::wstring& msg, float scale,
+                                          const std::string& msg, float scale,
                                           double dist) {
     if (mob->isSleeping()) {
         renderNameTag(mob, msg, x, y - 1.5f, z, 64);
@@ -460,15 +461,15 @@ void LivingEntityRenderer::renderNameTags(std::shared_ptr<LivingEntity> mob,
 
 // 4J Added parameter for color here so that we can colour players names
 void LivingEntityRenderer::renderNameTag(std::shared_ptr<LivingEntity> mob,
-                                         const std::wstring& name, double x,
+                                         const std::string& name, double x,
                                          double y, double z, int maxDist,
                                          int color /*= 0xff000000*/) {
-    if (app.GetGameSettings(eGameSetting_DisplayHUD) == 0) {
+    if (gameServices().getGameSettings(eGameSetting_DisplayHUD) == 0) {
         // 4J-PB - turn off gamertag render
         return;
     }
 
-    if (app.GetGameHostOption(eGameHostOption_Gamertags) == 0) {
+    if (gameServices().getGameHostOption(eGameHostOption_Gamertags) == 0) {
         // turn off gamertags if the host has set them off
         return;
     }
@@ -497,9 +498,9 @@ void LivingEntityRenderer::renderNameTag(std::shared_ptr<LivingEntity> mob,
     // 4J Stu - If it's beyond readable distance, then just render a coloured
     // box
     int readableDist = PLAYER_NAME_READABLE_FULLSCREEN;
-    if (!RenderManager.IsHiDef()) {
+    if (!PlatformRenderer.IsHiDef()) {
         readableDist = PLAYER_NAME_READABLE_DISTANCE_SD;
-    } else if (app.GetLocalPlayerCount() > 2) {
+    } else if (gameServices().getLocalPlayerCount() > 2) {
         readableDist = PLAYER_NAME_READABLE_DISTANCE_SPLITSCREEN;
     }
 
@@ -521,13 +522,13 @@ void LivingEntityRenderer::renderNameTag(std::shared_ptr<LivingEntity> mob,
 
     int offs = 0;
 
-    std::wstring playerName;
-    wchar_t wchName[2];
+    std::string playerName;
+    char wchName[2];
 
     if (mob->instanceof(eTYPE_PLAYER)) {
         std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(mob);
 
-        if (app.isXuidDeadmau5(player->getXuid())) offs = -10;
+        if (gameServices().isXuidDeadmau5(player->getXuid())) offs = -10;
 
         playerName = name;
     } else {

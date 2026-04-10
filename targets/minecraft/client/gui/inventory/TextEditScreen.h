@@ -8,7 +8,7 @@ class SignTileEntity;
 
 class TextEditScreen : public Screen {
 protected:
-    std::wstring title;
+    std::string title;
 
 private:
     std::shared_ptr<SignTileEntity> sign;
@@ -25,10 +25,10 @@ protected:
     virtual void buttonClicked(Button* button) override;
 
 private:
-    static const std::wstring allowedChars;
+    static const std::string allowedChars;
 
 protected:
-    virtual void keyPressed(wchar_t ch, int eventKey) override;
+    virtual void keyPressed(char ch, int eventKey) override;
 
 public:
     virtual void render(int xm, int ym, float a) override;

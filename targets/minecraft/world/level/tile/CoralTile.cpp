@@ -6,7 +6,7 @@
 #include "minecraft/world/level/tile/HalfTransparentTile.h"
 
 CoralTile::CoralTile(int id)
-    : HalfTransparentTile(id, L"coral", Material::coral, true) {
+    : HalfTransparentTile(id, "coral", Material::coral, true) {
     float r = 1 / 16.0f;
     setShape(0 - r, 0 - r, 0 - r, 1 + r, 1 + r, 1 + r);
 }

@@ -37,9 +37,9 @@ class Pos;
 typedef struct _LoadSaveDataThreadParam {
     void* data;
     int64_t fileSize;
-    const std::wstring saveName;
+    const std::string saveName;
     _LoadSaveDataThreadParam(void* data, int64_t filesize,
-                             const std::wstring& saveName)
+                             const std::string& saveName)
         : data(data), fileSize(filesize), saveName(saveName) {}
 } LoadSaveDataThreadParam;
 
@@ -72,18 +72,18 @@ typedef struct _NetworkGameInitData {
 // implementing here
 class MinecraftServer : public ConsoleInputSource {
 public:
-    static const std::wstring VERSION;
+    static const std::string VERSION;
     static const int TICK_STATS_SPAN = SharedConstants::TICKS_PER_SECOND * 5;
 
     //    static Logger logger = Logger.getLogger("Minecraft");
-    static std::unordered_map<std::wstring, int> ironTimers;
+    static std::unordered_map<std::string, int> ironTimers;
 
 private:
     static const int DEFAULT_MINECRAFT_PORT = 25565;
     static const int MS_PER_TICK = 1000 / SharedConstants::TICKS_PER_SECOND;
 
     // 4J Stu - Added 1.0.1, Not needed
-    // std::wstring localIp;
+    // std::string localIp;
     // int port;
 public:
     ServerConnection* connection;
@@ -106,7 +106,7 @@ public:
     int tickCount;
 
 public:
-    std::wstring progressStatus;
+    std::string progressStatus;
     int progress;
 
 private:
@@ -121,7 +121,7 @@ public:
     bool npcs;
     bool pvp;
     bool allowFlight;
-    std::wstring motd;
+    std::string motd;
     int maxBuildHeight;
     int playerIdleTimeout;
     bool forceGameType;
@@ -149,10 +149,10 @@ private:
     bool initServer(int64_t seed, NetworkGameInitData* initData,
                     std::uint32_t initSettings, bool findSeed);
     void postProcessTerminate(ProgressRenderer* mcprogress);
-    bool loadLevel(LevelStorageSource* storageSource, const std::wstring& name,
+    bool loadLevel(LevelStorageSource* storageSource, const std::string& name,
                    int64_t levelSeed, LevelType* pLevelType,
                    NetworkGameInitData* initData);
-    void setProgress(const std::wstring& status, int progress);
+    void setProgress(const std::string& status, int progress);
     void endProgress();
     void saveAllChunks();
     void saveGameRules();
@@ -204,17 +204,17 @@ private:
     void tick();
 
 public:
-    void handleConsoleInput(const std::wstring& msg,
+    void handleConsoleInput(const std::string& msg,
                             ConsoleInputSource* source);
     void handleConsoleInputs();
     //    void addTickable(Tickable tickable);	// 4J removed
     static void main(int64_t seed, void* lpParameter);
     static void HaltServer(bool bPrimaryPlayerSignedOut = false);
 
-    File* getFile(const std::wstring& name);
-    void info(const std::wstring& string);
-    void warn(const std::wstring& string);
-    std::wstring getConsoleName();
+    File* getFile(const std::string& name);
+    void info(const std::string& string);
+    void warn(const std::string& string);
+    std::string getConsoleName();
     ServerLevel* getLevel(int dimension);
     void setLevel(int dimension, ServerLevel* level);         // 4J added
     static MinecraftServer* getInstance() { return server; }  // 4J added
@@ -239,7 +239,7 @@ private:
         m_bPrimaryPlayerSignedOut;  // 4J-PB added to tell the stopserver not to
                                     // save the game - another player may have
                                     // signed in in their place, so
-                                    // ProfileManager.IsSignedIn isn't enough
+                                    // PlatformProfile.IsSignedIn isn't enough
     static bool s_bServerHalted;  // 4J Stu Added so that we can halt the server
                                   // even before it's been created properly
     static bool s_bSaveOnExitAnswered;  // 4J Stu Added so that we only ask this

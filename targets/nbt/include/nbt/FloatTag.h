@@ -5,8 +5,8 @@
 class FloatTag : public Tag {
 public:
     float data;
-    FloatTag(const std::wstring& name) : Tag(name) {}
-    FloatTag(const std::wstring& name, float data) : Tag(name) {
+    FloatTag(const std::string& name) : Tag(name) {}
+    FloatTag(const std::string& name, float data) : Tag(name) {
         this->data = data;
     }
 
@@ -14,10 +14,10 @@ public:
     void load(DataInput* dis, int tagDepth) { data = dis->readFloat(); }
 
     uint8_t getId() { return TAG_Float; }
-    std::wstring toString() {
-        static wchar_t buf[32];
-        swprintf(buf, 32, L"%f", data);
-        return std::wstring(buf);
+    std::string toString() {
+        static char buf[32];
+        snprintf(buf, 32, "%f", data);
+        return std::string(buf);
     }
 
     Tag* copy() { return new FloatTag(getName(), data); }

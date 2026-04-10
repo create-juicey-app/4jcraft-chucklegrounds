@@ -44,11 +44,11 @@ void LargeFireball::onHit(HitResult* res) {
 
 void LargeFireball::addAdditonalSaveData(CompoundTag* tag) {
     Fireball::addAdditonalSaveData(tag);
-    tag->putInt(L"ExplosionPower", explosionPower);
+    tag->putInt("ExplosionPower", explosionPower);
 }
 
 void LargeFireball::readAdditionalSaveData(CompoundTag* tag) {
     Fireball::readAdditionalSaveData(tag);
-    if (tag->contains(L"ExplosionPower"))
-        explosionPower = tag->getInt(L"ExplosionPower");
+    if (tag->contains("ExplosionPower"))
+        explosionPower = tag->getInt("ExplosionPower");
 }

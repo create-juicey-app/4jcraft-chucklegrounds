@@ -5,7 +5,7 @@
 #include "java/InputOutputStream/DataOutputStream.h"
 
 void ContainerOpenPacket::_init(int containerId, int type,
-                                const std::wstring& title, int size,
+                                const std::string& title, int size,
                                 bool customName, int entityId) {
     this->containerId = containerId;
     this->type = type;
@@ -15,16 +15,16 @@ void ContainerOpenPacket::_init(int containerId, int type,
     this->entityId = entityId;
 }
 
-ContainerOpenPacket::ContainerOpenPacket() { _init(0, 0, L"", 0, false, 0); }
+ContainerOpenPacket::ContainerOpenPacket() { _init(0, 0, "", 0, false, 0); }
 
 ContainerOpenPacket::ContainerOpenPacket(int containerId, int type,
-                                         const std::wstring& title, int size,
+                                         const std::string& title, int size,
                                          bool customName) {
     _init(containerId, type, title, size, customName, 0);
 }
 
 ContainerOpenPacket::ContainerOpenPacket(int containerId, int type,
-                                         const std::wstring& title, int size,
+                                         const std::string& title, int size,
                                          bool customName, int entityId) {
     _init(containerId, type, title, size, customName, entityId);
 }

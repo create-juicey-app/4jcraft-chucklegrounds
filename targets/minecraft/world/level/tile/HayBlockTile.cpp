@@ -13,6 +13,6 @@ int HayBlockTile::getRenderShape() { return SHAPE_TREE; }
 Icon* HayBlockTile::getTypeTexture(int type) { return icon; }
 
 void HayBlockTile::registerIcons(IconRegister* iconRegister) {
-    iconTop = iconRegister->registerIcon(getIconName() + L"_top");
-    icon = iconRegister->registerIcon(getIconName() + L"_side");
+    iconTop = iconRegister->registerIcon(getIconName() + "_top");
+    icon = iconRegister->registerIcon(getIconName() + "_side");
 }

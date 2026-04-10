@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 
 class IPlatformGame {
 public:
@@ -20,11 +20,11 @@ public:
     virtual void ReadBannedList(int iPad, eTMSAction action = (eTMSAction)0,
                                 bool bCallback = false) = 0;
 
-    virtual int LoadLocalTMSFile(wchar_t* wchTMSFile) = 0;
-    virtual int LoadLocalTMSFile(wchar_t* wchTMSFile,
+    virtual int LoadLocalTMSFile(char* wchTMSFile) = 0;
+    virtual int LoadLocalTMSFile(char* wchTMSFile,
                                  eFileExtensionType eExt) = 0;
     virtual void FreeLocalTMSFiles(eTMSFileType eType) = 0;
-    virtual int GetLocalTMSFileIndex(wchar_t* wchTMSFile,
+    virtual int GetLocalTMSFileIndex(char* wchTMSFile,
                                      bool bFilenameIncludesExtension,
                                      eFileExtensionType eEXT) = 0;
 };

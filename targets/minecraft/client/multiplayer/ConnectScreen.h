@@ -12,7 +12,7 @@ private:
     bool aborted;
 
 public:
-    ConnectScreen(Minecraft* minecraft, const std::wstring& ip, int port);
+    ConnectScreen(Minecraft* minecraft, const std::string& ip, int port);
     virtual void tick() override;
 
 protected:

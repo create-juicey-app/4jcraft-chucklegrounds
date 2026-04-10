@@ -128,7 +128,7 @@
 
           installPhase = ''
             mkdir -p $out/share/4jcraft
-            cp -r Minecraft.Client/. $out/share/4jcraft/
+            cp -r targets/app/. $out/share/4jcraft/
 
             mkdir -p $out/bin
             makeWrapper $out/share/4jcraft/Minecraft.Client $out/bin/4jcraft \

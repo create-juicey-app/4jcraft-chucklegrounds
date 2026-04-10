@@ -13,7 +13,7 @@ Icon* StainedGlassPaneBlock::ICONS[StainedGlassPaneBlock::ICONS_COUNT];
 Icon* StainedGlassPaneBlock::EDGE_ICONS[StainedGlassPaneBlock::ICONS_COUNT];
 
 StainedGlassPaneBlock::StainedGlassPaneBlock(int id)
-    : ThinFenceTile(id, L"glass", L"glass_pane_top", Material::glass, false) {}
+    : ThinFenceTile(id, "glass", "glass_pane_top", Material::glass, false) {}
 
 Icon* StainedGlassPaneBlock::getIconTexture(int face, int data) {
     return ICONS[data % ICONS_COUNT];
@@ -39,10 +39,10 @@ void StainedGlassPaneBlock::registerIcons(IconRegister* iconRegister) {
     ThinFenceTile::registerIcons(iconRegister);
     for (int i = 0; i < ICONS_COUNT; i++) {
         ICONS[i] = iconRegister->registerIcon(
-            getIconName() + L"_" +
+            getIconName() + "_" +
             DyePowderItem::COLOR_TEXTURES[getItemAuxValueForBlockData(i)]);
         EDGE_ICONS[i] = iconRegister->registerIcon(
-            getIconName() + L"_pane_top_" +
+            getIconName() + "_pane_top_" +
             DyePowderItem::COLOR_TEXTURES[getItemAuxValueForBlockData(i)]);
     }
 }

@@ -97,19 +97,19 @@ public:
 private:
     // 4J Stu - Was const but had to change it so that we can initialise it in
     // TileStaticInit
-    static std::wstring TILE_DESCRIPTION_PREFIX;
+    static std::string TILE_DESCRIPTION_PREFIX;
 
 protected:
     static const float INDESTRUCTIBLE_DESTROY_TIME;
 
-    std::wstring iconName;
+    std::string iconName;
 
 public:
     class SoundType {
     public:
-        //         std::wstring name;
-        // 		std::wstring breakSound;
-        // 		std::wstring stepSound;
+        //         std::string name;
+        // 		std::string breakSound;
+        // 		std::string stepSound;
         eMATERIALSOUND_TYPE eMaterialSound;
         int iBreakSound, iStepSound, iPlaceSound;
         float volume;
@@ -120,8 +120,8 @@ public:
 
         float getVolume() const;
         float getPitch() const;
-        // std::wstring getBreakSound() const { return breakSound; }
-        // std::wstring getStepSound()	const { return stepSound; }
+        // std::string getBreakSound() const { return breakSound; }
+        // std::string getStepSound()	const { return stepSound; }
         int getBreakSound() const;
         int getStepSound() const;
         int getPlaceSound() const;
@@ -745,7 +745,7 @@ public:
                              std::shared_ptr<ItemInstance> itemInstance);
     virtual void finalizePlacement(Level* level, int x, int y, int z, int data);
     virtual Tile* setDescriptionId(unsigned int id);
-    virtual std::wstring getName();
+    virtual std::string getName();
     virtual unsigned int getDescriptionId(int iData = -1);
     virtual Tile* setUseDescriptionId(unsigned int id);  // 4J Added
     virtual unsigned int getUseDescriptionId();          // 4J Added
@@ -786,12 +786,12 @@ public:
                                       int dir);
 
 protected:
-    virtual Tile* setIconName(const std::wstring& iconName);
-    virtual std::wstring getIconName();
+    virtual Tile* setIconName(const std::string& iconName);
+    virtual std::string getIconName();
 
 public:
     virtual void registerIcons(IconRegister* iconRegister);
-    virtual std::wstring getTileItemIconName();
+    virtual std::string getTileItemIconName();
 
     // AP - added this function so we can generate the faceFlags for a block in
     // a single fast function

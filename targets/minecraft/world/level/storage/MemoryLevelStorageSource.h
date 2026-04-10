@@ -5,17 +5,17 @@
 class MemoryLevelStorageSource : public LevelStorageSource {
 public:
     MemoryLevelStorageSource();
-    std::wstring getName();
-    std::shared_ptr<LevelStorage> selectLevel(const std::wstring& levelId,
+    std::string getName();
+    std::shared_ptr<LevelStorage> selectLevel(const std::string& levelId,
                                               bool createPlayerDir);
     std::vector<LevelSummary*>* getLevelList();
     void clearAll();
-    LevelData* getDataTagFor(const std::wstring& levelId);
-    bool isNewLevelIdAcceptable(const std::wstring& levelId);
-    void deleteLevel(const std::wstring& levelId);
-    void renameLevel(const std::wstring& levelId,
-                     const std::wstring& newLevelName);
-    bool isConvertible(const std::wstring& levelId);
-    bool requiresConversion(const std::wstring& levelId);
-    bool convertLevel(const std::wstring& levelId, ProgressListener* progress);
+    LevelData* getDataTagFor(const std::string& levelId);
+    bool isNewLevelIdAcceptable(const std::string& levelId);
+    void deleteLevel(const std::string& levelId);
+    void renameLevel(const std::string& levelId,
+                     const std::string& newLevelName);
+    bool isConvertible(const std::string& levelId);
+    bool requiresConversion(const std::string& levelId);
+    bool convertLevel(const std::string& levelId, ProgressListener* progress);
 };

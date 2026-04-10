@@ -14,8 +14,8 @@
 McRegionLevelStorageSource::McRegionLevelStorageSource(File dir)
     : DirectoryLevelStorageSource(dir) {}
 
-std::wstring McRegionLevelStorageSource::getName() {
-    return L"Scaevolus' McRegion";
+std::string McRegionLevelStorageSource::getName() {
+    return "Scaevolus' McRegion";
 }
 
 std::vector<LevelSummary*>* McRegionLevelStorageSource::getLevelList() {
@@ -27,7 +27,7 @@ std::vector<LevelSummary*>* McRegionLevelStorageSource::getLevelList() {
 void McRegionLevelStorageSource::clearAll() {}
 
 std::shared_ptr<LevelStorage> McRegionLevelStorageSource::selectLevel(
-    ConsoleSaveFile* saveFile, const std::wstring& levelId,
+    ConsoleSaveFile* saveFile, const std::string& levelId,
     bool createPlayerDir) {
     //        return new LevelStorageProfilerDecorator(new
     //        McRegionLevelStorage(baseDir, levelId, createPlayerDir));
@@ -36,7 +36,7 @@ std::shared_ptr<LevelStorage> McRegionLevelStorageSource::selectLevel(
 }
 
 bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile* saveFile,
-                                               const std::wstring& levelId) {
+                                               const std::string& levelId) {
     // check if there is old file format level data
     LevelData* levelData = getDataTagFor(saveFile, levelId);
     if (levelData == nullptr || levelData->getVersion() != 0) {
@@ -49,7 +49,7 @@ bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile* saveFile,
 }
 
 bool McRegionLevelStorageSource::requiresConversion(
-    ConsoleSaveFile* saveFile, const std::wstring& levelId) {
+    ConsoleSaveFile* saveFile, const std::string& levelId) {
     LevelData* levelData = getDataTagFor(saveFile, levelId);
     if (levelData == nullptr || levelData->getVersion() != 0) {
         delete levelData;
@@ -61,7 +61,7 @@ bool McRegionLevelStorageSource::requiresConversion(
 }
 
 bool McRegionLevelStorageSource::convertLevel(ConsoleSaveFile* saveFile,
-                                              const std::wstring& levelId,
+                                              const std::string& levelId,
                                               ProgressListener* progress) {
     assert(false);
     // I removed this while updating the saves to use the single save file

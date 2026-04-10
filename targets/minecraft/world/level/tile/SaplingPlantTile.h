@@ -25,7 +25,7 @@ public:
     static int SAPLING_NAMES[SAPLING_NAMES_SIZE];
 
 private:
-    static const std::wstring TEXTURE_NAMES[];
+    static const std::string TEXTURE_NAMES[];
 
     Icon** icons;
 

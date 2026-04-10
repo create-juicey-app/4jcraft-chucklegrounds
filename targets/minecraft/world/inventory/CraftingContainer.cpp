@@ -34,9 +34,9 @@ std::shared_ptr<ItemInstance> CraftingContainer::getItem(unsigned int x,
     return getItem(pos);
 }
 
-std::wstring CraftingContainer::getName() { return L""; }
+std::string CraftingContainer::getName() { return ""; }
 
-std::wstring CraftingContainer::getCustomName() { return L""; }
+std::string CraftingContainer::getCustomName() { return ""; }
 
 bool CraftingContainer::hasCustomName() { return false; }
 

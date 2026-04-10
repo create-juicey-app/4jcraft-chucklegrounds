@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 
 #include "minecraft/world/level/levelgen/structure/MineShaftFeature.h"
 
@@ -8,21 +9,21 @@
 #include <unordered_map>
 #include <utility>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Random.h"
 #include "minecraft/util/Mth.h"
 #include "minecraft/world/level/levelgen/structure/MineShaftStart.h"
 
-const std::wstring MineShaftFeature::OPTION_CHANCE = L"chance";
+const std::string MineShaftFeature::OPTION_CHANCE = "chance";
 
 MineShaftFeature::MineShaftFeature() { chance = 0.01; }
 
-std::wstring MineShaftFeature::getFeatureName() { return L"Mineshaft"; }
+std::string MineShaftFeature::getFeatureName() { return "Mineshaft"; }
 
 MineShaftFeature::MineShaftFeature(
-    std::unordered_map<std::wstring, std::wstring> options) {
+    std::unordered_map<std::string, std::string> options) {
     chance = 0.01;
 
     for (auto it = options.begin(); it != options.end(); ++it) {
@@ -34,7 +35,7 @@ MineShaftFeature::MineShaftFeature(
 
 bool MineShaftFeature::isFeatureChunk(int x, int z, bool bIsSuperflat) {
     bool forcePlacement = false;
-    LevelGenerationOptions* levelGenOptions = app.getLevelGenerationOptions();
+    LevelGenerationOptions* levelGenOptions = gameServices().getLevelGenerationOptions();
     if (levelGenOptions != nullptr) {
         forcePlacement =
             levelGenOptions->isFeatureChunk(x, z, eFeature_Mineshaft);
@@ -46,7 +47,7 @@ bool MineShaftFeature::isFeatureChunk(int x, int z, bool bIsSuperflat) {
 
 StructureStart* MineShaftFeature::createStructureStart(int x, int z) {
     // 4J added
-    app.AddTerrainFeaturePosition(eTerrainFeature_Mineshaft, x, z);
+    gameServices().addTerrainFeaturePosition(eTerrainFeature_Mineshaft, x, z);
 
     return new MineShaftStart(level, random, x, z);
 }

@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "TextureMap.h"
 
 #include <wchar.h>
@@ -7,7 +8,7 @@
 
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/BufferedImage.h"
+#include "minecraft/client/BufferedImage.h"
 #include "StitchSlot.h"
 #include "StitchedTexture.h"
 #include "Stitcher.h"
@@ -26,12 +27,12 @@
 #include "minecraft/world/item/Item.h"
 #include "minecraft/world/level/tile/Tile.h"
 
-const std::wstring TextureMap::NAME_MISSING_TEXTURE = L"missingno";
+const std::string TextureMap::NAME_MISSING_TEXTURE = "missingno";
 
-TextureMap::TextureMap(int type, const std::wstring& name,
-                       const std::wstring& path, BufferedImage* missingTexture,
+TextureMap::TextureMap(int type, const std::string& name,
+                       const std::string& path, BufferedImage* missingTexture,
                        bool mipmap)
-    : iconType(type), name(name), path(path), extension(L".png") {
+    : iconType(type), name(name), path(path), extension(".png") {
     this->missingTexture = missingTexture;
 
     // 4J Initialisers
@@ -95,9 +96,9 @@ void TextureMap::stitch() {
     // for (final String name : texturesToRegister.keySet())
     for (auto it = texturesToRegister.begin(); it != texturesToRegister.end();
          ++it) {
-        std::wstring name = it->first;
+        std::string name = it->first;
 
-        std::wstring filename = path + name + extension;
+        std::string filename = path + name + extension;
 
         // TODO: [EB] Put the frames into a proper object, not this inside out
         // hack
@@ -137,7 +138,7 @@ void TextureMap::stitch() {
         TextureHolder* textureHolder = slot->getHolder();
 
         Texture* texture = textureHolder->getTexture();
-        std::wstring textureName = texture->getName();
+        std::string textureName = texture->getName();
 
         std::vector<Texture*>* frames = textures.find(textureHolder)->second;
 
@@ -157,7 +158,7 @@ void TextureMap::stitch() {
                 // Minecraft::getInstance()->getLogger().warning("Couldn't find
                 // premade icon for " + textureName + " doing " + name);
 #ifndef _CONTENT_PACKAGE
-                wprintf(L"Couldn't find premade icon for %ls doing %ls\n",
+                printf("Couldn't find premade icon for %s doing %s\n",
                         textureName.c_str(), name.c_str());
 #endif
             }
@@ -175,20 +176,20 @@ void TextureMap::stitch() {
         if (frames->size() > 1) {
             animatedTextures.push_back(stored);
 
-            std::wstring animationDefinitionFile = textureName + L".txt";
+            std::string animationDefinitionFile = textureName + ".txt";
 
             TexturePack* texturePack =
                 Minecraft::GetInstance()->skins->getSelected();
             bool requiresFallback =
-                !texturePack->hasFile(L"\\" + textureName + L".png", false);
+                !texturePack->hasFile("\\" + textureName + ".png", false);
             // try {
             InputStream* fileStream = texturePack->getResource(
-                L"\\" + path + animationDefinitionFile, requiresFallback);
+                "\\" + path + animationDefinitionFile, requiresFallback);
 
             // Minecraft::getInstance()->getLogger().info("Found animation info
             // for: " + animationDefinitionFile);
 #ifndef _CONTENT_PACKAGE
-            wprintf(L"Found animation info for: %ls\n",
+            printf("Found animation info for: %s\n",
                     animationDefinitionFile.c_str());
 #endif
             InputStreamReader isr(fileStream);
@@ -210,11 +211,11 @@ void TextureMap::stitch() {
         texture->replaceWith(missingPosition);
     }
 
-    stitchResult->writeAsPNG(L"debug.stitched_" + name + L".png");
+    stitchResult->writeAsPNG("debug.stitched_" + name + ".png");
     stitchResult->updateOnGPU();
 }
 
-StitchedTexture* TextureMap::getTexture(const std::wstring& name) {
+StitchedTexture* TextureMap::getTexture(const std::string& name) {
     StitchedTexture* result = texturesByName.find(name)->second;
     if (result == nullptr) result = missingPosition;
     return result;
@@ -232,11 +233,11 @@ void TextureMap::cycleAnimationFrames() {
 Texture* TextureMap::getStitchedTexture() { return stitchResult; }
 
 // 4J Stu - register is a reserved keyword in C++
-Icon* TextureMap::registerIcon(const std::wstring& name) {
+Icon* TextureMap::registerIcon(const std::string& name) {
     if (name.empty()) {
-        app.DebugPrintf("Don't register nullptr\n");
+        Log::info("Don't register nullptr\n");
 #ifndef _CONTENT_PACKAGE
-        __debugbreak();
+        assert(0);
 #endif
         // new RuntimeException("Don't register null!").printStackTrace();
     }

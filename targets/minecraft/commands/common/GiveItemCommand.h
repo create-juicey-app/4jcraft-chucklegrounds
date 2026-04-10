@@ -21,5 +21,5 @@ public:
 public:
     static std::shared_ptr<GameCommandPacket> preparePacket(
         std::shared_ptr<Player> player, int item, int amount = 1, int aux = 0,
-        const std::wstring& tag = L"");
+        const std::string& tag = "");
 };

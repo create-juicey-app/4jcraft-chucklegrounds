@@ -24,10 +24,10 @@ public:
 
 protected:
     void bindTexture(
-        ResourceLocation* location);  // 4J - changed from std::wstring to int
+        ResourceLocation* location);  // 4J - changed from std::string to int
     void bindTexture(
-        const std::wstring& urlTexture,
-        ResourceLocation* location);  // 4J - changed from std::wstring to int
+        const std::string& urlTexture,
+        ResourceLocation* location);  // 4J - changed from std::string to int
 private:
     Level* getLevel();
 

@@ -4,12 +4,12 @@
 
 class ConsoleSavePath {
 private:
-    std::wstring path;
+    std::string path;
 
 public:
-    ConsoleSavePath(const std::wstring& newPath) { path = newPath; }
+    ConsoleSavePath(const std::string& newPath) { path = newPath; }
 
-    std::wstring getName() const { return path; }
+    std::string getName() const { return path; }
 
-    std::wstring operator+(std::wstring& b) { return path + b; }
+    std::string operator+(std::string& b) { return path + b; }
 };

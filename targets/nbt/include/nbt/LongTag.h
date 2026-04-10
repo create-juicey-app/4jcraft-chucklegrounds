@@ -4,8 +4,8 @@
 class LongTag : public Tag {
 public:
     int64_t data;
-    LongTag(const std::wstring& name) : Tag(name) {}
-    LongTag(const std::wstring& name, int64_t data) : Tag(name) {
+    LongTag(const std::string& name) : Tag(name) {}
+    LongTag(const std::string& name, int64_t data) : Tag(name) {
         this->data = data;
     }
 
@@ -13,10 +13,10 @@ public:
     void load(DataInput* dis, int tagDepth) { data = dis->readLong(); }
 
     uint8_t getId() { return TAG_Long; }
-    std::wstring toString() {
-        static wchar_t buf[32];
-        swprintf(buf, 32, L"%I64d", data);
-        return std::wstring(buf);
+    std::string toString() {
+        static char buf[32];
+        snprintf(buf, 32, "%I64d", data);
+        return std::string(buf);
     }
 
     Tag* copy() { return new LongTag(getName(), data); }

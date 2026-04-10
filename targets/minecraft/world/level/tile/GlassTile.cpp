@@ -7,7 +7,7 @@
 class Material;
 
 GlassTile::GlassTile(int id, Material* material, bool allowSame)
-    : HalfTransparentTile(id, L"glass", material, allowSame) {}
+    : HalfTransparentTile(id, "glass", material, allowSame) {}
 
 int GlassTile::getResourceCount(Random* random) { return 0; }
 

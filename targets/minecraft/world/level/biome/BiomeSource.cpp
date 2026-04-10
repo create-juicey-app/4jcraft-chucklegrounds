@@ -1,11 +1,13 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "BiomeSource.h"
 
 #include <assert.h>
 
 #include <algorithm>
 
-#include "IPlatformInput.h"
-#include "app/common/src/Console_Debug_enum.h"
+#include "platform/input/input.h"
+#include "app/common/Console_Debug_enum.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Random.h"
 #include "java/System.h"
@@ -18,7 +20,6 @@
 #include "minecraft/world/level/biome/BiomeCache.h"
 #include "minecraft/world/level/newbiome/layer/Layer.h"
 #include "minecraft/world/level/storage/LevelData.h"
-#include "platform/PlatformServices.h"
 #include "strings.h"
 
 // 4J - removal of separate temperature & downfall layers brought forward
@@ -166,7 +167,7 @@ void BiomeSource::getRawBiomeBlock(std::vector<Biome*>& biomes, int x, int z,
         biomes[i] = Biome::biomes[result[i]];
 #if !defined(_CONTENT_PACKAGE)
         if (biomes[i] == nullptr) {
-            app.DebugPrintf("Tried to assign null biome %d\n", result[i]);
+            Log::info("Tried to assign null biome %d\n", result[i]);
             assert(0);
         }
 #endif
@@ -367,8 +368,8 @@ int64_t BiomeSource::findSeed(LevelType* generator) {
     mcprogress->progressStage(IDS_PROGRESS_NEW_WORLD_SEED);
 
 #if !defined(_CONTENT_PACKAGE)
-    if (app.DebugSettingsOn() &&
-        app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn() &&
+        gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_EnableBiomeOverride)) {
         // Do nothing
     } else
@@ -425,7 +426,7 @@ int64_t BiomeSource::findSeed(LevelType* generator) {
             delete pr;
 
 #if defined(DEBUG_SEEDS)
-            app.DebugPrintf("%d: %d tries taken, seed used is %lld\n", k,
+            Log::info("%d: %d tries taken, seed used is %lld\n", k,
                             tryCount, bestSeed);
 
             BiomeSource* biomeSource = new BiomeSource(bestSeed);

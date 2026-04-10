@@ -1,9 +1,8 @@
 #include "Lighting.h"
 
-#include <GL/gl.h>
 
-#include "platform/sdl2/Render.h"
-#include "app/include/stubs.h"
+
+#include "platform/renderer/renderer.h"
 #include "java/FloatBuffer.h"
 #include "minecraft/world/phys/Vec3.h"
 

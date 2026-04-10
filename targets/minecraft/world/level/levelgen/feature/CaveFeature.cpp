@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "CaveFeature.h"
 
 #include <stdint.h>
@@ -5,7 +7,7 @@
 #include <numbers>
 #include <vector>
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Random.h"
 #include "minecraft/util/Mth.h"
@@ -46,14 +48,14 @@ bool CaveFeature::place(Level* level, Random* random, int x, int y, int z) {
 
         // 4J Stu Added to stop cave features generating areas previously place
         // by game rule generation
-        if (app.getLevelGenerationOptions() != nullptr) {
+        if (gameServices().getLevelGenerationOptions() != nullptr) {
             LevelGenerationOptions* levelGenOptions =
-                app.getLevelGenerationOptions();
+                gameServices().getLevelGenerationOptions();
             bool intersects = levelGenOptions->checkIntersects(
                 (xx - r / 2), (yy - hr / 2), (zz - r / 2), (xx + r / 2),
                 (yy + hr / 2), (zz + r / 2));
             if (intersects) {
-                // app.DebugPrintf("Skipping cave feature generation as it
+                // Log::info("Skipping cave feature generation as it
                 // overlaps a game rule structure\n");
                 return false;
             }

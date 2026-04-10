@@ -86,8 +86,8 @@ public:
     void load(ListTag<CompoundTag>* inventoryList);
     unsigned int getContainerSize();
     std::shared_ptr<ItemInstance> getItem(unsigned int slot);
-    std::wstring getName();
-    std::wstring getCustomName();
+    std::string getName();
+    std::string getCustomName();
     bool hasCustomName();
     int getMaxStackSize();
     bool canDestroy(Tile* tile);

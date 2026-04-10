@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "Painting.h"
 
 #include <memory>
@@ -15,37 +16,37 @@
 
 typedef Painting::Motive _Motive;
 const _Motive* Painting::Motive::values[] = {
-    new _Motive(L"Kebab", 16, 16, 0 * 16, 0 * 16),
-    new _Motive(L"Aztec", 16, 16, 1 * 16, 0 * 16),      //
-    new _Motive(L"Alban", 16, 16, 2 * 16, 0 * 16),      //
-    new _Motive(L"Aztec2", 16, 16, 3 * 16, 0 * 16),     //
-    new _Motive(L"Bomb", 16, 16, 4 * 16, 0 * 16),       //
-    new _Motive(L"Plant", 16, 16, 5 * 16, 0 * 16),      //
-    new _Motive(L"Wasteland", 16, 16, 6 * 16, 0 * 16),  //
+    new _Motive("Kebab", 16, 16, 0 * 16, 0 * 16),
+    new _Motive("Aztec", 16, 16, 1 * 16, 0 * 16),      //
+    new _Motive("Alban", 16, 16, 2 * 16, 0 * 16),      //
+    new _Motive("Aztec2", 16, 16, 3 * 16, 0 * 16),     //
+    new _Motive("Bomb", 16, 16, 4 * 16, 0 * 16),       //
+    new _Motive("Plant", 16, 16, 5 * 16, 0 * 16),      //
+    new _Motive("Wasteland", 16, 16, 6 * 16, 0 * 16),  //
 
-    new _Motive(L"Pool", 32, 16, 0 * 16, 2 * 16),     //
-    new _Motive(L"Courbet", 32, 16, 2 * 16, 2 * 16),  //
-    new _Motive(L"Sea", 32, 16, 4 * 16, 2 * 16),      //
-    new _Motive(L"Sunset", 32, 16, 6 * 16, 2 * 16),   //
-    new _Motive(L"Creebet", 32, 16, 8 * 16, 2 * 16),  //
+    new _Motive("Pool", 32, 16, 0 * 16, 2 * 16),     //
+    new _Motive("Courbet", 32, 16, 2 * 16, 2 * 16),  //
+    new _Motive("Sea", 32, 16, 4 * 16, 2 * 16),      //
+    new _Motive("Sunset", 32, 16, 6 * 16, 2 * 16),   //
+    new _Motive("Creebet", 32, 16, 8 * 16, 2 * 16),  //
 
-    new _Motive(L"Wanderer", 16, 32, 0 * 16, 4 * 16),  //
-    new _Motive(L"Graham", 16, 32, 1 * 16, 4 * 16),    //
+    new _Motive("Wanderer", 16, 32, 0 * 16, 4 * 16),  //
+    new _Motive("Graham", 16, 32, 1 * 16, 4 * 16),    //
 
-    new _Motive(L"Match", 32, 32, 0 * 16, 8 * 16),          //
-    new _Motive(L"Bust", 32, 32, 2 * 16, 8 * 16),           //
-    new _Motive(L"Stage", 32, 32, 4 * 16, 8 * 16),          //
-    new _Motive(L"Void", 32, 32, 6 * 16, 8 * 16),           //
-    new _Motive(L"SkullAndRoses", 32, 32, 8 * 16, 8 * 16),  //
-    new _Motive(L"Wither", 32, 32, 10 * 16, 8 * 16),
-    new _Motive(L"Fighters", 64, 32, 0 * 16, 6 * 16),  //
+    new _Motive("Match", 32, 32, 0 * 16, 8 * 16),          //
+    new _Motive("Bust", 32, 32, 2 * 16, 8 * 16),           //
+    new _Motive("Stage", 32, 32, 4 * 16, 8 * 16),          //
+    new _Motive("Void", 32, 32, 6 * 16, 8 * 16),           //
+    new _Motive("SkullAndRoses", 32, 32, 8 * 16, 8 * 16),  //
+    new _Motive("Wither", 32, 32, 10 * 16, 8 * 16),
+    new _Motive("Fighters", 64, 32, 0 * 16, 6 * 16),  //
 
-    new _Motive(L"Pointer", 64, 64, 0 * 16, 12 * 16),       //
-    new _Motive(L"Pigscene", 64, 64, 4 * 16, 12 * 16),      //
-    new _Motive(L"BurningSkull", 64, 64, 8 * 16, 12 * 16),  //
+    new _Motive("Pointer", 64, 64, 0 * 16, 12 * 16),       //
+    new _Motive("Pigscene", 64, 64, 4 * 16, 12 * 16),      //
+    new _Motive("BurningSkull", 64, 64, 8 * 16, 12 * 16),  //
 
-    new _Motive(L"Skeleton", 64, 48, 12 * 16, 4 * 16),    //
-    new _Motive(L"DonkeyKong", 64, 48, 12 * 16, 7 * 16),  //
+    new _Motive("Skeleton", 64, 48, 12 * 16, 4 * 16),    //
+    new _Motive("DonkeyKong", 64, 48, 12 * 16, 7 * 16),  //
 };
 
 // 4J Stu - Rather than creating a new string object here I am just using the
@@ -77,7 +78,7 @@ Painting::Painting(Level* level, int xTile, int yTile, int zTile, int dir)
 // needed in the ctor 4J Stu - Added motive param for debugging/artists only
 void Painting::PaintingPostConstructor(int dir, int motive) {
 #ifndef _CONTENT_PACKAGE
-    if (app.DebugArtToolsOn() && motive >= 0) {
+    if (gameServices().debugArtToolsOn() && motive >= 0) {
         this->motive = (Motive*)Motive::values[motive];
         setDir(dir);
     } else
@@ -100,7 +101,7 @@ void Painting::PaintingPostConstructor(int dir, int motive) {
 }
 
 Painting::Painting(Level* level, int x, int y, int z, int dir,
-                   std::wstring motiveName)
+                   std::string motiveName)
     : HangingEntity(level, x, y, z, dir) {
     _init(level);
 
@@ -115,13 +116,13 @@ Painting::Painting(Level* level, int x, int y, int z, int dir,
 
 void Painting::addAdditonalSaveData(CompoundTag* tag) {
     /// TODO Safe to cast to non-const type?
-    tag->putString(L"Motive", motive->name);
+    tag->putString("Motive", motive->name);
 
     HangingEntity::addAdditonalSaveData(tag);
 }
 
 void Painting::readAdditionalSaveData(CompoundTag* tag) {
-    std::wstring motiveName = tag->getString(L"Motive");
+    std::string motiveName = tag->getString("Motive");
     std::vector<Motive*>::iterator it;
     for (int i = 0; i < LAST_VALUE; i++) {
         if (Motive::values[i]->name.compare(motiveName) == 0) {

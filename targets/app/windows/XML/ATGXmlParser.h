@@ -39,9 +39,9 @@ const uint32_t XML_WRITE_BUFFER_SIZE = 2048;
 
 //-------------------------------------------------------------------------------------
 struct XMLAttribute {
-    wchar_t* strName;
+    char* strName;
     uint32_t NameLen;
-    wchar_t* strValue;
+    char* strValue;
     uint32_t ValueLen;
 };
 
@@ -56,15 +56,15 @@ public:
     virtual int32_t StartDocument() = 0;
     virtual int32_t EndDocument() = 0;
 
-    virtual int32_t ElementBegin(const wchar_t* strName, uint32_t NameLen,
+    virtual int32_t ElementBegin(const char* strName, uint32_t NameLen,
                                  const XMLAttribute* pAttributes,
                                  uint32_t NumAttributes) = 0;
-    virtual int32_t ElementContent(const wchar_t* strData, uint32_t DataLen,
+    virtual int32_t ElementContent(const char* strData, uint32_t DataLen,
                                    bool More) = 0;
-    virtual int32_t ElementEnd(const wchar_t* strName, uint32_t NameLen) = 0;
+    virtual int32_t ElementEnd(const char* strName, uint32_t NameLen) = 0;
 
     virtual int32_t CDATABegin() = 0;
-    virtual int32_t CDATAData(const wchar_t* strCDATA, uint32_t CDATALen,
+    virtual int32_t CDATAData(const char* strCDATA, uint32_t CDATALen,
                               bool bMore) = 0;
     virtual int32_t CDATAEnd() = 0;
 
@@ -103,7 +103,7 @@ public:
 
     int32_t ParseXMLFile(const char* strFilename);
 
-    //      Parses from a buffer- if you pass a wchar_t buffer (and cast it), it
+    //      Parses from a buffer- if you pass a char buffer (and cast it), it
     //      will
     //         correctly detect it and use unicode instead.  Return codes are
     //         the same as for ParseXMLFile
@@ -142,16 +142,16 @@ private:
     uint32_t m_dwCharsConsumed;
 
     uint8_t m_pReadBuf[XML_READ_BUFFER_SIZE + 2];  // room for a trailing NULL
-    wchar_t m_pWriteBuf[XML_WRITE_BUFFER_SIZE];
+    char m_pWriteBuf[XML_WRITE_BUFFER_SIZE];
 
     uint8_t* m_pReadPtr;
-    wchar_t* m_pWritePtr;  // write pointer within m_pBuf
+    char* m_pWritePtr;  // write pointer within m_pBuf
 
     bool m_bUnicode;       // true = 16-bits, false = 8-bits
     bool m_bReverseBytes;  // true = reverse bytes, false = don't reverse
 
     bool m_bSkipNextAdvance;
-    wchar_t m_Ch;  // Current character being parsed
+    char m_Ch;  // Current character being parsed
 };
 
 }  // namespace ATG

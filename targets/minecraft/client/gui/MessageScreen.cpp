@@ -4,7 +4,7 @@
 
 #include "minecraft/client/gui/Screen.h"
 
-MessageScreen::MessageScreen(const std::wstring& message) {
+MessageScreen::MessageScreen(const std::string& message) {
     this->message = message;
 }
 

@@ -14,8 +14,8 @@ EGameCommand EffectCommand::getId() { return eGameCommand_Effect; }
 
 int EffectCommand::getPermissionLevel() { return LEVEL_GAMEMASTERS; }
 
-std::wstring EffectCommand::getUsage(CommandSender* source) {
-    return L"commands.effect.usage";
+std::string EffectCommand::getUsage(CommandSender* source) {
+    return "commands.effect.usage";
 }
 
 void EffectCommand::execute(std::shared_ptr<CommandSender> source,
@@ -86,11 +86,11 @@ void EffectCommand::execute(std::shared_ptr<CommandSender> source,
     // throw new UsageException("commands.effect.usage");
 }
 
-std::wstring EffectCommand::getPlayerNames() {
-    return L"";  // MinecraftServer::getInstance()->getPlayerNames();
+std::string EffectCommand::getPlayerNames() {
+    return "";  // MinecraftServer::getInstance()->getPlayerNames();
 }
 
-bool EffectCommand::isValidWildcardPlayerArgument(std::wstring args,
+bool EffectCommand::isValidWildcardPlayerArgument(std::string args,
                                                   int argumentIndex) {
     return argumentIndex == 0;
 }

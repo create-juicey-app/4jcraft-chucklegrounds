@@ -24,7 +24,7 @@ public:
     int getMiddleBlockZ();
 
     TilePos getMiddleBlockPosition(int y);
-    std::wstring toString();
+    std::string toString();
 
     static int64_t hash_fnct(const ChunkPos& k);
     static bool eq_test(const ChunkPos& x, const ChunkPos& y);

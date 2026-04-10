@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "Ocelot.h"
 
 #include <stdint.h>
@@ -5,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include "IPlatformInput.h"
+#include "platform/input/input.h"
 #include "app/linux/LinuxGame.h"
 #include "util/StringHelpers.h"
 #include "java/Random.h"
@@ -49,7 +50,6 @@
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/phys/AABB.h"
 #include "nbt/CompoundTag.h"
-#include "platform/PlatformServices.h"
 
 const double Ocelot::SNEAK_SPEED_MOD = 0.6;
 const double Ocelot::WALK_SPEED_MOD = 0.8;
@@ -134,13 +134,13 @@ void Ocelot::causeFallDamage(float distance) {
 
 void Ocelot::addAdditonalSaveData(CompoundTag* tag) {
     TamableAnimal::addAdditonalSaveData(tag);
-    tag->putInt(L"CatType", getCatType());
+    tag->putInt("CatType", getCatType());
 }
 
 void Ocelot::readAdditionalSaveData(CompoundTag* tag) {
     TamableAnimal::readAdditionalSaveData(tag);
     if (isTame()) {
-        setCatType(tag->getInt(L"CatType"));
+        setCatType(tag->getInt("CatType"));
     } else {
         setCatType(TYPE_OCELOT);
     }
@@ -288,15 +288,15 @@ bool Ocelot::canSpawn() {
     return false;
 }
 
-std::wstring Ocelot::getAName() {
+std::string Ocelot::getAName() {
     if (hasCustomName()) return getCustomName();
 #ifdef _DEBUG
     if (isTame()) {
-        return L"entity.Cat.name";
+        return "entity.Cat.name";
     }
     return TamableAnimal::getAName();
 #else
-    return L"";
+    return "";
 #endif
 }
 
@@ -306,7 +306,7 @@ MobGroupData* Ocelot::finalizeMobSpawn(
     groupData = TamableAnimal::finalizeMobSpawn(groupData);
 
 #ifndef _CONTENT_PACKAGE
-    if (app.DebugArtToolsOn() && (extraData != 0)) {
+    if (gameServices().debugArtToolsOn() && (extraData != 0)) {
         setTame(true);
         setCatType(extraData - 1);
         setOwnerUUID(Minecraft::GetInstance()

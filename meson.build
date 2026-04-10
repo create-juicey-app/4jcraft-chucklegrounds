@@ -76,7 +76,10 @@ glm_dep = dependency('glm')
 
 stb = subproject('stb').get_variable('stb_inc')
 stb_dep = declare_dependency(include_directories: stb)
-
+simdutf_dep = dependency('simdutf',
+  fallback: ['simdutf', 'simdutf_dep'],
+  default_options: ['utf8=true', 'utf16=true', 'utf32=true']
+)
 miniaudio_dep = dependency('miniaudio')
 
 subdir('targets/util')

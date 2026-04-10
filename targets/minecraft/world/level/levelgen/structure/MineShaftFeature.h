@@ -8,7 +8,7 @@
 
 class MineShaftFeature : public StructureFeature {
 public:
-    static const std::wstring OPTION_CHANCE;
+    static const std::string OPTION_CHANCE;
 
 private:
     double chance;
@@ -16,9 +16,9 @@ private:
 public:
     MineShaftFeature();
 
-    std::wstring getFeatureName();
+    std::string getFeatureName();
 
-    MineShaftFeature(std::unordered_map<std::wstring, std::wstring> options);
+    MineShaftFeature(std::unordered_map<std::string, std::string> options);
 
 protected:
     virtual bool isFeatureChunk(int x, int z, bool bIsSuperflat = false);

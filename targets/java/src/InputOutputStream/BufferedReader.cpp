@@ -11,8 +11,8 @@
 BufferedReader::BufferedReader(Reader* in)
     : reader(in), readMark(0), bufferedMark(0), eofReached(false) {
     bufferSize = 64;
-    buffer = new wchar_t[bufferSize];
-    memset(buffer, 0, sizeof(wchar_t) * bufferSize);
+    buffer = new char[bufferSize];
+    memset(buffer, 0, sizeof(char) * bufferSize);
     bufferMore();
 }
 
@@ -25,8 +25,8 @@ void BufferedReader::bufferMore() {
 
     if (bufferSize < (bufferedMark + BUFFER_MORE_AMOUNT)) {
         // Enlarge the buffer
-        wchar_t* temp = new wchar_t[bufferSize * 2];
-        memset(temp, 0, sizeof(wchar_t) * bufferSize * 2);
+        char* temp = new char[bufferSize * 2];
+        memset(temp, 0, sizeof(char) * bufferSize * 2);
         std::copy(buffer, buffer + bufferSize, temp);
 
         delete[] buffer;
@@ -99,11 +99,11 @@ int BufferedReader::read() {
 // Returns:
 // The number of characters read, or -1 if the end of the stream has been
 // reached
-int BufferedReader::read(wchar_t cbuf[], unsigned int off, unsigned int len) {
+int BufferedReader::read(char cbuf[], unsigned int off, unsigned int len) {
     if (bufferSize < (bufferedMark + len)) {
         // Enlarge the buffer
-        wchar_t* temp = new wchar_t[bufferSize * 2];
-        memset(temp, 0, sizeof(wchar_t) * bufferSize * 2);
+        char* temp = new char[bufferSize * 2];
+        memset(temp, 0, sizeof(char) * bufferSize * 2);
         std::copy(buffer, buffer + bufferSize, temp);
 
         delete[] buffer;
@@ -135,12 +135,12 @@ int BufferedReader::read(wchar_t cbuf[], unsigned int off, unsigned int len) {
 // immediately by a linefeed. Returns: A String containing the contents of the
 // line, not including any line-termination characters, or null if the end of
 // the stream has been reached
-std::wstring BufferedReader::readLine() {
-    std::wstring output = L"";
+std::string BufferedReader::readLine() {
+    std::string output = "";
     bool newLineCharFound = false;
 
     while (readMark < bufferedMark) {
-        wchar_t value = buffer[readMark++];
+        char value = buffer[readMark++];
 
         if (!newLineCharFound) {
             if ((value == '\n') || (value == '\r')) {

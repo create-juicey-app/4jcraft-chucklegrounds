@@ -7,7 +7,7 @@
 #include <queue>
 #include <string>
 
-#include "app/common/src/Network/Socket.h"
+#include "app/common/Network/Socket.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "platform/C4JThread.h"
 #include "java/InputOutputStream/DataInputStream.h"
@@ -109,7 +109,7 @@ private:
 
 public:
     ~Connection();
-    Connection(Socket* socket, const std::wstring& id,
+    Connection(Socket* socket, const std::string& id,
                PacketListener* packetListener);  // throws IOException
 
     void setListener(PacketListener* packetListener);

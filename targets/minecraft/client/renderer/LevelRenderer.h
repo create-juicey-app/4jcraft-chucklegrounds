@@ -1,7 +1,6 @@
 #pragma once
-#include "app/include/NetTypes.h"
-#include "app/include/SkinBox.h"
-#include "app/include/XboxStubs.h"
+#include "platform/NetTypes.h"
+#include "minecraft/client/model/SkinBox.h"
 #include "OffsettedRenderList.h"
 #include "platform/C4JThread.h"
 #include "util/Definitions.h"
@@ -96,8 +95,8 @@ public:
 
 public:
     void renderEntities(Vec3* cam, Culler* culler, float a);
-    std::wstring gatherStats1();
-    std::wstring gatherStats2();
+    std::string gatherStats1();
+    std::string gatherStats2();
 
 private:
     void resortChunks(int xc, int yc, int zc);
@@ -137,7 +136,7 @@ public:
                        Level* level);  // 4J - added level param
 
     void cull(Culler* culler, float a);
-    void playStreamingMusic(const std::wstring& name, int x, int y, int z);
+    void playStreamingMusic(const std::string& name, int x, int y, int z);
     void playSound(int iSound, double x, double y, double z, float volume,
                    float pitch, float fSoundClipDist = 16.0f);
     void playSound(std::shared_ptr<Entity> entity, int iSound, double x,
@@ -221,10 +220,14 @@ private:
         emptyChunks;
     static const int RENDERLISTS_LENGTH = 4;  // 4J - added
     OffsettedRenderList renderLists[RENDERLISTS_LENGTH];
+
+#ifdef OCCLUSION_MODE_BFS
     void setGlobalChunkConnectivity(int index, uint64_t conn);
     uint64_t getGlobalChunkConnectivity(int index);
     std::vector<ClipChunk*> m_bfsGrid;
     std::vector<uint8_t> m_bfsVisitedFaces[4];
+#endif
+
     std::unordered_map<int, BlockDestructionProgress*> destroyingBlocks;
     Icon** breakingTextures;
 
@@ -320,7 +323,9 @@ public:
     void clearGlobalChunkFlag(int x, int y, int z, Level* level,
                               unsigned char flag, unsigned char shift = 0);
 
+#ifdef OCCLUSION_MODE_BFS
     static uint64_t* globalChunkConnectivity;
+#endif
 
     // Get/set whole byte of flags
     unsigned char getGlobalChunkFlags(int x, int y, int z, Level* level);

@@ -170,16 +170,16 @@ Icon* BedTile::getTexture(int face, int data) {
 
 void BedTile::registerIcons(IconRegister* iconRegister) {
     iconTop = new Icon*[2];
-    iconTop[0] = iconRegister->registerIcon(L"bed_feet_top");
-    iconTop[1] = iconRegister->registerIcon(L"bed_head_top");
+    iconTop[0] = iconRegister->registerIcon("bed_feet_top");
+    iconTop[1] = iconRegister->registerIcon("bed_head_top");
 
     iconEnd = new Icon*[2];
-    iconEnd[0] = iconRegister->registerIcon(L"bed_feet_end");
-    iconEnd[1] = iconRegister->registerIcon(L"bed_head_end");
+    iconEnd[0] = iconRegister->registerIcon("bed_feet_end");
+    iconEnd[1] = iconRegister->registerIcon("bed_head_end");
 
     iconSide = new Icon*[2];
-    iconSide[0] = iconRegister->registerIcon(L"bed_feet_side");
-    iconSide[1] = iconRegister->registerIcon(L"bed_head_side");
+    iconSide[0] = iconRegister->registerIcon("bed_feet_side");
+    iconSide[1] = iconRegister->registerIcon("bed_head_side");
 }
 
 int BedTile::getRenderShape() { return Tile::SHAPE_BED; }

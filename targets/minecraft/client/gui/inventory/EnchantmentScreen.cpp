@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 
+
 #include "AbstractContainerScreen.h"
 #include "minecraft/client/Lighting.h"
 #include "minecraft/client/Minecraft.h"
@@ -51,7 +52,7 @@ void EnchantmentScreen::init() { AbstractContainerScreen::init(); }
 void EnchantmentScreen::removed() { AbstractContainerScreen::removed(); }
 
 void EnchantmentScreen::renderLabels() {
-    font->draw(Language::getInstance()->getElement(L"container.enchant"), 12, 5,
+    font->draw(Language::getInstance()->getElement("container.enchant"), 12, 5,
                0x404040);
     font->draw(inventory->getName(), 8, imageHeight - 96 + 2, 0x404040);
 
@@ -73,7 +74,7 @@ void EnchantmentScreen::renderLabels() {
             if (enchantMenu->costs[i] > 0) {
                 enchantNames[i] = EnchantmentNames::instance.getRandomName();
             } else {
-                enchantNames[i] = L"";
+                enchantNames[i] = "";
             }
         }
     }
@@ -92,7 +93,7 @@ void EnchantmentScreen::renderLabels() {
                                minecraft->player->abilities.instabuild;
 
         if (cost > 0) {
-            std::wstring enchantName = enchantNames[i];
+            std::string enchantName = enchantNames[i];
 
             Font* weirdEnchantTableFont = minecraft->altFont;
             if (weirdEnchantTableFont) {
@@ -113,7 +114,7 @@ void EnchantmentScreen::renderLabels() {
                     enchantName, buttonX + 2, buttonY + 2, 104, nameColor, 64);
             }
 
-            std::wstring costStr = std::to_wstring(cost);
+            std::string costStr = std::to_string(cost);
             int costX = buttonX + 108 - font->width(costStr) - 2;
             int costY = buttonY + 8;
 
@@ -159,7 +160,7 @@ void EnchantmentScreen::renderBg(float a) {
                240 * scaleFactor);
 
     glTranslatef(-0.34f, 0.23f, 0.0f);
-    gluPerspective(90.0f, 1.3333334f, 9.0f, 80.0f);
+    PlatformRenderer.MatrixPerspective(90.0f, 1.3333334f, 9.0f, 80.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -307,26 +308,26 @@ EnchantmentScreen::EnchantmentNames
     EnchantmentScreen::EnchantmentNames::instance;
 
 EnchantmentScreen::EnchantmentNames::EnchantmentNames() {
-    std::wstring allWords =
-        L"the elder scrolls klaatu berata niktu xyzzy bless curse light "
-        L"darkness fire air earth water hot dry cold wet ignite snuff embiggen "
-        L"twist shorten stretch fiddle destroy imbue galvanize enchant free "
-        L"limited range of towards inside sphere cube self other ball mental "
-        L"physical grow shrink demon elemental spirit animal creature beast "
-        L"humanoid undead fresh stale ";
-    std::wistringstream iss(allWords);
-    std::copy(std::istream_iterator<std::wstring, wchar_t,
-                                    std::char_traits<wchar_t> >(iss),
-              std::istream_iterator<std::wstring, wchar_t,
-                                    std::char_traits<wchar_t> >(),
+    std::string allWords =
+        "the elder scrolls klaatu berata niktu xyzzy bless curse light "
+        "darkness fire air earth water hot dry cold wet ignite snuff embiggen "
+        "twist shorten stretch fiddle destroy imbue galvanize enchant free "
+        "limited range of towards inside sphere cube self other ball mental "
+        "physical grow shrink demon elemental spirit animal creature beast "
+        "humanoid undead fresh stale ";
+    std::istringstream iss(allWords);
+    std::copy(std::istream_iterator<std::string, char,
+                                    std::char_traits<char> >(iss),
+              std::istream_iterator<std::string, char,
+                                    std::char_traits<char> >(),
               std::back_inserter(words));
 }
 
-std::wstring EnchantmentScreen::EnchantmentNames::getRandomName() {
+std::string EnchantmentScreen::EnchantmentNames::getRandomName() {
     int wordCount = random.nextInt(2) + 3;
-    std::wstring word = L"";
+    std::string word = "";
     for (int i = 0; i < wordCount; i++) {
-        if (i > 0) word += L" ";
+        if (i > 0) word += " ";
         word += words[random.nextInt(words.size())];
     }
     return word;

@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "Fireball.h"
 
 #include <stdint.h>
@@ -133,7 +134,7 @@ void Fireball::tick() {
     if (!level->isClientSide) {
         if ((owner != nullptr && owner->removed) ||
             !level->hasChunkAt((int)x, (int)y, (int)z)) {
-            app.DebugPrintf(
+            Log::info(
                 "Fireball removed - owner is null or removed is true for "
                 "owner\n");
             remove();
@@ -146,7 +147,7 @@ void Fireball::tick() {
 
             if ((x <= minXZ) || (x >= maxXZ) || (z <= minXZ) || (z >= maxXZ)) {
                 remove();
-                app.DebugPrintf("Fireball removed - end of world\n");
+                Log::info("Fireball removed - end of world\n");
                 return;
             }
         }
@@ -154,7 +155,7 @@ void Fireball::tick() {
 
     Entity::tick();
 
-    // app.DebugPrintf("Fireball x %d, y %d, z%d\n",(int)x,(int)y,(int)z);
+    // Log::info("Fireball x %d, y %d, z%d\n",(int)x,(int)y,(int)z);
 
     if (shouldBurn()) setOnFire(1);
 
@@ -164,7 +165,7 @@ void Fireball::tick() {
             life++;
             if (life == SharedConstants::TICKS_PER_SECOND * 30) {
                 remove();
-                app.DebugPrintf("Fireball removed - life is 20*60\n");
+                Log::info("Fireball removed - life is 20*60\n");
             }
             return;
         } else {
@@ -264,7 +265,7 @@ void Fireball::tick() {
             xd = 0.0;
             zd = 0.0;
             yd = 0.0;
-            app.DebugPrintf("Removing a fireball with zero velocity\n");
+            Log::info("Removing a fireball with zero velocity\n");
             remove();
         }
     }
@@ -277,26 +278,26 @@ void Fireball::tick() {
 float Fireball::getInertia() { return 0.95f; }
 
 void Fireball::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putShort(L"xTile", (short)xTile);
-    tag->putShort(L"yTile", (short)yTile);
-    tag->putShort(L"zTile", (short)zTile);
-    tag->putByte(L"inTile", (uint8_t)lastTile);
-    tag->putByte(L"inGround", (uint8_t)(inGround ? 1 : 0));
-    tag->put(L"direction", newDoubleList(3, xd, yd, zd));
+    tag->putShort("xTile", (short)xTile);
+    tag->putShort("yTile", (short)yTile);
+    tag->putShort("zTile", (short)zTile);
+    tag->putByte("inTile", (uint8_t)lastTile);
+    tag->putByte("inGround", (uint8_t)(inGround ? 1 : 0));
+    tag->put("direction", newDoubleList(3, xd, yd, zd));
 }
 
 void Fireball::readAdditionalSaveData(CompoundTag* tag) {
-    xTile = tag->getShort(L"xTile");
-    yTile = tag->getShort(L"yTile");
-    zTile = tag->getShort(L"zTile");
-    lastTile = tag->getByte(L"inTile") & 0xff;
-    inGround = tag->getByte(L"inGround") == 1;
+    xTile = tag->getShort("xTile");
+    yTile = tag->getShort("yTile");
+    zTile = tag->getShort("zTile");
+    lastTile = tag->getByte("inTile") & 0xff;
+    inGround = tag->getByte("inGround") == 1;
 
     // Load the stored direction and apply it to the fireball
     //   if it has no stored direction, remove it.
-    if (tag->contains(L"direction")) {
+    if (tag->contains("direction")) {
         ListTag<DoubleTag>* listTag =
-            (ListTag<DoubleTag>*)tag->getList(L"direction");
+            (ListTag<DoubleTag>*)tag->getList("direction");
         xd = ((DoubleTag*)listTag->get(0))->data;
         yd = ((DoubleTag*)listTag->get(1))->data;
         zd = ((DoubleTag*)listTag->get(2))->data;

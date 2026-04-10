@@ -14,8 +14,8 @@ private:
     Minecraft* mc;
     int width, height;
 
-    std::wstring title;
-    std::wstring desc;
+    std::string title;
+    std::string desc;
     Achievement* ach;
     int64_t startTime;
     ItemRenderer* ir;

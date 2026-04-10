@@ -7,19 +7,19 @@ class EOFException : public std::exception {};
 
 class IllegalArgumentException : public std::exception {
 public:
-    std::wstring information;
+    std::string information;
 
-    IllegalArgumentException(const std::wstring& information);
+    IllegalArgumentException(const std::string& information);
 };
 
 class IOException : public std::exception {
 public:
-    std::wstring information;
+    std::string information;
 
-    IOException(const std::wstring& information);
+    IOException(const std::string& information);
 };
 
 class RuntimeException : public std::exception {
 public:
-    RuntimeException(const std::wstring& information);
+    RuntimeException(const std::string& information);
 };

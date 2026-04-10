@@ -33,18 +33,18 @@ public:
     int type;
     int size;
     bool customName;
-    std::wstring title;
+    std::string title;
     int entityId;
 
 private:
-    void _init(int containerId, int type, const std::wstring& title, int size,
+    void _init(int containerId, int type, const std::string& title, int size,
                bool customName, int entityId);
 
 public:
     ContainerOpenPacket();
-    ContainerOpenPacket(int containerId, int type, const std::wstring& title,
+    ContainerOpenPacket(int containerId, int type, const std::string& title,
                         int size, bool customName);
-    ContainerOpenPacket(int containerId, int type, const std::wstring& title,
+    ContainerOpenPacket(int containerId, int type, const std::string& title,
                         int size, bool customName, int entityId);
 
     virtual void handle(PacketListener* listener);

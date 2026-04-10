@@ -150,7 +150,7 @@ int BrewingStandTile::getAnalogOutputSignal(Level* level, int x, int y, int z,
 
 void BrewingStandTile::registerIcons(IconRegister* iconRegister) {
     BaseEntityTile::registerIcons(iconRegister);
-    iconBase = iconRegister->registerIcon(getIconName() + L"_base");
+    iconBase = iconRegister->registerIcon(getIconName() + "_base");
 }
 
 Icon* BrewingStandTile::getBaseTexture() { return iconBase; }

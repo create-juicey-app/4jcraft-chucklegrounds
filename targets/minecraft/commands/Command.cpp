@@ -16,16 +16,16 @@ bool Command::canExecute(std::shared_ptr<CommandSender> source) {
 
 void Command::logAdminAction(std::shared_ptr<CommandSender> source,
                              ChatPacket::EChatPacketMessage messageType,
-                             const std::wstring& message, int customData,
-                             const std::wstring& additionalMessage) {
+                             const std::string& message, int customData,
+                             const std::string& additionalMessage) {
     logAdminAction(source, 0, messageType, message, customData,
                    additionalMessage);
 }
 
 void Command::logAdminAction(std::shared_ptr<CommandSender> source, int type,
                              ChatPacket::EChatPacketMessage messageType,
-                             const std::wstring& message, int customData,
-                             const std::wstring& additionalMessage) {
+                             const std::string& message, int customData,
+                             const std::string& additionalMessage) {
     if (logger != nullptr) {
         logger->logAdminCommand(source, type, messageType, message, customData,
                                 additionalMessage);

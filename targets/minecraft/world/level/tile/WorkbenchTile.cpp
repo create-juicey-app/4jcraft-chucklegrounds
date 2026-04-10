@@ -23,9 +23,9 @@ Icon* WorkbenchTile::getTexture(int face, int data) {
 }
 
 void WorkbenchTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"workbench_side");
-    iconTop = iconRegister->registerIcon(L"workbench_top");
-    iconFront = iconRegister->registerIcon(L"workbench_front");
+    icon = iconRegister->registerIcon("workbench_side");
+    iconTop = iconRegister->registerIcon("workbench_top");
+    iconFront = iconRegister->registerIcon("workbench_front");
 }
 
 // 4J-PB - Adding a TestUse for tooltip display

@@ -15,8 +15,8 @@
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/phys/AABB.h"
 
-const std::wstring DoorTile::TEXTURES[] = {
-    L"doorWood_lower", L"doorWood_upper", L"doorIron_lower", L"doorIron_upper"};
+const std::string DoorTile::TEXTURES[] = {
+    "doorWood_lower", "doorWood_upper", "doorIron_lower", "doorIron_upper"};
 
 DoorTile::DoorTile(int id, Material* material) : Tile(id, material, false) {
     if (material == Material::metal) {
@@ -74,9 +74,9 @@ Icon* DoorTile::getTexture(LevelSource* level, int x, int y, int z, int face) {
 
 void DoorTile::registerIcons(IconRegister* iconRegister) {
     iconTop[TEXTURE_NORMAL] =
-        iconRegister->registerIcon(getIconName() + L"_upper");
+        iconRegister->registerIcon(getIconName() + "_upper");
     iconBottom[TEXTURE_NORMAL] =
-        iconRegister->registerIcon(getIconName() + L"_lower");
+        iconRegister->registerIcon(getIconName() + "_lower");
     iconTop[TEXTURE_FLIPPED] =
         new FlippedIcon(iconTop[TEXTURE_NORMAL], true, false);
     iconBottom[TEXTURE_FLIPPED] =

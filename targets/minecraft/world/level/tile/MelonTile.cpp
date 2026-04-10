@@ -35,6 +35,6 @@ int MelonTile::getResourceCountForLootBonus(int bonusLevel, Random* random) {
 }
 
 void MelonTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(getIconName() + L"_side");
-    iconTop = iconRegister->registerIcon(getIconName() + L"_top");
+    icon = iconRegister->registerIcon(getIconName() + "_side");
+    iconTop = iconRegister->registerIcon(getIconName() + "_top");
 }

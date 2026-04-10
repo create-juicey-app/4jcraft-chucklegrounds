@@ -138,10 +138,10 @@ bool MinecartTNT::shouldTileExplode(Explosion* explosion, Level* level, int x,
 
 void MinecartTNT::readAdditionalSaveData(CompoundTag* tag) {
     Minecart::readAdditionalSaveData(tag);
-    if (tag->contains(L"TNTFuse")) fuse = tag->getInt(L"TNTFuse");
+    if (tag->contains("TNTFuse")) fuse = tag->getInt("TNTFuse");
 }
 
 void MinecartTNT::addAdditonalSaveData(CompoundTag* tag) {
     Minecart::addAdditonalSaveData(tag);
-    tag->putInt(L"TNTFuse", fuse);
+    tag->putInt("TNTFuse", fuse);
 }

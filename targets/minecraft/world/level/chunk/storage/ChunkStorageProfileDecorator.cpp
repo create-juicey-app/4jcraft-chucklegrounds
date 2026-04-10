@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "ChunkStorageProfileDecorator.h"
 
 #include <stdio.h>
@@ -54,7 +55,7 @@ void ChunkStorageProfilerDecorator::tick() {
                     0.000001 * (double)timeSpentLoading / (double)loadCount,
                     loadCount);
 #endif
-            app.DebugPrintf(buf);
+            Log::info(buf);
 #endif
         }
         if (saveCount > 0) {
@@ -68,7 +69,7 @@ void ChunkStorageProfilerDecorator::tick() {
                     0.000001 * (double)timeSpentSaving / (double)loadCount,
                     loadCount);
 #endif
-            app.DebugPrintf(buf);
+            Log::info(buf);
 #endif
         }
         counter = 0;

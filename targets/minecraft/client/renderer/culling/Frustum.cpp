@@ -1,12 +1,12 @@
 #include "Frustum.h"
 
-#include <GL/gl.h>
+
 #include <string.h>
 
 #include <cmath>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "java/FloatBuffer.h"
 #include "minecraft/client/MemoryTracker.h"
 
@@ -58,9 +58,9 @@ void Frustum::calculateFrustum() {
     // queries.
     // Camera::prepare() already captures both matrices every frame :)
     // i spent an ungodly amount of time on this simple fix.
-    memcpy(proj.data(), RenderManager.MatrixGet(GL_PROJECTION_MATRIX),
+    memcpy(proj.data(), PlatformRenderer.MatrixGet(GL_PROJECTION_MATRIX),
            16 * sizeof(float));
-    memcpy(modl.data(), RenderManager.MatrixGet(GL_MODELVIEW_MATRIX),
+    memcpy(modl.data(), PlatformRenderer.MatrixGet(GL_MODELVIEW_MATRIX),
            16 * sizeof(float));
 
     float* p = proj.data();

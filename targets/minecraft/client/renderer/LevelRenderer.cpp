@@ -1,6 +1,8 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "LevelRenderer.h"
 
-#include <GL/gl.h>
+
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,18 +16,17 @@
 #include <utility>
 
 #include "platform/PlatformTypes.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Render.h"
+#include "platform/input/input.h"
+#include "platform/renderer/renderer.h"
 #include "Chunk.h"
 #include "GameRenderer.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Audio/SoundEngine.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/common/src/Console_Debug_enum.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Audio/SoundEngine.h"
+#include "app/common/Colours/ColourTable.h"
+#include "app/common/Console_Debug_enum.h"
 #include "app/linux/LinuxGame.h"
-#include "app/include/FrameProfiler.h"
-#include "app/include/MobSkinMemTextureProcessor.h"
-#include "app/include/stubs.h"
+#include "util/FrameProfiler.h"
+#include "minecraft/client/renderer/MobSkinMemTextureProcessor.h"
 #include "Tesselator.h"
 #include "util/StringHelpers.h"
 #include "java/Class.h"
@@ -125,8 +126,10 @@ ResourceLocation LevelRenderer::END_SKY_LOCATION =
 
 const unsigned int HALO_RING_RADIUS = 100;
 
+#ifdef OCCLUSION_MODE_BFS
 uint64_t* LevelRenderer::globalChunkConnectivity =
     nullptr;  // bad placement do bettr juicey
+#endif
 
 #if defined(_LARGE_WORLDS)
 Chunk LevelRenderer::permaChunk[MAX_CONCURRENT_CHUNK_REBUILDS];
@@ -223,9 +226,11 @@ LevelRenderer::LevelRenderer(Minecraft* mc, Textures* textures) {
     globalChunkFlags = new unsigned char[getGlobalChunkCount()];
     memset(globalChunkFlags, 0, getGlobalChunkCount());
 
+#ifdef OCCLUSION_MODE_BFS
     globalChunkConnectivity = new uint64_t[getGlobalChunkCount()];
     memset(globalChunkConnectivity, 0xFF,
            getGlobalChunkCount() * sizeof(uint64_t));  // 0xFF >> Fully open
+#endif
 
     starList = MemoryTracker::genLists(4);
 
@@ -297,7 +302,7 @@ LevelRenderer::LevelRenderer(Minecraft* mc, Textures* textures) {
         t->color(0xffffff);
 
         for (unsigned int i = 0; i <= ARC_SEGMENTS; ++i) {
-            float DIFF = abs(i - HALF_ARC_SEG);
+            float DIFF = std::abs(i - HALF_ARC_SEG);
             if (DIFF < (HALF_ARC_SEG - WIDE_ARC_SEGS))
                 DIFF = 0;
             else
@@ -433,8 +438,8 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel* level) {
         // tile entities in the world dissappear We should only do this when
         // actually exiting the game, so only when the primary player sets there
         // level to nullptr
-        if (playerIndex == InputManager.GetPrimaryPad()) {
-            RenderManager.CBuffDeleteAll();
+        if (playerIndex == PlatformInput.GetPrimaryPad()) {
+            PlatformRenderer.CBuffDeleteAll();
             {
                 std::lock_guard<std::mutex> lock(m_csRenderableTileEntities);
                 renderableTileEntities.clear();
@@ -445,8 +450,8 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel* level) {
 }
 
 void LevelRenderer::AddDLCSkinsToMemTextures() {
-    for (int i = 0; i < app.vSkinNames.size(); i++) {
-        textures->addMemTexture(app.vSkinNames[i],
+    for (int i = 0; i < gameServices().getSkinNames().size(); i++) {
+        textures->addMemTexture(gameServices().getSkinNames()[i],
                                 new MobSkinMemTextureProcessor());
     }
 }
@@ -674,18 +679,18 @@ void LevelRenderer::renderEntities(Vec3* cam, Culler* culler, float a) {
     mc->gameRenderer->turnOffLightLayer(a);  // 4J - brought forward from 1.8.2
 }
 
-std::wstring LevelRenderer::gatherStats1() {
-    return L"C: " + toWString<int>(renderedChunks) + L"/" +
-           toWString<int>(totalChunks) + L". F: " +
-           toWString<int>(offscreenChunks) + L", O: " +
-           toWString<int>(occludedChunks) + L", E: " +
+std::string LevelRenderer::gatherStats1() {
+    return "C: " + toWString<int>(renderedChunks) + "/" +
+           toWString<int>(totalChunks) + ". F: " +
+           toWString<int>(offscreenChunks) + ", O: " +
+           toWString<int>(occludedChunks) + ", E: " +
            toWString<int>(emptyChunks);
 }
 
-std::wstring LevelRenderer::gatherStats2() {
-    return L"E: " + toWString<int>(renderedEntities) + L"/" +
-           toWString<int>(totalEntities) + L". B: " +
-           toWString<int>(culledEntities) + L", I: " +
+std::string LevelRenderer::gatherStats2() {
+    return "E: " + toWString<int>(renderedEntities) + "/" +
+           toWString<int>(totalEntities) + ". B: " +
+           toWString<int>(culledEntities) + ", I: " +
            toWString<int>((totalEntities - culledEntities) - renderedEntities);
 }
 
@@ -856,16 +861,16 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha) {
 
             // 4jcraft: replaced glPushMatrix/glTranslatef/glPopMatrix per chunk
             // no more full MVP upload per chunk, can also be bkwards compat
-            RenderManager.SetChunkOffset((float)chunk->chunk->x,
+            PlatformRenderer.SetChunkOffset((float)chunk->chunk->x,
                                          (float)chunk->chunk->y,
                                          (float)chunk->chunk->z);
 
-            if (RenderManager.CBuffCall(list, first)) {
+            if (PlatformRenderer.CBuffCall(list, first)) {
                 first = false;
             }
             count++;
         }
-        RenderManager.SetChunkOffset(0.f, 0.f, 0.f);
+        PlatformRenderer.SetChunkOffset(0.f, 0.f, 0.f);
     }
 
     glPopMatrix();
@@ -911,7 +916,7 @@ void LevelRenderer::renderSky(float alpha) {
 
         glDepthMask(false);
         textures->bindTexture(
-            &END_SKY_LOCATION);  // 4J was L"/1_2_2/misc/tunnel.png"
+            &END_SKY_LOCATION);  // 4J was "/1_2_2/misc/tunnel.png"
         Tesselator* t = Tesselator::getInstance();
         t->setMipmapEnable(false);
         for (int i = 0; i < 6; i++) {
@@ -1048,7 +1053,7 @@ void LevelRenderer::renderSky(float alpha) {
 
         ss = 20;
         textures->bindTexture(
-            &MOON_PHASES_LOCATION);  // 4J was L"/1_2_2/terrain/moon_phases.png"
+            &MOON_PHASES_LOCATION);  // 4J was "/1_2_2/terrain/moon_phases.png"
         int phase = level[playerIndex]->getMoonPhase();
         int u = phase % 4;
         int v = phase / 4 % 2;
@@ -1127,7 +1132,7 @@ void LevelRenderer::renderHaloRing(float alpha) {
     // Rough lumninance calculation
     float Y = (sr + sr + sb + sg + sg + sg) / 6;
     float br = 0.6f + (Y * 0.4f);
-    // app.DebugPrintf("Luminance = %f, brightness = %f\n", Y, br);
+    // Log::info("Luminance = %f, brightness = %f\n", Y, br);
     glColor3f(br, br, br);
 
     // Fog at the base near the world
@@ -1139,7 +1144,7 @@ void LevelRenderer::renderHaloRing(float alpha) {
 
     glDepthMask(false);
     textures->bindTexture(
-        L"misc/haloRing.png");  // 4J was L"/1_2_2/misc/tunnel.png"
+        "misc/haloRing.png");  // 4J was "/1_2_2/misc/tunnel.png"
     Tesselator* t = Tesselator::getInstance();
     bool prev = t->setMipmapEnable(true);
 
@@ -1162,7 +1167,7 @@ void LevelRenderer::renderClouds(float alpha) {
     int playerIndex = mc->player->GetXboxPad();
 
     // if the primary player has clouds off, so do all players on this machine
-    if (app.GetGameSettings(InputManager.GetPrimaryPad(),
+    if (gameServices().getGameSettings(PlatformInput.GetPrimaryPad(),
                             eGameSetting_Clouds) == 0) {
         return;
     }
@@ -1175,8 +1180,8 @@ void LevelRenderer::renderClouds(float alpha) {
         return;
     }
 
-    if (app.DebugSettingsOn()) {
-        if (app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn()) {
+        if (gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_FreezeTime)) {
             iTicks = m_freezeticks;
         }
@@ -1253,8 +1258,8 @@ void LevelRenderer::renderClouds(float alpha) {
     glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
 
-    if (app.DebugSettingsOn()) {
-        if (!(app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn()) {
+        if (!(gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
               (1L << eDebugSetting_FreezeTime))) {
             m_freezeticks = iTicks;
         }
@@ -1429,7 +1434,7 @@ void LevelRenderer::renderAdvancedClouds(float alpha) {
     // stencilling to limit the area drawn to. Clouds have a relatively large
     // fill area compared to the number of vertices that they have, and so
     // enabling clipping here to try and reduce fill rate cost.
-    RenderManager.StateSetEnableViewportClipPlanes(true);
+    PlatformRenderer.StateSetEnableViewportClipPlanes(true);
     float yOffs =
         (float)(mc->cameraTargetPlayer->yOld +
                 (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) *
@@ -1439,8 +1444,8 @@ void LevelRenderer::renderAdvancedClouds(float alpha) {
 
     int iTicks = ticks;
 
-    if (app.DebugSettingsOn()) {
-        if (app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn()) {
+        if (gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_FreezeTime)) {
             iTicks = m_freezeticks;
         }
@@ -1485,7 +1490,7 @@ void LevelRenderer::renderAdvancedClouds(float alpha) {
     }
 
     textures->bindTexture(
-        &CLOUDS_LOCATION);  // 4J was L"/environment/clouds.png"
+        &CLOUDS_LOCATION);  // 4J was "/environment/clouds.png"
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1686,13 +1691,13 @@ void LevelRenderer::renderAdvancedClouds(float alpha) {
     glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
 
-    if (app.DebugSettingsOn()) {
-        if (!(app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn()) {
+        if (!(gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
               (1L << eDebugSetting_FreezeTime))) {
             m_freezeticks = iTicks;
         }
     }
-    RenderManager.StateSetEnableViewportClipPlanes(false);
+    PlatformRenderer.StateSetEnableViewportClipPlanes(false);
 }
 
 bool LevelRenderer::updateDirtyChunks() {
@@ -1743,12 +1748,12 @@ bool LevelRenderer::updateDirtyChunks() {
     {
         FRAME_PROFILE_SCOPE(ChunkDirtyScan);
 
-        unsigned int memAlloc = RenderManager.CBuffSize(-1);
+        unsigned int memAlloc = PlatformRenderer.CBuffSize(-1);
         /*
         static int throttle = 0;
         if( ( throttle % 100 ) == 0 )
         {
-        app.DebugPrintf("CBuffSize: %d\n",memAlloc/(1024*1024));
+        Log::info("CBuffSize: %d\n",memAlloc/(1024*1024));
         }
         throttle++;
         */
@@ -1818,7 +1823,7 @@ bool LevelRenderer::updateDirtyChunks() {
                 int py = (int)player->y;
                 int pz = (int)player->z;
 
-                //			app.DebugPrintf("!! %d %d %d, %d %d %d
+                //			Log::info("!! %d %d %d, %d %d %d
                 //{%d,%d}
                 //",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild,
                 // xChunks, zChunks);
@@ -1935,7 +1940,7 @@ bool LevelRenderer::updateDirtyChunks() {
                         }
                     }
                 }
-                //			app.DebugPrintf("[%d,%d,%d]\n",nearestClipChunks.empty(),considered,wouldBeNearButEmpty);
+                //			Log::info("[%d,%d,%d]\n",nearestClipChunks.empty(),considered,wouldBeNearButEmpty);
             }
         }
     }
@@ -1958,7 +1963,7 @@ bool LevelRenderer::updateDirtyChunks() {
                 // exactly the same thing would happen further away, but we just
                 // don't care about it so much from terms of visual impact.
                 if (veryNearCount > 0) {
-                    RenderManager.CBuffDeferredModeStart();
+                    PlatformRenderer.CBuffDeferredModeStart();
                 }
                 // Build this chunk & return false to continue processing
                 chunk->clearDirty();
@@ -1999,7 +2004,7 @@ bool LevelRenderer::updateDirtyChunks() {
                 // 0; 		static int64_t countTime = 0;
                 //		int64_t startTime = System::currentTimeMillis();
 
-                // app.DebugPrintf("Rebuilding permaChunk %d\n", index);
+                // Log::info("Rebuilding permaChunk %d\n", index);
 
                 {
                     FRAME_PROFILE_SCOPE(ChunkRebuildBody);
@@ -2050,7 +2055,7 @@ bool LevelRenderer::updateDirtyChunks() {
             // happen further away, but we just don't care about it so much from
             // terms of visual impact.
             if (veryNearCount > 0) {
-                RenderManager.CBuffDeferredModeStart();
+                PlatformRenderer.CBuffDeferredModeStart();
             }
             // Build this chunk & return false to continue processing
             chunk->clearDirty();
@@ -2218,13 +2223,13 @@ void LevelRenderer::renderHitOutline(std::shared_ptr<Player> player,
         const float ss = 0.002f;
 
         // 4J-PB - If Display HUD is false, don't render the hit outline
-        if (app.GetGameSettings(iPad, eGameSetting_DisplayHUD) == 0) return;
-        RenderManager.StateSetLightingEnable(false);
+        if (gameServices().getGameSettings(iPad, eGameSetting_DisplayHUD) == 0) return;
+        PlatformRenderer.StateSetLightingEnable(false);
         glDisable(GL_TEXTURE_2D);
 
         // draw hit outline
-        RenderManager.StateSetColour(0.0f, 0.0f, 0.0f, 0.4f);
-        RenderManager.StateSetLineWidth(1.0f);
+        PlatformRenderer.StateSetColour(0.0f, 0.0f, 0.0f, 0.4f);
+        PlatformRenderer.StateSetLineWidth(1.0f);
 
         // hack
         glDepthFunc(GL_LEQUAL);
@@ -2249,17 +2254,17 @@ void LevelRenderer::renderHitOutline(std::shared_ptr<Player> player,
 
         // restore
         glDisable(GL_POLYGON_OFFSET_LINE);
-        RenderManager.StateSetColour(1.0f, 1.0f, 1.0f, 1.0f);
+        PlatformRenderer.StateSetColour(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
-        RenderManager.StateSetLightingEnable(true);
+        PlatformRenderer.StateSetLightingEnable(true);
     }
 }
 
 void LevelRenderer::render(AABB* b) {
     Tesselator* t = Tesselator::getInstance();
-    RenderManager.StateSetLightingEnable(false);
+    PlatformRenderer.StateSetLightingEnable(false);
     glDisable(GL_TEXTURE_2D);
-    RenderManager.StateSetColour(0.0f, 0.0f, 0.0f, 0.4f);
+    PlatformRenderer.StateSetColour(0.0f, 0.0f, 0.0f, 0.4f);
 
     // prevent zfight
     glEnable(GL_POLYGON_OFFSET_LINE);
@@ -2300,9 +2305,9 @@ void LevelRenderer::render(AABB* b) {
 
     t->end();
     glDisable(GL_POLYGON_OFFSET_LINE);
-    RenderManager.StateSetLightingEnable(true);
+    PlatformRenderer.StateSetLightingEnable(true);
     glEnable(GL_TEXTURE_2D);
-    RenderManager.StateSetColour(1.0f, 1.0f, 1.0f, 1.0f);
+    PlatformRenderer.StateSetColour(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1,
@@ -2781,10 +2786,10 @@ void LevelRenderer::cull(Culler* culler, float a) {
     "Unknown occlusion mode, this should NEVER happen, check meson.build for misconfiguration"
 #endif
 }
-void LevelRenderer::playStreamingMusic(const std::wstring& name, int x, int y,
+void LevelRenderer::playStreamingMusic(const std::string& name, int x, int y,
                                        int z) {
-    if (name != L"") {
-        mc->gui->setNowPlaying(L"C418 - " + name);
+    if (name != "") {
+        mc->gui->setNowPlaying("C418 - " + name);
     }
     mc->soundEngine->playStreaming(name, (float)x, (float)y, (float)z, 1, 1);
 }
@@ -2829,7 +2834,7 @@ void LevelRenderer::playSoundExceptPlayer(std::shared_ptr<Player> player,
 // 4J-PB - original function. I've changed to an enum instead of string compares
 // 4J removed -
 /*
-void LevelRenderer::addParticle(const wstring& name, double x, double y, double
+void LevelRenderer::addParticle(const string& name, double x, double y, double
 z, double xa, double ya, double za)
 {
 if (mc == nullptr || mc->cameraTargetPlayer == nullptr || mc->particleEngine ==
@@ -2844,36 +2849,36 @@ if (xd * xd + yd * yd + zd * zd > particleDistance * particleDistance) return;
 
 int playerIndex = mc->player->GetXboxPad();	// 4J added
 
-if (name== L"bubble") mc->particleEngine->add(shared_ptr<BubbleParticle>( new
+if (name== "bubble") mc->particleEngine->add(shared_ptr<BubbleParticle>( new
 BubbleParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if (name==
-L"smoke") mc->particleEngine->add(shared_ptr<SmokeParticle>( new
+"smoke") mc->particleEngine->add(shared_ptr<SmokeParticle>( new
 SmokeParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if (name==
-L"note") mc->particleEngine->add(shared_ptr<NoteParticle>( new
+"note") mc->particleEngine->add(shared_ptr<NoteParticle>( new
 NoteParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if (name==
-L"portal") mc->particleEngine->add(shared_ptr<PortalParticle>( new
+"portal") mc->particleEngine->add(shared_ptr<PortalParticle>( new
 PortalParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if (name==
-L"explode") mc->particleEngine->add(shared_ptr<ExplodeParticle>( new
+"explode") mc->particleEngine->add(shared_ptr<ExplodeParticle>( new
 ExplodeParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if (name==
-L"flame") mc->particleEngine->add(shared_ptr<FlameParticle>( new
+"flame") mc->particleEngine->add(shared_ptr<FlameParticle>( new
 FlameParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if (name==
-L"lava") mc->particleEngine->add(shared_ptr<LavaParticle>( new
-LavaParticle(level[playerIndex], x, y, z) ) ); else if (name== L"footstep")
+"lava") mc->particleEngine->add(shared_ptr<LavaParticle>( new
+LavaParticle(level[playerIndex], x, y, z) ) ); else if (name== "footstep")
 mc->particleEngine->add(shared_ptr<FootstepParticle>( new
 FootstepParticle(textures, level[playerIndex], x, y, z) ) ); else if (name==
-L"splash") mc->particleEngine->add(shared_ptr<SplashParticle>( new
+"splash") mc->particleEngine->add(shared_ptr<SplashParticle>( new
 SplashParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if (name==
-L"largesmoke") mc->particleEngine->add(shared_ptr<SmokeParticle>( new
+"largesmoke") mc->particleEngine->add(shared_ptr<SmokeParticle>( new
 SmokeParticle(level[playerIndex], x, y, z, xa, ya, za, 2.5f) ) ); else if
-(name== L"reddust") mc->particleEngine->add(shared_ptr<RedDustParticle>( new
+(name== "reddust") mc->particleEngine->add(shared_ptr<RedDustParticle>( new
 RedDustParticle(level[playerIndex], x, y, z, (float) xa, (float) ya, (float) za)
-) ); else if (name== L"snowballpoof")
+) ); else if (name== "snowballpoof")
 mc->particleEngine->add(shared_ptr<BreakingItemParticle>( new
 BreakingItemParticle(level[playerIndex], x, y, z, Item::snowBall) ) ); else if
-(name== L"snowshovel") mc->particleEngine->add(shared_ptr<SnowShovelParticle>(
+(name== "snowshovel") mc->particleEngine->add(shared_ptr<SnowShovelParticle>(
 new SnowShovelParticle(level[playerIndex], x, y, z, xa, ya, za) ) ); else if
-(name== L"slime") mc->particleEngine->add(shared_ptr<BreakingItemParticle>( new
+(name== "slime") mc->particleEngine->add(shared_ptr<BreakingItemParticle>( new
 BreakingItemParticle(level[playerIndex], x, y, z, Item::slimeBall)) ) ; else if
-(name== L"heart") mc->particleEngine->add(shared_ptr<HeartParticle>( new
+(name== "heart") mc->particleEngine->add(shared_ptr<HeartParticle>( new
 HeartParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
 }
 */
@@ -3205,11 +3210,11 @@ void LevelRenderer::entityAdded(std::shared_ptr<Entity> entity) {
         player->prepareCustomTextures();
 
         // 4J-PB - adding these from global title storage
-        if (player->customTextureUrl != L"") {
+        if (player->customTextureUrl != "") {
             textures->addMemTexture(player->customTextureUrl,
                                     new MobSkinMemTextureProcessor());
         }
-        if (player->customTextureUrl2 != L"") {
+        if (player->customTextureUrl2 != "") {
             textures->addMemTexture(player->customTextureUrl2,
                                     new MobSkinMemTextureProcessor());
         }
@@ -3220,10 +3225,10 @@ void LevelRenderer::entityRemoved(std::shared_ptr<Entity> entity) {
     if (entity->instanceof(eTYPE_PLAYER)) {
         std::shared_ptr<Player> player =
             std::dynamic_pointer_cast<Player>(entity);
-        if (player->customTextureUrl != L"") {
+        if (player->customTextureUrl != "") {
             textures->removeMemTexture(player->customTextureUrl);
         }
-        if (player->customTextureUrl2 != L"") {
+        if (player->customTextureUrl2 != "") {
             textures->removeMemTexture(player->customTextureUrl2);
         }
     }
@@ -3305,7 +3310,7 @@ void LevelRenderer::levelEvent(std::shared_ptr<Player> source, int type, int x,
             break;
         case LevelEvent::SOUND_CLICK_FAIL:
             // level[playerIndex]->playSound(x, y, z,
-            // L"random.click", 1.0f, 1.2f);
+            // "random.click", 1.0f, 1.2f);
             level[playerIndex]->playLocalSound(x, y, z, eSoundType_RANDOM_CLICK,
                                                1.0f, 1.2f, false);
             break;
@@ -3512,7 +3517,7 @@ void LevelRenderer::levelEvent(std::shared_ptr<Player> source, int type, int x,
                 // started playing already
                 if (!mc->soundEngine->GetIsPlayingStreamingGameMusic()) {
                     level[playerIndex]->playStreamingMusic(
-                        L"", x, y, z);  // 4J - used to pass nullptr, but using
+                        "", x, y, z);  // 4J - used to pass nullptr, but using
                                         // empty string here now instead
                 }
             }
@@ -3620,7 +3625,7 @@ void LevelRenderer::registerTextures(IconRegister* iconRegister) {
 
     for (int i = 0; i < 10; i++) {
         breakingTextures[i] =
-            iconRegister->registerIcon(L"destroy_" + toWString(i));
+            iconRegister->registerIcon("destroy_" + toWString(i));
     }
 }
 
@@ -3730,6 +3735,7 @@ void LevelRenderer::setGlobalChunkFlag(int x, int y, int z, Level* level,
     }
 }
 
+#ifdef OCCLUSION_MODE_BFS
 void LevelRenderer::setGlobalChunkConnectivity(int index, uint64_t conn) {
     if (index >= 0 && index < getGlobalChunkCount()) {
         globalChunkConnectivity[index] = conn;
@@ -3742,6 +3748,7 @@ uint64_t LevelRenderer::getGlobalChunkConnectivity(int index) {
     }
     return ~(uint64_t)0;  // out of bounds
 }
+#endif
 
 void LevelRenderer::clearGlobalChunkFlag(int x, int y, int z, Level* level,
                                          unsigned char flag,
@@ -4038,7 +4045,7 @@ void LevelRenderer::staticCtor() {
 
 int LevelRenderer::rebuildChunkThreadProc(void* lpParam) {
     Tesselator::CreateNewThreadStorage(1024 * 1024);
-    RenderManager.InitialiseContext();
+    PlatformRenderer.InitialiseContext();
     Chunk::CreateNewThreadStorage();
     Tile::CreateNewThreadStorage();
 
@@ -4047,7 +4054,7 @@ int LevelRenderer::rebuildChunkThreadProc(void* lpParam) {
     while (true) {
         s_activationEventA[index]->waitForSignal(C4JThread::kInfiniteTimeout);
 
-        // app.DebugPrintf("Rebuilding permaChunk %d\n", index + 1);
+        // Log::info("Rebuilding permaChunk %d\n", index + 1);
         {
             FRAME_PROFILE_SCOPE(ChunkRebuildBody);
             permaChunk[index + 1].rebuild();

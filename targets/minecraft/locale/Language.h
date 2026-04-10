@@ -8,13 +8,13 @@
 class Language {
 private:
     static Language* singleton;
-    std::unordered_map<std::wstring, std::wstring> translateTable;
+    std::unordered_map<std::string, std::string> translateTable;
 
 public:
     Language();
     static Language* getInstance();
-    std::wstring getElement(std::wstring elementId, ...);
-    std::wstring getElement(const std::wstring& elementId, va_list args);
-    std::wstring getElementName(const std::wstring& elementId);
-    std::wstring getElementDescription(const std::wstring& elementId);
+    std::string getElement(std::string elementId, ...);
+    std::string getElement(const std::string& elementId, va_list args);
+    std::string getElementName(const std::string& elementId);
+    std::string getElementDescription(const std::string& elementId);
 };

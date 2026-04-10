@@ -13,7 +13,7 @@
 
 class Icon;
 
-const std::wstring TheEndPortalFrameTile::TEXTURE_EYE = L"endframe_eye";
+const std::string TheEndPortalFrameTile::TEXTURE_EYE = "endframe_eye";
 
 TheEndPortalFrameTile::TheEndPortalFrameTile(int id)
     : Tile(id, Material::glass, false) {
@@ -32,9 +32,9 @@ Icon* TheEndPortalFrameTile::getTexture(int face, int data) {
 }
 
 void TheEndPortalFrameTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"endframe_side");
-    iconTop = iconRegister->registerIcon(L"endframe_top");
-    iconEye = iconRegister->registerIcon(L"endframe_eye");
+    icon = iconRegister->registerIcon("endframe_side");
+    iconTop = iconRegister->registerIcon("endframe_top");
+    iconEye = iconRegister->registerIcon("endframe_eye");
 }
 
 Icon* TheEndPortalFrameTile::getEye() { return iconEye; }

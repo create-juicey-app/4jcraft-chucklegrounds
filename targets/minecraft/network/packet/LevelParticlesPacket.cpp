@@ -5,7 +5,7 @@
 #include "java/InputOutputStream/DataOutputStream.h"
 
 LevelParticlesPacket::LevelParticlesPacket() {
-    this->name = L"";
+    this->name = "";
     this->x = 0.0f;
     this->y = 0.0f;
     this->z = 0.0f;
@@ -16,7 +16,7 @@ LevelParticlesPacket::LevelParticlesPacket() {
     this->count = 0;
 }
 
-LevelParticlesPacket::LevelParticlesPacket(const std::wstring& name, float x,
+LevelParticlesPacket::LevelParticlesPacket(const std::string& name, float x,
                                            float y, float z, float xDist,
                                            float yDist, float zDist,
                                            float maxSpeed, int count) {
@@ -55,7 +55,7 @@ void LevelParticlesPacket::write(DataOutputStream* dos) {
     dos->writeInt(count);
 }
 
-std::wstring LevelParticlesPacket::getName() { return name; }
+std::string LevelParticlesPacket::getName() { return name; }
 
 double LevelParticlesPacket::getX() { return x; }
 

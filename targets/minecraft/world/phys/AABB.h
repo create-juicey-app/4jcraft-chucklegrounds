@@ -34,5 +34,5 @@ public:
     bool containsX(const std::optional<Vec3>& v) const;
     bool containsY(const std::optional<Vec3>& v) const;
     bool containsZ(const std::optional<Vec3>& v) const;
-    std::wstring toString() const;
+    std::string toString() const;
 };

@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/NetTypes.h"
+#include "platform/NetTypes.h"
 #include "util/Definitions.h"
 #include "java/InputOutputStream/DataInputStream.h"
 #include "java/InputOutputStream/DataOutputStream.h"
@@ -952,10 +952,11 @@ void CompressedTileStorage::compress(int upgradeBlock /*=-1*/) {
         unsigned char* newIndicesAndData = (unsigned char*)malloc(
             memToAlloc);  //(unsigned char *)malloc( memToAlloc );
         if (newIndicesAndData == nullptr) {
-            uint32_t lastError = GetLastError();
-            MEMORYSTATUS memStatus;
-            GlobalMemoryStatus(&memStatus);
-            __debugbreak();
+            assert(0 && "Failed to allocate memory for CompressedTileStorage.");
+            // uint32_t lastError = GetLastError();
+            // MEMORYSTATUS memStatus;
+            // GlobalMemoryStatus(&memStatus);
+            // assert(0);
         }
         unsigned char* pucData = newIndicesAndData + 1024;
         unsigned short usDataOffset = 0;

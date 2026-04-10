@@ -1,9 +1,10 @@
+#include "minecraft/IGameServices.h"
 #include "ItemDispenseBehaviors.h"
 
 #include <memory>
 #include <string>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Class.h"
 #include "java/Random.h"
@@ -448,7 +449,7 @@ std::shared_ptr<ItemInstance> TntDispenseBehavior::execute(
     Level* world = source->getWorld();
 
     if (world->newPrimedTntAllowed() &&
-        app.GetGameHostOption(eGameHostOption_TNT)) {
+        gameServices().getGameHostOption(eGameHostOption_TNT)) {
         int targetX = source->getBlockX() + facing->getStepX();
         int targetY = source->getBlockY() + facing->getStepY();
         int targetZ = source->getBlockZ() + facing->getStepZ();

@@ -9,13 +9,13 @@
 class TexturePacket : public Packet,
                       public std::enable_shared_from_this<TexturePacket> {
 public:
-    std::wstring textureName;
+    std::string textureName;
     std::uint8_t* pbData;
     std::uint32_t dataBytes;
 
     TexturePacket();
     ~TexturePacket();
-    TexturePacket(const std::wstring& textureName, std::uint8_t* pbData,
+    TexturePacket(const std::string& textureName, std::uint8_t* pbData,
                   std::uint32_t dataBytes);
 
     virtual void handle(PacketListener* listener);

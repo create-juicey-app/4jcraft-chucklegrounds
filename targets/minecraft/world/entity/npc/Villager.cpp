@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "Villager.h"
 
 #include <algorithm>
@@ -96,7 +97,7 @@ void Villager::_init(int profession) {
     updateMerchantTimer = 0;
     addRecipeOnUpdate = false;
     riches = 0;
-    lastPlayerTradeName = L"";
+    lastPlayerTradeName = "";
     rewardPlayersOnFirstVillage = false;
     baseRecipeChanceMod = 0.0f;
 
@@ -219,19 +220,19 @@ void Villager::defineSynchedData() {
 
 void Villager::addAdditonalSaveData(CompoundTag* tag) {
     AgableMob::addAdditonalSaveData(tag);
-    tag->putInt(L"Profession", getProfession());
-    tag->putInt(L"Riches", riches);
+    tag->putInt("Profession", getProfession());
+    tag->putInt("Riches", riches);
     if (offers != nullptr) {
-        tag->putCompound(L"Offers", offers->createTag());
+        tag->putCompound("Offers", offers->createTag());
     }
 }
 
 void Villager::readAdditionalSaveData(CompoundTag* tag) {
     AgableMob::readAdditionalSaveData(tag);
-    setProfession(tag->getInt(L"Profession"));
-    riches = tag->getInt(L"Riches");
-    if (tag->contains(L"Offers")) {
-        CompoundTag* compound = tag->getCompound(L"Offers");
+    setProfession(tag->getInt("Profession"));
+    riches = tag->getInt("Riches");
+    if (tag->contains("Offers")) {
+        CompoundTag* compound = tag->getCompound("Offers");
         delete offers;
         offers = new MerchantRecipeList(compound);
     }
@@ -336,7 +337,7 @@ void Villager::notifyTrade(MerchantRecipe* activeRecipe) {
         if (tradingPlayer.lock() != nullptr) {
             lastPlayerTradeName = tradingPlayer.lock()->getName();
         } else {
-            lastPlayerTradeName = L"";
+            lastPlayerTradeName = "";
         }
     }
 
@@ -775,7 +776,7 @@ std::shared_ptr<AgableMob> Villager::getBreedOffspring(
 
 bool Villager::canBeLeashed() { return false; }
 
-std::wstring Villager::getDisplayName() {
+std::string Villager::getDisplayName() {
     if (hasCustomName()) return getCustomName();
 
     int name = IDS_VILLAGER;
@@ -796,5 +797,5 @@ std::wstring Villager::getDisplayName() {
             name = IDS_VILLAGER_BUTCHER;
             break;
     };
-    return app.GetString(name);
+    return gameServices().getString(name);
 }

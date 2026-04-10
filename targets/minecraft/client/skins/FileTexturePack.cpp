@@ -17,12 +17,12 @@ FileTexturePack::FileTexturePack(std::uint32_t id, File* file,
 void FileTexturePack::unload(Textures* textures) {}
 
 InputStream* FileTexturePack::getResourceImplementation(
-    const std::wstring& name)  // throws IOException
+    const std::string& name)  // throws IOException
 {
     return nullptr;
 }
 
-bool FileTexturePack::hasFile(const std::wstring& name) { return false; }
+bool FileTexturePack::hasFile(const std::string& name) { return false; }
 
 void FileTexturePack::loadZipFile()  // throws IOException
 {}

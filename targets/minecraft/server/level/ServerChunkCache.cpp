@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "ServerChunkCache.h"
 
 #include <assert.h>
@@ -6,7 +7,7 @@
 
 #include <algorithm>
 
-#include "app/linux/LinuxGame.h"
+#include "minecraft/IGameServices.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "ServerLevel.h"
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/compression.h"
@@ -559,7 +560,7 @@ void ServerChunkCache::flagPostProcessComplete(short flag, int x, int z) {
     // Are all neighbouring chunks And this one now post-processed?
     if (lc->terrainPopulated == LevelChunk::sTerrainPopulatedAllNeighbours) {
         // Special lighting patching for schematics first
-        app.processSchematicsLighting(lc);
+        gameServices().processSchematicsLighting(lc);
 
         // This would be a good time to fix up any lighting for this chunk since
         // all the geometry that could affect it should now be in place
@@ -676,7 +677,7 @@ bool ServerChunkCache::save(bool force, ProgressListener* progressListener) {
     bool maxSavesReached = false;
 
     if (!force) {
-        // app.DebugPrintf("Unsaved chunks = %d\n",
+        // Log::info("Unsaved chunks = %d\n",
         // level->getUnsavedChunkCount() );
         //  Single threaded implementation for small saves
         for (unsigned int i = 0; i < m_loadedChunkList.size(); i++) {
@@ -820,8 +821,8 @@ bool ServerChunkCache::tick() {
 
 bool ServerChunkCache::shouldSave() { return !level->noSave; }
 
-std::wstring ServerChunkCache::gatherStats() {
-    return L"ServerChunkCache: ";  // + toWString<int>(loadedChunks.size()) + L"
+std::string ServerChunkCache::gatherStats() {
+    return "ServerChunkCache: ";  // + toWString<int>(loadedChunks.size()) + "
                                    // Drop: " + toWString<int>(toDrop.size());
 }
 
@@ -831,7 +832,7 @@ std::vector<Biome::MobSpawnerData*>* ServerChunkCache::getMobsAt(
 }
 
 TilePos* ServerChunkCache::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
     return source->findNearestMapFeature(level, featureName, x, y, z);
 }
 
@@ -854,10 +855,10 @@ int ServerChunkCache::runSaveThreadProc(void* lpParam) {
         C4JThread::
             kInfiniteTimeout);  // WaitForSingleObject(params->wakeEvent,INFINITE);
 
-    // app.DebugPrintf("Save thread has started\n");
+    // Log::info("Save thread has started\n");
 
     while (params->chunkToSave != nullptr) {
-        // app.DebugPrintf("Save thread has started processing a chunk\n");
+        // Log::info("Save thread has started processing a chunk\n");
         if (params->saveEntities)
             params->cache->saveEntities(params->chunkToSave);
 
@@ -868,7 +869,7 @@ int ServerChunkCache::runSaveThreadProc(void* lpParam) {
         params->notificationEvent
             ->set();  // SetEvent(params->notificationEvent);
 
-        // app.DebugPrintf("Save thread has alerted producer that it is
+        // Log::info("Save thread has alerted producer that it is
         // complete\n");
 
         // Wait for the producer thread to tell us to go again
@@ -877,7 +878,7 @@ int ServerChunkCache::runSaveThreadProc(void* lpParam) {
                 kInfiniteTimeout);  // WaitForSingleObject(params->wakeEvent,INFINITE);
     }
 
-    // app.DebugPrintf("Thread is exiting as it has no chunk to process\n");
+    // Log::info("Thread is exiting as it has no chunk to process\n");
 
     if (!params->useSharedThreadStorage) {
         Compression::ReleaseThreadStorage();

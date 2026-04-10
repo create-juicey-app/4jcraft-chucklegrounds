@@ -12,11 +12,11 @@ private:
     Screen* lastScreen;
     EditBox* nameEdit;
     EditBox* seedEdit;
-    std::wstring resultFolder;
+    std::string resultFolder;
     bool done;
 
     bool moreOptions;
-    std::wstring gameMode;
+    std::string gameMode;
     bool generateStructures;
     bool bonusChest;
     bool cheatsEnabled;
@@ -29,9 +29,9 @@ private:
     Button* worldTypeButton;
     Button* cheatsEnabledButton;
 
-    std::wstring gameModeDescriptionLine1;
-    std::wstring gameModeDescriptionLine2;
-    std::wstring seed;
+    std::string gameModeDescriptionLine1;
+    std::string gameModeDescriptionLine2;
+    std::string seed;
 
 public:
     CreateWorldScreen(Screen* lastScreen);
@@ -43,13 +43,13 @@ private:
     void updateStrings();
 
 public:
-    static std::wstring findAvailableFolderName(LevelStorageSource* levelSource,
-                                                const std::wstring& folder);
+    static std::string findAvailableFolderName(LevelStorageSource* levelSource,
+                                                const std::string& folder);
     virtual void removed() override;
 
 protected:
     virtual void buttonClicked(Button* button) override;
-    virtual void keyPressed(wchar_t ch, int eventKey) override;
+    virtual void keyPressed(char ch, int eventKey) override;
     virtual void mouseClicked(int x, int y, int buttonNum) override;
 
 public:
@@ -84,7 +84,7 @@ private:
         bool bCheatsEnabled;
         int dwTexturePack;
         int iPad;
-        std::wstring worldName;
-        std::wstring seed;
+        std::string worldName;
+        std::string seed;
     } m_MoreOptionsParams;
 };

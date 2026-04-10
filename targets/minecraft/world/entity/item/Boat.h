@@ -71,7 +71,7 @@ protected:
 
 public:
     virtual float getShadowHeightOffs();
-    std::wstring getName();
+    std::string getName();
     virtual bool interact(std::shared_ptr<Player> player);
 
     virtual void setDamage(float damage);

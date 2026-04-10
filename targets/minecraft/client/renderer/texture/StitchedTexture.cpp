@@ -10,19 +10,19 @@
 #include "minecraft/client/renderer/texture/custom/ClockTexture.h"
 #include "minecraft/client/renderer/texture/custom/CompassTexture.h"
 
-StitchedTexture* StitchedTexture::create(const std::wstring& name) {
+StitchedTexture* StitchedTexture::create(const std::string& name) {
     // TODO: Generalize?
-    if (name.compare(L"clock") == 0) {
+    if (name.compare("clock") == 0) {
         return new ClockTexture();
-    } else if (name.compare(L"compass") == 0) {
+    } else if (name.compare("compass") == 0) {
         return new CompassTexture();
     } else {
         return new StitchedTexture(name, name);
     }
 }
 
-StitchedTexture::StitchedTexture(const std::wstring& name,
-                                 const std::wstring& filename)
+StitchedTexture::StitchedTexture(const std::string& name,
+                                 const std::string& filename)
     : name(name) {
     // 4J Initialisers
     source = nullptr;
@@ -48,7 +48,7 @@ StitchedTexture::StitchedTexture(const std::wstring& name,
 void StitchedTexture::freeFrameTextures() {
     if (frames != nullptr) {
         for (auto it = frames->begin(); it != frames->end(); ++it) {
-            TextureManager::getInstance()->unregisterTexture(L"", *it);
+            TextureManager::getInstance()->unregisterTexture("", *it);
             delete *it;
         }
         delete frames;
@@ -156,7 +156,7 @@ float StitchedTexture::getV(double offset, bool adjust /*=false*/) const {
            (diff * ((float)offset / SharedConstants::WORLD_RESOLUTION));
 }
 
-std::wstring StitchedTexture::getName() const { return name; }
+std::string StitchedTexture::getName() const { return name; }
 
 int StitchedTexture::getSourceWidth() const { return source->getWidth(); }
 
@@ -216,14 +216,14 @@ void StitchedTexture::loadAnimationFrames(BufferedReader* bufferedReader) {
     intPairVector* results = new intPairVector();
 
     // try {
-    std::wstring line = bufferedReader->readLine();
+    std::string line = bufferedReader->readLine();
     while (!line.empty()) {
         line = trimString(line);
         if (line.length() > 0) {
-            std::vector<std::wstring> tokens = stringSplit(line, L',');
+            std::vector<std::string> tokens = stringSplit(line, ',');
             // for (String token : tokens)
             for (auto it = tokens.begin(); it != tokens.end(); ++it) {
-                std::wstring token = *it;
+                std::string token = *it;
                 int multiPos = token.find_first_of('*');
                 if (multiPos > 0) {
                     int frame = fromWString<int>(token.substr(0, multiPos));
@@ -250,7 +250,7 @@ void StitchedTexture::loadAnimationFrames(BufferedReader* bufferedReader) {
     }
 }
 
-void StitchedTexture::loadAnimationFrames(const std::wstring& string) {
+void StitchedTexture::loadAnimationFrames(const std::string& string) {
     if (frameOverride != nullptr) {
         delete frameOverride;
         frameOverride = nullptr;
@@ -260,10 +260,10 @@ void StitchedTexture::loadAnimationFrames(const std::wstring& string) {
 
     intPairVector* results = new intPairVector();
 
-    std::vector<std::wstring> tokens = stringSplit(trimString(string), L',');
+    std::vector<std::string> tokens = stringSplit(trimString(string), ',');
     // for (String token : tokens)
     for (auto it = tokens.begin(); it != tokens.end(); ++it) {
-        std::wstring token = trimString(*it);
+        std::string token = trimString(*it);
         int multiPos = token.find_first_of('*');
         if (multiPos > 0) {
             int frame = fromWString<int>(token.substr(0, multiPos));

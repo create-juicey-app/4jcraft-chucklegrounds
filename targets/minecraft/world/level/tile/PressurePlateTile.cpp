@@ -15,7 +15,7 @@
 
 class Material;
 
-PressurePlateTile::PressurePlateTile(int id, const std::wstring& tex,
+PressurePlateTile::PressurePlateTile(int id, const std::string& tex,
                                      Material* material,
                                      Sensitivity sensitivity)
     : BasePressurePlateTile(id, tex, material) {
@@ -43,7 +43,7 @@ int PressurePlateTile::getSignalStrength(Level* level, int x, int y, int z) {
     else if (sensitivity == players)
         entities = level->getEntitiesOfClass(typeid(Player), &at_bb);
     else
-        __debugbreak();  // 4J-JEV: We're going to delete something at a random
+        assert(0);  // 4J-JEV: We're going to delete something at a random
                          // location.
 
     if (entities != nullptr && !entities->empty()) {

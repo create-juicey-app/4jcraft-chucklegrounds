@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/Random.h"
 #include "minecraft/Facing.h"
 #include "minecraft/client/Minecraft.h"
@@ -41,10 +41,10 @@ Icon* GrassTile::getTexture(LevelSource* level, int x, int y, int z, int face) {
 }
 
 void GrassTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"grass_side");
-    iconTop = iconRegister->registerIcon(L"grass_top");
-    iconSnowSide = iconRegister->registerIcon(L"snow_side");
-    iconSideOverlay = iconRegister->registerIcon(L"grass_side_overlay");
+    icon = iconRegister->registerIcon("grass_side");
+    iconTop = iconRegister->registerIcon("grass_top");
+    iconSnowSide = iconRegister->registerIcon("snow_side");
+    iconSideOverlay = iconRegister->registerIcon("grass_side_overlay");
 }
 
 int GrassTile::getColor() const {

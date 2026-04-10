@@ -5,8 +5,8 @@
 class DoubleTag : public Tag {
 public:
     double data;
-    DoubleTag(const std::wstring& name) : Tag(name) {}
-    DoubleTag(const std::wstring& name, double data) : Tag(name) {
+    DoubleTag(const std::string& name) : Tag(name) {}
+    DoubleTag(const std::string& name, double data) : Tag(name) {
         this->data = data;
     }
 
@@ -14,10 +14,10 @@ public:
     void load(DataInput* dis, int tagDepth) { data = dis->readDouble(); }
 
     uint8_t getId() { return TAG_Double; }
-    std::wstring toString() {
-        static wchar_t buf[32];
-        swprintf(buf, 32, L"%f", data);
-        return std::wstring(buf);
+    std::string toString() {
+        static char buf[32];
+        snprintf(buf, 32, "%f", data);
+        return std::string(buf);
     }
 
     Tag* copy() { return new DoubleTag(getName(), data); }

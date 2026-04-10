@@ -13,14 +13,14 @@
 #include "minecraft/world/level/Level.h"
 #include "minecraft/world/level/dimension/Dimension.h"
 
-ClockTexture::ClockTexture() : StitchedTexture(L"clock", L"clock") {
+ClockTexture::ClockTexture() : StitchedTexture("clock", "clock") {
     rot = rota = 0.0;
     m_dataTexture = nullptr;
     m_iPad = XUSER_INDEX_ANY;
 }
 
 ClockTexture::ClockTexture(int iPad, ClockTexture* dataTexture)
-    : StitchedTexture(L"clock", L"clock") {
+    : StitchedTexture("clock", "clock") {
     rot = rota = 0.0;
     m_dataTexture = dataTexture;
     m_iPad = iPad;

@@ -1,11 +1,11 @@
 #include "RepairScreen.h"
 
-#include <GL/gl.h>
+
 
 #include <memory>
 #include <string>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "java/InputOutputStream/ByteArrayOutputStream.h"
 #include "java/InputOutputStream/DataOutputStream.h"
 #include "minecraft/client/Minecraft.h"
@@ -49,7 +49,7 @@ void RepairScreen::init() {
 
     int xo = (width - imageWidth) / 2;
     int yo = (height - imageHeight) / 2;
-    editName = new EditBox(this, font, xo + 62, yo + 24, 103, 12, L"");
+    editName = new EditBox(this, font, xo + 62, yo + 24, 103, 12, "");
     editName->setMaxLength(40);
     editName->setEnableBackgroundDrawing(false);
     editName->inFocus = true;
@@ -72,19 +72,19 @@ void RepairScreen::render(int xm, int ym, float a) {
 }
 
 void RepairScreen::renderLabels() {
-    std::wstring title =
-        Language::getInstance()->getElement(L"container.repair");
+    std::string title =
+        Language::getInstance()->getElement("container.repair");
     font->draw(title, 60, 6, 0x404040);
 
     if (repairMenu->cost > 0) {
         int textColor = 0x80ff20;
         bool showCost = true;
-        std::wstring costString;
+        std::string costString;
 
         if (repairMenu->cost >= 40 &&
             !Minecraft::GetInstance()->localplayers[0]->abilities.instabuild) {
             costString = Language::getInstance()->getElement(
-                L"container.repair.expensive");
+                "container.repair.expensive");
             textColor = 0xff6060;
         } else if (!repairMenu->getSlot(AnvilMenu::RESULT_SLOT)->hasItem()) {
             showCost = false;
@@ -97,7 +97,7 @@ void RepairScreen::renderLabels() {
         if (showCost) {
             if (costString.empty()) {
                 costString = Language::getInstance()->getElement(
-                    L"container.repair.cost", repairMenu->cost);
+                    "container.repair.cost", repairMenu->cost);
             }
 
             int shadowColor = -0x00ffffff | ((textColor & 0xfcfcfc) >> 2) |
@@ -157,12 +157,12 @@ void RepairScreen::mouseClicked(int mouseX, int mouseY, int buttonNum) {
 }
 
 void RepairScreen::updateItemName() {
-    std::wstring itemName;
+    std::string itemName;
     Slot* slot = repairMenu->getSlot(0);
     if (slot != nullptr && slot->hasItem()) {
         if (!slot->getItem()->hasCustomHoverName() &&
             itemName == slot->getItem()->getHoverName()) {
-            itemName = L"";
+            itemName = "";
         }
     }
 
@@ -188,7 +188,7 @@ void RepairScreen::refreshContainer(
 void RepairScreen::slotChanged(AbstractContainerMenu* container, int slotIndex,
                                std::shared_ptr<ItemInstance> item) {
     if (slotIndex == AnvilMenu::INPUT_SLOT) {
-        std::wstring itemName = item == nullptr ? L"" : item->getHoverName();
+        std::string itemName = item == nullptr ? "" : item->getHoverName();
         editName->setValue(itemName);
         if (item != nullptr) {
             editName->focus(true);

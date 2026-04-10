@@ -11,7 +11,7 @@
 
 ControlsScreen::ControlsScreen(Screen* lastScreen, Options* options) {
     // 4J - added initialisers
-    title = L"Controls";
+    title = "Controls";
     selectedKey = -1;
 
     this->lastScreen = lastScreen;
@@ -31,8 +31,8 @@ void ControlsScreen::init() {
     }
 
     buttons.push_back(new Button(200, width / 2 - 100, height / 6 + 24 * 7,
-                                 language->getElement(L"gui.done")));
-    title = language->getElement(L"controls.title");
+                                 language->getElement("gui.done")));
+    title = language->getElement("controls.title");
 }
 
 void ControlsScreen::buttonClicked(Button* button) {
@@ -43,11 +43,11 @@ void ControlsScreen::buttonClicked(Button* button) {
         minecraft->setScreen(lastScreen);
     } else {
         selectedKey = button->id;
-        button->msg = L"> " + options->getKeyMessage(button->id) + L" <";
+        button->msg = "> " + options->getKeyMessage(button->id) + " <";
     }
 }
 
-void ControlsScreen::keyPressed(wchar_t eventCharacter, int eventKey) {
+void ControlsScreen::keyPressed(char eventCharacter, int eventKey) {
     if (selectedKey >= 0) {
         options->setKey(selectedKey, eventKey);
         buttons[selectedKey]->msg = options->getKeyMessage(selectedKey);

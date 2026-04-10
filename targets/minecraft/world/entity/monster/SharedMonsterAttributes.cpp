@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "SharedMonsterAttributes.h"
 
 #include <limits>
@@ -50,8 +51,8 @@ CompoundTag* SharedMonsterAttributes::saveAttribute(
     CompoundTag* tag = new CompoundTag();
     Attribute* attribute = instance->getAttribute();
 
-    tag->putInt(L"ID", attribute->getId());
-    tag->putDouble(L"Base", instance->getBaseValue());
+    tag->putInt("ID", attribute->getId());
+    tag->putDouble("Base", instance->getBaseValue());
 
     std::unordered_set<AttributeModifier*> modifiers;
     instance->getModifiers(modifiers);
@@ -66,7 +67,7 @@ CompoundTag* SharedMonsterAttributes::saveAttribute(
             }
         }
 
-        tag->put(L"Modifiers", list);
+        tag->put("Modifiers", list);
     }
 
     return tag;
@@ -76,9 +77,9 @@ CompoundTag* SharedMonsterAttributes::saveAttributeModifier(
     AttributeModifier* modifier) {
     CompoundTag* tag = new CompoundTag();
 
-    tag->putDouble(L"Amount", modifier->getAmount());
-    tag->putInt(L"Operation", modifier->getOperation());
-    tag->putInt(L"UUID", modifier->getId());
+    tag->putDouble("Amount", modifier->getAmount());
+    tag->putInt("Operation", modifier->getOperation());
+    tag->putInt("UUID", modifier->getId());
 
     return tag;
 }
@@ -88,24 +89,24 @@ void SharedMonsterAttributes::loadAttributes(BaseAttributeMap* attributes,
     for (int i = 0; i < list->size(); i++) {
         CompoundTag* tag = list->get(i);
         AttributeInstance* instance = attributes->getInstance(
-            static_cast<eATTRIBUTE_ID>(tag->getInt(L"ID")));
+            static_cast<eATTRIBUTE_ID>(tag->getInt("ID")));
 
         if (instance != nullptr) {
             loadAttribute(instance, tag);
         } else {
-            app.DebugPrintf("Ignoring unknown attribute '%d'",
-                            tag->getInt(L"ID"));
+            Log::info("Ignoring unknown attribute '%d'",
+                            tag->getInt("ID"));
         }
     }
 }
 
 void SharedMonsterAttributes::loadAttribute(AttributeInstance* instance,
                                             CompoundTag* tag) {
-    instance->setBaseValue(tag->getDouble(L"Base"));
+    instance->setBaseValue(tag->getDouble("Base"));
 
-    if (tag->contains(L"Modifiers")) {
+    if (tag->contains("Modifiers")) {
         ListTag<CompoundTag>* list =
-            (ListTag<CompoundTag>*)tag->getList(L"Modifiers");
+            (ListTag<CompoundTag>*)tag->getList("Modifiers");
 
         for (int i = 0; i < list->size(); i++) {
             AttributeModifier* modifier = loadAttributeModifier(list->get(i));
@@ -118,7 +119,7 @@ void SharedMonsterAttributes::loadAttribute(AttributeInstance* instance,
 
 AttributeModifier* SharedMonsterAttributes::loadAttributeModifier(
     CompoundTag* tag) {
-    eMODIFIER_ID id = (eMODIFIER_ID)tag->getInt(L"UUID");
-    return new AttributeModifier(id, tag->getDouble(L"Amount"),
-                                 tag->getInt(L"Operation"));
+    eMODIFIER_ID id = (eMODIFIER_ID)tag->getInt("UUID");
+    return new AttributeModifier(id, tag->getDouble("Amount"),
+                                 tag->getInt("Operation"));
 }

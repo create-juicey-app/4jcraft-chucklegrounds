@@ -3,7 +3,7 @@
 
 #include <string>
 
-SavedData::SavedData(const std::wstring& id) : id(id) { dirty = false; }
+SavedData::SavedData(const std::string& id) : id(id) { dirty = false; }
 
 void SavedData::setDirty() { setDirty(true); }
 

@@ -20,7 +20,7 @@ void ToggleDownfallCommand::execute(std::shared_ptr<CommandSender> source,
                                     std::vector<uint8_t>& commandData) {
     doToggleDownfall();
     logAdminAction(source, ChatPacket::e_ChatCustom,
-                   L"commands.downfall.success");
+                   "commands.downfall.success");
 }
 
 void ToggleDownfallCommand::doToggleDownfall() {

@@ -1,7 +1,7 @@
 #pragma once
-#define IDC_Logo4J L"Logo4J"
-#define IDC_LogoMojang L"LogoMojang"
-#define IDC_LogoMicrosoft L"LogoMicrosoft"
-#define IDC_LogoXLA L"LogoXLA"
-#define IDC_LogoESRB L"LogoESRB"
-#define IDC_SceneIntro L"SceneIntro"
+#define IDC_Logo4J "Logo4J"
+#define IDC_LogoMojang "LogoMojang"
+#define IDC_LogoMicrosoft "LogoMicrosoft"
+#define IDC_LogoXLA "LogoXLA"
+#define IDC_LogoESRB "LogoESRB"
+#define IDC_SceneIntro "SceneIntro"

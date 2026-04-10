@@ -6,8 +6,8 @@
 #include <vector>
 
 #include "DiodeTile.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/Random.h"
 #include "minecraft/Direction.h"
 #include "minecraft/Facing.h"
@@ -26,10 +26,10 @@
 
 class Icon;
 
-const std::wstring RedStoneDustTile::TEXTURE_CROSS = L"_cross";
-const std::wstring RedStoneDustTile::TEXTURE_LINE = L"_line";
-const std::wstring RedStoneDustTile::TEXTURE_CROSS_OVERLAY = L"_cross_overlay";
-const std::wstring RedStoneDustTile::TEXTURE_LINE_OVERLAY = L"_line_overlay";
+const std::string RedStoneDustTile::TEXTURE_CROSS = "_cross";
+const std::string RedStoneDustTile::TEXTURE_LINE = "_line";
+const std::string RedStoneDustTile::TEXTURE_CROSS_OVERLAY = "_cross_overlay";
+const std::string RedStoneDustTile::TEXTURE_LINE_OVERLAY = "_line_overlay";
 
 RedStoneDustTile::RedStoneDustTile(int id)
     : Tile(id, Material::decoration, false) {
@@ -431,7 +431,7 @@ void RedStoneDustTile::registerIcons(IconRegister* iconRegister) {
     icon = iconCross;
 }
 
-Icon* RedStoneDustTile::getTexture(const std::wstring& name) {
+Icon* RedStoneDustTile::getTexture(const std::string& name) {
     if (name.compare(TEXTURE_CROSS) == 0) return Tile::redStoneDust->iconCross;
     if (name.compare(TEXTURE_LINE) == 0) return Tile::redStoneDust->iconLine;
     if (name.compare(TEXTURE_CROSS_OVERLAY) == 0)

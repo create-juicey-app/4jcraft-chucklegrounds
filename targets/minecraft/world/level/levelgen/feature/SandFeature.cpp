@@ -1,6 +1,8 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "SandFeature.h"
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Random.h"
 #include "minecraft/world/level/Level.h"
@@ -26,14 +28,14 @@ bool SandFeature::place(Level* level, Random* random, int x, int y, int z) {
 
     // 4J Stu Added to stop tree features generating areas previously place by
     // game rule generation
-    if (app.getLevelGenerationOptions() != nullptr) {
+    if (gameServices().getLevelGenerationOptions() != nullptr) {
         LevelGenerationOptions* levelGenOptions =
-            app.getLevelGenerationOptions();
+            gameServices().getLevelGenerationOptions();
         bool intersects = levelGenOptions->checkIntersects(
             x - r, y - yr, z - r, x + r, y + yr, z + r);
         if (intersects) {
             level->setInstaTick(false);
-            // app.DebugPrintf("Skipping reeds feature generation as it overlaps
+            // Log::info("Skipping reeds feature generation as it overlaps
             // a game rule structure\n");
             return false;
         }

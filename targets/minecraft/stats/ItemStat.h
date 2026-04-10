@@ -9,6 +9,6 @@ private:
     const int itemId;
 
 public:
-    ItemStat(int id, const std::wstring& name, int itemId);
+    ItemStat(int id, const std::string& name, int itemId);
     int getItemId();
 };

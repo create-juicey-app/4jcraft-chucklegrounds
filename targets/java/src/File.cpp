@@ -9,24 +9,24 @@
 #include <vector>
 
 #include "util/StringHelpers.h"  // 4jcraft TODO
-#include "platform/PlatformServices.h"
+#include "platform/fs/fs.h"
 #include "java/FileFilter.h"
 
-const wchar_t File::pathSeparator = L'/';
+const char File::pathSeparator = '/';
 
-const std::wstring File::pathRoot =
-    L"";  // Path root after pathSeparator has been removed
+const std::string File::pathRoot =
+    "";  // Path root after pathSeparator has been removed
 
 namespace {
 namespace fs = std::filesystem;
 
-fs::path ToFilesystemPath(const std::wstring& path) {
+fs::path ToFilesystemPath(const std::string& path) {
     return fs::path(path);
 }
 
-std::wstring ToFilename(const fs::path& path) {
+std::string ToFilename(const fs::path& path) {
     const std::string filename = path.filename().string();
-    return filenametowstring(filename.c_str());
+    return filename;
 }
 
 int64_t ToEpochMilliseconds(const fs::file_time_type& fileTime) {
@@ -40,27 +40,27 @@ int64_t ToEpochMilliseconds(const fs::file_time_type& fileTime) {
 
 // Creates a new File instance from a parent abstract pathname and a child
 // pathname string.
-File::File(const File& parent, const std::wstring& child) {
+File::File(const File& parent, const std::string& child) {
     m_abstractPathName = parent.getPath() + pathSeparator + child;
 }
 
 // Creates a new File instance by converting the given pathname string into an
 // abstract pathname.
 
-File::File(const std::wstring& pathname) {
+File::File(const std::string& pathname) {
     if (pathname.empty()) {
-        m_abstractPathName = L"";
+        m_abstractPathName = "";
         return;
     }
 
-    std::wstring fixedPath = pathname;
+    std::string fixedPath = pathname;
     for (size_t i = 0; i < fixedPath.length(); ++i) {
-        if (fixedPath[i] == L'\\') fixedPath[i] = L'/';
+        if (fixedPath[i] == '\\') fixedPath[i] = '/';
     }
     size_t dpos;
-    while ((dpos = fixedPath.find(L"//")) != std::wstring::npos)
+    while ((dpos = fixedPath.find("//")) != std::string::npos)
         fixedPath.erase(dpos, 1);
-    if (fixedPath.find(L"GAME:/") == 0) fixedPath = fixedPath.substr(6);
+    if (fixedPath.find("GAME:/") == 0) fixedPath = fixedPath.substr(6);
     m_abstractPathName = fixedPath;
 
 #if defined(__linux__)
@@ -68,7 +68,7 @@ File::File(const std::wstring& pathname) {
     while (!request.empty() && request[0] == '/') request.erase(0, 1);
     if (request.find("res/") == 0) request.erase(0, 4);
 
-    std::string exeDir = PlatformFileIO.getBasePath().string();
+    std::string exeDir = PlatformFilesystem.getBasePath().string();
     std::string fileName = request;
     size_t lastSlash = fileName.find_last_of('/');
     if (lastSlash != std::string::npos)
@@ -84,12 +84,12 @@ File::File(const std::wstring& pathname) {
     for (const char* base : bases) {
         std::string tryFull = exeDir + base + request;
         std::string tryFile = exeDir + base + fileName;
-        if (PlatformFileIO.exists(tryFull)) {
-            m_abstractPathName = convStringToWstring(tryFull);
+        if (PlatformFilesystem.exists(tryFull)) {
+            m_abstractPathName = tryFull;
             return;
         }
-        if (PlatformFileIO.exists(tryFile)) {
-            m_abstractPathName = convStringToWstring(tryFile);
+        if (PlatformFilesystem.exists(tryFile)) {
+            m_abstractPathName = tryFile;
             return;
         }
     }
@@ -97,17 +97,17 @@ File::File(const std::wstring& pathname) {
 
 #ifdef _WINDOWS64
     std::string path = std::filesystem::path(m_abstractPathName).string();
-    std::string finalPath = StorageManager.GetMountedPath(path.c_str());
+    std::string finalPath = PlatformStorage.GetMountedPath(path.c_str());
     if (finalPath.size() == 0) finalPath = path;
-    m_abstractPathName = convStringToWstring(finalPath);
+    m_abstractPathName = finalPath;
 #endif
     /*
-    std::vector<std::wstring> path = stringSplit( pathname, pathSeparator );
+    std::vector<std::string> path = stringSplit( pathname, pathSeparator );
 
     if( path.back().compare( pathRoot ) != 0 )
     m_abstractPathName = path.back();
     else
-    m_abstractPathName = L"";
+    m_abstractPathName = "";
 
     path.pop_back();
 
@@ -122,8 +122,8 @@ File::File(const std::wstring& pathname) {
     */
 }
 
-File::File(const std::wstring& parent,
-           const std::wstring& child)  //: m_abstractPathName( child  )
+File::File(const std::string& parent,
+           const std::string& child)  //: m_abstractPathName( child  )
 {
     m_abstractPathName =
         pathRoot + pathSeparator + parent + pathSeparator + child;
@@ -133,7 +133,7 @@ File::File(const std::wstring& parent,
 // Creates a new File instance by converting the given path vector into an
 // abstract pathname.
 /*
-File::File( std::vector<std::wstring> *path ) : parent( nullptr )
+File::File( std::vector<std::string> *path ) : parent( nullptr )
 {
 m_abstractPathName = path->back();
 path->pop_back();
@@ -363,13 +363,13 @@ int64_t File::lastModified() {
     return 0l;
 }
 
-const std::wstring File::getPath() const {
+const std::string File::getPath() const {
     /*
-    std::wstring path;
+    std::string path;
     if ( parent != nullptr)
     path = parent->getPath();
     else
-    path = std::wstring(pathRoot);
+    path = std::string(pathRoot);
 
     path.push_back( pathSeparator );
     path.append(m_abstractPathName);
@@ -377,7 +377,7 @@ const std::wstring File::getPath() const {
     return m_abstractPathName;
 }
 
-std::wstring File::getName() const {
+std::string File::getName() const {
     unsigned int sep =
         (unsigned int)(m_abstractPathName.find_last_of(this->pathSeparator));
     return m_abstractPathName.substr(sep + 1, m_abstractPathName.length());
@@ -394,7 +394,7 @@ int File::hash_fnct(const File& k) {
     // if (k->parent != nullptr)
     //	hashCode = hash_fnct(k->getParent());
 
-    wchar_t* ref = (wchar_t*)k.m_abstractPathName.c_str();
+    char* ref = (char*)k.m_abstractPathName.c_str();
 
     for (unsigned int i = 0; i < k.m_abstractPathName.length(); i++) {
         hashCode += ((hashCode * 33) + ref[i]) % 149;

@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 
 #include "Item.h"
 
@@ -83,9 +85,9 @@
 typedef Item::Tier _Tier;
 
 // const UUID Item::BASE_ATTACK_DAMAGE_UUID =
-// UUID::fromWString(L"CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
+// UUID::fromWString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
 
-std::wstring Item::ICON_DESCRIPTION_PREFIX = L"item.";
+std::string Item::ICON_DESCRIPTION_PREFIX = "item.";
 
 const _Tier* _Tier::WOOD = new _Tier(0, 59, 2, 0, 15);       //
 const _Tier* _Tier::STONE = new _Tier(1, 131, 4, 1, 5);      //
@@ -319,168 +321,168 @@ void Item::staticCtor() {
     Item::sword_wood =
         (new WeaponItem(12, _Tier::WOOD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_sword, eMaterial_wood)
-            ->setIconName(L"swordWood")
+            ->setIconName("swordWood")
             ->setDescriptionId(IDS_ITEM_SWORD_WOOD)
             ->setUseDescriptionId(IDS_DESC_SWORD);
     Item::sword_stone =
         (new WeaponItem(16, _Tier::STONE))
             ->setBaseItemTypeAndMaterial(eBaseItemType_sword, eMaterial_stone)
-            ->setIconName(L"swordStone")
+            ->setIconName("swordStone")
             ->setDescriptionId(IDS_ITEM_SWORD_STONE)
             ->setUseDescriptionId(IDS_DESC_SWORD);
     Item::sword_iron =
         (new WeaponItem(11, _Tier::IRON))
             ->setBaseItemTypeAndMaterial(eBaseItemType_sword, eMaterial_iron)
-            ->setIconName(L"swordIron")
+            ->setIconName("swordIron")
             ->setDescriptionId(IDS_ITEM_SWORD_IRON)
             ->setUseDescriptionId(IDS_DESC_SWORD);
     Item::sword_diamond =
         (new WeaponItem(20, _Tier::DIAMOND))
             ->setBaseItemTypeAndMaterial(eBaseItemType_sword, eMaterial_diamond)
-            ->setIconName(L"swordDiamond")
+            ->setIconName("swordDiamond")
             ->setDescriptionId(IDS_ITEM_SWORD_DIAMOND)
             ->setUseDescriptionId(IDS_DESC_SWORD);
     Item::sword_gold =
         (new WeaponItem(27, _Tier::GOLD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_sword, eMaterial_gold)
-            ->setIconName(L"swordGold")
+            ->setIconName("swordGold")
             ->setDescriptionId(IDS_ITEM_SWORD_GOLD)
             ->setUseDescriptionId(IDS_DESC_SWORD);
 
     Item::shovel_wood =
         (new ShovelItem(13, _Tier::WOOD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_shovel, eMaterial_wood)
-            ->setIconName(L"shovelWood")
+            ->setIconName("shovelWood")
             ->setDescriptionId(IDS_ITEM_SHOVEL_WOOD)
             ->setUseDescriptionId(IDS_DESC_SHOVEL);
     Item::shovel_stone =
         (new ShovelItem(17, _Tier::STONE))
             ->setBaseItemTypeAndMaterial(eBaseItemType_shovel, eMaterial_stone)
-            ->setIconName(L"shovelStone")
+            ->setIconName("shovelStone")
             ->setDescriptionId(IDS_ITEM_SHOVEL_STONE)
             ->setUseDescriptionId(IDS_DESC_SHOVEL);
     Item::shovel_iron =
         (new ShovelItem(0, _Tier::IRON))
             ->setBaseItemTypeAndMaterial(eBaseItemType_shovel, eMaterial_iron)
-            ->setIconName(L"shovelIron")
+            ->setIconName("shovelIron")
             ->setDescriptionId(IDS_ITEM_SHOVEL_IRON)
             ->setUseDescriptionId(IDS_DESC_SHOVEL);
     Item::shovel_diamond = (new ShovelItem(21, _Tier::DIAMOND))
                                ->setBaseItemTypeAndMaterial(
                                    eBaseItemType_shovel, eMaterial_diamond)
-                               ->setIconName(L"shovelDiamond")
+                               ->setIconName("shovelDiamond")
                                ->setDescriptionId(IDS_ITEM_SHOVEL_DIAMOND)
                                ->setUseDescriptionId(IDS_DESC_SHOVEL);
     Item::shovel_gold =
         (new ShovelItem(28, _Tier::GOLD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_shovel, eMaterial_gold)
-            ->setIconName(L"shovelGold")
+            ->setIconName("shovelGold")
             ->setDescriptionId(IDS_ITEM_SHOVEL_GOLD)
             ->setUseDescriptionId(IDS_DESC_SHOVEL);
 
     Item::pickAxe_wood =
         (new PickaxeItem(14, _Tier::WOOD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_pickaxe, eMaterial_wood)
-            ->setIconName(L"pickaxeWood")
+            ->setIconName("pickaxeWood")
             ->setDescriptionId(IDS_ITEM_PICKAXE_WOOD)
             ->setUseDescriptionId(IDS_DESC_PICKAXE);
     Item::pickAxe_stone =
         (new PickaxeItem(18, _Tier::STONE))
             ->setBaseItemTypeAndMaterial(eBaseItemType_pickaxe, eMaterial_stone)
-            ->setIconName(L"pickaxeStone")
+            ->setIconName("pickaxeStone")
             ->setDescriptionId(IDS_ITEM_PICKAXE_STONE)
             ->setUseDescriptionId(IDS_DESC_PICKAXE);
     Item::pickAxe_iron =
         (new PickaxeItem(1, _Tier::IRON))
             ->setBaseItemTypeAndMaterial(eBaseItemType_pickaxe, eMaterial_iron)
-            ->setIconName(L"pickaxeIron")
+            ->setIconName("pickaxeIron")
             ->setDescriptionId(IDS_ITEM_PICKAXE_IRON)
             ->setUseDescriptionId(IDS_DESC_PICKAXE);
     Item::pickAxe_diamond = (new PickaxeItem(22, _Tier::DIAMOND))
                                 ->setBaseItemTypeAndMaterial(
                                     eBaseItemType_pickaxe, eMaterial_diamond)
-                                ->setIconName(L"pickaxeDiamond")
+                                ->setIconName("pickaxeDiamond")
                                 ->setDescriptionId(IDS_ITEM_PICKAXE_DIAMOND)
                                 ->setUseDescriptionId(IDS_DESC_PICKAXE);
     Item::pickAxe_gold =
         (new PickaxeItem(29, _Tier::GOLD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_pickaxe, eMaterial_gold)
-            ->setIconName(L"pickaxeGold")
+            ->setIconName("pickaxeGold")
             ->setDescriptionId(IDS_ITEM_PICKAXE_GOLD)
             ->setUseDescriptionId(IDS_DESC_PICKAXE);
 
     Item::hatchet_wood =
         (new HatchetItem(15, _Tier::WOOD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hatchet, eMaterial_wood)
-            ->setIconName(L"hatchetWood")
+            ->setIconName("hatchetWood")
             ->setDescriptionId(IDS_ITEM_HATCHET_WOOD)
             ->setUseDescriptionId(IDS_DESC_HATCHET);
     Item::hatchet_stone =
         (new HatchetItem(19, _Tier::STONE))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hatchet, eMaterial_stone)
-            ->setIconName(L"hatchetStone")
+            ->setIconName("hatchetStone")
             ->setDescriptionId(IDS_ITEM_HATCHET_STONE)
             ->setUseDescriptionId(IDS_DESC_HATCHET);
     Item::hatchet_iron =
         (new HatchetItem(2, _Tier::IRON))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hatchet, eMaterial_iron)
-            ->setIconName(L"hatchetIron")
+            ->setIconName("hatchetIron")
             ->setDescriptionId(IDS_ITEM_HATCHET_IRON)
             ->setUseDescriptionId(IDS_DESC_HATCHET);
     Item::hatchet_diamond = (new HatchetItem(23, _Tier::DIAMOND))
                                 ->setBaseItemTypeAndMaterial(
                                     eBaseItemType_hatchet, eMaterial_diamond)
-                                ->setIconName(L"hatchetDiamond")
+                                ->setIconName("hatchetDiamond")
                                 ->setDescriptionId(IDS_ITEM_HATCHET_DIAMOND)
                                 ->setUseDescriptionId(IDS_DESC_HATCHET);
     Item::hatchet_gold =
         (new HatchetItem(30, _Tier::GOLD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hatchet, eMaterial_gold)
-            ->setIconName(L"hatchetGold")
+            ->setIconName("hatchetGold")
             ->setDescriptionId(IDS_ITEM_HATCHET_GOLD)
             ->setUseDescriptionId(IDS_DESC_HATCHET);
 
     Item::hoe_wood =
         (new HoeItem(34, _Tier::WOOD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hoe, eMaterial_wood)
-            ->setIconName(L"hoeWood")
+            ->setIconName("hoeWood")
             ->setDescriptionId(IDS_ITEM_HOE_WOOD)
             ->setUseDescriptionId(IDS_DESC_HOE);
     Item::hoe_stone =
         (new HoeItem(35, _Tier::STONE))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hoe, eMaterial_stone)
-            ->setIconName(L"hoeStone")
+            ->setIconName("hoeStone")
             ->setDescriptionId(IDS_ITEM_HOE_STONE)
             ->setUseDescriptionId(IDS_DESC_HOE);
     Item::hoe_iron =
         (new HoeItem(36, _Tier::IRON))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hoe, eMaterial_iron)
-            ->setIconName(L"hoeIron")
+            ->setIconName("hoeIron")
             ->setDescriptionId(IDS_ITEM_HOE_IRON)
             ->setUseDescriptionId(IDS_DESC_HOE);
     Item::hoe_diamond =
         (new HoeItem(37, _Tier::DIAMOND))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hoe, eMaterial_diamond)
-            ->setIconName(L"hoeDiamond")
+            ->setIconName("hoeDiamond")
             ->setDescriptionId(IDS_ITEM_HOE_DIAMOND)
             ->setUseDescriptionId(IDS_DESC_HOE);
     Item::hoe_gold =
         (new HoeItem(38, _Tier::GOLD))
             ->setBaseItemTypeAndMaterial(eBaseItemType_hoe, eMaterial_gold)
-            ->setIconName(L"hoeGold")
+            ->setIconName("hoeGold")
             ->setDescriptionId(IDS_ITEM_HOE_GOLD)
             ->setUseDescriptionId(IDS_DESC_HOE);
 
     Item::door_wood =
         (new DoorItem(68, Material::wood))
             ->setBaseItemTypeAndMaterial(eBaseItemType_door, eMaterial_wood)
-            ->setIconName(L"doorWood")
+            ->setIconName("doorWood")
             ->setDescriptionId(IDS_ITEM_DOOR_WOOD)
             ->setUseDescriptionId(IDS_DESC_DOOR_WOOD);
     Item::door_iron =
         (new DoorItem(74, Material::metal))
             ->setBaseItemTypeAndMaterial(eBaseItemType_door, eMaterial_iron)
-            ->setIconName(L"doorIron")
+            ->setIconName("doorIron")
             ->setDescriptionId(IDS_ITEM_DOOR_IRON)
             ->setUseDescriptionId(IDS_DESC_DOOR_IRON);
 
@@ -489,7 +491,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_HEAD))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_helmet,
                                                       eMaterial_cloth)
-                         ->setIconName(L"helmetCloth")
+                         ->setIconName("helmetCloth")
                          ->setDescriptionId(IDS_ITEM_HELMET_CLOTH)
                          ->setUseDescriptionId(IDS_DESC_HELMET_LEATHER));
     Item::helmet_iron =
@@ -497,7 +499,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_HEAD))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_helmet,
                                                       eMaterial_iron)
-                         ->setIconName(L"helmetIron")
+                         ->setIconName("helmetIron")
                          ->setDescriptionId(IDS_ITEM_HELMET_IRON)
                          ->setUseDescriptionId(IDS_DESC_HELMET_IRON));
     Item::helmet_diamond =
@@ -505,7 +507,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_HEAD))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_helmet,
                                                       eMaterial_diamond)
-                         ->setIconName(L"helmetDiamond")
+                         ->setIconName("helmetDiamond")
                          ->setDescriptionId(IDS_ITEM_HELMET_DIAMOND)
                          ->setUseDescriptionId(IDS_DESC_HELMET_DIAMOND));
     Item::helmet_gold =
@@ -513,7 +515,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_HEAD))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_helmet,
                                                       eMaterial_gold)
-                         ->setIconName(L"helmetGold")
+                         ->setIconName("helmetGold")
                          ->setDescriptionId(IDS_ITEM_HELMET_GOLD)
                          ->setUseDescriptionId(IDS_DESC_HELMET_GOLD));
 
@@ -522,7 +524,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_TORSO))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,
                                                       eMaterial_cloth)
-                         ->setIconName(L"chestplateCloth")
+                         ->setIconName("chestplateCloth")
                          ->setDescriptionId(IDS_ITEM_CHESTPLATE_CLOTH)
                          ->setUseDescriptionId(IDS_DESC_CHESTPLATE_LEATHER));
     Item::chestplate_iron =
@@ -530,7 +532,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_TORSO))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,
                                                       eMaterial_iron)
-                         ->setIconName(L"chestplateIron")
+                         ->setIconName("chestplateIron")
                          ->setDescriptionId(IDS_ITEM_CHESTPLATE_IRON)
                          ->setUseDescriptionId(IDS_DESC_CHESTPLATE_IRON));
     Item::chestplate_diamond =
@@ -538,7 +540,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_TORSO))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,
                                                       eMaterial_diamond)
-                         ->setIconName(L"chestplateDiamond")
+                         ->setIconName("chestplateDiamond")
                          ->setDescriptionId(IDS_ITEM_CHESTPLATE_DIAMOND)
                          ->setUseDescriptionId(IDS_DESC_CHESTPLATE_DIAMOND));
     Item::chestplate_gold =
@@ -546,7 +548,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_TORSO))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,
                                                       eMaterial_gold)
-                         ->setIconName(L"chestplateGold")
+                         ->setIconName("chestplateGold")
                          ->setDescriptionId(IDS_ITEM_CHESTPLATE_GOLD)
                          ->setUseDescriptionId(IDS_DESC_CHESTPLATE_GOLD));
 
@@ -555,7 +557,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_LEGS))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_leggings,
                                                       eMaterial_cloth)
-                         ->setIconName(L"leggingsCloth")
+                         ->setIconName("leggingsCloth")
                          ->setDescriptionId(IDS_ITEM_LEGGINGS_CLOTH)
                          ->setUseDescriptionId(IDS_DESC_LEGGINGS_LEATHER));
     Item::leggings_iron =
@@ -563,7 +565,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_LEGS))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_leggings,
                                                       eMaterial_iron)
-                         ->setIconName(L"leggingsIron")
+                         ->setIconName("leggingsIron")
                          ->setDescriptionId(IDS_ITEM_LEGGINGS_IRON)
                          ->setUseDescriptionId(IDS_DESC_LEGGINGS_IRON));
     Item::leggings_diamond =
@@ -571,7 +573,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_LEGS))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_leggings,
                                                       eMaterial_diamond)
-                         ->setIconName(L"leggingsDiamond")
+                         ->setIconName("leggingsDiamond")
                          ->setDescriptionId(IDS_ITEM_LEGGINGS_DIAMOND)
                          ->setUseDescriptionId(IDS_DESC_LEGGINGS_DIAMOND));
     Item::leggings_gold =
@@ -579,7 +581,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_LEGS))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_leggings,
                                                       eMaterial_gold)
-                         ->setIconName(L"leggingsGold")
+                         ->setIconName("leggingsGold")
                          ->setDescriptionId(IDS_ITEM_LEGGINGS_GOLD)
                          ->setUseDescriptionId(IDS_DESC_LEGGINGS_GOLD));
 
@@ -588,7 +590,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_HEAD))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_helmet,
                                                       eMaterial_chain)
-                         ->setIconName(L"helmetChain")
+                         ->setIconName("helmetChain")
                          ->setDescriptionId(IDS_ITEM_HELMET_CHAIN)
                          ->setUseDescriptionId(IDS_DESC_HELMET_CHAIN));
     Item::chestplate_chain =
@@ -596,7 +598,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_TORSO))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,
                                                       eMaterial_chain)
-                         ->setIconName(L"chestplateChain")
+                         ->setIconName("chestplateChain")
                          ->setDescriptionId(IDS_ITEM_CHESTPLATE_CHAIN)
                          ->setUseDescriptionId(IDS_DESC_CHESTPLATE_CHAIN));
     Item::leggings_chain =
@@ -604,7 +606,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_LEGS))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_leggings,
                                                       eMaterial_chain)
-                         ->setIconName(L"leggingsChain")
+                         ->setIconName("leggingsChain")
                          ->setDescriptionId(IDS_ITEM_LEGGINGS_CHAIN)
                          ->setUseDescriptionId(IDS_DESC_LEGGINGS_CHAIN));
     Item::boots_chain =
@@ -612,7 +614,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_FEET))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_boots,
                                                       eMaterial_chain)
-                         ->setIconName(L"bootsChain")
+                         ->setIconName("bootsChain")
                          ->setDescriptionId(IDS_ITEM_BOOTS_CHAIN)
                          ->setUseDescriptionId(IDS_DESC_BOOTS_CHAIN));
 
@@ -621,7 +623,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_FEET))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_boots,
                                                       eMaterial_cloth)
-                         ->setIconName(L"bootsCloth")
+                         ->setIconName("bootsCloth")
                          ->setDescriptionId(IDS_ITEM_BOOTS_CLOTH)
                          ->setUseDescriptionId(IDS_DESC_BOOTS_LEATHER));
     Item::boots_iron =
@@ -629,7 +631,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_FEET))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_boots,
                                                       eMaterial_iron)
-                         ->setIconName(L"bootsIron")
+                         ->setIconName("bootsIron")
                          ->setDescriptionId(IDS_ITEM_BOOTS_IRON)
                          ->setUseDescriptionId(IDS_DESC_BOOTS_IRON));
     Item::boots_diamond =
@@ -637,7 +639,7 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_FEET))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_boots,
                                                       eMaterial_diamond)
-                         ->setIconName(L"bootsDiamond")
+                         ->setIconName("bootsDiamond")
                          ->setDescriptionId(IDS_ITEM_BOOTS_DIAMOND)
                          ->setUseDescriptionId(IDS_DESC_BOOTS_DIAMOND));
     Item::boots_gold =
@@ -645,19 +647,19 @@ void Item::staticCtor() {
                                     ArmorItem::SLOT_FEET))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_boots,
                                                       eMaterial_gold)
-                         ->setIconName(L"bootsGold")
+                         ->setIconName("bootsGold")
                          ->setDescriptionId(IDS_ITEM_BOOTS_GOLD)
                          ->setUseDescriptionId(IDS_DESC_BOOTS_GOLD));
 
     Item::ironIngot =
         (new Item(9))
-            ->setIconName(L"ingotIron")
+            ->setIconName("ingotIron")
             ->setBaseItemTypeAndMaterial(eBaseItemType_treasure, eMaterial_iron)
             ->setDescriptionId(IDS_ITEM_INGOT_IRON)
             ->setUseDescriptionId(IDS_DESC_INGOT);
     Item::goldIngot =
         (new Item(10))
-            ->setIconName(L"ingotGold")
+            ->setIconName("ingotGold")
             ->setBaseItemTypeAndMaterial(eBaseItemType_treasure, eMaterial_gold)
             ->setDescriptionId(IDS_ITEM_INGOT_GOLD)
             ->setUseDescriptionId(IDS_DESC_INGOT);
@@ -666,61 +668,61 @@ void Item::staticCtor() {
     Item::bucket_empty =
         (new BucketItem(69, 0))
             ->setBaseItemTypeAndMaterial(eBaseItemType_utensil, eMaterial_water)
-            ->setIconName(L"bucket")
+            ->setIconName("bucket")
             ->setDescriptionId(IDS_ITEM_BUCKET)
             ->setUseDescriptionId(IDS_DESC_BUCKET)
             ->setMaxStackSize(16);
     Item::bowl =
         (new Item(25))
             ->setBaseItemTypeAndMaterial(eBaseItemType_utensil, eMaterial_wood)
-            ->setIconName(L"bowl")
+            ->setIconName("bowl")
             ->setDescriptionId(IDS_ITEM_BOWL)
             ->setUseDescriptionId(IDS_DESC_BOWL)
             ->setMaxStackSize(64);
 
     Item::bucket_water = (new BucketItem(70, Tile::water_Id))
-                             ->setIconName(L"bucketWater")
+                             ->setIconName("bucketWater")
                              ->setDescriptionId(IDS_ITEM_BUCKET_WATER)
                              ->setCraftingRemainingItem(Item::bucket_empty)
                              ->setUseDescriptionId(IDS_DESC_BUCKET_WATER);
     Item::bucket_lava = (new BucketItem(71, Tile::lava_Id))
-                            ->setIconName(L"bucketLava")
+                            ->setIconName("bucketLava")
                             ->setDescriptionId(IDS_ITEM_BUCKET_LAVA)
                             ->setCraftingRemainingItem(Item::bucket_empty)
                             ->setUseDescriptionId(IDS_DESC_BUCKET_LAVA);
     Item::bucket_milk = (new MilkBucketItem(79))
-                            ->setIconName(L"milk")
+                            ->setIconName("milk")
                             ->setDescriptionId(IDS_ITEM_BUCKET_MILK)
                             ->setCraftingRemainingItem(Item::bucket_empty)
                             ->setUseDescriptionId(IDS_DESC_BUCKET_MILK);
 
     Item::bow =
         (BowItem*)(new BowItem(5))
-            ->setIconName(L"bow")
+            ->setIconName("bow")
             ->setBaseItemTypeAndMaterial(eBaseItemType_bow, eMaterial_bow)
             ->setDescriptionId(IDS_ITEM_BOW)
             ->setUseDescriptionId(IDS_DESC_BOW);
     Item::arrow =
         (new Item(6))
-            ->setIconName(L"arrow")
+            ->setIconName("arrow")
             ->setBaseItemTypeAndMaterial(eBaseItemType_bow, eMaterial_arrow)
             ->setDescriptionId(IDS_ITEM_ARROW)
             ->setUseDescriptionId(IDS_DESC_ARROW);
 
     Item::compass = (new CompassItem(89))
-                        ->setIconName(L"compass")
+                        ->setIconName("compass")
                         ->setBaseItemTypeAndMaterial(eBaseItemType_pockettool,
                                                      eMaterial_compass)
                         ->setDescriptionId(IDS_ITEM_COMPASS)
                         ->setUseDescriptionId(IDS_DESC_COMPASS);
     Item::clock = (new ClockItem(91))
-                      ->setIconName(L"clock")
+                      ->setIconName("clock")
                       ->setBaseItemTypeAndMaterial(eBaseItemType_pockettool,
                                                    eMaterial_clock)
                       ->setDescriptionId(IDS_ITEM_CLOCK)
                       ->setUseDescriptionId(IDS_DESC_CLOCK);
     Item::map = (MapItem*)(new MapItem(102))
-                    ->setIconName(L"map")
+                    ->setIconName("map")
                     ->setBaseItemTypeAndMaterial(eBaseItemType_pockettool,
                                                  eMaterial_map)
                     ->setDescriptionId(IDS_ITEM_MAP)
@@ -728,87 +730,87 @@ void Item::staticCtor() {
 
     Item::flintAndSteel =
         (new FlintAndSteelItem(3))
-            ->setIconName(L"flintAndSteel")
+            ->setIconName("flintAndSteel")
             ->setBaseItemTypeAndMaterial(eBaseItemType_devicetool,
                                          eMaterial_flintandsteel)
             ->setDescriptionId(IDS_ITEM_FLINT_AND_STEEL)
             ->setUseDescriptionId(IDS_DESC_FLINTANDSTEEL);
     Item::apple =
         (new FoodItem(4, 4, FoodConstants::FOOD_SATURATION_LOW, false))
-            ->setIconName(L"apple")
+            ->setIconName("apple")
             ->setDescriptionId(IDS_ITEM_APPLE)
             ->setUseDescriptionId(IDS_DESC_APPLE);
     Item::coal =
         (new CoalItem(7))
             ->setBaseItemTypeAndMaterial(eBaseItemType_treasure, eMaterial_coal)
-            ->setIconName(L"coal")
+            ->setIconName("coal")
             ->setDescriptionId(IDS_ITEM_COAL)
             ->setUseDescriptionId(IDS_DESC_COAL);
     Item::diamond = (new Item(8))
                         ->setBaseItemTypeAndMaterial(eBaseItemType_treasure,
                                                      eMaterial_diamond)
-                        ->setIconName(L"diamond")
+                        ->setIconName("diamond")
                         ->setDescriptionId(IDS_ITEM_DIAMOND)
                         ->setUseDescriptionId(IDS_DESC_DIAMONDS);
     Item::stick = (new Item(24))
-                      ->setIconName(L"stick")
+                      ->setIconName("stick")
                       ->handEquipped()
                       ->setDescriptionId(IDS_ITEM_STICK)
                       ->setUseDescriptionId(IDS_DESC_STICK);
     Item::mushroomStew = (new BowlFoodItem(26, 6))
-                             ->setIconName(L"mushroomStew")
+                             ->setIconName("mushroomStew")
                              ->setDescriptionId(IDS_ITEM_MUSHROOM_STEW)
                              ->setUseDescriptionId(IDS_DESC_MUSHROOMSTEW);
 
     Item::string = (new TilePlanterItem(31, Tile::tripWire))
-                       ->setIconName(L"string")
+                       ->setIconName("string")
                        ->setDescriptionId(IDS_ITEM_STRING)
                        ->setUseDescriptionId(IDS_DESC_STRING);
     Item::feather = (new Item(32))
-                        ->setIconName(L"feather")
+                        ->setIconName("feather")
                         ->setDescriptionId(IDS_ITEM_FEATHER)
                         ->setUseDescriptionId(IDS_DESC_FEATHER);
     Item::gunpowder =
         (new Item(33))
-            ->setIconName(L"sulphur")
+            ->setIconName("sulphur")
             ->setDescriptionId(IDS_ITEM_SULPHUR)
             ->setUseDescriptionId(IDS_DESC_SULPHUR)
             ->setPotionBrewingFormula(PotionBrewing::MOD_GUNPOWDER);
 
     Item::seeds_wheat = (new SeedItem(39, Tile::wheat_Id, Tile::farmland_Id))
-                            ->setIconName(L"seeds")
+                            ->setIconName("seeds")
                             ->setDescriptionId(IDS_ITEM_WHEAT_SEEDS)
                             ->setUseDescriptionId(IDS_DESC_WHEAT_SEEDS);
     Item::wheat = (new Item(40))
                       ->setBaseItemTypeAndMaterial(eBaseItemType_treasure,
                                                    eMaterial_wheat)
-                      ->setIconName(L"wheat")
+                      ->setIconName("wheat")
                       ->setDescriptionId(IDS_ITEM_WHEAT)
                       ->setUseDescriptionId(IDS_DESC_WHEAT);
     Item::bread =
         (new FoodItem(41, 5, FoodConstants::FOOD_SATURATION_NORMAL, false))
-            ->setIconName(L"bread")
+            ->setIconName("bread")
             ->setDescriptionId(IDS_ITEM_BREAD)
             ->setUseDescriptionId(IDS_DESC_BREAD);
 
     Item::flint = (new Item(62))
-                      ->setIconName(L"flint")
+                      ->setIconName("flint")
                       ->setDescriptionId(IDS_ITEM_FLINT)
                       ->setUseDescriptionId(IDS_DESC_FLINT);
     Item::porkChop_raw =
         (new FoodItem(63, 3, FoodConstants::FOOD_SATURATION_LOW, true))
-            ->setIconName(L"porkchopRaw")
+            ->setIconName("porkchopRaw")
             ->setDescriptionId(IDS_ITEM_PORKCHOP_RAW)
             ->setUseDescriptionId(IDS_DESC_PORKCHOP_RAW);
     Item::porkChop_cooked =
         (new FoodItem(64, 8, FoodConstants::FOOD_SATURATION_GOOD, true))
-            ->setIconName(L"porkchopCooked")
+            ->setIconName("porkchopCooked")
             ->setDescriptionId(IDS_ITEM_PORKCHOP_COOKED)
             ->setUseDescriptionId(IDS_DESC_PORKCHOP_COOKED);
     Item::painting = (new HangingEntityItem(65, eTYPE_PAINTING))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_HangingItem,
                                                       eMaterial_cloth)
-                         ->setIconName(L"painting")
+                         ->setIconName("painting")
                          ->setDescriptionId(IDS_ITEM_PAINTING)
                          ->setUseDescriptionId(IDS_DESC_PICTURE);
 
@@ -819,125 +821,125 @@ void Item::staticCtor() {
             ->setEatEffect(MobEffect::regeneration->id, 5, 1, 1.0f)
             ->setBaseItemTypeAndMaterial(eBaseItemType_giltFruit,
                                          eMaterial_apple)
-            ->setIconName(L"appleGold")
+            ->setIconName("appleGold")
             ->setDescriptionId(
                 IDS_ITEM_APPLE_GOLD);  //->setUseDescriptionId(IDS_DESC_GOLDENAPPLE);
 
     Item::sign = (new SignItem(67))
                      ->setBaseItemTypeAndMaterial(eBaseItemType_HangingItem,
                                                   eMaterial_wood)
-                     ->setIconName(L"sign")
+                     ->setIconName("sign")
                      ->setDescriptionId(IDS_ITEM_SIGN)
                      ->setUseDescriptionId(IDS_DESC_SIGN);
 
     Item::minecart = (new MinecartItem(72, Minecart::TYPE_RIDEABLE))
-                         ->setIconName(L"minecart")
+                         ->setIconName("minecart")
                          ->setDescriptionId(IDS_ITEM_MINECART)
                          ->setUseDescriptionId(IDS_DESC_MINECART);
     Item::saddle = (new SaddleItem(73))
-                       ->setIconName(L"saddle")
+                       ->setIconName("saddle")
                        ->setDescriptionId(IDS_ITEM_SADDLE)
                        ->setUseDescriptionId(IDS_DESC_SADDLE);
     Item::redStone = (new RedStoneItem(75))
                          ->setBaseItemTypeAndMaterial(eBaseItemType_treasure,
                                                       eMaterial_redstone)
-                         ->setIconName(L"redstone")
+                         ->setIconName("redstone")
                          ->setDescriptionId(IDS_ITEM_REDSTONE)
                          ->setUseDescriptionId(IDS_DESC_REDSTONE_DUST)
                          ->setPotionBrewingFormula(PotionBrewing::MOD_REDSTONE);
     Item::snowBall = (new SnowballItem(76))
-                         ->setIconName(L"snowball")
+                         ->setIconName("snowball")
                          ->setDescriptionId(IDS_ITEM_SNOWBALL)
                          ->setUseDescriptionId(IDS_DESC_SNOWBALL);
 
     Item::boat = (new BoatItem(77))
-                     ->setIconName(L"boat")
+                     ->setIconName("boat")
                      ->setDescriptionId(IDS_ITEM_BOAT)
                      ->setUseDescriptionId(IDS_DESC_BOAT);
 
     Item::leather = (new Item(78))
-                        ->setIconName(L"leather")
+                        ->setIconName("leather")
                         ->setDescriptionId(IDS_ITEM_LEATHER)
                         ->setUseDescriptionId(IDS_DESC_LEATHER);
     Item::brick = (new Item(80))
-                      ->setIconName(L"brick")
+                      ->setIconName("brick")
                       ->setDescriptionId(IDS_ITEM_BRICK)
                       ->setUseDescriptionId(IDS_DESC_BRICK);
     Item::clay = (new Item(81))
-                     ->setIconName(L"clay")
+                     ->setIconName("clay")
                      ->setDescriptionId(IDS_ITEM_CLAY)
                      ->setUseDescriptionId(IDS_DESC_CLAY);
     Item::reeds = (new TilePlanterItem(82, Tile::reeds))
-                      ->setIconName(L"reeds")
+                      ->setIconName("reeds")
                       ->setDescriptionId(IDS_ITEM_REEDS)
                       ->setUseDescriptionId(IDS_DESC_REEDS);
     Item::paper = (new Item(83))
                       ->setBaseItemTypeAndMaterial(Item::eBaseItemType_paper,
                                                    Item::eMaterial_paper)
-                      ->setIconName(L"paper")
+                      ->setIconName("paper")
                       ->setDescriptionId(IDS_ITEM_PAPER)
                       ->setUseDescriptionId(IDS_DESC_PAPER);
     Item::book = (new BookItem(84))
                      ->setBaseItemTypeAndMaterial(Item::eBaseItemType_paper,
                                                   Item::eMaterial_book)
-                     ->setIconName(L"book")
+                     ->setIconName("book")
                      ->setDescriptionId(IDS_ITEM_BOOK)
                      ->setUseDescriptionId(IDS_DESC_BOOK);
     Item::slimeBall = (new Item(85))
-                          ->setIconName(L"slimeball")
+                          ->setIconName("slimeball")
                           ->setDescriptionId(IDS_ITEM_SLIMEBALL)
                           ->setUseDescriptionId(IDS_DESC_SLIMEBALL);
     Item::minecart_chest =
         (new MinecartItem(86, Minecart::TYPE_CHEST))
-            ->setIconName(L"minecart_chest")
+            ->setIconName("minecart_chest")
             ->setDescriptionId(IDS_ITEM_MINECART_CHEST)
             ->setUseDescriptionId(IDS_DESC_MINECARTWITHCHEST);
     Item::minecart_furnace =
         (new MinecartItem(87, Minecart::TYPE_FURNACE))
-            ->setIconName(L"minecart_furnace")
+            ->setIconName("minecart_furnace")
             ->setDescriptionId(IDS_ITEM_MINECART_FURNACE)
             ->setUseDescriptionId(IDS_DESC_MINECARTWITHFURNACE);
     Item::egg = (new EggItem(88))
-                    ->setIconName(L"egg")
+                    ->setIconName("egg")
                     ->setDescriptionId(IDS_ITEM_EGG)
                     ->setUseDescriptionId(IDS_DESC_EGG);
     Item::fishingRod =
         (FishingRodItem*)(new FishingRodItem(90))
             ->setBaseItemTypeAndMaterial(eBaseItemType_rod, eMaterial_wood)
-            ->setIconName(L"fishingRod")
+            ->setIconName("fishingRod")
             ->setDescriptionId(IDS_ITEM_FISHING_ROD)
             ->setUseDescriptionId(IDS_DESC_FISHINGROD);
     Item::yellowDust =
         (new Item(92))
-            ->setIconName(L"yellowDust")
+            ->setIconName("yellowDust")
             ->setDescriptionId(IDS_ITEM_YELLOW_DUST)
             ->setUseDescriptionId(IDS_DESC_YELLOW_DUST)
             ->setPotionBrewingFormula(PotionBrewing::MOD_GLOWSTONE);
     Item::fish_raw =
         (new FoodItem(93, 2, FoodConstants::FOOD_SATURATION_LOW, false))
-            ->setIconName(L"fishRaw")
+            ->setIconName("fishRaw")
             ->setDescriptionId(IDS_ITEM_FISH_RAW)
             ->setUseDescriptionId(IDS_DESC_FISH_RAW);
     Item::fish_cooked =
         (new FoodItem(94, 5, FoodConstants::FOOD_SATURATION_NORMAL, false))
-            ->setIconName(L"fishCooked")
+            ->setIconName("fishCooked")
             ->setDescriptionId(IDS_ITEM_FISH_COOKED)
             ->setUseDescriptionId(IDS_DESC_FISH_COOKED);
 
     Item::dye_powder =
         (new DyePowderItem(95))
             ->setBaseItemTypeAndMaterial(eBaseItemType_dyepowder, eMaterial_dye)
-            ->setIconName(L"dyePowder")
+            ->setIconName("dyePowder")
             ->setDescriptionId(IDS_ITEM_DYE_POWDER)
             ->setUseDescriptionId(-1);
 
     Item::bone = (new Item(96))
-                     ->setIconName(L"bone")
+                     ->setIconName("bone")
                      ->setDescriptionId(IDS_ITEM_BONE)
                      ->handEquipped()
                      ->setUseDescriptionId(IDS_DESC_BONE);
     Item::sugar = (new Item(97))
-                      ->setIconName(L"sugar")
+                      ->setIconName("sugar")
                       ->setDescriptionId(IDS_ITEM_SUGAR)
                       ->setUseDescriptionId(IDS_DESC_SUGAR)
                       ->setPotionBrewingFormula(PotionBrewing::MOD_SUGAR);
@@ -946,28 +948,28 @@ void Item::staticCtor() {
     // )->setMaxStackSize(1)->setIcon(13,
     // 1)->setDescriptionId(IDS_ITEM_CAKE)->setUseDescriptionId(IDS_DESC_CAKE);
     Item::cake = (new TilePlanterItem(98, Tile::cake))
-                     ->setIconName(L"cake")
+                     ->setIconName("cake")
                      ->setDescriptionId(IDS_ITEM_CAKE)
                      ->setUseDescriptionId(IDS_DESC_CAKE);
 
     Item::bed = (new BedItem(99))
                     ->setMaxStackSize(1)
-                    ->setIconName(L"bed")
+                    ->setIconName("bed")
                     ->setDescriptionId(IDS_ITEM_BED)
                     ->setUseDescriptionId(IDS_DESC_BED);
 
     Item::repeater = (new TilePlanterItem(100, (Tile*)Tile::diode_off))
-                         ->setIconName(L"diode")
+                         ->setIconName("diode")
                          ->setDescriptionId(IDS_ITEM_DIODE)
                          ->setUseDescriptionId(IDS_DESC_REDSTONEREPEATER);
     Item::cookie =
         (new FoodItem(101, 2, FoodConstants::FOOD_SATURATION_POOR, false))
-            ->setIconName(L"cookie")
+            ->setIconName("cookie")
             ->setDescriptionId(IDS_ITEM_COOKIE)
             ->setUseDescriptionId(IDS_DESC_COOKIE);
 
     Item::shears = (ShearsItem*)(new ShearsItem(103))
-                       ->setIconName(L"shears")
+                       ->setIconName("shears")
                        ->setBaseItemTypeAndMaterial(eBaseItemType_devicetool,
                                                     eMaterial_shears)
                        ->setDescriptionId(IDS_ITEM_SHEARS)
@@ -975,115 +977,115 @@ void Item::staticCtor() {
 
     Item::melon =
         (new FoodItem(104, 2, FoodConstants::FOOD_SATURATION_LOW, false))
-            ->setIconName(L"melon")
+            ->setIconName("melon")
             ->setDescriptionId(IDS_ITEM_MELON_SLICE)
             ->setUseDescriptionId(IDS_DESC_MELON_SLICE);
 
     Item::seeds_pumpkin =
         (new SeedItem(105, Tile::pumpkinStem_Id, Tile::farmland_Id))
-            ->setIconName(L"seeds_pumpkin")
+            ->setIconName("seeds_pumpkin")
             ->setBaseItemTypeAndMaterial(eBaseItemType_seed, eMaterial_pumpkin)
             ->setDescriptionId(IDS_ITEM_PUMPKIN_SEEDS)
             ->setUseDescriptionId(IDS_DESC_PUMPKIN_SEEDS);
     Item::seeds_melon =
         (new SeedItem(106, Tile::melonStem_Id, Tile::farmland_Id))
-            ->setIconName(L"seeds_melon")
+            ->setIconName("seeds_melon")
             ->setBaseItemTypeAndMaterial(eBaseItemType_seed, eMaterial_melon)
             ->setDescriptionId(IDS_ITEM_MELON_SEEDS)
             ->setUseDescriptionId(IDS_DESC_MELON_SEEDS);
 
     Item::beef_raw =
         (new FoodItem(107, 3, FoodConstants::FOOD_SATURATION_LOW, true))
-            ->setIconName(L"beefRaw")
+            ->setIconName("beefRaw")
             ->setDescriptionId(IDS_ITEM_BEEF_RAW)
             ->setUseDescriptionId(IDS_DESC_BEEF_RAW);
     Item::beef_cooked =
         (new FoodItem(108, 8, FoodConstants::FOOD_SATURATION_GOOD, true))
-            ->setIconName(L"beefCooked")
+            ->setIconName("beefCooked")
             ->setDescriptionId(IDS_ITEM_BEEF_COOKED)
             ->setUseDescriptionId(IDS_DESC_BEEF_COOKED);
     Item::chicken_raw =
         (new FoodItem(109, 2, FoodConstants::FOOD_SATURATION_LOW, true))
             ->setEatEffect(MobEffect::hunger->id, 30, 0, .3f)
-            ->setIconName(L"chickenRaw")
+            ->setIconName("chickenRaw")
             ->setDescriptionId(IDS_ITEM_CHICKEN_RAW)
             ->setUseDescriptionId(IDS_DESC_CHICKEN_RAW);
     Item::chicken_cooked =
         (new FoodItem(110, 6, FoodConstants::FOOD_SATURATION_NORMAL, true))
-            ->setIconName(L"chickenCooked")
+            ->setIconName("chickenCooked")
             ->setDescriptionId(IDS_ITEM_CHICKEN_COOKED)
             ->setUseDescriptionId(IDS_DESC_CHICKEN_COOKED);
     Item::rotten_flesh =
         (new FoodItem(111, 4, FoodConstants::FOOD_SATURATION_POOR, true))
             ->setEatEffect(MobEffect::hunger->id, 30, 0, .8f)
-            ->setIconName(L"rottenFlesh")
+            ->setIconName("rottenFlesh")
             ->setDescriptionId(IDS_ITEM_ROTTEN_FLESH)
             ->setUseDescriptionId(IDS_DESC_ROTTEN_FLESH);
 
     Item::enderPearl = (new EnderpearlItem(112))
-                           ->setIconName(L"enderPearl")
+                           ->setIconName("enderPearl")
                            ->setDescriptionId(IDS_ITEM_ENDER_PEARL)
                            ->setUseDescriptionId(IDS_DESC_ENDER_PEARL);
 
     Item::blazeRod = (new Item(113))
-                         ->setIconName(L"blazeRod")
+                         ->setIconName("blazeRod")
                          ->setDescriptionId(IDS_ITEM_BLAZE_ROD)
                          ->setUseDescriptionId(IDS_DESC_BLAZE_ROD)
                          ->handEquipped();
     Item::ghastTear =
         (new Item(114))
-            ->setIconName(L"ghastTear")
+            ->setIconName("ghastTear")
             ->setDescriptionId(IDS_ITEM_GHAST_TEAR)
             ->setUseDescriptionId(IDS_DESC_GHAST_TEAR)
             ->setPotionBrewingFormula(PotionBrewing::MOD_GHASTTEARS);
     Item::goldNugget =
         (new Item(115))
             ->setBaseItemTypeAndMaterial(eBaseItemType_treasure, eMaterial_gold)
-            ->setIconName(L"goldNugget")
+            ->setIconName("goldNugget")
             ->setDescriptionId(IDS_ITEM_GOLD_NUGGET)
             ->setUseDescriptionId(IDS_DESC_GOLD_NUGGET);
 
     Item::netherwart_seeds =
         (new SeedItem(116, Tile::netherStalk_Id, Tile::soulsand_Id))
-            ->setIconName(L"netherStalkSeeds")
+            ->setIconName("netherStalkSeeds")
             ->setDescriptionId(IDS_ITEM_NETHER_STALK_SEEDS)
             ->setUseDescriptionId(IDS_DESC_NETHER_STALK_SEEDS)
             ->setPotionBrewingFormula(PotionBrewing::MOD_NETHERWART);
 
     Item::potion = (PotionItem*)((new PotionItem(117))
-                                     ->setIconName(L"potion")
+                                     ->setIconName("potion")
                                      ->setDescriptionId(IDS_ITEM_POTION)
                                      ->setUseDescriptionId(IDS_DESC_POTION));
     Item::glassBottle =
         (new BottleItem(118))
             ->setBaseItemTypeAndMaterial(eBaseItemType_utensil, eMaterial_glass)
-            ->setIconName(L"glassBottle")
+            ->setIconName("glassBottle")
             ->setDescriptionId(IDS_ITEM_GLASS_BOTTLE)
             ->setUseDescriptionId(IDS_DESC_GLASS_BOTTLE);
 
     Item::spiderEye =
         (new FoodItem(119, 2, FoodConstants::FOOD_SATURATION_GOOD, false))
             ->setEatEffect(MobEffect::poison->id, 5, 0, 1.0f)
-            ->setIconName(L"spiderEye")
+            ->setIconName("spiderEye")
             ->setDescriptionId(IDS_ITEM_SPIDER_EYE)
             ->setUseDescriptionId(IDS_DESC_SPIDER_EYE)
             ->setPotionBrewingFormula(PotionBrewing::MOD_SPIDEREYE);
     Item::fermentedSpiderEye =
         (new Item(120))
-            ->setIconName(L"fermentedSpiderEye")
+            ->setIconName("fermentedSpiderEye")
             ->setDescriptionId(IDS_ITEM_FERMENTED_SPIDER_EYE)
             ->setUseDescriptionId(IDS_DESC_FERMENTED_SPIDER_EYE)
             ->setPotionBrewingFormula(PotionBrewing::MOD_FERMENTEDEYE);
 
     Item::blazePowder =
         (new Item(121))
-            ->setIconName(L"blazePowder")
+            ->setIconName("blazePowder")
             ->setDescriptionId(IDS_ITEM_BLAZE_POWDER)
             ->setUseDescriptionId(IDS_DESC_BLAZE_POWDER)
             ->setPotionBrewingFormula(PotionBrewing::MOD_BLAZEPOWDER);
     Item::magmaCream =
         (new Item(122))
-            ->setIconName(L"magmaCream")
+            ->setIconName("magmaCream")
             ->setDescriptionId(IDS_ITEM_MAGMA_CREAM)
             ->setUseDescriptionId(IDS_DESC_MAGMA_CREAM)
             ->setPotionBrewingFormula(PotionBrewing::MOD_MAGMACREAM);
@@ -1091,89 +1093,89 @@ void Item::staticCtor() {
     Item::brewingStand =
         (new TilePlanterItem(123, Tile::brewingStand))
             ->setBaseItemTypeAndMaterial(eBaseItemType_device, eMaterial_blaze)
-            ->setIconName(L"brewingStand")
+            ->setIconName("brewingStand")
             ->setDescriptionId(IDS_ITEM_BREWING_STAND)
             ->setUseDescriptionId(IDS_DESC_BREWING_STAND);
     Item::cauldron =
         (new TilePlanterItem(124, Tile::cauldron))
             ->setBaseItemTypeAndMaterial(eBaseItemType_utensil, eMaterial_iron)
-            ->setIconName(L"cauldron")
+            ->setIconName("cauldron")
             ->setDescriptionId(IDS_ITEM_CAULDRON)
             ->setUseDescriptionId(IDS_DESC_CAULDRON);
     Item::eyeOfEnder = (new EnderEyeItem(125))
                            ->setBaseItemTypeAndMaterial(
                                eBaseItemType_pockettool, eMaterial_ender)
-                           ->setIconName(L"eyeOfEnder")
+                           ->setIconName("eyeOfEnder")
                            ->setDescriptionId(IDS_ITEM_EYE_OF_ENDER)
                            ->setUseDescriptionId(IDS_DESC_EYE_OF_ENDER);
     Item::speckledMelon =
         (new Item(126))
             ->setBaseItemTypeAndMaterial(eBaseItemType_giltFruit,
                                          eMaterial_melon)
-            ->setIconName(L"speckledMelon")
+            ->setIconName("speckledMelon")
             ->setDescriptionId(IDS_ITEM_SPECKLED_MELON)
             ->setUseDescriptionId(IDS_DESC_SPECKLED_MELON)
             ->setPotionBrewingFormula(PotionBrewing::MOD_SPECKLEDMELON);
 
     Item::spawnEgg = (new SpawnEggItem(127))
-                         ->setIconName(L"monsterPlacer")
+                         ->setIconName("monsterPlacer")
                          ->setDescriptionId(IDS_ITEM_MONSTER_SPAWNER)
                          ->setUseDescriptionId(IDS_DESC_MONSTER_SPAWNER);
 
     // 4J Stu - Brought this forward
     Item::expBottle = (new ExperienceItem(128))
-                          ->setIconName(L"expBottle")
+                          ->setIconName("expBottle")
                           ->setDescriptionId(IDS_ITEM_EXP_BOTTLE)
                           ->setUseDescriptionId(IDS_DESC_EXP_BOTTLE);
 
-    Item::record_01 = (new RecordingItem(2000, L"13"))
-                          ->setIconName(L"record")
+    Item::record_01 = (new RecordingItem(2000, "13"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_01)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_02 = (new RecordingItem(2001, L"cat"))
-                          ->setIconName(L"record")
+    Item::record_02 = (new RecordingItem(2001, "cat"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_02)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
 
     // 4J - new records brought forward from 1.2.3
-    Item::record_03 = (new RecordingItem(2002, L"blocks"))
-                          ->setIconName(L"record")
+    Item::record_03 = (new RecordingItem(2002, "blocks"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_03)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_04 = (new RecordingItem(2003, L"chirp"))
-                          ->setIconName(L"record")
+    Item::record_04 = (new RecordingItem(2003, "chirp"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_04)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_05 = (new RecordingItem(2004, L"far"))
-                          ->setIconName(L"record")
+    Item::record_05 = (new RecordingItem(2004, "far"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_05)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_06 = (new RecordingItem(2005, L"mall"))
-                          ->setIconName(L"record")
+    Item::record_06 = (new RecordingItem(2005, "mall"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_06)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_07 = (new RecordingItem(2006, L"mellohi"))
-                          ->setIconName(L"record")
+    Item::record_07 = (new RecordingItem(2006, "mellohi"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_07)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_09 = (new RecordingItem(2007, L"stal"))
-                          ->setIconName(L"record")
+    Item::record_09 = (new RecordingItem(2007, "stal"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_08)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_10 = (new RecordingItem(2008, L"strad"))
-                          ->setIconName(L"record")
+    Item::record_10 = (new RecordingItem(2008, "strad"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_09)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_11 = (new RecordingItem(2009, L"ward"))
-                          ->setIconName(L"record")
+    Item::record_11 = (new RecordingItem(2009, "ward"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_10)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_12 = (new RecordingItem(2010, L"11"))
-                          ->setIconName(L"record")
+    Item::record_12 = (new RecordingItem(2010, "11"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_11)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
-    Item::record_08 = (new RecordingItem(2011, L"where are we now"))
-                          ->setIconName(L"record")
+    Item::record_08 = (new RecordingItem(2011, "where are we now"))
+                          ->setIconName("record")
                           ->setDescriptionId(IDS_ITEM_RECORD_12)
                           ->setUseDescriptionId(IDS_DESC_RECORD);
 
@@ -1183,19 +1185,19 @@ void Item::staticCtor() {
     Item::fireball =
         (new FireChargeItem(129))
             ->setBaseItemTypeAndMaterial(eBaseItemType_torch, eMaterial_setfire)
-            ->setIconName(L"fireball")
+            ->setIconName("fireball")
             ->setDescriptionId(IDS_ITEM_FIREBALL)
             ->setUseDescriptionId(IDS_DESC_FIREBALL);
     Item::frame = (new HangingEntityItem(133, eTYPE_ITEM_FRAME))
                       ->setBaseItemTypeAndMaterial(eBaseItemType_HangingItem,
                                                    eMaterial_glass)
-                      ->setIconName(L"frame")
+                      ->setIconName("frame")
                       ->setDescriptionId(IDS_ITEM_ITEMFRAME)
                       ->setUseDescriptionId(IDS_DESC_ITEMFRAME);
 
     // TU12
     Item::skull = (new SkullItem(141))
-                      ->setIconName(L"skull")
+                      ->setIconName("skull")
                       ->setDescriptionId(IDS_ITEM_SKULL)
                       ->setUseDescriptionId(IDS_DESC_SKULL);
 
@@ -1207,40 +1209,40 @@ void Item::staticCtor() {
     Item::emerald = (new Item(132))
                         ->setBaseItemTypeAndMaterial(eBaseItemType_treasure,
                                                      eMaterial_emerald)
-                        ->setIconName(L"emerald")
+                        ->setIconName("emerald")
                         ->setDescriptionId(IDS_ITEM_EMERALD)
                         ->setUseDescriptionId(IDS_DESC_EMERALD);
 
     Item::flowerPot = (new TilePlanterItem(134, Tile::flowerPot))
-                          ->setIconName(L"flowerPot")
+                          ->setIconName("flowerPot")
                           ->setDescriptionId(IDS_FLOWERPOT)
                           ->setUseDescriptionId(IDS_DESC_FLOWERPOT);
 
     Item::carrots =
         (new SeedFoodItem(135, 4, FoodConstants::FOOD_SATURATION_NORMAL,
                           Tile::carrots_Id, Tile::farmland_Id))
-            ->setIconName(L"carrots")
+            ->setIconName("carrots")
             ->setDescriptionId(IDS_CARROTS)
             ->setUseDescriptionId(IDS_DESC_CARROTS);
     Item::potato = (new SeedFoodItem(136, 1, FoodConstants::FOOD_SATURATION_LOW,
                                      Tile::potatoes_Id, Tile::farmland_Id))
-                       ->setIconName(L"potato")
+                       ->setIconName("potato")
                        ->setDescriptionId(IDS_POTATO)
                        ->setUseDescriptionId(IDS_DESC_POTATO);
     Item::potatoBaked =
         (new FoodItem(137, 6, FoodConstants::FOOD_SATURATION_NORMAL, false))
-            ->setIconName(L"potatoBaked")
+            ->setIconName("potatoBaked")
             ->setDescriptionId(IDS_ITEM_POTATO_BAKED)
             ->setUseDescriptionId(IDS_DESC_POTATO_BAKED);
     Item::potatoPoisonous =
         (new FoodItem(138, 2, FoodConstants::FOOD_SATURATION_LOW, false))
             ->setEatEffect(MobEffect::poison->id, 5, 0, .6f)
-            ->setIconName(L"potatoPoisonous")
+            ->setIconName("potatoPoisonous")
             ->setDescriptionId(IDS_ITEM_POTATO_POISONOUS)
             ->setUseDescriptionId(IDS_DESC_POTATO_POISONOUS);
 
     Item::emptyMap = (EmptyMapItem*)(new EmptyMapItem(139))
-                         ->setIconName(L"map_empty")
+                         ->setIconName("map_empty")
                          ->setDescriptionId(IDS_ITEM_MAP_EMPTY)
                          ->setUseDescriptionId(IDS_DESC_MAP_EMPTY);
 
@@ -1249,7 +1251,7 @@ void Item::staticCtor() {
                       false))
             ->setBaseItemTypeAndMaterial(eBaseItemType_giltFruit,
                                          eMaterial_carrot)
-            ->setIconName(L"carrotGolden")
+            ->setIconName("carrotGolden")
             ->setPotionBrewingFormula(PotionBrewing::MOD_GOLDENCARROT)
             ->setDescriptionId(IDS_ITEM_CARROT_GOLDEN)
             ->setUseDescriptionId(IDS_DESC_CARROT_GOLDEN);
@@ -1257,84 +1259,84 @@ void Item::staticCtor() {
     Item::carrotOnAStick =
         (new CarrotOnAStickItem(142))
             ->setBaseItemTypeAndMaterial(eBaseItemType_rod, eMaterial_carrot)
-            ->setIconName(L"carrotOnAStick")
+            ->setIconName("carrotOnAStick")
             ->setDescriptionId(IDS_ITEM_CARROT_ON_A_STICK)
             ->setUseDescriptionId(IDS_DESC_CARROT_ON_A_STICK);
     Item::netherStar = (new SimpleFoiledItem(143))
-                           ->setIconName(L"nether_star")
+                           ->setIconName("nether_star")
                            ->setDescriptionId(IDS_NETHER_STAR)
                            ->setUseDescriptionId(IDS_DESC_NETHER_STAR);
     Item::pumpkinPie =
         (new FoodItem(144, 8, FoodConstants::FOOD_SATURATION_LOW, false))
-            ->setIconName(L"pumpkinPie")
+            ->setIconName("pumpkinPie")
             ->setDescriptionId(IDS_ITEM_PUMPKIN_PIE)
             ->setUseDescriptionId(IDS_DESC_PUMPKIN_PIE);
     Item::fireworks =
         (new FireworksItem(145))
             ->setBaseItemTypeAndMaterial(Item::eBaseItemType_fireworks,
                                          Item::eMaterial_undefined)
-            ->setIconName(L"fireworks")
+            ->setIconName("fireworks")
             ->setDescriptionId(IDS_FIREWORKS)
             ->setUseDescriptionId(IDS_DESC_FIREWORKS);
     Item::fireworksCharge =
         (new FireworksChargeItem(146))
             ->setBaseItemTypeAndMaterial(Item::eBaseItemType_fireworks,
                                          Item::eMaterial_undefined)
-            ->setIconName(L"fireworks_charge")
+            ->setIconName("fireworks_charge")
             ->setDescriptionId(IDS_FIREWORKS_CHARGE)
             ->setUseDescriptionId(IDS_DESC_FIREWORKS_CHARGE);
     EnchantedBookItem::enchantedBook =
         (EnchantedBookItem*)(new EnchantedBookItem(147))
             ->setMaxStackSize(1)
-            ->setIconName(L"enchantedBook")
+            ->setIconName("enchantedBook")
             ->setDescriptionId(IDS_ITEM_ENCHANTED_BOOK)
             ->setUseDescriptionId(IDS_DESC_ENCHANTED_BOOK);
     Item::comparator = (new TilePlanterItem(148, Tile::comparator_off))
-                           ->setIconName(L"comparator")
+                           ->setIconName("comparator")
                            ->setDescriptionId(IDS_ITEM_COMPARATOR)
                            ->setUseDescriptionId(IDS_DESC_COMPARATOR);
     Item::netherbrick = (new Item(149))
-                            ->setIconName(L"netherbrick")
+                            ->setIconName("netherbrick")
                             ->setDescriptionId(IDS_ITEM_NETHERBRICK)
                             ->setUseDescriptionId(IDS_DESC_ITEM_NETHERBRICK);
     Item::netherQuartz = (new Item(150))
-                             ->setIconName(L"netherquartz")
+                             ->setIconName("netherquartz")
                              ->setDescriptionId(IDS_ITEM_NETHER_QUARTZ)
                              ->setUseDescriptionId(IDS_DESC_NETHER_QUARTZ);
     Item::minecart_tnt = (new MinecartItem(151, Minecart::TYPE_TNT))
-                             ->setIconName(L"minecart_tnt")
+                             ->setIconName("minecart_tnt")
                              ->setDescriptionId(IDS_ITEM_MINECART_TNT)
                              ->setUseDescriptionId(IDS_DESC_MINECART_TNT);
     Item::minecart_hopper = (new MinecartItem(152, Minecart::TYPE_HOPPER))
-                                ->setIconName(L"minecart_hopper")
+                                ->setIconName("minecart_hopper")
                                 ->setDescriptionId(IDS_ITEM_MINECART_HOPPER)
                                 ->setUseDescriptionId(IDS_DESC_MINECART_HOPPER);
 
     Item::horseArmorMetal =
         (new Item(161))
-            ->setIconName(L"iron_horse_armor")
+            ->setIconName("iron_horse_armor")
             ->setMaxStackSize(1)
             ->setDescriptionId(IDS_ITEM_IRON_HORSE_ARMOR)
             ->setUseDescriptionId(IDS_DESC_IRON_HORSE_ARMOR);
     Item::horseArmorGold = (new Item(162))
-                               ->setIconName(L"gold_horse_armor")
+                               ->setIconName("gold_horse_armor")
                                ->setMaxStackSize(1)
                                ->setDescriptionId(IDS_ITEM_GOLD_HORSE_ARMOR)
                                ->setUseDescriptionId(IDS_DESC_GOLD_HORSE_ARMOR);
     Item::horseArmorDiamond =
         (new Item(163))
-            ->setIconName(L"diamond_horse_armor")
+            ->setIconName("diamond_horse_armor")
             ->setMaxStackSize(1)
             ->setDescriptionId(IDS_ITEM_DIAMOND_HORSE_ARMOR)
             ->setUseDescriptionId(IDS_DESC_DIAMOND_HORSE_ARMOR);
     Item::lead = (new LeashItem(164))
                      ->setBaseItemTypeAndMaterial(eBaseItemType_pockettool,
                                                   eMaterial_undefined)
-                     ->setIconName(L"lead")
+                     ->setIconName("lead")
                      ->setDescriptionId(IDS_ITEM_LEAD)
                      ->setUseDescriptionId(IDS_DESC_LEAD);
     Item::nameTag = (new NameTagItem(165))
-                        ->setIconName(L"name_tag")
+                        ->setIconName("name_tag")
                         ->setDescriptionId(IDS_ITEM_NAME_TAG)
                         ->setUseDescriptionId(IDS_DESC_NAME_TAG);
 }
@@ -1384,18 +1386,18 @@ Item::Item(int id) : id(256 + id) {
     m_isStackedByData = false;
 
     craftingRemainingItem = nullptr;
-    potionBrewingFormula = L"";
+    potionBrewingFormula = "";
 
     m_iMaterial = eMaterial_undefined;
     m_iBaseItemType = eBaseItemType_undefined;
-    m_textureName = L"";
+    m_textureName = "";
 
     // TODO Init this string
     // string descriptionId;
 
     // this->id = 256 + id;
     if (items[256 + id] != nullptr) {
-        app.DebugPrintf("CONFLICT @ %d", id);
+        Log::info("CONFLICT @ %d", id);
     }
 
     items[256 + id] = this;
@@ -1413,13 +1415,13 @@ int Item::getBaseItemType() { return this->m_iBaseItemType; }
 
 int Item::getMaterial() { return this->m_iMaterial; }
 
-Item* Item::setIconName(const std::wstring& name) {
+Item* Item::setIconName(const std::string& name) {
     m_textureName = name;
 
     return this;
 }
 
-std::wstring Item::getIconName() { return m_textureName; }
+std::string Item::getIconName() { return m_textureName; }
 
 Item* Item::setMaxStackSize(int max) {
     maxStackSize = max;
@@ -1538,13 +1540,13 @@ Item* Item::setDescriptionId(unsigned int id) {
     return this;
 }
 
-const wchar_t* Item::getDescription() {
-    return app.GetString(getDescriptionId());
+const char* Item::getDescription() {
+    return gameServices().getString(getDescriptionId());
     // return I18n::get(getDescriptionId());
 }
 
-const wchar_t* Item::getDescription(std::shared_ptr<ItemInstance> instance) {
-    return app.GetString(getDescriptionId(instance));
+const char* Item::getDescription(std::shared_ptr<ItemInstance> instance) {
+    return gameServices().getString(getDescriptionId(instance));
     // return I18n::get(getDescriptionId(instance));
 }
 
@@ -1586,8 +1588,8 @@ bool Item::hasCraftingRemainingItem() {
     return craftingRemainingItem != nullptr;
 }
 
-std::wstring Item::getName() {
-    return L"";  // I18n::get(getDescriptionId() + L".name");
+std::string Item::getName() {
+    return "";  // I18n::get(getDescriptionId() + ".name");
 }
 
 int Item::getColor(std::shared_ptr<ItemInstance> item, int spriteLayer) {
@@ -1615,30 +1617,30 @@ void Item::releaseUsing(std::shared_ptr<ItemInstance> itemInstance,
                         Level* level, std::shared_ptr<Player> player,
                         int durationLeft) {}
 
-Item* Item::setPotionBrewingFormula(const std::wstring& potionBrewingFormula) {
+Item* Item::setPotionBrewingFormula(const std::string& potionBrewingFormula) {
     this->potionBrewingFormula = potionBrewingFormula;
     return this;
 }
 
-std::wstring Item::getPotionBrewingFormula() { return potionBrewingFormula; }
+std::string Item::getPotionBrewingFormula() { return potionBrewingFormula; }
 
 bool Item::hasPotionBrewingFormula() { return !potionBrewingFormula.empty(); }
 
 // 4jcraft: re-added old TU18 overload for java gui
 void Item::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
                            std::shared_ptr<Player> player,
-                           std::vector<std::wstring>* lines, bool advanced,
-                           std::vector<std::wstring>& unformattedStrings) {}
+                           std::vector<std::string>* lines, bool advanced,
+                           std::vector<std::string>& unformattedStrings) {}
 
 void Item::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
                            std::shared_ptr<Player> player,
                            std::vector<HtmlString>* lines, bool advanced) {}
 
-std::wstring Item::getHoverName(std::shared_ptr<ItemInstance> itemInstance) {
+std::string Item::getHoverName(std::shared_ptr<ItemInstance> itemInstance) {
     // String elementName = ("" +
     // Language.getInstance().getElementName(getDescription(itemInstance))).trim();
     // return elementName;
-    return app.GetString(getDescriptionId(itemInstance));
+    return gameServices().getString(getDescriptionId(itemInstance));
 }
 
 bool Item::isFoil(std::shared_ptr<ItemInstance> itemInstance) {

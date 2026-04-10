@@ -1,10 +1,10 @@
 #include "TakeAnimationParticle.h"
 
-#include <GL/gl.h>
+
 
 #include <cmath>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/particle/Particle.h"
 #include "minecraft/client/particle/ParticleEngine.h"

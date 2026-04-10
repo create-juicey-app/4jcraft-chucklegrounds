@@ -89,23 +89,23 @@ public:
     std::uint8_t userType;
     float oBob, bob;
 
-    std::wstring name;
+    std::string name;
     int takeXpDelay;
 
     // 4J-PB - track custom skin
-    std::wstring customTextureUrl;
-    std::wstring customTextureUrl2;
+    std::string customTextureUrl;
+    std::string customTextureUrl2;
     unsigned int m_uiPlayerCurrentSkin;
     void ChangePlayerSkin();
 
-    // 4J-PB - not needed, since cutomtextureurl2 is the same thing wstring
+    // 4J-PB - not needed, since cutomtextureurl2 is the same thing string
     // cloakTexture;
 
     double xCloakO, yCloakO, zCloakO;
     double xCloak, yCloak, zCloak;
 
     // 4J-HG: store display name, added for Xbox One "game display name"
-    std::wstring m_displayName;
+    std::string m_displayName;
 
 protected:
     // player sleeping in bed?
@@ -157,7 +157,7 @@ public:
     // 4J Added to default init
     void _init();
 
-    Player(Level* level, const std::wstring& name);
+    Player(Level* level, const std::string& name);
     virtual ~Player();
 
 protected:
@@ -238,7 +238,7 @@ public:
                                     std::shared_ptr<Container> container);
     virtual bool startEnchanting(
         int x, int y, int z,
-        const std::wstring& name);                     // 4J - added bool return
+        const std::string& name);                     // 4J - added bool return
     virtual bool startRepairing(int x, int y, int z);  // 4J - added bool return
     virtual bool startCrafting(int x, int y, int z);   // 4J - added bool return
     virtual bool openFireworks(int x, int y, int z);   // 4J - added
@@ -258,7 +258,7 @@ public:
     virtual bool hurt(DamageSource* source, float dmg);
     virtual bool canHarmPlayer(std::shared_ptr<Player> target);
     virtual bool canHarmPlayer(
-        std::wstring targetName);  // 4J: Added for ServerPlayer when only
+        std::string targetName);  // 4J: Added for ServerPlayer when only
                                    // player name is provided
 
 protected:
@@ -284,7 +284,7 @@ public:
     virtual bool openBeacon(std::shared_ptr<BeaconTileEntity> beacon);
     virtual bool openTrading(
         std::shared_ptr<Merchant> traderTarget,
-        const std::wstring& name);  // 4J - added bool return
+        const std::string& name);  // 4J - added bool return
     virtual void openItemInstanceGui(
         std::shared_ptr<ItemInstance> itemInstance);
     virtual bool interact(std::shared_ptr<Entity> entity);
@@ -404,7 +404,7 @@ protected:
     virtual bool isAlwaysExperienceDropper();
 
 public:
-    virtual std::wstring getAName();
+    virtual std::string getAName();
     virtual bool shouldShowName();
     virtual void restoreFrom(std::shared_ptr<Player> oldPlayer,
                              bool restoreAll);
@@ -415,9 +415,9 @@ protected:
 public:
     void onUpdateAbilities();
     void setGameMode(GameType* mode);
-    std::wstring getName();
-    virtual std::wstring getDisplayName();
-    virtual std::wstring getNetworkName();  // 4J: Added
+    std::string getName();
+    virtual std::string getDisplayName();
+    virtual std::string getNetworkName();  // 4J: Added
 
     virtual Level* getCommandSenderWorld();
 
@@ -446,7 +446,7 @@ public:
     virtual void onCrafted(std::shared_ptr<ItemInstance> item) {}
 
     // 4J Overriding this so that we can have some different default skins
-    virtual int getTexture();  // 4J changed from std::wstring to int
+    virtual int getTexture();  // 4J changed from std::string to int
     void setPlayerDefaultSkin(EDefaultSkins skin);
     EDefaultSkins getPlayerDefaultSkin() { return m_skinIndex; }
     virtual void setCustomSkin(std::uint32_t skinId);
@@ -454,8 +454,8 @@ public:
     virtual void setCustomCape(std::uint32_t capeId);
     std::uint32_t getCustomCape() { return m_dwCapeId; }
 
-    static std::uint32_t getCapeIdFromPath(const std::wstring& cape);
-    static std::wstring getCapePathFromId(std::uint32_t capeId);
+    static std::uint32_t getCapeIdFromPath(const std::string& cape);
+    static std::string getCapePathFromId(std::uint32_t capeId);
     static unsigned int getSkinAnimOverrideBitmask(std::uint32_t skinId);
 
     // 4J Added
@@ -477,9 +477,9 @@ public:
     }
 
     virtual void sendMessage(
-        const std::wstring& message,
+        const std::string& message,
         ChatPacket::EChatPacketMessage type = ChatPacket::e_ChatCustom,
-        int customData = -1, const std::wstring& additionalMessage = L"") {}
+        int customData = -1, const std::string& additionalMessage = "") {}
 
 private:
     PlayerUID m_xuid;

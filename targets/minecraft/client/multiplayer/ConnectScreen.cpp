@@ -12,7 +12,7 @@
 #include "minecraft/locale/Language.h"
 #include "minecraft/network/packet/PreLoginPacket.h"
 
-ConnectScreen::ConnectScreen(Minecraft* minecraft, const std::wstring& ip,
+ConnectScreen::ConnectScreen(Minecraft* minecraft, const std::string& ip,
                              int port) {
     aborted = false;
     //    System.out.println("Connecting to " + ip + ", " + port);
@@ -38,7 +38,7 @@ void ConnectScreen::init() {
 
     buttons.clear();
     buttons.push_back(new Button(0, width / 2 - 100, height / 4 + 24 * 5 + 12,
-                                 language->getElement(L"gui.cancel")));
+                                 language->getElement("gui.cancel")));
 }
 
 void ConnectScreen::buttonClicked(Button* button) {
@@ -55,11 +55,11 @@ void ConnectScreen::render(int xm, int ym, float a) {
     Language* language = Language::getInstance();
 
     if (connection == nullptr) {
-        drawCenteredString(font, language->getElement(L"connect.connecting"),
+        drawCenteredString(font, language->getElement("connect.connecting"),
                            width / 2, height / 2 - 50, 0xffffff);
-        drawCenteredString(font, L"", width / 2, height / 2 - 10, 0xffffff);
+        drawCenteredString(font, "", width / 2, height / 2 - 10, 0xffffff);
     } else {
-        drawCenteredString(font, language->getElement(L"connect.authorizing"),
+        drawCenteredString(font, language->getElement("connect.authorizing"),
                            width / 2, height / 2 - 50, 0xffffff);
         drawCenteredString(font, connection->message, width / 2,
                            height / 2 - 10, 0xffffff);

@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "RespawnPacket.h"
 
 #include <string>
@@ -37,7 +38,7 @@ RespawnPacket::RespawnPacket(char dimension, int64_t mapSeed, int mapHeight,
     this->m_newEntityId = newEntityId;
     m_xzSize = xzSize;
     m_hellScale = hellScale;
-    app.DebugPrintf("RespawnPacket - Difficulty = %d\n", difficulty);
+    Log::info("RespawnPacket - Difficulty = %d\n", difficulty);
 }
 
 void RespawnPacket::handle(PacketListener* listener) {
@@ -49,7 +50,7 @@ void RespawnPacket::read(DataInputStream* dis)  // throws IOException
     dimension = dis->readByte();
     playerGameType = GameType::byId(dis->readByte());
     mapHeight = dis->readShort();
-    std::wstring typeName = readUtf(dis, 16);
+    std::string typeName = readUtf(dis, 16);
     m_pLevelType = LevelType::getLevelType(typeName);
     if (m_pLevelType == nullptr) {
         m_pLevelType = LevelType::lvl_normal;
@@ -62,7 +63,7 @@ void RespawnPacket::read(DataInputStream* dis)  // throws IOException
     m_xzSize = dis->readShort();
     m_hellScale = dis->read();
 #endif
-    app.DebugPrintf("RespawnPacket::read - Difficulty = %d\n", difficulty);
+    Log::info("RespawnPacket::read - Difficulty = %d\n", difficulty);
 }
 
 void RespawnPacket::write(DataOutputStream* dos)  // throws IOException
@@ -71,7 +72,7 @@ void RespawnPacket::write(DataOutputStream* dos)  // throws IOException
     dos->writeByte(playerGameType->getId());
     dos->writeShort(mapHeight);
     if (m_pLevelType == nullptr) {
-        writeUtf(L"", dos);
+        writeUtf("", dos);
     } else {
         writeUtf(m_pLevelType->getGeneratorName(), dos);
     }

@@ -61,17 +61,17 @@ void StructureStart::calculateBoundingBox() {
 CompoundTag* StructureStart::createTag(int chunkX, int chunkZ) {
     CompoundTag* tag = new CompoundTag();
 
-    tag->putString(L"id", StructureFeatureIO::getEncodeId(this));
-    tag->putInt(L"ChunkX", chunkX);
-    tag->putInt(L"ChunkZ", chunkZ);
-    tag->put(L"BB", boundingBox->createTag(L"BB"));
+    tag->putString("id", StructureFeatureIO::getEncodeId(this));
+    tag->putInt("ChunkX", chunkX);
+    tag->putInt("ChunkZ", chunkZ);
+    tag->put("BB", boundingBox->createTag("BB"));
 
-    ListTag<CompoundTag>* childrenTags = new ListTag<CompoundTag>(L"Children");
+    ListTag<CompoundTag>* childrenTags = new ListTag<CompoundTag>("Children");
     for (auto it = pieces.begin(); it != pieces.end(); ++it) {
         StructurePiece* piece = *it;
         childrenTags->add(piece->createTag());
     }
-    tag->put(L"Children", childrenTags);
+    tag->put("Children", childrenTags);
 
     addAdditonalSaveData(tag);
 
@@ -81,14 +81,14 @@ CompoundTag* StructureStart::createTag(int chunkX, int chunkZ) {
 void StructureStart::addAdditonalSaveData(CompoundTag* tag) {}
 
 void StructureStart::load(Level* level, CompoundTag* tag) {
-    chunkX = tag->getInt(L"ChunkX");
-    chunkZ = tag->getInt(L"ChunkZ");
-    if (tag->contains(L"BB")) {
-        boundingBox = new BoundingBox(tag->getIntArray(L"BB"));
+    chunkX = tag->getInt("ChunkX");
+    chunkZ = tag->getInt("ChunkZ");
+    if (tag->contains("BB")) {
+        boundingBox = new BoundingBox(tag->getIntArray("BB"));
     }
 
     ListTag<CompoundTag>* children =
-        (ListTag<CompoundTag>*)tag->getList(L"Children");
+        (ListTag<CompoundTag>*)tag->getList("Children");
     for (int i = 0; i < children->size(); i++) {
         pieces.push_back(
             StructureFeatureIO::loadStaticPiece(children->get(i), level));

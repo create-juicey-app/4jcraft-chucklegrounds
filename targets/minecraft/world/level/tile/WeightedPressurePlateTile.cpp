@@ -14,7 +14,7 @@
 class Material;
 
 WeightedPressurePlateTile::WeightedPressurePlateTile(int id,
-                                                     const std::wstring& tex,
+                                                     const std::string& tex,
                                                      Material* material,
                                                      int maxWeight)
     : BasePressurePlateTile(id, tex, material) {

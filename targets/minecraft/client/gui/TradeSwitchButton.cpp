@@ -2,6 +2,7 @@
 
 #include <string>
 
+
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Button.h"
 #include "minecraft/client/renderer/Textures.h"
@@ -14,7 +15,7 @@ extern ResourceLocation GUI_VILLAGER_LOCATION;
 #endif
 
 TradeSwitchButton::TradeSwitchButton(int id, int x, int y, bool mirrored)
-    : Button(id, x, y, 12, 19, L"") {
+    : Button(id, x, y, 12, 19, "") {
     this->mirrored = mirrored;
 }
 

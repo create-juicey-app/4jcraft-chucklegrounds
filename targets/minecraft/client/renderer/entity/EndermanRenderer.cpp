@@ -2,7 +2,8 @@
 
 #include <memory>
 
-#include "platform/sdl2/Render.h"
+
+#include "platform/renderer/renderer.h"
 
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/model/EndermanModel.h"
@@ -97,7 +98,7 @@ int EndermanRenderer::prepareArmor(std::shared_ptr<LivingEntity> _mob,
 
     if (layer != 0) return -1;
 
-    bindTexture(&ENDERMAN_EYES_LOCATION);  // 4J was L"/mob/enderman_eyes.png"
+    bindTexture(&ENDERMAN_EYES_LOCATION);  // 4J was "/mob/enderman_eyes.png"
     float br = 1;
     glEnable(GL_BLEND);
     // 4J Stu - We probably don't need to do this on 360 either (as we force it

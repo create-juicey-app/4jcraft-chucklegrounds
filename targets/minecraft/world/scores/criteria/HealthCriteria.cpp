@@ -7,7 +7,7 @@
 #include "minecraft/world/entity/player/Player.h"
 #include "minecraft/world/scores/criteria/DummyCriteria.h"
 
-HealthCriteria::HealthCriteria(const std::wstring& id) : DummyCriteria(id) {}
+HealthCriteria::HealthCriteria(const std::string& id) : DummyCriteria(id) {}
 
 int HealthCriteria::getScoreModifier(
     std::vector<std::shared_ptr<Player> >* players) {

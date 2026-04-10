@@ -19,8 +19,8 @@ private:
     static const int MASK_ATTACHED = 0x7;
 
 public:
-    static const std::wstring TEXTURE_OUTSIDE;
-    static const std::wstring TEXTURE_INSIDE;
+    static const std::string TEXTURE_OUTSIDE;
+    static const std::string TEXTURE_INSIDE;
 
 private:
     Random random;
@@ -71,8 +71,8 @@ public:
     virtual int getAnalogOutputSignal(Level* level, int x, int y, int z,
                                       int dir);
     virtual void registerIcons(IconRegister* iconRegister);
-    static Icon* getTexture(const std::wstring& name);
-    virtual std::wstring getTileItemIconName();
+    static Icon* getTexture(const std::string& name);
+    virtual std::string getTileItemIconName();
     static std::shared_ptr<HopperTileEntity> getHopper(LevelSource* level,
                                                        int x, int y, int z);
 };

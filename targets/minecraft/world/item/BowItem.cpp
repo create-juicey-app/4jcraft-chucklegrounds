@@ -17,8 +17,8 @@
 
 class Icon;
 
-const std::wstring BowItem::TEXTURE_PULL[] = {L"bow_pull_0", L"bow_pull_1",
-                                              L"bow_pull_2"};
+const std::string BowItem::TEXTURE_PULL[] = {"bow_pull_0", "bow_pull_1",
+                                              "bow_pull_2"};
 
 BowItem::BowItem(int id) : Item(id) {
     maxStackSize = 1;

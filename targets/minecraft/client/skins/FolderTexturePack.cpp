@@ -6,7 +6,7 @@
 
 class TexturePack;
 
-FolderTexturePack::FolderTexturePack(std::uint32_t id, const std::wstring& name,
+FolderTexturePack::FolderTexturePack(std::uint32_t id, const std::string& name,
                                      File* folder, TexturePack* fallback)
     : AbstractTexturePack(id, folder, name, fallback) {
     // 4J Stu - These calls need to be in the most derived version of the class
@@ -18,11 +18,11 @@ FolderTexturePack::FolderTexturePack(std::uint32_t id, const std::wstring& name,
 }
 
 InputStream* FolderTexturePack::getResourceImplementation(
-    const std::wstring& name)  // throws IOException
+    const std::string& name)  // throws IOException
 {
-    std::wstring wDrive = L"";
+    std::string wDrive = "";
     // Make the content package point to to the UPDATE: drive is needed
-    wDrive = L"Common\\DummyTexturePack\\res";
+    wDrive = "Common\\DummyTexturePack\\res";
     InputStream* resource = InputStream::getResourceAsStream(wDrive + name);
     // InputStream *stream =
     // DefaultTexturePack::class->getResourceAsStream(name); if (stream ==
@@ -35,7 +35,7 @@ InputStream* FolderTexturePack::getResourceImplementation(
     return resource;
 }
 
-bool FolderTexturePack::hasFile(const std::wstring& name) {
+bool FolderTexturePack::hasFile(const std::string& name) {
     File file = File(getPath() + name);
     return file.exists() && file.isFile();
     // return true;
@@ -43,10 +43,10 @@ bool FolderTexturePack::hasFile(const std::wstring& name) {
 
 bool FolderTexturePack::isTerrainUpdateCompatible() { return true; }
 
-std::wstring FolderTexturePack::getPath(bool bTitleUpdateTexture /*= false*/,
+std::string FolderTexturePack::getPath(bool bTitleUpdateTexture /*= false*/,
                                         const char* pchBDPatchFilename) {
-    std::wstring wDrive;
-    wDrive = L"Common\\" + file->getPath() + L"\\";
+    std::string wDrive;
+    wDrive = "Common\\" + file->getPath() + "\\";
     return wDrive;
 }
 

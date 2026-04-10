@@ -5,13 +5,13 @@ typedef std::vector<_TEXTURE_NAME> textureNameArray;
 class ResourceLocation {
 private:
     textureNameArray m_texture;
-    std::wstring m_path;
+    std::string m_path;
     bool m_preloaded;
 
 public:
     ResourceLocation() {
         m_preloaded = false;
-        m_path = L"";
+        m_path = "";
     }
 
     ResourceLocation(_TEXTURE_NAME texture) {
@@ -19,7 +19,7 @@ public:
         m_preloaded = true;
     }
 
-    ResourceLocation(std::wstring path) {
+    ResourceLocation(std::string path) {
         m_path = path;
         m_preloaded = false;
     }
@@ -40,7 +40,7 @@ public:
 
     int getTextureCount() { return m_texture.size(); }
 
-    std::wstring getPath() { return m_path; }
+    std::string getPath() { return m_path; }
 
     bool isPreloaded() { return m_preloaded; }
 };

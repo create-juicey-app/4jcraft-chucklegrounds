@@ -1,6 +1,6 @@
 #pragma once
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 
 class MaterialColor {
 public:

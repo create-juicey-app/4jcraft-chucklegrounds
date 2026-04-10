@@ -55,7 +55,7 @@ void PlayerAbilitiesPacket::handle(PacketListener* listener) {
 
 int PlayerAbilitiesPacket::getEstimatedSize() { return 2; }
 
-// wstring getDebugInfo()
+// string getDebugInfo()
 //{
 //	return String.format("invuln=%b, flying=%b, canfly=%b, instabuild=%b,
 // flyspeed=%.4f, walkspped=%.4f", isInvulnerable(), isFlying(), canFly(),

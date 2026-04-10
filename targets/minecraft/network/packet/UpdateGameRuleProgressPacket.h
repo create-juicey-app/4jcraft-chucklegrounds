@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "app/common/src/GameRules/ConsoleGameRulesConstants.h"
+#include "app/common/GameRules/ConsoleGameRulesConstants.h"
 #include "Packet.h"
 #include "minecraft/network/packet/Packet.h"
 
@@ -15,14 +15,14 @@ class UpdateGameRuleProgressPacket
       public std::enable_shared_from_this<UpdateGameRuleProgressPacket> {
 public:
     ConsoleGameRules::EGameRuleType m_definitionType;
-    std::wstring m_messageId;
+    std::string m_messageId;
     int m_icon, m_auxValue;
     int m_dataTag;
     std::vector<uint8_t> m_data;
 
     UpdateGameRuleProgressPacket();
     UpdateGameRuleProgressPacket(ConsoleGameRules::EGameRuleType definitionType,
-                                 const std::wstring& messageId, int icon,
+                                 const std::string& messageId, int icon,
                                  int auxValue, int dataTag, void* data,
                                  int dataLength);
 

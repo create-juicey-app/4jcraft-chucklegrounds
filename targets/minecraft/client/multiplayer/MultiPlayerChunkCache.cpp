@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "app/common/src/Network/GameNetworkManager.h"
+#include "app/common/Network/GameNetworkManager.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "util/StringHelpers.h"
 #include "minecraft/server/MinecraftServer.h"
@@ -282,20 +282,20 @@ std::vector<Biome::MobSpawnerData*>* MultiPlayerChunkCache::getMobsAt(
 }
 
 TilePos* MultiPlayerChunkCache::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
     return nullptr;
 }
 
 void MultiPlayerChunkCache::recreateLogicStructuresForChunk(int chunkX,
                                                             int chunkZ) {}
 
-std::wstring MultiPlayerChunkCache::gatherStats() {
+std::string MultiPlayerChunkCache::gatherStats() {
     int size;
     {
         std::lock_guard<std::mutex> lock(m_csLoadCreate);
         size = (int)loadedChunkList.size();
     }
-    return L"MultiplayerChunkCache: " + toWString<int>(size);
+    return "MultiplayerChunkCache: " + toWString<int>(size);
 }
 
 void MultiPlayerChunkCache::dataReceived(int x, int z) {

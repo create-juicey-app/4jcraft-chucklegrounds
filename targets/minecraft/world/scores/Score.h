@@ -15,12 +15,12 @@ public:
 private:
     Scoreboard* scoreboard;
     Objective* objective;
-    std::wstring owner;
+    std::string owner;
     int count;
 
 public:
     Score(Scoreboard* scoreboard, Objective* objective,
-          const std::wstring& owner);
+          const std::string& owner);
 
     void add(int count);
     void remove(int count);
@@ -29,7 +29,7 @@ public:
     int getScore();
     void setScore(int score);
     Objective* getObjective();
-    std::wstring getOwner();
+    std::string getOwner();
     Scoreboard* getScoreboard();
     void updateFor(std::vector<std::shared_ptr<Player> >* players);
 };

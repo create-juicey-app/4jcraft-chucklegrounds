@@ -7,7 +7,7 @@
 #include "minecraft/world/level/material/Material.h"
 #include "minecraft/world/level/tile/Tile.h"
 
-FenceTile::FenceTile(int id, const std::wstring& texture, Material* material)
+FenceTile::FenceTile(int id, const std::string& texture, Material* material)
     : Tile(id, material, false) {
     this->texture = texture;
 }

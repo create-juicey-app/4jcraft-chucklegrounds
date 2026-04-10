@@ -1,18 +1,19 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "PreLoginPacket.h"
 
 #include <cstdint>
 #include <cstring>
 
-#include "app/common/src/BuildVer/BuildVer.h"
+#include "app/common/BuildVer/BuildVer.h"
 #include "platform/IPlatformNetwork.h"
-#include "app/linux/LinuxGame.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "PacketListener.h"
 #include "java/InputOutputStream/DataInputStream.h"
 #include "java/InputOutputStream/DataOutputStream.h"
 
 PreLoginPacket::PreLoginPacket() {
-    loginKey = L"";
+    loginKey = "";
     m_playerXuids = nullptr;
     m_dwPlayerCount = 0;
     m_friendsOnlyBits = 0;
@@ -24,7 +25,7 @@ PreLoginPacket::PreLoginPacket() {
     m_netcodeVersion = 0;
 }
 
-PreLoginPacket::PreLoginPacket(std::wstring userName) {
+PreLoginPacket::PreLoginPacket(std::string userName) {
     this->loginKey = userName;
     m_playerXuids = nullptr;
     m_dwPlayerCount = 0;
@@ -38,7 +39,7 @@ PreLoginPacket::PreLoginPacket(std::wstring userName) {
 }
 
 PreLoginPacket::PreLoginPacket(
-    std::wstring userName, PlayerUID* playerXuids, std::uint8_t playerCount,
+    std::string userName, PlayerUID* playerXuids, std::uint8_t playerCount,
     std::uint8_t friendsOnlyBits, std::uint32_t ugcPlayersVersion,
     const char* pszUniqueSaveName, std::uint32_t serverSettings,
     std::uint8_t hostIndex, std::uint32_t texturePackId) {
@@ -82,7 +83,7 @@ void PreLoginPacket::read(DataInputStream* dis)  // throws IOException
     m_texturePackId = static_cast<std::uint32_t>(dis->readInt());
 
     // Set the name of the map so we can check it for players banned lists
-    app.SetUniqueMapName((char*)m_szUniqueSaveName);
+    gameServices().setUniqueMapName((char*)m_szUniqueSaveName);
 }
 
 void PreLoginPacket::write(DataOutputStream* dos)  // throws IOException
@@ -98,7 +99,7 @@ void PreLoginPacket::write(DataOutputStream* dos)  // throws IOException
         dos->writePlayerUID(m_playerXuids[i]);
     }
 
-    app.DebugPrintf("*** PreLoginPacket::write - %s\n", m_szUniqueSaveName);
+    Log::info("*** PreLoginPacket::write - %s\n", m_szUniqueSaveName);
     for (int i = 0; i < m_iSaveNameLen; ++i) {
         dos->writeByte(static_cast<std::uint8_t>(m_szUniqueSaveName[i]));
     }

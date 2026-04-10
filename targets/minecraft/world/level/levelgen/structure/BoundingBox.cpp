@@ -166,13 +166,13 @@ int BoundingBox::getYCenter() { return y0 + (y1 - y0 + 1) / 2; }
 
 int BoundingBox::getZCenter() { return z0 + (z1 - z0 + 1) / 2; }
 
-std::wstring BoundingBox::toString() {
-    return L"(" + toWString<int>(x0) + L", " + toWString<int>(y0) + L", " +
-           toWString<int>(z0) + L"; " + toWString<int>(x1) + L", " +
-           toWString<int>(y1) + L", " + toWString<int>(z1) + L")";
+std::string BoundingBox::toString() {
+    return "(" + toWString<int>(x0) + ", " + toWString<int>(y0) + ", " +
+           toWString<int>(z0) + "; " + toWString<int>(x1) + ", " +
+           toWString<int>(y1) + ", " + toWString<int>(z1) + ")";
 }
 
-IntArrayTag* BoundingBox::createTag(const std::wstring& name) {
+IntArrayTag* BoundingBox::createTag(const std::string& name) {
     // 4J-JEV: If somebody knows a better way to do this, please tell me.
     int* data = new int[6]();
     data[0] = x0;

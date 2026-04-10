@@ -116,12 +116,12 @@ void MinecartHopper::destroy(DamageSource* source) {
 
 void MinecartHopper::addAdditonalSaveData(CompoundTag* base) {
     MinecartContainer::addAdditonalSaveData(base);
-    base->putInt(L"TransferCooldown", cooldownTime);
+    base->putInt("TransferCooldown", cooldownTime);
 }
 
 void MinecartHopper::readAdditionalSaveData(CompoundTag* base) {
     MinecartContainer::readAdditionalSaveData(base);
-    cooldownTime = base->getInt(L"TransferCooldown");
+    cooldownTime = base->getInt("TransferCooldown");
 }
 
 void MinecartHopper::setCooldown(int time) { cooldownTime = time; }

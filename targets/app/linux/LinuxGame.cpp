@@ -4,13 +4,13 @@
 
 #include <string>
 
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Render.h"
-#include "platform/sdl2/Storage.h"
-#include "app/common/App_enums.h"
+#include "platform/profile/profile.h"
+#include "platform/renderer/renderer.h"
+#include "platform/storage/storage.h"
+#include "minecraft/GameEnums.h"
 #include "app/common/Game.h"
-#include "app/common/src/Network/GameNetworkManager.h"
-#include "app/common/src/UI/All Platforms/UIStructs.h"
+#include "app/common/Network/GameNetworkManager.h"
+#include "app/common/UI/All Platforms/UIStructs.h"
 #include "platform/C4JThread.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/User.h"
@@ -28,7 +28,7 @@ void LinuxGame::SetRichPresenceContext(int iPad, int contextId) {}
 void LinuxGame::StoreLaunchData() {}
 void LinuxGame::ExitGame() {
     app.DebugPrintf("Linux_App LinuxGame::ExitGame AFTER START\n");
-    RenderManager.Close();
+    PlatformRenderer.Close();
 }
 void LinuxGame::FatalLoadError() {
     app.DebugPrintf(
@@ -54,8 +54,8 @@ void LinuxGame::TemporaryCreateGameStart() {
     // From CScene_Main::RunPlayGame
     Minecraft* pMinecraft = Minecraft::GetInstance();
     app.ReleaseSaveThumbnail();
-    ProfileManager.SetLockedProfile(0);
-    pMinecraft->user->name = L"Windows";
+    PlatformProfile.SetLockedProfile(0);
+    pMinecraft->user->name = "Windows";
     app.ApplyGameSettingsChanged(0);
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,10 +70,10 @@ void LinuxGame::TemporaryCreateGameStart() {
     /// From CScene_MultiGameCreate::CreateGame
 
     app.ClearTerrainFeaturePosition();
-    std::wstring wWorldName = L"TestWorld";
+    std::string wWorldName = "TestWorld";
 
-    StorageManager.ResetSaveData();
-    StorageManager.SetSaveTitle(wWorldName.c_str());
+    PlatformStorage.ResetSaveData();
+    PlatformStorage.SetSaveTitle(wWorldName.c_str());
 
     bool isFlat = false;
     int64_t seedValue =
@@ -121,15 +121,15 @@ void LinuxGame::TemporaryCreateGameStart() {
     thread->run();
 }
 
-int LinuxGame::GetLocalTMSFileIndex(wchar_t* wchTMSFile,
+int LinuxGame::GetLocalTMSFileIndex(char* wchTMSFile,
                                                bool bFilenameIncludesExtension,
                                                eFileExtensionType eEXT) {
     return -1;
 }
 
-int LinuxGame::LoadLocalTMSFile(wchar_t* wchTMSFile) { return -1; }
+int LinuxGame::LoadLocalTMSFile(char* wchTMSFile) { return -1; }
 
-int LinuxGame::LoadLocalTMSFile(wchar_t* wchTMSFile,
+int LinuxGame::LoadLocalTMSFile(char* wchTMSFile,
                                            eFileExtensionType eExt) {
     return -1;
 }

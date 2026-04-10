@@ -2,6 +2,7 @@
 #include "minecraft/util/WeighedRandom.h"
 
 #include <vector>
+#include <cassert>
 
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "java/Random.h"
@@ -17,7 +18,7 @@ int WeighedRandom::getTotalWeight(std::vector<WeighedRandomItem*>* items) {
 WeighedRandomItem* WeighedRandom::getRandomItem(
     Random* random, std::vector<WeighedRandomItem*>* items, int totalWeight) {
     if (totalWeight <= 0) {
-        __debugbreak();
+        assert(0);
     }
 
     int selection = random->nextInt(totalWeight);
@@ -49,7 +50,7 @@ WeighedRandomItem* WeighedRandom::getRandomItem(
     Random* random, const std::vector<WeighedRandomItem*>& items,
     int totalWeight) {
     if (totalWeight <= 0) {
-        __debugbreak();
+        assert(0);
     }
 
     int selection = random->nextInt(totalWeight);

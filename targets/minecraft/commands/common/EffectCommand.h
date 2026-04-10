@@ -13,13 +13,13 @@ class EffectCommand : public Command {
 public:
     EGameCommand getId();
     int getPermissionLevel();
-    std::wstring getUsage(CommandSender* source);
+    std::string getUsage(CommandSender* source);
     void execute(std::shared_ptr<CommandSender> source,
                  std::vector<uint8_t>& commandData);
 
 protected:
-    std::wstring getPlayerNames();
+    std::string getPlayerNames();
 
 public:
-    bool isValidWildcardPlayerArgument(std::wstring args, int argumentIndex);
+    bool isValidWildcardPlayerArgument(std::string args, int argumentIndex);
 };

@@ -42,7 +42,7 @@ protected:
     // 4jcraft: extracted from render() into a standalone method so this can be
     // used in other places
     virtual void renderTooltipInternal(
-        const std::vector<std::wstring>& cleanedLines,
+        const std::vector<std::string>& cleanedLines,
         const std::vector<int>& lineColors, int xm, int ym);
     virtual void renderTooltip(std::shared_ptr<ItemInstance> item, int xm,
                                int ym);
@@ -53,7 +53,7 @@ private:
 protected:
     virtual void mouseClicked(int x, int y, int buttonNum) override;
     virtual void mouseReleased(int x, int y, int buttonNum) override;
-    virtual void keyPressed(wchar_t eventCharacter, int eventKey) override;
+    virtual void keyPressed(char eventCharacter, int eventKey) override;
 
 public:
     virtual void removed() override;
@@ -62,7 +62,7 @@ public:
     virtual void tick() override;
 
     // 4jcraft: 1.6.x era overloads
-    virtual void renderTooltip(const std::vector<std::wstring>& lines, int xm,
+    virtual void renderTooltip(const std::vector<std::string>& lines, int xm,
                                int ym);
-    virtual void renderTooltip(const std::wstring& line, int xm, int ym);
+    virtual void renderTooltip(const std::string& line, int xm, int ym);
 };

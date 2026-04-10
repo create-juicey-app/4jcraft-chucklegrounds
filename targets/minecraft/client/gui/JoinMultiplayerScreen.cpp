@@ -4,7 +4,7 @@
 
 #include "Button.h"
 #include "EditBox.h"
-#include "app/include/stubs.h"
+#include "platform/stubs.h"
 #include "util/StringHelpers.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/Options.h"
@@ -24,10 +24,10 @@ void JoinMultiplayerScreen::init() {
     Keyboard::enableRepeatEvents(true);
     buttons.clear();
     buttons.push_back(new Button(0, width / 2 - 100, height / 4 + 24 * 4 + 12,
-                                 language->getElement(L"multiplayer.connect")));
+                                 language->getElement("multiplayer.connect")));
     buttons.push_back(new Button(1, width / 2 - 100, height / 4 + 24 * 5 + 12,
-                                 language->getElement(L"gui.cancel")));
-    std::wstring ip = replaceAll(minecraft->options->lastMpIp, L"_", L":");
+                                 language->getElement("gui.cancel")));
+    std::string ip = replaceAll(minecraft->options->lastMpIp, "_", ":");
     buttons[0]->active = ip.length() > 0;
 
     ipEdit = new EditBox(this, font, width / 2 - 100, height / 4 - 10 + 50 + 18,
@@ -43,18 +43,18 @@ void JoinMultiplayerScreen::buttonClicked(Button* button) {
     if (button->id == 1) {
         minecraft->setScreen(lastScreen);
     } else if (button->id == 0) {
-        std::wstring ip = trimString(ipEdit->getValue());
+        std::string ip = trimString(ipEdit->getValue());
 
-        minecraft->options->lastMpIp = replaceAll(ip, L":", L"_");
+        minecraft->options->lastMpIp = replaceAll(ip, ":", "_");
         minecraft->options->save();
 
-        std::vector<std::wstring> parts = stringSplit(ip, L'L');
-        if (ip[0] == L'[') {
-            int pos = (int)ip.find(L"]");
-            if (pos != std::wstring::npos) {
-                std::wstring path = ip.substr(1, pos);
-                std::wstring port = trimString(ip.substr(pos + 1));
-                if (port[0] == L':' && port.length() > 0) {
+        std::vector<std::string> parts = stringSplit(ip, 'L');
+        if (ip[0] == '[') {
+            int pos = (int)ip.find("]");
+            if (pos != std::string::npos) {
+                std::string path = ip.substr(1, pos);
+                std::string port = trimString(ip.substr(pos + 1));
+                if (port[0] == ':' && port.length() > 0) {
                     port = port.substr(1);
                     parts.clear();
                     parts.push_back(path);
@@ -76,11 +76,11 @@ void JoinMultiplayerScreen::buttonClicked(Button* button) {
     }
 }
 
-int JoinMultiplayerScreen::parseInt(const std::wstring& str, int def) {
+int JoinMultiplayerScreen::parseInt(const std::string& str, int def) {
     return fromWString<int>(str);
 }
 
-void JoinMultiplayerScreen::keyPressed(wchar_t ch, int eventKey) {
+void JoinMultiplayerScreen::keyPressed(char ch, int eventKey) {
     ipEdit->keyPressed(ch, eventKey);
 
     if (ch == 13) {
@@ -101,13 +101,13 @@ void JoinMultiplayerScreen::render(int xm, int ym, float a) {
     // fill(0, 0, width, height, 0x40000000);
     renderBackground();
 
-    drawCenteredString(font, language->getElement(L"multiplayer.title"),
+    drawCenteredString(font, language->getElement("multiplayer.title"),
                        width / 2, height / 4 - 60 + 20, 0xffffff);
-    drawString(font, language->getElement(L"multiplayer.info1"),
+    drawString(font, language->getElement("multiplayer.info1"),
                width / 2 - 140, height / 4 - 60 + 60 + 9 * 0, 0xa0a0a0);
-    drawString(font, language->getElement(L"multiplayer.info2"),
+    drawString(font, language->getElement("multiplayer.info2"),
                width / 2 - 140, height / 4 - 60 + 60 + 9 * 1, 0xa0a0a0);
-    drawString(font, language->getElement(L"multiplayer.ipinfo"),
+    drawString(font, language->getElement("multiplayer.ipinfo"),
                width / 2 - 140, height / 4 - 60 + 60 + 9 * 4, 0xa0a0a0);
 
     ipEdit->render();

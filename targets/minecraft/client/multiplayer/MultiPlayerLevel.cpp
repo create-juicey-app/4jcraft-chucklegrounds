@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "MultiPlayerLevel.h"
 
 #include <float.h>
@@ -10,11 +11,11 @@
 #include <utility>
 
 #include "platform/PlatformTypes.h"
-#include "platform/sdl2/Input.h"
+#include "platform/input/input.h"
 #include "ClientConnection.h"
-#include "app/common/src/Audio/SoundEngine.h"
-#include "app/common/src/Console_Debug_enum.h"
-#include "app/common/src/Network/GameNetworkManager.h"
+#include "app/common/Audio/SoundEngine.h"
+#include "app/common/Console_Debug_enum.h"
+#include "app/common/Network/GameNetworkManager.h"
 #include "app/linux/LinuxGame.h"
 #include "MultiPlayerChunkCache.h"
 #include "MultiPlayerLocalPlayer.h"
@@ -55,7 +56,7 @@ MultiPlayerLevel::ResetInfo::ResetInfo(int x, int y, int z, int tile,
 MultiPlayerLevel::MultiPlayerLevel(ClientConnection* connection,
                                    LevelSettings* levelSettings, int dimension,
                                    int difficulty)
-    : Level(std::make_shared<MockedLevelStorage>(), L"MpServer",
+    : Level(std::make_shared<MockedLevelStorage>(), "MpServer",
             Dimension::getNew(dimension), levelSettings, false) {
     minecraft = Minecraft::GetInstance();
 
@@ -121,8 +122,8 @@ void MultiPlayerLevel::tick() {
         // 4J: Debug setting added to keep it at day time
 #if !defined(_FINAL_BUILD)
         bool freezeTime =
-            app.DebugSettingsOn() &&
-            app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad()) &
+            gameServices().debugSettingsOn() &&
+            gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
                 (1L << eDebugSetting_FreezeTime);
         if (!freezeTime)
 #endif
@@ -807,11 +808,11 @@ void MultiPlayerLevel::setDayTime(int64_t newTime) {
     /*if (newTime < 0)
     {
             newTime = -newTime;
-            getGameRules()->set(GameRules::RULE_DAYLIGHT, L"false");
+            getGameRules()->set(GameRules::RULE_DAYLIGHT, "false");
     }
     else
     {
-            getGameRules()->set(GameRules::RULE_DAYLIGHT, L"true");
+            getGameRules()->set(GameRules::RULE_DAYLIGHT, "true");
     }*/
 
     Level::setDayTime(newTime);

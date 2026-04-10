@@ -12,7 +12,7 @@ private:
 
     float vo;
 
-    std::wstring splash;
+    std::string splash;
     Button* multiplayerButton;
 
     // 4jcraft: panorama
@@ -39,7 +39,7 @@ public:
     virtual void tick() override;
 
 protected:
-    virtual void keyPressed(wchar_t eventCharacter, int eventKey) override;
+    virtual void keyPressed(char eventCharacter, int eventKey) override;
 
 public:
     virtual void init() override;

@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "RegionFile.h"
 
 #include <string.h>
@@ -303,7 +304,7 @@ void RegionFile::write(int x, int z, std::uint8_t* data,
 
     int sectorsNeeded = (compLength + CHUNK_HEADER_SIZE) / SECTOR_BYTES + 1;
 
-    //	app.DebugPrintf(">>>>>>>>>>>>>> writing compressed data for 0x%.8x, %d
+    //	Log::info(">>>>>>>>>>>>>> writing compressed data for 0x%.8x, %d
     //%d\n",fileEntry->data.regionIndex,x,z);
 
     // maximum chunk size is 1MB
@@ -319,7 +320,7 @@ void RegionFile::write(int x, int z, std::uint8_t* data,
 
 #ifndef _CONTENT_PACKAGE
         if (sectorNumber < 0) {
-            __debugbreak();
+            assert(0);
         }
 #endif
 

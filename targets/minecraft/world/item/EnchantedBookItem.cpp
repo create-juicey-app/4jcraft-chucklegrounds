@@ -13,8 +13,8 @@
 #include "nbt/CompoundTag.h"
 #include "nbt/ListTag.h"
 
-const std::wstring EnchantedBookItem::TAG_STORED_ENCHANTMENTS =
-    L"StoredEnchantments";
+const std::string EnchantedBookItem::TAG_STORED_ENCHANTMENTS =
+    "StoredEnchantments";
 
 EnchantedBookItem::EnchantedBookItem(int id) : Item(id) {}
 
@@ -40,12 +40,12 @@ const Rarity* EnchantedBookItem::getRarity(
 ListTag<CompoundTag>* EnchantedBookItem::getEnchantments(
     std::shared_ptr<ItemInstance> item) {
     if (item->tag == nullptr ||
-        !item->tag->contains((wchar_t*)TAG_STORED_ENCHANTMENTS.c_str())) {
+        !item->tag->contains((char*)TAG_STORED_ENCHANTMENTS.c_str())) {
         return new ListTag<CompoundTag>();
     }
 
     return (ListTag<CompoundTag>*)item->tag->get(
-        (wchar_t*)TAG_STORED_ENCHANTMENTS.c_str());
+        (char*)TAG_STORED_ENCHANTMENTS.c_str());
 }
 
 void EnchantedBookItem::appendHoverText(
@@ -56,12 +56,12 @@ void EnchantedBookItem::appendHoverText(
     ListTag<CompoundTag>* list = getEnchantments(itemInstance);
 
     if (list != nullptr) {
-        std::wstring unformatted = L"";
+        std::string unformatted = "";
         for (int i = 0; i < list->size(); i++) {
             int type =
-                list->get(i)->getShort((wchar_t*)ItemInstance::TAG_ENCH_ID);
+                list->get(i)->getShort((char*)ItemInstance::TAG_ENCH_ID);
             int level =
-                list->get(i)->getShort((wchar_t*)ItemInstance::TAG_ENCH_LEVEL);
+                list->get(i)->getShort((char*)ItemInstance::TAG_ENCH_LEVEL);
 
             if (Enchantment::enchantments[type] != nullptr) {
                 lines->push_back(
@@ -79,11 +79,11 @@ void EnchantedBookItem::addEnchantment(std::shared_ptr<ItemInstance> item,
     for (int i = 0; i < enchantments->size(); i++) {
         CompoundTag* tag = enchantments->get(i);
 
-        if (tag->getShort((wchar_t*)ItemInstance::TAG_ENCH_ID) ==
+        if (tag->getShort((char*)ItemInstance::TAG_ENCH_ID) ==
             enchantment->enchantment->id) {
-            if (tag->getShort((wchar_t*)ItemInstance::TAG_ENCH_LEVEL) <
+            if (tag->getShort((char*)ItemInstance::TAG_ENCH_LEVEL) <
                 enchantment->level) {
-                tag->putShort((wchar_t*)ItemInstance::TAG_ENCH_LEVEL,
+                tag->putShort((char*)ItemInstance::TAG_ENCH_LEVEL,
                               (short)enchantment->level);
             }
 
@@ -95,16 +95,16 @@ void EnchantedBookItem::addEnchantment(std::shared_ptr<ItemInstance> item,
     if (add) {
         CompoundTag* tag = new CompoundTag();
 
-        tag->putShort((wchar_t*)ItemInstance::TAG_ENCH_ID,
+        tag->putShort((char*)ItemInstance::TAG_ENCH_ID,
                       (short)enchantment->enchantment->id);
-        tag->putShort((wchar_t*)ItemInstance::TAG_ENCH_LEVEL,
+        tag->putShort((char*)ItemInstance::TAG_ENCH_LEVEL,
                       (short)enchantment->level);
 
         enchantments->add(tag);
     }
 
     if (!item->hasTag()) item->setTag(new CompoundTag());
-    item->getTag()->put((wchar_t*)TAG_STORED_ENCHANTMENTS.c_str(),
+    item->getTag()->put((char*)TAG_STORED_ENCHANTMENTS.c_str(),
                         enchantments);
 }
 

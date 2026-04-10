@@ -7,7 +7,7 @@
 class SharedConstants {
 public:
     static void staticCtor();
-    static const std::wstring VERSION_STRING;
+    static const std::string VERSION_STRING;
     static inline constexpr int NETWORK_PROTOCOL_VERSION = 78;
     static const bool INGAME_DEBUG_OUTPUT = false;
 
@@ -18,14 +18,14 @@ public:
     static bool isAllowedChatCharacter(char ch);
 
 private:
-    static std::wstring readAcceptableChars();
+    static std::string readAcceptableChars();
 
 public:
     static inline constexpr int maxChatLength = 100;
-    static std::wstring acceptableLetters;
+    static std::string acceptableLetters;
 
     static inline constexpr int ILLEGAL_FILE_CHARACTERS_LENGTH = 15;
-    static const wchar_t
+    static const char
         ILLEGAL_FILE_CHARACTERS[ILLEGAL_FILE_CHARACTERS_LENGTH];
 
     static const bool

@@ -17,18 +17,18 @@ public:
     class ChunkFile;
 
     McRegionLevelStorageSource(File dir);
-    virtual std::wstring getName();
+    virtual std::string getName();
     virtual std::vector<LevelSummary*>* getLevelList();
     virtual void clearAll();
     virtual std::shared_ptr<LevelStorage> selectLevel(
-        ConsoleSaveFile* saveFile, const std::wstring& levelId,
+        ConsoleSaveFile* saveFile, const std::string& levelId,
         bool createPlayerDir);
     virtual bool isConvertible(ConsoleSaveFile* saveFile,
-                               const std::wstring& levelId);
+                               const std::string& levelId);
     virtual bool requiresConversion(ConsoleSaveFile* saveFile,
-                                    const std::wstring& levelId);
+                                    const std::string& levelId);
     virtual bool convertLevel(ConsoleSaveFile* saveFile,
-                              const std::wstring& levelId,
+                              const std::string& levelId,
                               ProgressListener* progress);
 
 private:

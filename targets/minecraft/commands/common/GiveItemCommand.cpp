@@ -29,7 +29,7 @@ void GiveItemCommand::execute(std::shared_ptr<CommandSender> source,
     int item = dis.readInt();
     int amount = dis.readInt();
     int aux = dis.readInt();
-    std::wstring tag = dis.readUTF();
+    std::string tag = dis.readUTF();
 
     bais.reset();
 
@@ -39,17 +39,17 @@ void GiveItemCommand::execute(std::shared_ptr<CommandSender> source,
             std::make_shared<ItemInstance>(item, amount, aux);
         std::shared_ptr<ItemEntity> drop = player->drop(itemInstance);
         drop->throwTime = 0;
-        // logAdminAction(source, L"commands.give.success",
+        // logAdminAction(source, "commands.give.success",
         // ChatPacket::e_ChatCustom, Item::items[item]->getName(itemInstance),
         // item, amount, player->getAName());
         logAdminAction(source, ChatPacket::e_ChatCustom,
-                       L"commands.give.success", item, player->getAName());
+                       "commands.give.success", item, player->getAName());
     }
 }
 
 std::shared_ptr<GameCommandPacket> GiveItemCommand::preparePacket(
     std::shared_ptr<Player> player, int item, int amount, int aux,
-    const std::wstring& tag) {
+    const std::string& tag) {
     if (player == nullptr) return nullptr;
 
     ByteArrayOutputStream baos;

@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/model/BoatModel.h"
 #include "minecraft/client/model/geom/Model.h"
 #include "minecraft/client/renderer/Textures.h"

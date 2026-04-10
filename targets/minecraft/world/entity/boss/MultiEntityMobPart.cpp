@@ -4,7 +4,7 @@
 #include "minecraft/world/entity/Entity.h"
 
 MultiEntityMobPart::MultiEntityMobPart(
-    std::shared_ptr<MultiEntityMob> parentMob, const std::wstring& id, float w,
+    std::shared_ptr<MultiEntityMob> parentMob, const std::string& id, float w,
     float h)
     : Entity(parentMob->getLevel()), parentMob(parentMob), id(id) {
     // 4J Stu - This function call had to be moved here from the Entity ctor to

@@ -21,7 +21,7 @@
 BaseMobSpawner::BaseMobSpawner() {
     spawnPotentials = nullptr;
     spawnDelay = 20;
-    entityId = L"Pig";
+    entityId = "Pig";
     nextSpawnData = nullptr;
     spin = oSpin = 0.0;
 
@@ -44,10 +44,10 @@ BaseMobSpawner::~BaseMobSpawner() {
     }
 }
 
-std::wstring BaseMobSpawner::getEntityId() {
+std::string BaseMobSpawner::getEntityId() {
     if (getNextSpawnData() == nullptr) {
-        if (entityId.compare(L"Minecart") == 0) {
-            entityId = L"MinecartRideable";
+        if (entityId.compare("Minecart") == 0) {
+            entityId = "MinecartRideable";
         }
         return entityId;
     } else {
@@ -55,7 +55,7 @@ std::wstring BaseMobSpawner::getEntityId() {
     }
 }
 
-void BaseMobSpawner::setEntityId(const std::wstring& entityId) {
+void BaseMobSpawner::setEntityId(const std::string& entityId) {
     this->entityId = entityId;
 }
 
@@ -159,7 +159,7 @@ std::shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(
         while (data->contains(Entity::RIDING_TAG)) {
             CompoundTag* ridingTag = data->getCompound(Entity::RIDING_TAG);
             std::shared_ptr<Entity> mount =
-                EntityIO::newEntity(ridingTag->getString(L"id"), entity->level);
+                EntityIO::newEntity(ridingTag->getString("id"), entity->level);
             if (mount != nullptr) {
                 CompoundTag* mountData = new CompoundTag();
                 mount->save(mountData);
@@ -208,13 +208,13 @@ void BaseMobSpawner::delay() {
 }
 
 void BaseMobSpawner::load(CompoundTag* tag) {
-    entityId = tag->getString(L"EntityId");
-    spawnDelay = tag->getShort(L"Delay");
+    entityId = tag->getString("EntityId");
+    spawnDelay = tag->getShort("Delay");
 
-    if (tag->contains(L"SpawnPotentials")) {
+    if (tag->contains("SpawnPotentials")) {
         spawnPotentials = new std::vector<SpawnData*>();
         ListTag<CompoundTag>* potentials =
-            (ListTag<CompoundTag>*)tag->getList(L"SpawnPotentials");
+            (ListTag<CompoundTag>*)tag->getList("SpawnPotentials");
 
         for (int i = 0; i < potentials->size(); i++) {
             spawnPotentials->push_back(new SpawnData(potentials->get(i)));
@@ -223,25 +223,25 @@ void BaseMobSpawner::load(CompoundTag* tag) {
         spawnPotentials = nullptr;
     }
 
-    if (tag->contains(L"SpawnData")) {
+    if (tag->contains("SpawnData")) {
         setNextSpawnData(
-            new SpawnData(tag->getCompound(L"SpawnData"), entityId));
+            new SpawnData(tag->getCompound("SpawnData"), entityId));
     } else {
         setNextSpawnData(nullptr);
     }
 
-    if (tag->contains(L"MinSpawnDelay")) {
-        minSpawnDelay = tag->getShort(L"MinSpawnDelay");
-        maxSpawnDelay = tag->getShort(L"MaxSpawnDelay");
-        spawnCount = tag->getShort(L"SpawnCount");
+    if (tag->contains("MinSpawnDelay")) {
+        minSpawnDelay = tag->getShort("MinSpawnDelay");
+        maxSpawnDelay = tag->getShort("MaxSpawnDelay");
+        spawnCount = tag->getShort("SpawnCount");
     }
 
-    if (tag->contains(L"MaxNearbyEntities")) {
-        maxNearbyEntities = tag->getShort(L"MaxNearbyEntities");
-        requiredPlayerRange = tag->getShort(L"RequiredPlayerRange");
+    if (tag->contains("MaxNearbyEntities")) {
+        maxNearbyEntities = tag->getShort("MaxNearbyEntities");
+        requiredPlayerRange = tag->getShort("RequiredPlayerRange");
     }
 
-    if (tag->contains(L"SpawnRange")) spawnRange = tag->getShort(L"SpawnRange");
+    if (tag->contains("SpawnRange")) spawnRange = tag->getShort("SpawnRange");
 
     if (getLevel() != nullptr && getLevel()->isClientSide) {
         displayEntity = nullptr;
@@ -249,17 +249,17 @@ void BaseMobSpawner::load(CompoundTag* tag) {
 }
 
 void BaseMobSpawner::save(CompoundTag* tag) {
-    tag->putString(L"EntityId", getEntityId());
-    tag->putShort(L"Delay", (short)spawnDelay);
-    tag->putShort(L"MinSpawnDelay", (short)minSpawnDelay);
-    tag->putShort(L"MaxSpawnDelay", (short)maxSpawnDelay);
-    tag->putShort(L"SpawnCount", (short)spawnCount);
-    tag->putShort(L"MaxNearbyEntities", (short)maxNearbyEntities);
-    tag->putShort(L"RequiredPlayerRange", (short)requiredPlayerRange);
-    tag->putShort(L"SpawnRange", (short)spawnRange);
+    tag->putString("EntityId", getEntityId());
+    tag->putShort("Delay", (short)spawnDelay);
+    tag->putShort("MinSpawnDelay", (short)minSpawnDelay);
+    tag->putShort("MaxSpawnDelay", (short)maxSpawnDelay);
+    tag->putShort("SpawnCount", (short)spawnCount);
+    tag->putShort("MaxNearbyEntities", (short)maxNearbyEntities);
+    tag->putShort("RequiredPlayerRange", (short)requiredPlayerRange);
+    tag->putShort("SpawnRange", (short)spawnRange);
 
     if (getNextSpawnData() != nullptr) {
-        tag->putCompound(L"SpawnData",
+        tag->putCompound("SpawnData",
                          (CompoundTag*)getNextSpawnData()->tag->copy());
     }
 
@@ -277,7 +277,7 @@ void BaseMobSpawner::save(CompoundTag* tag) {
             list->add(getNextSpawnData()->save());
         }
 
-        tag->put(L"SpawnPotentials", list);
+        tag->put("SpawnPotentials", list);
     }
 }
 
@@ -308,25 +308,25 @@ void BaseMobSpawner::setNextSpawnData(SpawnData* nextSpawnData) {
 }
 
 BaseMobSpawner::SpawnData::SpawnData(CompoundTag* base)
-    : WeighedRandomItem(base->getInt(L"Weight")) {
-    CompoundTag* tag = base->getCompound(L"Properties");
-    std::wstring _type = base->getString(L"Type");
+    : WeighedRandomItem(base->getInt("Weight")) {
+    CompoundTag* tag = base->getCompound("Properties");
+    std::string _type = base->getString("Type");
 
-    if (_type.compare(L"Minecart") == 0) {
+    if (_type.compare("Minecart") == 0) {
         if (tag != nullptr) {
-            switch (tag->getInt(L"Type")) {
+            switch (tag->getInt("Type")) {
                 case Minecart::TYPE_CHEST:
-                    type = L"MinecartChest";
+                    type = "MinecartChest";
                     break;
                 case Minecart::TYPE_FURNACE:
-                    type = L"MinecartFurnace";
+                    type = "MinecartFurnace";
                     break;
                 case Minecart::TYPE_RIDEABLE:
-                    type = L"MinecartRideable";
+                    type = "MinecartRideable";
                     break;
             }
         } else {
-            type = L"MinecartRideable";
+            type = "MinecartRideable";
         }
     }
 
@@ -334,23 +334,23 @@ BaseMobSpawner::SpawnData::SpawnData(CompoundTag* base)
     this->type = _type;
 }
 
-BaseMobSpawner::SpawnData::SpawnData(CompoundTag* tag, std::wstring _type)
+BaseMobSpawner::SpawnData::SpawnData(CompoundTag* tag, std::string _type)
     : WeighedRandomItem(1) {
-    if (_type.compare(L"Minecart") == 0) {
+    if (_type.compare("Minecart") == 0) {
         if (tag != nullptr) {
-            switch (tag->getInt(L"Type")) {
+            switch (tag->getInt("Type")) {
                 case Minecart::TYPE_CHEST:
-                    _type = L"MinecartChest";
+                    _type = "MinecartChest";
                     break;
                 case Minecart::TYPE_FURNACE:
-                    _type = L"MinecartFurnace";
+                    _type = "MinecartFurnace";
                     break;
                 case Minecart::TYPE_RIDEABLE:
-                    _type = L"MinecartRideable";
+                    _type = "MinecartRideable";
                     break;
             }
         } else {
-            _type = L"MinecartRideable";
+            _type = "MinecartRideable";
         }
     }
 
@@ -363,9 +363,9 @@ BaseMobSpawner::SpawnData::~SpawnData() { delete tag; }
 CompoundTag* BaseMobSpawner::SpawnData::save() {
     CompoundTag* result = new CompoundTag();
 
-    result->putCompound(L"Properties", tag);
-    result->putString(L"Type", type);
-    result->putInt(L"Weight", randomWeight);
+    result->putCompound("Properties", tag);
+    result->putString("Type", type);
+    result->putInt("Weight", randomWeight);
 
     return result;
 }

@@ -14,9 +14,9 @@
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/level/tile/entity/EnchantmentTableTileEntity.h"
 
-const std::wstring EnchantmentTableTile::TEXTURE_SIDE = L"enchantment_side";
-const std::wstring EnchantmentTableTile::TEXTURE_TOP = L"enchantment_top";
-const std::wstring EnchantmentTableTile::TEXTURE_BOTTOM = L"enchantment_bottom";
+const std::string EnchantmentTableTile::TEXTURE_SIDE = "enchantment_side";
+const std::string EnchantmentTableTile::TEXTURE_TOP = "enchantment_top";
+const std::string EnchantmentTableTile::TEXTURE_BOTTOM = "enchantment_bottom";
 
 EnchantmentTableTile::EnchantmentTableTile(int id)
     : BaseEntityTile(id, Material::stone, false) {
@@ -87,7 +87,7 @@ bool EnchantmentTableTile::use(
         std::dynamic_pointer_cast<EnchantmentTableEntity>(
             level->getTileEntity(x, y, z));
     player->startEnchanting(x, y, z,
-                            table->hasCustomName() ? table->getName() : L"");
+                            table->hasCustomName() ? table->getName() : "");
     return true;
 }
 

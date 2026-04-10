@@ -13,7 +13,7 @@ private:
     std::shared_ptr<Entity> owner;
 
 public:
-    // IndirectEntityDamageSource(const std::wstring &msgId,
+    // IndirectEntityDamageSource(const std::string &msgId,
     // std::shared_ptr<Entity> entity, std::shared_ptr<Entity> owner);
     IndirectEntityDamageSource(ChatPacket::EChatPacketMessage msgId,
                                ChatPacket::EChatPacketMessage msgWithItemId,
@@ -26,7 +26,7 @@ public:
     virtual std::shared_ptr<Entity> getEntity();
 
     // 4J Stu - Made return a packet
-    // virtual std::wstring getLocalizedDeathMessage(std::shared_ptr<Player>
+    // virtual std::string getLocalizedDeathMessage(std::shared_ptr<Player>
     // player);
     virtual std::shared_ptr<ChatPacket> getDeathMessagePacket(
         std::shared_ptr<LivingEntity> player);

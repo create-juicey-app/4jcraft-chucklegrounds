@@ -29,11 +29,11 @@ int InputStreamReader::read() { return stream->readUTFChar(); }
 // Returns:
 // The number of characters read, or -1 if the end of the stream has been
 // reached
-int InputStreamReader::read(wchar_t cbuf[], unsigned int offset,
+int InputStreamReader::read(char cbuf[], unsigned int offset,
                             unsigned int length) {
     unsigned int charsRead = 0;
     for (unsigned int i = offset; i < offset + length; i++) {
-        wchar_t value = (wchar_t)stream->readUTFChar();
+        char value = (char)stream->readUTFChar();
         if (value != -1) {
             cbuf[i] = value;
             charsRead++;

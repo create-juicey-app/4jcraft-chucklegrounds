@@ -20,7 +20,7 @@ DirectoryLevelStorageSource::DirectoryLevelStorageSource(const File dir)
     // this->baseDir = dir;
 }
 
-std::wstring DirectoryLevelStorageSource::getName() { return L"Old Format"; }
+std::string DirectoryLevelStorageSource::getName() { return "Old Format"; }
 
 std::vector<LevelSummary*>* DirectoryLevelStorageSource::getLevelList() {
     // 4J Stu - We don't use directory list with the Xbox save locations
@@ -31,14 +31,14 @@ std::vector<LevelSummary*>* DirectoryLevelStorageSource::getLevelList() {
 void DirectoryLevelStorageSource::clearAll() {}
 
 LevelData* DirectoryLevelStorageSource::getDataTagFor(
-    ConsoleSaveFile* saveFile, const std::wstring& levelId) {
-    // File dataFile(dir, L"level.dat");
-    ConsoleSavePath dataFile = ConsoleSavePath(std::wstring(L"level.dat"));
+    ConsoleSaveFile* saveFile, const std::string& levelId) {
+    // File dataFile(dir, "level.dat");
+    ConsoleSavePath dataFile = ConsoleSavePath(std::string("level.dat"));
     if (saveFile->doesFileExist(dataFile)) {
         ConsoleSaveFileInputStream fis =
             ConsoleSaveFileInputStream(saveFile, dataFile);
         CompoundTag* root = NbtIo::readCompressed(&fis);
-        CompoundTag* tag = root->getCompound(L"Data");
+        CompoundTag* tag = root->getCompound("Data");
         LevelData* ret = new LevelData(tag);
         delete root;
         return ret;
@@ -48,17 +48,17 @@ LevelData* DirectoryLevelStorageSource::getDataTagFor(
 }
 
 void DirectoryLevelStorageSource::renameLevel(
-    const std::wstring& levelId, const std::wstring& newLevelName) {
+    const std::string& levelId, const std::string& newLevelName) {
     ConsoleSaveFileOriginal tempSave(levelId);
 
-    // File dataFile = File(dir, L"level.dat");
-    ConsoleSavePath dataFile = ConsoleSavePath(std::wstring(L"level.dat"));
+    // File dataFile = File(dir, "level.dat");
+    ConsoleSavePath dataFile = ConsoleSavePath(std::string("level.dat"));
     if (tempSave.doesFileExist(dataFile)) {
         ConsoleSaveFileInputStream fis =
             ConsoleSaveFileInputStream(&tempSave, dataFile);
         CompoundTag* root = NbtIo::readCompressed(&fis);
-        CompoundTag* tag = root->getCompound(L"Data");
-        tag->putString(L"LevelName", newLevelName);
+        CompoundTag* tag = root->getCompound("Data");
+        tag->putString("LevelName", newLevelName);
 
         ConsoleSaveFileOutputStream fos =
             ConsoleSaveFileOutputStream(&tempSave, dataFile);
@@ -67,7 +67,7 @@ void DirectoryLevelStorageSource::renameLevel(
 }
 
 bool DirectoryLevelStorageSource::isNewLevelIdAcceptable(
-    const std::wstring& levelId) {
+    const std::string& levelId) {
     // 4J Jev, removed try/catch.
 
     File levelFolder = File(baseDir, levelId);
@@ -80,7 +80,7 @@ bool DirectoryLevelStorageSource::isNewLevelIdAcceptable(
     return true;
 }
 
-void DirectoryLevelStorageSource::deleteLevel(const std::wstring& levelId) {
+void DirectoryLevelStorageSource::deleteLevel(const std::string& levelId) {
     File dir = File(baseDir, levelId);
     if (!dir.exists()) return;
 
@@ -100,24 +100,24 @@ void DirectoryLevelStorageSource::deleteRecursive(std::vector<File*>* files) {
 }
 
 std::shared_ptr<LevelStorage> DirectoryLevelStorageSource::selectLevel(
-    ConsoleSaveFile* saveFile, const std::wstring& levelId,
+    ConsoleSaveFile* saveFile, const std::string& levelId,
     bool createPlayerDir) {
     return std::shared_ptr<LevelStorage>(
         new DirectoryLevelStorage(saveFile, baseDir, levelId, createPlayerDir));
 }
 
 bool DirectoryLevelStorageSource::isConvertible(ConsoleSaveFile* saveFile,
-                                                const std::wstring& levelId) {
+                                                const std::string& levelId) {
     return false;
 }
 
 bool DirectoryLevelStorageSource::requiresConversion(
-    ConsoleSaveFile* saveFile, const std::wstring& levelId) {
+    ConsoleSaveFile* saveFile, const std::string& levelId) {
     return false;
 }
 
 bool DirectoryLevelStorageSource::convertLevel(ConsoleSaveFile* saveFile,
-                                               const std::wstring& levelId,
+                                               const std::string& levelId,
                                                ProgressListener* progress) {
     return false;
 }

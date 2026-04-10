@@ -6,7 +6,7 @@
 
 class Material;
 
-HalfTransparentTile::HalfTransparentTile(int id, const std::wstring& tex,
+HalfTransparentTile::HalfTransparentTile(int id, const std::string& tex,
                                          Material* material, bool allowSame)
     : Tile(id, material, false) {
     this->allowSame = allowSame;

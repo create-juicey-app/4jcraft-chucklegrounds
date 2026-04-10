@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "MinecartContainer.h"
 
 #include <stdint.h>
@@ -117,9 +118,9 @@ bool MinecartContainer::canPlaceItem(int slot,
     return true;
 }
 
-std::wstring MinecartContainer::getName() {
+std::string MinecartContainer::getName() {
     return hasCustomName() ? getCustomName()
-                           : app.GetString(IDS_CONTAINER_MINECART);
+                           : gameServices().getString(IDS_CONTAINER_MINECART);
 }
 
 int MinecartContainer::getMaxStackSize() {
@@ -177,23 +178,23 @@ void MinecartContainer::addAdditonalSaveData(CompoundTag* base) {
     for (int i = 0; i < items.size(); i++) {
         if (items[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             items[i]->save(tag);
             listTag->add(tag);
         }
     }
-    base->put(L"Items", listTag);
+    base->put("Items", listTag);
 }
 
 void MinecartContainer::readAdditionalSaveData(CompoundTag* base) {
     Minecart::readAdditionalSaveData(base);
 
     ListTag<CompoundTag>* inventoryList =
-        (ListTag<CompoundTag>*)base->getList(L"Items");
+        (ListTag<CompoundTag>*)base->getList("Items");
     items = std::vector<std::shared_ptr<ItemInstance>>(getContainerSize());
     for (int i = 0; i < inventoryList->size(); i++) {
         CompoundTag* tag = inventoryList->get(i);
-        int slot = tag->getByte(L"Slot") & 0xff;
+        int slot = tag->getByte("Slot") & 0xff;
         if (slot >= 0 && slot < (int)items.size())
             items[slot] = ItemInstance::fromTag(tag);
     }

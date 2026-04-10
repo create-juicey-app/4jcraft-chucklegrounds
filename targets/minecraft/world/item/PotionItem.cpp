@@ -1,8 +1,9 @@
+#include "minecraft/IGameServices.h"
 #include "PotionItem.h"
 
 #include <utility>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 #include "util/StringHelpers.h"
 #include "java/Random.h"
@@ -29,9 +30,9 @@
 
 class Icon;
 
-const std::wstring PotionItem::DEFAULT_ICON = L"potion";
-const std::wstring PotionItem::THROWABLE_ICON = L"potion_splash";
-const std::wstring PotionItem::CONTENTS_ICON = L"potion_contents";
+const std::string PotionItem::DEFAULT_ICON = "potion";
+const std::string PotionItem::THROWABLE_ICON = "potion_splash";
+const std::string PotionItem::CONTENTS_ICON = "potion_contents";
 
 // 4J Added
 std::vector<std::pair<int, int> > PotionItem::s_uniquePotionValues;
@@ -49,7 +50,7 @@ PotionItem::PotionItem(int id) : Item(id) {
 std::vector<MobEffectInstance*>* PotionItem::getMobEffects(
     std::shared_ptr<ItemInstance> potion) {
     if (!potion->hasTag() ||
-        !potion->getTag()->contains(L"CustomPotionEffects")) {
+        !potion->getTag()->contains("CustomPotionEffects")) {
         std::vector<MobEffectInstance*>* effects = nullptr;
         auto it = cachedMobEffects.find(potion->getAuxValue());
         if (it != cachedMobEffects.end()) effects = it->second;
@@ -67,7 +68,7 @@ std::vector<MobEffectInstance*>* PotionItem::getMobEffects(
             new std::vector<MobEffectInstance*>();
         ListTag<CompoundTag>* customList =
             (ListTag<CompoundTag>*)potion->getTag()->getList(
-                L"CustomPotionEffects");
+                "CustomPotionEffects");
 
         for (int i = 0; i < customList->size(); i++) {
             CompoundTag* tag = customList->get(i);
@@ -202,21 +203,21 @@ bool PotionItem::hasInstantenousEffects(int itemAuxValue) {
     return false;
 }
 
-std::wstring PotionItem::getHoverName(
+std::string PotionItem::getHoverName(
     std::shared_ptr<ItemInstance> itemInstance) {
     if (itemInstance->getAuxValue() == 0) {
-        return app.GetString(
+        return gameServices().getString(
             IDS_ITEM_WATER_BOTTLE);  // I18n.get("item.emptyPotion.name").trim();
     }
 
-    std::wstring elementName = Item::getHoverName(itemInstance);
+    std::string elementName = Item::getHoverName(itemInstance);
     if (isThrowable(itemInstance->getAuxValue())) {
         // elementName = I18n.get("potion.prefix.grenade").trim() + " " +
         // elementName;
-        elementName = replaceAll(elementName, L"{*splash*}",
-                                 app.GetString(IDS_POTION_PREFIX_GRENADE));
+        elementName = replaceAll(elementName, "{*splash*}",
+                                 gameServices().getString(IDS_POTION_PREFIX_GRENADE));
     } else {
-        elementName = replaceAll(elementName, L"{*splash*}", L"");
+        elementName = replaceAll(elementName, "{*splash*}", "");
     }
 
     std::vector<MobEffectInstance*>* effects =
@@ -226,19 +227,19 @@ std::wstring PotionItem::getHoverName(
         // postfixString += ".postfix";
         // return elementName + " " + I18n.get(postfixString).trim();
 
-        elementName = replaceAll(elementName, L"{*prefix*}", L"");
+        elementName = replaceAll(elementName, "{*prefix*}", "");
         elementName = replaceAll(
-            elementName, L"{*postfix*}",
-            app.GetString(effects->at(0)->getPostfixDescriptionId()));
+            elementName, "{*postfix*}",
+            gameServices().getString(effects->at(0)->getPostfixDescriptionId()));
     } else {
         // String appearanceName =
         // PotionBrewing.getAppearanceName(itemInstance.getAuxValue()); return
         // I18n.get(appearanceName).trim() + " " + elementName;
 
-        elementName = replaceAll(elementName, L"{*prefix*}",
-                                 app.GetString(PotionBrewing::getAppearanceName(
+        elementName = replaceAll(elementName, "{*prefix*}",
+                                 gameServices().getString(PotionBrewing::getAppearanceName(
                                      itemInstance->getAuxValue())));
-        elementName = replaceAll(elementName, L"{*postfix*}", L"");
+        elementName = replaceAll(elementName, "{*postfix*}", "");
     }
     return elementName;
 }
@@ -257,8 +258,8 @@ void PotionItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
         // for (MobEffectInstance effect : effects)
         for (auto it = effects->begin(); it != effects->end(); ++it) {
             MobEffectInstance* effect = *it;
-            std::wstring effectString =
-                app.GetString(effect->getDescriptionId());
+            std::string effectString =
+                gameServices().getString(effect->getDescriptionId());
 
             MobEffect* mobEffect = MobEffect::effects[effect->getId()];
             std::unordered_map<Attribute*, AttributeModifier*>*
@@ -284,22 +285,22 @@ void PotionItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
             // internal vector of modifiers) delete effectModifiers;
 
             if (effect->getAmplifier() > 0) {
-                std::wstring potencyString = L"";
+                std::string potencyString = "";
                 switch (effect->getAmplifier()) {
                     case 1:
-                        potencyString = L" ";
-                        potencyString += app.GetString(IDS_POTION_POTENCY_1);
+                        potencyString = " ";
+                        potencyString += gameServices().getString(IDS_POTION_POTENCY_1);
                         break;
                     case 2:
-                        potencyString = L" ";
-                        potencyString += app.GetString(IDS_POTION_POTENCY_2);
+                        potencyString = " ";
+                        potencyString += gameServices().getString(IDS_POTION_POTENCY_2);
                         break;
                     case 3:
-                        potencyString = L" ";
-                        potencyString += app.GetString(IDS_POTION_POTENCY_3);
+                        potencyString = " ";
+                        potencyString += gameServices().getString(IDS_POTION_POTENCY_3);
                         break;
                     default:
-                        potencyString = app.GetString(IDS_POTION_POTENCY_0);
+                        potencyString = gameServices().getString(IDS_POTION_POTENCY_0);
                         break;
                 }
                 effectString +=
@@ -308,7 +309,7 @@ void PotionItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
             }
             if (effect->getDuration() > SharedConstants::TICKS_PER_SECOND) {
                 effectString +=
-                    L" (" + MobEffect::formatDuration(effect) + L")";
+                    " (" + MobEffect::formatDuration(effect) + ")";
             }
 
             eMinecraftColour color = eMinecraftColour_NOT_SET;
@@ -322,7 +323,7 @@ void PotionItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
             lines->push_back(HtmlString(effectString, color));
         }
     } else {
-        std::wstring effectString = app.GetString(
+        std::string effectString = gameServices().getString(
             IDS_POTION_EMPTY);  // I18n.get("potion.empty").trim();
 
         lines->push_back(HtmlString(effectString, eHTMLColor_7));  //"�7"
@@ -330,8 +331,8 @@ void PotionItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
 
     if (!modifiers.empty()) {
         // Add new line
-        lines->push_back(HtmlString(L""));
-        lines->push_back(HtmlString(app.GetString(IDS_POTION_EFFECTS_WHENDRANK),
+        lines->push_back(HtmlString(""));
+        lines->push_back(HtmlString(gameServices().getString(IDS_POTION_EFFECTS_WHENDRANK),
                                     eHTMLColor_5));
 
         // Add modifier descriptions
@@ -383,7 +384,7 @@ void PotionItem::registerIcons(IconRegister* iconRegister) {
     iconOverlay = iconRegister->registerIcon(CONTENTS_ICON);
 }
 
-Icon* PotionItem::getTexture(const std::wstring& name) {
+Icon* PotionItem::getTexture(const std::string& name) {
     if (name.compare(DEFAULT_ICON) == 0) return Item::potion->iconDrinkable;
     if (name.compare(THROWABLE_ICON) == 0) return Item::potion->iconThrowable;
     if (name.compare(CONTENTS_ICON) == 0) return Item::potion->iconOverlay;

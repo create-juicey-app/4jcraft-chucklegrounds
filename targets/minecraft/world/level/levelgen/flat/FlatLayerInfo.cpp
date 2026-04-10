@@ -32,14 +32,14 @@ int FlatLayerInfo::getStart() { return start; }
 
 void FlatLayerInfo::setStart(int start) { this->start = start; }
 
-std::wstring FlatLayerInfo::toString() {
-    std::wstring result = toWString<int>(id);
+std::string FlatLayerInfo::toString() {
+    std::string result = toWString<int>(id);
 
     if (height > 1) {
-        result = toWString<int>(height) + L"x" + result;
+        result = toWString<int>(height) + "x" + result;
     }
     if (data > 0) {
-        result += L":" + toWString<int>(data);
+        result += ":" + toWString<int>(data);
     }
 
     return result;

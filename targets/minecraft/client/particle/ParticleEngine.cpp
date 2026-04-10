@@ -1,12 +1,12 @@
 #include "ParticleEngine.h"
 
-#include <GL/gl.h>
+
 #include <math.h>
 
 #include <algorithm>
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "Particle.h"
 #include "TerrainParticle.h"
 #include "util/StringHelpers.h"
@@ -279,7 +279,7 @@ void ParticleEngine::moveParticleInList(std::shared_ptr<Particle> particle,
     }
 }
 
-std::wstring ParticleEngine::countParticles() {
+std::string ParticleEngine::countParticles() {
     int l =
         level->dimension->id == 0 ? 0 : (level->dimension->id == -1 ? 1 : 2);
     int total = 0;

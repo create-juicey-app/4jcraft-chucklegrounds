@@ -85,19 +85,19 @@ void FoodData::tick(std::shared_ptr<Player> player) {
 }
 
 void FoodData::readAdditionalSaveData(CompoundTag* entityTag) {
-    if (entityTag->contains(L"foodLevel")) {
-        foodLevel = entityTag->getInt(L"foodLevel");
-        tickTimer = entityTag->getInt(L"foodTickTimer");
-        saturationLevel = entityTag->getFloat(L"foodSaturationLevel");
-        exhaustionLevel = entityTag->getFloat(L"foodExhaustionLevel");
+    if (entityTag->contains("foodLevel")) {
+        foodLevel = entityTag->getInt("foodLevel");
+        tickTimer = entityTag->getInt("foodTickTimer");
+        saturationLevel = entityTag->getFloat("foodSaturationLevel");
+        exhaustionLevel = entityTag->getFloat("foodExhaustionLevel");
     }
 }
 
 void FoodData::addAdditonalSaveData(CompoundTag* entityTag) {
-    entityTag->putInt(L"foodLevel", foodLevel);
-    entityTag->putInt(L"foodTickTimer", tickTimer);
-    entityTag->putFloat(L"foodSaturationLevel", saturationLevel);
-    entityTag->putFloat(L"foodExhaustionLevel", exhaustionLevel);
+    entityTag->putInt("foodLevel", foodLevel);
+    entityTag->putInt("foodTickTimer", tickTimer);
+    entityTag->putFloat("foodSaturationLevel", saturationLevel);
+    entityTag->putFloat("foodExhaustionLevel", exhaustionLevel);
 }
 
 int FoodData::getFoodLevel() { return foodLevel; }

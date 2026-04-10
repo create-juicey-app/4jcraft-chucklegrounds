@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "HellFlatLevelSource.h"
 
 #include <stdlib.h>
@@ -181,7 +182,7 @@ void HellFlatLevelSource::postProcess(ChunkSource* parent, int xt, int zt) {
 
     HeavyTile::instaFall = false;
 
-    app.processSchematics(parent->getChunk(xt, zt));
+    gameServices().processSchematics(parent->getChunk(xt, zt));
 }
 
 bool HellFlatLevelSource::save(bool force, ProgressListener* progressListener) {
@@ -192,8 +193,8 @@ bool HellFlatLevelSource::tick() { return false; }
 
 bool HellFlatLevelSource::shouldSave() { return true; }
 
-std::wstring HellFlatLevelSource::gatherStats() {
-    return L"HellFlatLevelSource";
+std::string HellFlatLevelSource::gatherStats() {
+    return "HellFlatLevelSource";
 }
 
 std::vector<Biome::MobSpawnerData*>* HellFlatLevelSource::getMobsAt(
@@ -206,7 +207,7 @@ std::vector<Biome::MobSpawnerData*>* HellFlatLevelSource::getMobsAt(
 }
 
 TilePos* HellFlatLevelSource::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
     return nullptr;
 }
 

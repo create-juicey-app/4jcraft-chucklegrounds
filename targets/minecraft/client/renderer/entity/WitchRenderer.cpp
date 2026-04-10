@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "EntityRenderDispatcher.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/model/WitchModel.h"

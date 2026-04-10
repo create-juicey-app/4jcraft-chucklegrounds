@@ -25,10 +25,10 @@ public:
 
     MinecraftServer* getServer();
     void onScoreChanged(Score* score);
-    void onPlayerRemoved(const std::wstring& player);
+    void onPlayerRemoved(const std::string& player);
     void setDisplayObjective(int slot, Objective* objective);
-    void addPlayerToTeam(const std::wstring& player, PlayerTeam* team);
-    void removePlayerFromTeam(const std::wstring& player, PlayerTeam* team);
+    void addPlayerToTeam(const std::string& player, PlayerTeam* team);
+    void removePlayerFromTeam(const std::string& player, PlayerTeam* team);
     void onObjectiveAdded(Objective* objective);
     void onObjectiveChanged(Objective* objective);
     void onObjectiveRemoved(Objective* objective);

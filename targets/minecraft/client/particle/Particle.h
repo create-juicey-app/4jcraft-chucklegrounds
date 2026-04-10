@@ -61,5 +61,5 @@ public:
     virtual void setMiscTex(int slotIndex);
     virtual void setNextMiscAnimTex();
     virtual bool isAttackable();
-    virtual std::wstring toString();
+    virtual std::string toString();
 };

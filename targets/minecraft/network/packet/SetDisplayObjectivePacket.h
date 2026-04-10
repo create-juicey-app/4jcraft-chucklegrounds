@@ -13,7 +13,7 @@ class SetDisplayObjectivePacket
       public std::enable_shared_from_this<SetDisplayObjectivePacket> {
 public:
     int slot;
-    std::wstring objectiveName;
+    std::string objectiveName;
 
     SetDisplayObjectivePacket();
     SetDisplayObjectivePacket(int slot, Objective* objective);

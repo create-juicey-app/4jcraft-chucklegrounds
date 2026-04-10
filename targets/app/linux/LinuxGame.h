@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/common/Game.h"
 
 class C4JStringTable;
@@ -24,13 +24,13 @@ public:
     void GetScreenshot(int iPad, std::uint8_t** screenshotData,
                        unsigned int* screenshotSize) override;
 
-    int LoadLocalTMSFile(wchar_t* wchTMSFile) override;
-    int LoadLocalTMSFile(wchar_t* wchTMSFile,
+    int LoadLocalTMSFile(char* wchTMSFile) override;
+    int LoadLocalTMSFile(char* wchTMSFile,
                          eFileExtensionType eExt) override;
 
     void FreeLocalTMSFiles(eTMSFileType eType) override;
     int GetLocalTMSFileIndex(
-        wchar_t* wchTMSFile, bool bFilenameIncludesExtension,
+        char* wchTMSFile, bool bFilenameIncludesExtension,
         eFileExtensionType eEXT = eFileExtensionType_PNG) override;
 
     void ReadBannedList(int iPad, eTMSAction action = (eTMSAction)0,

@@ -5,7 +5,7 @@
 #include <numbers>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "SharedConstants.h"
 
 #include "java/Random.h"

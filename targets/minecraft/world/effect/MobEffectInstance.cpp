@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 
 #include "minecraft/world/effect/MobEffectInstance.h"
 
@@ -49,7 +50,7 @@ MobEffectInstance::MobEffectInstance(MobEffectInstance* copy) {
 
 void MobEffectInstance::update(MobEffectInstance* takeOver) {
     if (id != takeOver->id) {
-        app.DebugPrintf(
+        Log::info(
             "This method should only be called for matching effects!");
     }
     if (takeOver->amplifier > amplifier) {
@@ -117,10 +118,10 @@ int MobEffectInstance::hashCode() {
            ((duration & 0xffff) << 16);
 }
 
-std::wstring MobEffectInstance::toString() {
-    std::wstring result =
-        L"MobEffectInstance::toString - NON IMPLEMENTED OR LOCALISED FUNCTION";
-    // wstring result = "";
+std::string MobEffectInstance::toString() {
+    std::string result =
+        "MobEffectInstance::toString - NON IMPLEMENTED OR LOCALISED FUNCTION";
+    // string result = "";
     // if (getAmplifier() > 0)
     //{
     //	result = getDescriptionId() + " x " + (getAmplifier() + 1) + ",
@@ -145,18 +146,18 @@ bool MobEffectInstance::equals(MobEffectInstance* instance) {
 }
 
 CompoundTag* MobEffectInstance::save(CompoundTag* tag) {
-    tag->putByte(L"Id", (uint8_t)getId());
-    tag->putByte(L"Amplifier", (uint8_t)getAmplifier());
-    tag->putInt(L"Duration", getDuration());
-    tag->putBoolean(L"Ambient", isAmbient());
+    tag->putByte("Id", (uint8_t)getId());
+    tag->putByte("Amplifier", (uint8_t)getAmplifier());
+    tag->putInt("Duration", getDuration());
+    tag->putBoolean("Ambient", isAmbient());
     return tag;
 }
 
 MobEffectInstance* MobEffectInstance::load(CompoundTag* tag) {
-    int id = tag->getByte(L"Id");
-    int amplifier = tag->getByte(L"Amplifier");
-    int duration = tag->getInt(L"Duration");
-    bool ambient = tag->getBoolean(L"Ambient");
+    int id = tag->getByte("Id");
+    int amplifier = tag->getByte("Amplifier");
+    int duration = tag->getInt("Duration");
+    bool ambient = tag->getBoolean("Ambient");
     return new MobEffectInstance(id, duration, amplifier, ambient);
 }
 

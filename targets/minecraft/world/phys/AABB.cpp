@@ -249,6 +249,6 @@ bool AABB::containsZ(const std::optional<Vec3>& v) const {
     return v->x >= x0 && v->x <= x1 && v->y >= y0 && v->y <= y1;
 }
 
-std::wstring AABB::toString() const {
-    return std::format(L"box[{}, {}, {}, {}, {}, {}]", x0, y0, z0, x1, y1, z1);
+std::string AABB::toString() const {
+    return std::format("box[{}, {}, {}, {}, {}, {}]", x0, y0, z0, x1, y1, z1);
 }

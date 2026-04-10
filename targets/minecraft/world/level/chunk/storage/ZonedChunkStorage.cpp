@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "ZonedChunkStorage.h"
 
 #include <filesystem>
@@ -37,7 +38,7 @@ ZonedChunkStorage::ZonedChunkStorage(File dir) {
     tickCount = 0;
 
     // this->dir = dir;
-    this->dir = File(dir, std::wstring(L"data"));
+    this->dir = File(dir, std::string("data"));
     if (!this->dir.exists()) this->dir.mkdirs();
 }
 
@@ -58,12 +59,12 @@ ZoneFile* ZonedChunkStorage::getZoneFile(int x, int z, bool create) {
     int64_t key = xZone + (zZone << 20l);
     // 4J - was !zoneFiles.containsKey(key)
     if (zoneFiles.find(key) == zoneFiles.end()) {
-        wchar_t xRadix36[64];
-        wchar_t zRadix36[64];
+        char xRadix36[64];
+        char zRadix36[64];
         _itow(x, xRadix36, 36);
         _itow(z, zRadix36, 36);
-        File file = File(dir, std::wstring(L"zone_") + toString(xRadix36) +
-                                  L"_" + toString(zRadix36) + L".dat");
+        File file = File(dir, std::string("zone_") + toString(xRadix36) +
+                                  "_" + toString(zRadix36) + ".dat");
 
         if (!file.exists()) {
             if (!create) return nullptr;
@@ -74,8 +75,8 @@ ZoneFile* ZonedChunkStorage::getZoneFile(int x, int z, bool create) {
         }
 
         File entityFile =
-            File(dir, std::wstring(L"entities_") + toString(xRadix36) + L"_" +
-                          toString(zRadix36) + L".dat");
+            File(dir, std::string("entities_") + toString(xRadix36) + "_" +
+                          toString(zRadix36) + ".dat");
 
         zoneFiles[key] = new ZoneFile(key, file, entityFile);
     }
@@ -166,7 +167,7 @@ void ZonedChunkStorage::tick() {
             //            try {
             char buf[256];
             sprintf(buf, "Closing zone %I64d\n", key);
-            app.DebugPrintf(buf);
+            Log::info(buf);
             zoneFiles[key]->close();
             zoneFiles.erase(zoneFiles.find(key));
             //           } catch (IOException e) {
@@ -200,7 +201,7 @@ void ZonedChunkStorage::loadEntities(Level* level, LevelChunk* lc) {
     auto itEnd = tags->end();
     for (auto it = tags->begin(); it != itEnd; it++) {
         CompoundTag* tag = *it;  // tags->at(i);
-        int type = tag->getInt(L"_TYPE");
+        int type = tag->getInt("_TYPE");
         if (type == 0) {
             std::shared_ptr<Entity> e = EntityIO::loadStatic(tag, level);
             if (e != nullptr) lc->addEntity(e);
@@ -227,7 +228,7 @@ void ZonedChunkStorage::saveEntities(Level* level, LevelChunk* lc) {
             for (auto it = entities->begin(); it != itEndTags; it++) {
                 std::shared_ptr<Entity> e = *it;  // entities->at(j);
                 CompoundTag* cp = new CompoundTag();
-                cp->putInt(L"_TYPE", 0);
+                cp->putInt("_TYPE", 0);
                 e->save(cp);
                 tags.push_back(cp);
             }
@@ -240,7 +241,7 @@ void ZonedChunkStorage::saveEntities(Level* level, LevelChunk* lc) {
          it != lc->tileEntities.end(); it++) {
         std::shared_ptr<TileEntity> te = it->second;
         CompoundTag* cp = new CompoundTag();
-        cp->putInt(L"_TYPE", 1);
+        cp->putInt("_TYPE", 1);
         te->save(cp);
         tags.push_back(cp);
     }

@@ -21,7 +21,7 @@ public:
     int getCurrentPercent();
     int getCurrentTitle();
     int getCurrentStatus();
-    std::wstring& getProgressString(void);
+    std::string& getProgressString(void);
     ProgressRenderer::eProgressStringType getType();
 
 private:
@@ -33,7 +33,7 @@ private:
     int title;
     int64_t lastTime;
     bool noAbort;
-    std::wstring m_wstrText;
+    std::string m_wstrText;
     eProgressStringType m_eType;
 
     void setType(eProgressStringType eType);
@@ -44,6 +44,6 @@ public:
     virtual void progressStartNoAbort(int string);
     void _progressStart(int title);
     virtual void progressStage(int status);
-    virtual void progressStage(std::wstring& wstrText);
+    virtual void progressStage(std::string& wstrText);
     virtual void progressStagePercentage(int i);
 };

@@ -1,8 +1,10 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "OreFeature.h"
 
 #include <numbers>
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Random.h"
 #include "minecraft/util/Mth.h"
@@ -37,8 +39,8 @@ bool OreFeature::place(Level* level, Random* random, int x, int y, int z) {
     bool collisionsExpected = false;
 
     LevelGenerationOptions* levelGenOptions = nullptr;
-    if (app.getLevelGenerationOptions() != nullptr) {
-        levelGenOptions = app.getLevelGenerationOptions();
+    if (gameServices().getLevelGenerationOptions() != nullptr) {
+        levelGenOptions = gameServices().getLevelGenerationOptions();
 
         // 4J Stu - Optimise schematic intersection checks by first checking the
         // max possible bounding box of this place call
@@ -88,7 +90,7 @@ bool OreFeature::place(Level* level, Random* random, int x, int y, int z) {
             bool intersects =
                 levelGenOptions->checkIntersects(xt0, yt0, zt0, xt1, yt1, zt1);
             if (intersects) {
-                // app.DebugPrintf("Skipping ore feature generation as it
+                // Log::info("Skipping ore feature generation as it
                 // overlaps a game rule structure\n");
                 continue;
             }

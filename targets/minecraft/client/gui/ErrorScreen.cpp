@@ -2,8 +2,8 @@
 
 #include "minecraft/client/gui/Screen.h"
 
-ErrorScreen::ErrorScreen(const std::wstring& title,
-                         const std::wstring& message) {
+ErrorScreen::ErrorScreen(const std::string& title,
+                         const std::string& message) {
     this->title = title;
     this->message = message;
 }
@@ -20,4 +20,4 @@ void ErrorScreen::render(int xm, int ym, float a) {
     Screen::render(xm, ym, a);
 }
 
-void ErrorScreen::keyPressed(wchar_t eventCharacter, int eventKey) {}
+void ErrorScreen::keyPressed(char eventCharacter, int eventKey) {}

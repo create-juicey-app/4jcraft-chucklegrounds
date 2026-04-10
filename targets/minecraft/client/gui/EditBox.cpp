@@ -1,11 +1,11 @@
 #include "EditBox.h"
 
-#include "app/include/stubs.h"
+#include "platform/stubs.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/gui/Screen.h"
 
 EditBox::EditBox(Screen* screen, Font* font, int x, int y, int width,
-                 int height, const std::wstring& value) {
+                 int height, const std::string& value) {
     // 4J - added initialisers
     maxLength = 0;
     frame = 0;
@@ -22,13 +22,13 @@ EditBox::EditBox(Screen* screen, Font* font, int x, int y, int width,
     this->setValue(value);
 }
 
-void EditBox::setValue(const std::wstring& value) { this->value = value; }
+void EditBox::setValue(const std::string& value) { this->value = value; }
 
-std::wstring EditBox::getValue() { return value; }
+std::string EditBox::getValue() { return value; }
 
 void EditBox::tick() { frame++; }
 
-void EditBox::keyPressed(wchar_t ch, int eventKey) {
+void EditBox::keyPressed(char ch, int eventKey) {
     if (!active || !inFocus) {
         return;
     }
@@ -52,7 +52,7 @@ void EditBox::keyPressed(wchar_t ch, int eventKey) {
     if (eventKey == Keyboard::KEY_BACK && value.length() > 0) {
         value = value.substr(0, value.length() - 1);
     }
-    if (SharedConstants::acceptableLetters.find(ch) != std::wstring::npos &&
+    if (SharedConstants::acceptableLetters.find(ch) != std::string::npos &&
         (value.length() < maxLength || maxLength == 0)) {
         value += ch;
     }
@@ -89,7 +89,7 @@ void EditBox::render() {
 
     if (active) {
         bool renderUnderscore = inFocus && (frame / 6 % 2 == 0);
-        drawString(font, value + (renderUnderscore ? L"_" : L""), textX, textY,
+        drawString(font, value + (renderUnderscore ? "_" : ""), textX, textY,
                    (enableBackgroundDrawing ? 0xe0e0e0 : 0xffffff));
     } else {
         drawString(font, value, textX, textY,

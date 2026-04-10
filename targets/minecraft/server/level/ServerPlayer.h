@@ -65,7 +65,7 @@ private:
 
 public:
     ServerPlayer(MinecraftServer* server, Level* level,
-                 const std::wstring& name, ServerPlayerGameMode* gameMode);
+                 const std::string& name, ServerPlayerGameMode* gameMode);
     ~ServerPlayer();
     void flagEntitiesToBeRemoved(unsigned int* flags,
                                  bool* removedFound);  // 4J added
@@ -86,7 +86,7 @@ public:
     virtual void die(DamageSource* source);
     virtual bool hurt(DamageSource* dmgSource, float dmg);
     virtual bool canHarmPlayer(std::shared_ptr<Player> target);
-    bool canHarmPlayer(std::wstring targetName);  // 4J: Added
+    bool canHarmPlayer(std::string targetName);  // 4J: Added
     void doTick(bool sendChunks, bool dontDelayChunks = false,
                 bool ignorePortal = false);
     void doTickA();
@@ -130,7 +130,7 @@ public:
     virtual bool startCrafting(int x, int y, int z);  // 4J added bool return
     virtual bool openFireworks(int x, int y, int z);  // 4J added
     virtual bool startEnchanting(
-        int x, int y, int z, const std::wstring& name);  // 4J added bool return
+        int x, int y, int z, const std::string& name);  // 4J added bool return
     virtual bool startRepairing(int x, int y, int z);    // 4J added bool return
     virtual bool openContainer(
         std::shared_ptr<Container> container);  // 4J added bool return
@@ -144,7 +144,7 @@ public:
                                       brewingStand);  // 4J added bool return
     virtual bool openBeacon(std::shared_ptr<BeaconTileEntity> beacon);
     virtual bool openTrading(std::shared_ptr<Merchant> traderTarget,
-                             const std::wstring& name);  // 4J added bool return
+                             const std::string& name);  // 4J added bool return
     virtual bool openHorseInventory(std::shared_ptr<EntityHorse> horse,
                                     std::shared_ptr<Container> container);
     virtual void slotChanged(AbstractContainerMenu* container, int slotIndex,
@@ -190,9 +190,9 @@ public:
     ServerLevel* getLevel();
     void setGameMode(GameType* mode);
     void sendMessage(
-        const std::wstring& message,
+        const std::string& message,
         ChatPacket::EChatPacketMessage type = ChatPacket::e_ChatCustom,
-        int customData = -1, const std::wstring& additionalMessage = L"");
+        int customData = -1, const std::string& additionalMessage = "");
     bool hasPermission(EGameCommand command);
     // bool hasPermission(int permissionLevel, EGameCommand command);
     // void updateOptions(std::shared_ptr<ClientInformationPacket> packet); //

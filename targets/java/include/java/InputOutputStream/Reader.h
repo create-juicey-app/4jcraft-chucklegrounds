@@ -8,6 +8,6 @@ public:
                                // resources associated with it.
     virtual int read() = 0;    // Reads a single character.
     virtual int read(
-        wchar_t cbuf[], unsigned int off,
+        char cbuf[], unsigned int off,
         unsigned int len) = 0;  // Reads characters into a portion of an array.
 };

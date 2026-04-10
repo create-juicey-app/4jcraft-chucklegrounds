@@ -15,18 +15,18 @@ public:
 
 private:
     int id;
-    std::wstring m_generatorName;
+    std::string m_generatorName;
     int m_version;
     bool m_selectable;
     bool m_replacement;
 
-    LevelType(int id, std::wstring generatorName);
-    LevelType(int id, std::wstring generatorName, int version);
-    void init(int id, std::wstring generatorName, int version);
+    LevelType(int id, std::string generatorName);
+    LevelType(int id, std::string generatorName, int version);
+    void init(int id, std::string generatorName, int version);
 
 public:
-    std::wstring getGeneratorName();
-    std::wstring getDescriptionId();
+    std::string getGeneratorName();
+    std::string getDescriptionId();
     int getVersion();
     LevelType* getReplacementForVersion(int oldVersion);
 
@@ -41,6 +41,6 @@ private:
 
 public:
     bool hasReplacement();
-    static LevelType* getLevelType(std::wstring name);
+    static LevelType* getLevelType(std::string name);
     int getId();
 };

@@ -1,8 +1,9 @@
+#include "minecraft/IGameServices.h"
 #include "TntTile.h"
 
 #include <string>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Class.h"
 #include "java/Random.h"
@@ -35,7 +36,7 @@ Icon* TntTile::getTexture(int face, int data) {
 void TntTile::onPlace(Level* level, int x, int y, int z) {
     Tile::onPlace(level, x, y, z);
     if (level->hasNeighborSignal(x, y, z) &&
-        app.GetGameHostOption(eGameHostOption_TNT)) {
+        gameServices().getGameHostOption(eGameHostOption_TNT)) {
         destroy(level, x, y, z, EXPLODE_BIT);
         level->removeTile(x, y, z);
     }
@@ -43,7 +44,7 @@ void TntTile::onPlace(Level* level, int x, int y, int z) {
 
 void TntTile::neighborChanged(Level* level, int x, int y, int z, int type) {
     if (level->hasNeighborSignal(x, y, z) &&
-        app.GetGameHostOption(eGameHostOption_TNT)) {
+        gameServices().getGameHostOption(eGameHostOption_TNT)) {
         destroy(level, x, y, z, EXPLODE_BIT);
         level->removeTile(x, y, z);
     }
@@ -63,7 +64,7 @@ void TntTile::wasExploded(Level* level, int x, int y, int z,
     // TNT blocks are triggered by explosions even though "TNT explodes" option
     // is unchecked.
     if (level->newPrimedTntAllowed() &&
-        app.GetGameHostOption(eGameHostOption_TNT)) {
+        gameServices().getGameHostOption(eGameHostOption_TNT)) {
         std::shared_ptr<PrimedTnt> primed = std::shared_ptr<PrimedTnt>(
             new PrimedTnt(level, x + 0.5f, y + 0.5f, z + 0.5f,
                           explosion->getSourceMob()));
@@ -84,7 +85,7 @@ void TntTile::destroy(Level* level, int x, int y, int z, int data,
     if ((data & EXPLODE_BIT) == 1) {
         // 4J - added condition to have finite limit of these
         if (level->newPrimedTntAllowed() &&
-            app.GetGameHostOption(eGameHostOption_TNT)) {
+            gameServices().getGameHostOption(eGameHostOption_TNT)) {
             std::shared_ptr<PrimedTnt> tnt = std::shared_ptr<PrimedTnt>(
                 new PrimedTnt(level, x + 0.5f, y + 0.5f, z + 0.5f, source));
             level->addEntity(tnt);
@@ -126,9 +127,9 @@ void TntTile::entityInside(Level* level, int x, int y, int z,
 }
 
 void TntTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"tnt_side");
-    iconTop = iconRegister->registerIcon(L"tnt_top");
-    iconBottom = iconRegister->registerIcon(L"tnt_bottom");
+    icon = iconRegister->registerIcon("tnt_side");
+    iconTop = iconRegister->registerIcon("tnt_top");
+    iconBottom = iconRegister->registerIcon("tnt_bottom");
 }
 
 bool TntTile::dropFromExplosion(Explosion* explosion) { return false; }

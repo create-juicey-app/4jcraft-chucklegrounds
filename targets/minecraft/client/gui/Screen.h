@@ -33,9 +33,9 @@ public:
     virtual void render(int xm, int ym, float a);
 
 public:
-    virtual void keyPressed(wchar_t eventCharacter, int eventKey);
-    static std::wstring getClipboard();
-    static void setClipboard(const std::wstring& str);
+    virtual void keyPressed(char eventCharacter, int eventKey);
+    static std::string getClipboard();
+    static void setClipboard(const std::string& str);
 
 private:
     Button* clickedButton;

@@ -55,10 +55,10 @@ public:
         return ::remainder(input, 360.0);
     }
 
-    static std::wstring createInsecureUUID(Random* random);
+    static std::string createInsecureUUID(Random* random);
 
-    static int getInt(const std::wstring& input, int def);
-    static int getInt(const std::wstring& input, int def, int min);
-    static double getDouble(const std::wstring& input, double def);
-    static double getDouble(const std::wstring& input, double def, double min);
+    static int getInt(const std::string& input, int def);
+    static int getInt(const std::string& input, int def, int min);
+    static double getDouble(const std::string& input, double def);
+    static double getDouble(const std::string& input, double def, double min);
 };

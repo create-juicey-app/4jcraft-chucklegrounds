@@ -13,7 +13,7 @@ LevelSettings DemoLevel::DEMO_LEVEL_SETTINGS =
                   false, LevelType::lvl_normal_1_1, LEVEL_MAX_WIDTH, 1.0);
 
 DemoLevel::DemoLevel(std::shared_ptr<LevelStorage> levelStorage,
-                     const std::wstring& levelName)
+                     const std::string& levelName)
     : Level(levelStorage, levelName, &DEMO_LEVEL_SETTINGS) {}
 
 void DemoLevel::setInitialSpawn() {

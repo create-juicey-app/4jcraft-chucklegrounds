@@ -1,11 +1,12 @@
+#include "minecraft/IGameServices.h"
 #include "HellDimension.h"
 
 #include <cmath>
 
-#include "IPlatformInput.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/common/src/Console_Debug_enum.h"
+#include "platform/input/input.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
+#include "app/common/Console_Debug_enum.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/world/level/Level.h"
@@ -16,7 +17,6 @@
 #include "minecraft/world/level/levelgen/HellRandomLevelSource.h"
 #include "minecraft/world/level/storage/LevelData.h"
 #include "minecraft/world/phys/Vec3.h"
-#include "platform/PlatformServices.h"
 
 void HellDimension::init() {
     biomeSource = new FixedBiomeSource(Biome::hell, 1, 0);
@@ -49,8 +49,8 @@ void HellDimension::updateLightRamp() {
 
 ChunkSource* HellDimension::createRandomLevelSource() const {
 #ifdef _DEBUG_MENUS_ENABLED
-    if (app.DebugSettingsOn() &&
-        app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn() &&
+        gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_SuperflatNether)) {
         return new HellFlatLevelSource(level, level->getSeed());
     } else

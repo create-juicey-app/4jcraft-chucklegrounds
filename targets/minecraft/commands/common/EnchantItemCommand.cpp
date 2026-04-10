@@ -57,7 +57,7 @@ void EnchantItemCommand::execute(std::shared_ptr<CommandSender> source,
         if (enchantmentTags != nullptr) {
             for (int i = 0; i < enchantmentTags->size(); i++) {
                 int type = enchantmentTags->get(i)->getShort(
-                    (wchar_t*)ItemInstance::TAG_ENCH_ID);
+                    (char*)ItemInstance::TAG_ENCH_ID);
 
                 if (Enchantment::enchantments[type] != nullptr) {
                     Enchantment* other = Enchantment::enchantments[type];
@@ -77,7 +77,7 @@ void EnchantItemCommand::execute(std::shared_ptr<CommandSender> source,
 
     // logAdminAction(source, "commands.enchant.success");
     logAdminAction(source, ChatPacket::e_ChatCustom,
-                   L"commands.enchant.success");
+                   "commands.enchant.success");
 }
 
 std::shared_ptr<GameCommandPacket> EnchantItemCommand::preparePacket(

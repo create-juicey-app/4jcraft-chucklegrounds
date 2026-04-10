@@ -9,20 +9,20 @@ GameType* GameType::CREATIVE = nullptr;
 GameType* GameType::ADVENTURE = nullptr;
 
 void GameType::staticCtor() {
-    NOT_SET = new GameType(-1, L"");
-    SURVIVAL = new GameType(0, L"survival");
-    CREATIVE = new GameType(1, L"creative");
-    ADVENTURE = new GameType(2, L"adventure");
+    NOT_SET = new GameType(-1, "");
+    SURVIVAL = new GameType(0, "survival");
+    CREATIVE = new GameType(1, "creative");
+    ADVENTURE = new GameType(2, "adventure");
 }
 
-GameType::GameType(int id, const std::wstring& name) {
+GameType::GameType(int id, const std::string& name) {
     this->id = id;
     this->name = name;
 }
 
 int GameType::getId() { return id; }
 
-std::wstring GameType::getName() { return name; }
+std::string GameType::getName() { return name; }
 
 void GameType::updatePlayerAbilities(Abilities* abilities) {
     if (this == CREATIVE) {
@@ -57,7 +57,7 @@ GameType* GameType::byId(int id) {
     return SURVIVAL;
 }
 
-GameType* GameType::byName(const std::wstring& name) {
+GameType* GameType::byName(const std::string& name) {
     if (name.compare(NOT_SET->name) == 0)
         return NOT_SET;
     else if (name.compare(SURVIVAL->name) == 0)
@@ -82,7 +82,7 @@ void LevelSettings::_init(int64_t seed, GameType* gameType,
     this->levelType = levelType;
     this->allowCommands = false;
     this->startingBonusItems = false;
-    levelTypeOptions = L"";
+    levelTypeOptions = "";
     m_xzSize = xzSize;
     m_hellScale = hellScale;
 }
@@ -119,7 +119,7 @@ LevelSettings* LevelSettings::enableSinglePlayerCommands() {
     return this;
 }
 
-LevelSettings* LevelSettings::setLevelTypeOptions(const std::wstring& options) {
+LevelSettings* LevelSettings::setLevelTypeOptions(const std::string& options) {
     levelTypeOptions = options;
     return this;
 }
@@ -149,4 +149,4 @@ int LevelSettings::getXZSize() { return m_xzSize; }
 
 int LevelSettings::getHellScale() { return m_hellScale; }
 
-std::wstring LevelSettings::getLevelTypeOptions() { return levelTypeOptions; }
+std::string LevelSettings::getLevelTypeOptions() { return levelTypeOptions; }

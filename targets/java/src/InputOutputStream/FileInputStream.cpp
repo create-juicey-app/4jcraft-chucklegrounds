@@ -51,7 +51,7 @@ bool FileSeek(std::FILE* file, int64_t offset, int origin) {
 // denies read access to the file.
 FileInputStream::FileInputStream(const File& file) : m_fileHandle(nullptr) {
 #if defined(_WIN32)
-    m_fileHandle = _wfopen(file.getPath().c_str(), L"rb");
+    m_fileHandle = _wfopen(file.getPath().c_str(), "rb");
 #else
     const std::string nativePath = std::filesystem::path(file.getPath()).string();
     m_fileHandle = std::fopen(nativePath.c_str(), "rb");

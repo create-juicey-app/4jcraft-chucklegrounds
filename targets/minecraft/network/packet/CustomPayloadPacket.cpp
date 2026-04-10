@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "CustomPayloadPacket.h"
 
 #include <limits>
@@ -9,19 +10,19 @@
 #include "java/InputOutputStream/DataOutputStream.h"
 
 // Mojang-defined custom packets
-const std::wstring CustomPayloadPacket::CUSTOM_BOOK_PACKET = L"MC|BEdit";
-const std::wstring CustomPayloadPacket::CUSTOM_BOOK_SIGN_PACKET = L"MC|BSign";
-const std::wstring CustomPayloadPacket::TEXTURE_PACK_PACKET = L"MC|TPack";
-const std::wstring CustomPayloadPacket::TRADER_LIST_PACKET = L"MC|TrList";
-const std::wstring CustomPayloadPacket::TRADER_SELECTION_PACKET = L"MC|TrSel";
-const std::wstring CustomPayloadPacket::SET_ADVENTURE_COMMAND_PACKET =
-    L"MC|AdvCdm";
-const std::wstring CustomPayloadPacket::SET_BEACON_PACKET = L"MC|Beacon";
-const std::wstring CustomPayloadPacket::SET_ITEM_NAME_PACKET = L"MC|ItemName";
+const std::string CustomPayloadPacket::CUSTOM_BOOK_PACKET = "MC|BEdit";
+const std::string CustomPayloadPacket::CUSTOM_BOOK_SIGN_PACKET = "MC|BSign";
+const std::string CustomPayloadPacket::TEXTURE_PACK_PACKET = "MC|TPack";
+const std::string CustomPayloadPacket::TRADER_LIST_PACKET = "MC|TrList";
+const std::string CustomPayloadPacket::TRADER_SELECTION_PACKET = "MC|TrSel";
+const std::string CustomPayloadPacket::SET_ADVENTURE_COMMAND_PACKET =
+    "MC|AdvCdm";
+const std::string CustomPayloadPacket::SET_BEACON_PACKET = "MC|Beacon";
+const std::string CustomPayloadPacket::SET_ITEM_NAME_PACKET = "MC|ItemName";
 
 CustomPayloadPacket::CustomPayloadPacket() {}
 
-CustomPayloadPacket::CustomPayloadPacket(const std::wstring& identifier,
+CustomPayloadPacket::CustomPayloadPacket(const std::string& identifier,
                                          std::vector<uint8_t> data) {
     this->identifier = identifier;
     this->data = data;
@@ -30,9 +31,9 @@ CustomPayloadPacket::CustomPayloadPacket(const std::wstring& identifier,
         length = data.size();
 
         if (length > std::numeric_limits<short>::max()) {
-            app.DebugPrintf("Payload may not be larger than 32K\n");
+            Log::info("Payload may not be larger than 32K\n");
 #ifndef _CONTENT_PACKAGE
-            __debugbreak();
+            assert(0);
 #endif
             // throw new IllegalArgumentException("Payload may not be larger
             // than 32k");

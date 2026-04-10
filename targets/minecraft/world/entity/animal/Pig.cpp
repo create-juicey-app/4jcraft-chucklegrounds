@@ -80,12 +80,12 @@ void Pig::defineSynchedData() {
 
 void Pig::addAdditonalSaveData(CompoundTag* tag) {
     Animal::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Saddle", hasSaddle());
+    tag->putBoolean("Saddle", hasSaddle());
 }
 
 void Pig::readAdditionalSaveData(CompoundTag* tag) {
     Animal::readAdditionalSaveData(tag);
-    setSaddle(tag->getBoolean(L"Saddle"));
+    setSaddle(tag->getBoolean("Saddle"));
 }
 
 int Pig::getAmbientSound() { return eSoundType_MOB_PIG_AMBIENT; }

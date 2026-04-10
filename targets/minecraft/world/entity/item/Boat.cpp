@@ -376,7 +376,7 @@ void Boat::readAdditionalSaveData(CompoundTag* base) {}
 
 float Boat::getShadowHeightOffs() { return 0; }
 
-std::wstring Boat::getName() { return L"Boat"; }
+std::string Boat::getName() { return "Boat"; }
 
 bool Boat::interact(std::shared_ptr<Player> player) {
     if ((rider.lock() != nullptr) && rider.lock()->instanceof(eTYPE_PLAYER) &&

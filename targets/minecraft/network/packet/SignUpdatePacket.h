@@ -12,11 +12,11 @@ public:
     int x, y, z;
     bool m_bVerified;
     bool m_bCensored;
-    std::wstring lines[4];
+    std::string lines[4];
 
     SignUpdatePacket();
     SignUpdatePacket(int x, int y, int z, bool bVerified, bool bCensored,
-                     std::wstring lines[]);
+                     std::string lines[]);
     bool GetVerified() { return m_bVerified; }
     bool GetCensored() { return m_bCensored; }
     virtual void read(DataInputStream* dis);

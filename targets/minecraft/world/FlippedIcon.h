@@ -23,7 +23,7 @@ public:
     float getV0(bool adjust = false) const;
     float getV1(bool adjust = false) const;
     float getV(double offset, bool adjust = false) const;
-    std::wstring getName() const;
+    std::string getName() const;
     int getSourceWidth() const;
     int getSourceHeight() const;
     int getFlags() const;      // 4J added

@@ -10,17 +10,17 @@ class RenameWorldScreen : public Screen {
 private:
     Screen* lastScreen;
     EditBox* nameEdit;
-    std::wstring levelId;
+    std::string levelId;
 
 public:
-    RenameWorldScreen(Screen* lastScreen, const std::wstring& levelId);
+    RenameWorldScreen(Screen* lastScreen, const std::string& levelId);
     virtual void tick() override;
     virtual void init() override;
     virtual void removed() override;
 
 protected:
     virtual void buttonClicked(Button* button) override;
-    virtual void keyPressed(wchar_t ch, int eventKey) override;
+    virtual void keyPressed(char ch, int eventKey) override;
     virtual void mouseClicked(int x, int y, int buttonNum) override;
 
 public:

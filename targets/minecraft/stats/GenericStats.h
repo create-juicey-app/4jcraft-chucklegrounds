@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include "app/common/src/Console_Awards_enum.h"
+#include "app/common/Console_Awards_enum.h"
 #include "Stat.h"
 #include "Stats.h"
 #include "java/Class.h"
@@ -19,7 +19,7 @@ class Stat;
 
 // #include "minecraft/world/damageSource/DamageSource.h"
 
-// #include "app/common/src/Console_Awards_enum.h"
+// #include "app/common/Console_Awards_enum.h"
 
 /**
         4J-JEV:

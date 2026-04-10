@@ -11,7 +11,7 @@ class ConsoleSaveFileOriginal : public ConsoleSaveFile {
 private:
     FileHeader header;
 
-    std::wstring m_fileName;
+    std::string m_fileName;
 
     //	void* hHeap;
     static void* pvHeap;
@@ -35,7 +35,7 @@ public:
 #if defined(_WINDOWS64)
     static int SaveSaveDataCallback(void* lpParam, bool bRes);
 #endif
-    ConsoleSaveFileOriginal(const std::wstring& fileName,
+    ConsoleSaveFileOriginal(const std::string& fileName,
                             void* pvSaveData = nullptr,
                             unsigned int fileSize = 0,
                             bool forceCleanSave = false,
@@ -72,10 +72,10 @@ public:
 #endif
     virtual unsigned int getSizeOnDisk();
 
-    virtual std::wstring getFilename();
+    virtual std::string getFilename();
 
     virtual std::vector<FileEntry*>* getFilesWithPrefix(
-        const std::wstring& prefix);
+        const std::string& prefix);
     virtual std::vector<FileEntry*>* getRegionFilesByDimension(
         unsigned int dimensionIndex);
 

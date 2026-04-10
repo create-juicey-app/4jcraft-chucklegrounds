@@ -115,7 +115,7 @@ void Cube::render(Tesselator* t, float scale) {
     }
 }
 
-Cube* Cube::setId(const std::wstring& id) {
+Cube* Cube::setId(const std::string& id) {
     this->id = id;
     return this;
 }

@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "DropperTileEntity.h"
 
 #include <memory>
@@ -7,8 +8,8 @@
 #include "minecraft/world/level/tile/entity/TileEntity.h"
 #include "strings.h"
 
-std::wstring DropperTileEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_CONTAINER_DROPPER);
+std::string DropperTileEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_CONTAINER_DROPPER);
 }
 
 // 4J Added

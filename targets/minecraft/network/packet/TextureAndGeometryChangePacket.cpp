@@ -10,17 +10,17 @@
 
 TextureAndGeometryChangePacket::TextureAndGeometryChangePacket() {
     id = -1;
-    path = L"";
+    path = "";
     dwSkinID = 0;
 }
 
 TextureAndGeometryChangePacket::TextureAndGeometryChangePacket(
-    std::shared_ptr<Entity> e, const std::wstring& path) {
+    std::shared_ptr<Entity> e, const std::string& path) {
     id = e->entityId;
     this->path = path;
-    std::wstring skinValue = path.substr(7, path.size());
-    skinValue = skinValue.substr(0, skinValue.find_first_of(L'.'));
-    std::wstringstream ss;
+    std::string skinValue = path.substr(7, path.size());
+    skinValue = skinValue.substr(0, skinValue.find_first_of('.'));
+    std::stringstream ss;
     ss << std::dec << skinValue.c_str();
     ss >> dwSkinID;
     dwSkinID = MAKE_SKIN_BITMASK(true, dwSkinID);

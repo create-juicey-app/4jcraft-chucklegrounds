@@ -6,9 +6,9 @@
 #include "minecraft/world/level/saveddata/SavedData.h"
 #include "nbt/CompoundTag.h"
 
-std::wstring StructureFeatureSavedData::TAG_FEATURES = L"Features";
+std::string StructureFeatureSavedData::TAG_FEATURES = "Features";
 
-StructureFeatureSavedData::StructureFeatureSavedData(const std::wstring& idName)
+StructureFeatureSavedData::StructureFeatureSavedData(const std::string& idName)
     : SavedData(idName) {
     this->pieceTags = new CompoundTag(TAG_FEATURES);
 }
@@ -29,14 +29,14 @@ CompoundTag* StructureFeatureSavedData::getFeatureTag(int chunkX, int chunkZ) {
 
 void StructureFeatureSavedData::putFeatureTag(CompoundTag* tag, int chunkX,
                                               int chunkZ) {
-    std::wstring name = createFeatureTagId(chunkX, chunkZ);
+    std::string name = createFeatureTagId(chunkX, chunkZ);
     tag->setName(name);
     pieceTags->put(name, tag);
 }
 
-std::wstring StructureFeatureSavedData::createFeatureTagId(int chunkX,
+std::string StructureFeatureSavedData::createFeatureTagId(int chunkX,
                                                            int chunkZ) {
-    return L"[" + toWString<int>(chunkX) + L"," + toWString<int>(chunkZ) + L"]";
+    return "[" + toWString<int>(chunkX) + "," + toWString<int>(chunkZ) + "]";
 }
 
 CompoundTag* StructureFeatureSavedData::getFullTag() { return pieceTags; }

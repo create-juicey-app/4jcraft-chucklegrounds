@@ -52,11 +52,11 @@ public:
 private:
     double amount;
     int operation;
-    std::wstring name;
+    std::string name;
     eMODIFIER_ID id;
     bool serialize;
 
-    void _init(eMODIFIER_ID id, const std::wstring name, double amount,
+    void _init(eMODIFIER_ID id, const std::string name, double amount,
                int operation);
 
 public:
@@ -64,13 +64,13 @@ public:
     AttributeModifier(eMODIFIER_ID id, double amount, int operation);
 
     eMODIFIER_ID getId();
-    std::wstring getName();
+    std::string getName();
     int getOperation();
     double getAmount();
     bool isSerializable();
     AttributeModifier* setSerialize(bool serialize);
     bool equals(AttributeModifier* modifier);
-    std::wstring toString();
+    std::string toString();
     HtmlString getHoverText(
         eATTRIBUTE_ID attribute);  // 4J: Added to keep modifier readable
                                    // std::string creation in one place

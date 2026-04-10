@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "EntityHorse.h"
 
 #include <math.h>
@@ -55,7 +56,7 @@
 class EntitySelector;
 class Path;
 
-const std::wstring EntityHorse::TEX_FOLDER = L"mob/horse/";
+const std::string EntityHorse::TEX_FOLDER = "mob/horse/";
 
 const EntitySelector* EntityHorse::PARENT_HORSE_SELECTOR =
     new HorseEntitySelector();
@@ -64,36 +65,36 @@ Attribute* EntityHorse::JUMP_STRENGTH =
     (new RangedAttribute(eAttributeId_HORSE_JUMPSTRENGTH, .7, 0, 2.0))
         ->setSyncable(true);
 
-std::wstring EntityHorse::ARMOR_TEXTURES[EntityHorse::ARMORS] = {
-    L"", L"armor/horse_armor_iron.png", L"armor/horse_armor_gold.png",
-    L"armor/horse_armor_diamond.png"};
+std::string EntityHorse::ARMOR_TEXTURES[EntityHorse::ARMORS] = {
+    "", "armor/horse_armor_iron.png", "armor/horse_armor_gold.png",
+    "armor/horse_armor_diamond.png"};
 int EntityHorse::ARMOR_TEXTURES_ID[EntityHorse::ARMORS] = {
     -1, TN_MOB_HORSE_ARMOR_IRON, TN_MOB_HORSE_ARMOR_GOLD,
     TN_MOB_HORSE_ARMOR_DIAMOND};
-std::wstring EntityHorse::ARMOR_HASHES[EntityHorse::ARMORS] = {L"", L"meo",
-                                                               L"goo", L"dio"};
+std::string EntityHorse::ARMOR_HASHES[EntityHorse::ARMORS] = {"", "meo",
+                                                               "goo", "dio"};
 int EntityHorse::ARMOR_PROTECTION[EntityHorse::ARMORS] = {0, 5, 7, 11};
 
-std::wstring EntityHorse::VARIANT_TEXTURES[EntityHorse::VARIANTS] = {
-    L"horse_white.png",    L"horse_creamy.png", L"horse_chestnut.png",
-    L"horse_brown.png",    L"horse_black.png",  L"horse_gray.png",
-    L"horse_darkbrown.png"};
+std::string EntityHorse::VARIANT_TEXTURES[EntityHorse::VARIANTS] = {
+    "horse_white.png",    "horse_creamy.png", "horse_chestnut.png",
+    "horse_brown.png",    "horse_black.png",  "horse_gray.png",
+    "horse_darkbrown.png"};
 int EntityHorse::VARIANT_TEXTURES_ID[EntityHorse::VARIANTS] = {
     TN_MOB_HORSE_WHITE,    TN_MOB_HORSE_CREAMY, TN_MOB_HORSE_CHESTNUT,
     TN_MOB_HORSE_BROWN,    TN_MOB_HORSE_BLACK,  TN_MOB_HORSE_GRAY,
     TN_MOB_HORSE_DARKBROWN};
 
-std::wstring EntityHorse::VARIANT_HASHES[EntityHorse::VARIANTS] = {
-    L"hwh", L"hcr", L"hch", L"hbr", L"hbl", L"hgr", L"hdb"};
+std::string EntityHorse::VARIANT_HASHES[EntityHorse::VARIANTS] = {
+    "hwh", "hcr", "hch", "hbr", "hbl", "hgr", "hdb"};
 
-std::wstring EntityHorse::MARKING_TEXTURES[EntityHorse::MARKINGS] = {
-    L"", L"horse_markings_white.png", L"horse_markings_whitefield.png",
-    L"horse_markings_whitedots.png", L"horse_markings_blackdots.png"};
+std::string EntityHorse::MARKING_TEXTURES[EntityHorse::MARKINGS] = {
+    "", "horse_markings_white.png", "horse_markings_whitefield.png",
+    "horse_markings_whitedots.png", "horse_markings_blackdots.png"};
 int EntityHorse::MARKING_TEXTURES_ID[EntityHorse::MARKINGS] = {
     -1, TN_MOB_HORSE_MARKINGS_WHITE, TN_MOB_HORSE_MARKINGS_WHITEFIELD,
     TN_MOB_HORSE_MARKINGS_WHITEDOTS, TN_MOB_HORSE_MARKINGS_BLACKDOTS};
-std::wstring EntityHorse::MARKING_HASHES[EntityHorse::MARKINGS] = {
-    L"", L"wo_", L"wmo", L"wdo", L"bdo"};
+std::string EntityHorse::MARKING_HASHES[EntityHorse::MARKINGS] = {
+    "", "wo_", "wmo", "wdo", "bdo"};
 
 bool HorseEntitySelector::matches(std::shared_ptr<Entity> entity) const {
     return entity->instanceof(eTYPE_HORSE) &&
@@ -123,7 +124,7 @@ EntityHorse::EntityHorse(Level* level) : Animal(level) {
     mouthAnim = mouthAnimO = 0.0f;
     gallopSoundCounter = 0;
 
-    layerTextureHashName = L"";
+    layerTextureHashName = "";
 
     layerTextureLayers = std::vector<int>(3);
     for (unsigned int i = 0; i < 3; ++i) {
@@ -152,7 +153,7 @@ void EntityHorse::defineSynchedData() {
     entityData->define(DATA_ID_HORSE_FLAGS, 0);
     entityData->define(DATA_ID_TYPE, (uint8_t)0);
     entityData->define(DATA_ID_TYPE_VARIANT, 0);
-    entityData->define(DATA_ID_OWNER_NAME, L"");
+    entityData->define(DATA_ID_OWNER_NAME, "");
     entityData->define(DATA_ID_ARMOR, 0);
 }
 
@@ -172,25 +173,25 @@ int EntityHorse::getVariant() {
     return entityData->getInteger(DATA_ID_TYPE_VARIANT);
 }
 
-std::wstring EntityHorse::getAName() {
+std::string EntityHorse::getAName() {
     if (hasCustomName()) return getCustomName();
 #ifdef _DEBUG
     int type = getType();
     switch (type) {
         default:
         case TYPE_HORSE:
-            return L"entity.horse.name";
+            return "entity.horse.name";
         case TYPE_DONKEY:
-            return L"entity.donkey.name";
+            return "entity.donkey.name";
         case TYPE_MULE:
-            return L"entity.mule.name";
+            return "entity.mule.name";
         case TYPE_SKELETON:
-            return L"entity.skeletonhorse.name";
+            return "entity.skeletonhorse.name";
         case TYPE_UNDEAD:
-            return L"entity.zombiehorse.name";
+            return "entity.zombiehorse.name";
     }
 #else
-    return L"";
+    return "";
 #endif
 }
 
@@ -213,11 +214,11 @@ bool EntityHorse::isTamed() { return getHorseFlag(FLAG_TAME); }
 
 bool EntityHorse::isRidable() { return isAdult(); }
 
-std::wstring EntityHorse::getOwnerName() {
+std::string EntityHorse::getOwnerName() {
     return entityData->getString(DATA_ID_OWNER_NAME);
 }
 
-void EntityHorse::setOwner(const std::wstring& par1Str) {
+void EntityHorse::setOwner(const std::string& par1Str) {
     entityData->set(DATA_ID_OWNER_NAME, par1Str);
 }
 
@@ -402,7 +403,7 @@ int EntityHorse::getInventorySize() {
 void EntityHorse::createInventory() {
     std::shared_ptr<AnimalChest> old = inventory;
     inventory = std::shared_ptr<AnimalChest>(
-        new AnimalChest(L"HorseChest", getInventorySize()));
+        new AnimalChest("HorseChest", getInventorySize()));
     inventory->setCustomName(getAName());
     if (old != nullptr) {
         old->removeListener(this);
@@ -625,10 +626,10 @@ bool EntityHorse::hasLayeredTextures() {
     return getType() == TYPE_HORSE || getArmorType() > 0;
 }
 
-void EntityHorse::clearLayeredTextureInfo() { layerTextureHashName = L""; }
+void EntityHorse::clearLayeredTextureInfo() { layerTextureHashName = ""; }
 
 void EntityHorse::rebuildLayeredTextureInfo() {
-    layerTextureHashName = L"horse/";
+    layerTextureHashName = "horse/";
     layerTextureLayers[0] = -1;
     layerTextureLayers[1] = -1;
     layerTextureLayers[2] = -1;
@@ -650,7 +651,7 @@ void EntityHorse::rebuildLayeredTextureInfo() {
         }
     } else {
         layerTextureLayers[0] = -1;
-        layerTextureHashName += L"_" + toWString<int>(type) + L"_";
+        layerTextureHashName += "_" + toWString<int>(type) + "_";
         armorIndex = 1;
     }
 
@@ -659,7 +660,7 @@ void EntityHorse::rebuildLayeredTextureInfo() {
     layerTextureHashName += ARMOR_HASHES[armor];
 }
 
-std::wstring EntityHorse::getLayeredTextureHashName() {
+std::string EntityHorse::getLayeredTextureHashName() {
     if (layerTextureHashName.empty()) {
         rebuildLayeredTextureInfo();
     }
@@ -840,7 +841,7 @@ bool EntityHorse::mobInteract(std::shared_ptr<Player> player) {
         }
         doPlayerRide(player);
 
-        app.DebugPrintf(
+        Log::info(
             "<EntityHorse::mobInteract> Horse speed: %f\n",
             (float)(getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)
                         ->getValue()));
@@ -1194,15 +1195,15 @@ void EntityHorse::travel(float xa, float ya) {
 void EntityHorse::addAdditonalSaveData(CompoundTag* tag) {
     Animal::addAdditonalSaveData(tag);
 
-    tag->putBoolean(L"EatingHaystack", isEating());
-    tag->putBoolean(L"ChestedHorse", isChestedHorse());
-    tag->putBoolean(L"HasReproduced", getHasReproduced());
-    tag->putBoolean(L"Bred", isBred());
-    tag->putInt(L"Type", getType());
-    tag->putInt(L"Variant", getVariant());
-    tag->putInt(L"Temper", getTemper());
-    tag->putBoolean(L"Tame", isTamed());
-    tag->putString(L"OwnerName", getOwnerName());
+    tag->putBoolean("EatingHaystack", isEating());
+    tag->putBoolean("ChestedHorse", isChestedHorse());
+    tag->putBoolean("HasReproduced", getHasReproduced());
+    tag->putBoolean("Bred", isBred());
+    tag->putInt("Type", getType());
+    tag->putInt("Variant", getVariant());
+    tag->putInt("Temper", getTemper());
+    tag->putBoolean("Tame", isTamed());
+    tag->putString("OwnerName", getOwnerName());
 
     if (isChestedHorse()) {
         ListTag<CompoundTag>* listTag = new ListTag<CompoundTag>();
@@ -1213,37 +1214,37 @@ void EntityHorse::addAdditonalSaveData(CompoundTag* tag) {
             if (stack != nullptr) {
                 CompoundTag* compoundTag = new CompoundTag();
 
-                compoundTag->putByte(L"Slot", (uint8_t)i);
+                compoundTag->putByte("Slot", (uint8_t)i);
 
                 stack->save(compoundTag);
                 listTag->add(compoundTag);
             }
         }
-        tag->put(L"Items", listTag);
+        tag->put("Items", listTag);
     }
 
     if (inventory->getItem(INV_SLOT_ARMOR) != nullptr) {
-        tag->put(L"ArmorItem", inventory->getItem(INV_SLOT_ARMOR)
-                                   ->save(new CompoundTag(L"ArmorItem")));
+        tag->put("ArmorItem", inventory->getItem(INV_SLOT_ARMOR)
+                                   ->save(new CompoundTag("ArmorItem")));
     }
     if (inventory->getItem(INV_SLOT_SADDLE) != nullptr) {
-        tag->put(L"SaddleItem", inventory->getItem(INV_SLOT_SADDLE)
-                                    ->save(new CompoundTag(L"SaddleItem")));
+        tag->put("SaddleItem", inventory->getItem(INV_SLOT_SADDLE)
+                                    ->save(new CompoundTag("SaddleItem")));
     }
 }
 
 void EntityHorse::readAdditionalSaveData(CompoundTag* tag) {
     Animal::readAdditionalSaveData(tag);
-    setEating(tag->getBoolean(L"EatingHaystack"));
-    setBred(tag->getBoolean(L"Bred"));
-    setChestedHorse(tag->getBoolean(L"ChestedHorse"));
-    setReproduced(tag->getBoolean(L"HasReproduced"));
-    setType(tag->getInt(L"Type"));
-    setVariant(tag->getInt(L"Variant"));
-    setTemper(tag->getInt(L"Temper"));
-    setTamed(tag->getBoolean(L"Tame"));
-    if (tag->contains(L"OwnerName")) {
-        setOwner(tag->getString(L"OwnerName"));
+    setEating(tag->getBoolean("EatingHaystack"));
+    setBred(tag->getBoolean("Bred"));
+    setChestedHorse(tag->getBoolean("ChestedHorse"));
+    setReproduced(tag->getBoolean("HasReproduced"));
+    setType(tag->getInt("Type"));
+    setVariant(tag->getInt("Variant"));
+    setTemper(tag->getInt("Temper"));
+    setTamed(tag->getBoolean("Tame"));
+    if (tag->contains("OwnerName")) {
+        setOwner(tag->getString("OwnerName"));
     }
 
     // 4J: This is for handling old save data, not needed on console
@@ -1258,12 +1259,12 @@ void EntityHorse::readAdditionalSaveData(CompoundTag* tag) {
 
     if (isChestedHorse()) {
         ListTag<CompoundTag>* nbttaglist =
-            (ListTag<CompoundTag>*)tag->getList(L"Items");
+            (ListTag<CompoundTag>*)tag->getList("Items");
         createInventory();
 
         for (int i = 0; i < nbttaglist->size(); i++) {
             CompoundTag* compoundTag = nbttaglist->get(i);
-            int slot = compoundTag->getByte(L"Slot") & 0xFF;
+            int slot = compoundTag->getByte("Slot") & 0xFF;
 
             if (slot >= INV_BASE_COUNT &&
                 slot < inventory->getContainerSize()) {
@@ -1272,21 +1273,21 @@ void EntityHorse::readAdditionalSaveData(CompoundTag* tag) {
         }
     }
 
-    if (tag->contains(L"ArmorItem")) {
+    if (tag->contains("ArmorItem")) {
         std::shared_ptr<ItemInstance> armor =
-            ItemInstance::fromTag(tag->getCompound(L"ArmorItem"));
+            ItemInstance::fromTag(tag->getCompound("ArmorItem"));
         if (armor != nullptr && isHorseArmor(armor->id)) {
             inventory->setItem(INV_SLOT_ARMOR, armor);
         }
     }
 
-    if (tag->contains(L"SaddleItem")) {
+    if (tag->contains("SaddleItem")) {
         std::shared_ptr<ItemInstance> saddleItem =
-            ItemInstance::fromTag(tag->getCompound(L"SaddleItem"));
+            ItemInstance::fromTag(tag->getCompound("SaddleItem"));
         if (saddleItem != nullptr && saddleItem->id == Item::saddle_Id) {
             inventory->setItem(INV_SLOT_SADDLE, saddleItem);
         }
-    } else if (tag->getBoolean(L"Saddle")) {
+    } else if (tag->getBoolean("Saddle")) {
         inventory->setItem(INV_SLOT_SADDLE,
                            std::make_shared<ItemInstance>(Item::saddle));
     }
@@ -1530,7 +1531,7 @@ double EntityHorse::generateRandomSpeed() {
     double speed = (0.45f + random->nextDouble() * .3 +
                     random->nextDouble() * .3 + random->nextDouble() * .3) *
                    0.25f;
-    app.DebugPrintf("<EntityHorse::generateRandomSpeed> Speed: %f\n", speed);
+    Log::info("<EntityHorse::generateRandomSpeed> Speed: %f\n", speed);
     return speed;
 }
 

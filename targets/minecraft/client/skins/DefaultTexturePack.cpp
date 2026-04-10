@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 
 #include "DefaultTexturePack.h"
 
@@ -8,7 +9,7 @@
 #include "minecraft/client/skins/AbstractTexturePack.h"
 
 DefaultTexturePack::DefaultTexturePack()
-    : AbstractTexturePack(0, nullptr, L"Minecraft", nullptr) {
+    : AbstractTexturePack(0, nullptr, "Minecraft", nullptr) {
     // 4J Stu - These calls need to be in the most derived version of the class
     loadIcon();
     loadName();  // 4J-PB - added so the PS3 can have localised texture names'
@@ -17,20 +18,20 @@ DefaultTexturePack::DefaultTexturePack()
 }
 
 void DefaultTexturePack::loadIcon() {
-    if (app.hasArchiveFile(L"Graphics\\TexturePackIcon.png")) {
+    if (gameServices().hasArchiveFile("Graphics\\TexturePackIcon.png")) {
         std::vector<uint8_t> ba =
-            app.getArchiveFile(L"Graphics\\TexturePackIcon.png");
+            gameServices().getArchiveFile("Graphics\\TexturePackIcon.png");
         m_iconData = ba.data();
         m_iconSize = static_cast<std::uint32_t>(ba.size());
     }
 }
 
 void DefaultTexturePack::loadDescription() {
-    desc1 = L"LOCALISE ME: The default look of Minecraft";
+    desc1 = "LOCALISE ME: The default look of Minecraft";
 }
-void DefaultTexturePack::loadName() { texname = L"Minecraft"; }
+void DefaultTexturePack::loadName() { texname = "Minecraft"; }
 
-bool DefaultTexturePack::hasFile(const std::wstring& name) {
+bool DefaultTexturePack::hasFile(const std::string& name) {
     //	return DefaultTexturePack::class->getResourceAsStream(name) != null;
     return true;
 }
@@ -38,11 +39,11 @@ bool DefaultTexturePack::hasFile(const std::wstring& name) {
 bool DefaultTexturePack::isTerrainUpdateCompatible() { return true; }
 
 InputStream* DefaultTexturePack::getResourceImplementation(
-    const std::wstring& name)  // throws FileNotFoundException
+    const std::string& name)  // throws FileNotFoundException
 {
-    std::wstring wDrive = L"";
+    std::string wDrive = "";
     // Make the content package point to to the UPDATE: drive is needed
-    wDrive = L"Common\\res\\TitleUpdate\\res";
+    wDrive = "Common\\res\\TitleUpdate\\res";
 
     InputStream* resource = InputStream::getResourceAsStream(wDrive + name);
     // InputStream *stream =

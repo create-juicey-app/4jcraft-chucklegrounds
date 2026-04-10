@@ -3,14 +3,14 @@
 
 class EndTag : public Tag {
 public:
-    EndTag() : Tag(L"") {}
-    EndTag(const std::wstring& name) : Tag(name) {}
+    EndTag() : Tag("") {}
+    EndTag(const std::string& name) : Tag(name) {}
 
     void load(DataInput* dis, int tagDepth) {};
     void write(DataOutput* dos) {};
 
     uint8_t getId() { return TAG_End; }
-    std::wstring toString() { return std::wstring(L"END"); }
+    std::string toString() { return std::string("END"); }
 
     Tag* copy() { return new EndTag(); }
 

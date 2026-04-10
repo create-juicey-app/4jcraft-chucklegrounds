@@ -11,7 +11,7 @@
 
 class ChunkSource;
 
-const std::wstring LargeFeature::STRONGHOLD = L"StrongHold";
+const std::string LargeFeature::STRONGHOLD = "StrongHold";
 
 LargeFeature::LargeFeature() {
     radius = 8;

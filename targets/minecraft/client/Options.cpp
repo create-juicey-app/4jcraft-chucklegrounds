@@ -1,9 +1,9 @@
+#include "minecraft/util/Log.h"
 #include "Options.h"
 
 #include "KeyMapping.h"
-#include "app/common/src/Audio/SoundEngine.h"
+#include "app/common/Audio/SoundEngine.h"
 #include "app/linux/LinuxGame.h"
-#include "app/include/stubs.h"
 #include "util/StringHelpers.h"
 #include "java/File.h"
 #include "java/InputOutputStream/BufferedReader.h"
@@ -16,27 +16,28 @@
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/locale/I18n.h"
 #include "minecraft/locale/Language.h"
+#include "platform/stubs.h"
 
 // 4J - the Option sub-class used to be an java enumerated type, trying to
 // emulate that functionality here
 const Options::Option Options::Option::options[17] = {
-    Options::Option(L"options.music", true, false),
-    Options::Option(L"options.sound", true, false),
-    Options::Option(L"options.invertMouse", false, true),
-    Options::Option(L"options.sensitivity", true, false),
-    Options::Option(L"options.renderDistance", false, false),
-    Options::Option(L"options.viewBobbing", false, true),
-    Options::Option(L"options.anaglyph", false, true),
-    Options::Option(L"options.advancedOpengl", false, true),
-    Options::Option(L"options.framerateLimit", false, false),
-    Options::Option(L"options.difficulty", false, false),
-    Options::Option(L"options.graphics", false, false),
-    Options::Option(L"options.ao", false, true),
-    Options::Option(L"options.guiScale", false, false),
-    Options::Option(L"options.fov", true, false),
-    Options::Option(L"options.gamma", true, false),
-    Options::Option(L"options.renderClouds", false, true),
-    Options::Option(L"options.particles", false, false),
+    Options::Option("options.music", true, false),
+    Options::Option("options.sound", true, false),
+    Options::Option("options.invertMouse", false, true),
+    Options::Option("options.sensitivity", true, false),
+    Options::Option("options.renderDistance", false, false),
+    Options::Option("options.viewBobbing", false, true),
+    Options::Option("options.anaglyph", false, true),
+    Options::Option("options.advancedOpengl", false, true),
+    Options::Option("options.framerateLimit", false, false),
+    Options::Option("options.difficulty", false, false),
+    Options::Option("options.graphics", false, false),
+    Options::Option("options.ao", false, true),
+    Options::Option("options.guiScale", false, false),
+    Options::Option("options.fov", true, false),
+    Options::Option("options.gamma", true, false),
+    Options::Option("options.renderClouds", false, true),
+    Options::Option("options.particles", false, false),
 };
 
 const Options::Option* Options::Option::MUSIC = &Options::Option::options[0];
@@ -71,7 +72,7 @@ const Options::Option* Options::Option::PARTICLES =
 
 const Options::Option* Options::Option::getItem(int id) { return &options[id]; }
 
-Options::Option::Option(const std::wstring& captionId, bool hasProgress,
+Options::Option::Option(const std::string& captionId, bool hasProgress,
                         bool isBoolean)
     : _isProgress(hasProgress), _isBoolean(isBoolean), captionId(captionId) {}
 
@@ -81,30 +82,30 @@ bool Options::Option::isBoolean() const { return _isBoolean; }
 
 int Options::Option::getId() const { return (int)(this - options); }
 
-std::wstring Options::Option::getCaptionId() const { return captionId; }
+std::string Options::Option::getCaptionId() const { return captionId; }
 
-const std::wstring Options::RENDER_DISTANCE_NAMES[] = {
-    L"options.renderDistance.far", L"options.renderDistance.normal",
-    L"options.renderDistance.short", L"options.renderDistance.tiny"};
-const std::wstring Options::DIFFICULTY_NAMES[] = {
-    L"options.difficulty.peaceful", L"options.difficulty.easy",
-    L"options.difficulty.normal", L"options.difficulty.hard"};
-const std::wstring Options::GUI_SCALE[] = {
-    L"options.guiScale.auto", L"options.guiScale.small",
-    L"options.guiScale.normal", L"options.guiScale.large"};
+const std::string Options::RENDER_DISTANCE_NAMES[] = {
+    "options.renderDistance.far", "options.renderDistance.normal",
+    "options.renderDistance.short", "options.renderDistance.tiny"};
+const std::string Options::DIFFICULTY_NAMES[] = {
+    "options.difficulty.peaceful", "options.difficulty.easy",
+    "options.difficulty.normal", "options.difficulty.hard"};
+const std::string Options::GUI_SCALE[] = {
+    "options.guiScale.auto", "options.guiScale.small",
+    "options.guiScale.normal", "options.guiScale.large"};
 
 #ifdef ENABLE_VSYNC
-const std::wstring Options::FRAMERATE_LIMITS[] = {
-    L"performance.max", L"performance.balanced", L"performance.powersaver"};
+const std::string Options::FRAMERATE_LIMITS[] = {
+    "performance.max", "performance.balanced", "performance.powersaver"};
 #else
-const std::wstring Options::FRAMERATE_LIMITS[] = {
-    L"performance.max", L"performance.balanced", L"performance.powersaver",
-    L"performance.unlimited"};
+const std::string Options::FRAMERATE_LIMITS[] = {
+    "performance.max", "performance.balanced", "performance.powersaver",
+    "performance.unlimited"};
 #endif
 
-const std::wstring Options::PARTICLES[] = {L"options.particles.all",
-                                           L"options.particles.decreased",
-                                           L"options.particles.minimal"};
+const std::string Options::PARTICLES[] = {"options.particles.all",
+                                           "options.particles.decreased",
+                                           "options.particles.minimal"};
 
 // 4J added
 void Options::init() {
@@ -126,22 +127,22 @@ void Options::init() {
     fancyGraphics = true;
     ambientOcclusion = true;
     renderClouds = true;
-    skin = L"Default";
+    skin = "Default";
 
-    keyUp = new KeyMapping(L"key.forward", Keyboard::KEY_W);
-    keyLeft = new KeyMapping(L"key.left", Keyboard::KEY_A);
-    keyDown = new KeyMapping(L"key.back", Keyboard::KEY_S);
-    keyRight = new KeyMapping(L"key.right", Keyboard::KEY_D);
-    keyJump = new KeyMapping(L"key.jump", Keyboard::KEY_SPACE);
-    keyBuild = new KeyMapping(L"key.inventory", Keyboard::KEY_E);
-    keyDrop = new KeyMapping(L"key.drop", Keyboard::KEY_Q);
-    keyChat = new KeyMapping(L"key.chat", Keyboard::KEY_T);
-    keySneak = new KeyMapping(L"key.sneak", Keyboard::KEY_LSHIFT);
-    keyAttack = new KeyMapping(L"key.attack", -100 + 0);
-    keyUse = new KeyMapping(L"key.use", -100 + 1);
-    keyPlayerList = new KeyMapping(L"key.playerlist", Keyboard::KEY_TAB);
-    keyPickItem = new KeyMapping(L"key.pickItem", -100 + 2);
-    keyToggleFog = new KeyMapping(L"key.fog", Keyboard::KEY_F);
+    keyUp = new KeyMapping("key.forward", Keyboard::KEY_W);
+    keyLeft = new KeyMapping("key.left", Keyboard::KEY_A);
+    keyDown = new KeyMapping("key.back", Keyboard::KEY_S);
+    keyRight = new KeyMapping("key.right", Keyboard::KEY_D);
+    keyJump = new KeyMapping("key.jump", Keyboard::KEY_SPACE);
+    keyBuild = new KeyMapping("key.inventory", Keyboard::KEY_E);
+    keyDrop = new KeyMapping("key.drop", Keyboard::KEY_Q);
+    keyChat = new KeyMapping("key.chat", Keyboard::KEY_T);
+    keySneak = new KeyMapping("key.sneak", Keyboard::KEY_LSHIFT);
+    keyAttack = new KeyMapping("key.attack", -100 + 0);
+    keyUse = new KeyMapping("key.use", -100 + 1);
+    keyPlayerList = new KeyMapping("key.playerlist", Keyboard::KEY_TAB);
+    keyPickItem = new KeyMapping("key.pickItem", -100 + 2);
+    keyToggleFog = new KeyMapping("key.fog", Keyboard::KEY_F);
 
     keyMappings[0] = keyAttack;
     keyMappings[1] = keyUse;
@@ -165,7 +166,7 @@ void Options::init() {
     hideGui = false;
     thirdPersonView = false;
     renderDebug = false;
-    lastMpIp = L"";
+    lastMpIp = "";
 
     isFlying = false;
     smoothCamera = false;
@@ -181,20 +182,20 @@ void Options::init() {
 Options::Options(Minecraft* minecraft, File workingDirectory) {
     init();
     this->minecraft = minecraft;
-    optionsFile = File(workingDirectory, L"options.txt");
+    optionsFile = File(workingDirectory, "options.txt");
 }
 
 Options::Options() { init(); }
 
-std::wstring Options::getKeyDescription(int i) {
+std::string Options::getKeyDescription(int i) {
     Language* language = Language::getInstance();
     return language->getElement(keyMappings[i]->name);
 }
 
-std::wstring Options::getKeyMessage(int i) {
+std::string Options::getKeyMessage(int i) {
     int key = keyMappings[i]->key;
     if (key < 0) {
-        return I18n::get(L"key.mouseButton", key + 101);
+        return I18n::get("key.mouseButton", key + 101);
     } else {
         return Keyboard::getKeyName(keyMappings[i]->key);
     }
@@ -256,7 +257,7 @@ void Options::toggle(const Options::Option* option, int dir) {
     // if (option ==  Option::DIFFICULTY) difficulty = (difficulty + dir) & 3;
     if (option == Option::DIFFICULTY) difficulty = (dir) & 3;
 
-    app.DebugPrintf("Option::DIFFICULTY = %d", difficulty);
+    Log::info("Option::DIFFICULTY = %d", difficulty);
 
     if (option == Option::GRAPHICS) {
         fancyGraphics = !fancyGraphics;
@@ -294,11 +295,11 @@ bool Options::getBooleanValue(const Options::Option* item) {
     return false;
 }
 
-std::wstring Options::getMessage(const Options::Option* item) {
+std::string Options::getMessage(const Options::Option* item) {
     // 4J TODO, should these std::wstrings append rather than add?
 
     Language* language = Language::getInstance();
-    std::wstring caption = language->getElement(item->getCaptionId()) + L": ";
+    std::string caption = language->getElement(item->getCaptionId()) + ": ";
 
     if (item->isProgress()) {
         float progressValue = getProgressValue(item);
@@ -306,42 +307,42 @@ std::wstring Options::getMessage(const Options::Option* item) {
         if (item == Option::SENSITIVITY) {
             if (progressValue == 0) {
                 return caption +
-                       language->getElement(L"options.sensitivity.min");
+                       language->getElement("options.sensitivity.min");
             }
             if (progressValue == 1) {
                 return caption +
-                       language->getElement(L"options.sensitivity.max");
+                       language->getElement("options.sensitivity.max");
             }
-            return caption + toWString<int>((int)(progressValue * 200)) + L"%";
+            return caption + toWString<int>((int)(progressValue * 200)) + "%";
         } else if (item == Option::FOV) {
             if (progressValue == 0) {
-                return caption + language->getElement(L"options.fov.min");
+                return caption + language->getElement("options.fov.min");
             }
             if (progressValue == 1) {
-                return caption + language->getElement(L"options.fov.max");
+                return caption + language->getElement("options.fov.max");
             }
             return caption + toWString<int>((int)(70 + progressValue * 40));
         } else if (item == Option::GAMMA) {
             if (progressValue == 0) {
-                return caption + language->getElement(L"options.gamma.min");
+                return caption + language->getElement("options.gamma.min");
             }
             if (progressValue == 1) {
-                return caption + language->getElement(L"options.gamma.max");
+                return caption + language->getElement("options.gamma.max");
             }
-            return caption + L"+" + toWString<int>((int)(progressValue * 100)) +
-                   L"%";
+            return caption + "+" + toWString<int>((int)(progressValue * 100)) +
+                   "%";
         } else {
             if (progressValue == 0) {
-                return caption + language->getElement(L"options.off");
+                return caption + language->getElement("options.off");
             }
-            return caption + toWString<int>((int)(progressValue * 100)) + L"%";
+            return caption + toWString<int>((int)(progressValue * 100)) + "%";
         }
     } else if (item->isBoolean()) {
         bool booleanValue = getBooleanValue(item);
         if (booleanValue) {
-            return caption + language->getElement(L"options.on");
+            return caption + language->getElement("options.on");
         }
-        return caption + language->getElement(L"options.off");
+        return caption + language->getElement("options.off");
     } else if (item == Option::RENDER_DISTANCE) {
         return caption +
                language->getElement(RENDER_DISTANCE_NAMES[viewDistance]);
@@ -355,9 +356,9 @@ std::wstring Options::getMessage(const Options::Option* item) {
         return caption + I18n::get(FRAMERATE_LIMITS[framerateLimit]);
     } else if (item == Option::GRAPHICS) {
         if (fancyGraphics) {
-            return caption + language->getElement(L"options.graphics.fancy");
+            return caption + language->getElement("options.graphics.fancy");
         }
-        return caption + language->getElement(L"options.graphics.fast");
+        return caption + language->getElement("options.graphics.fast");
     }
 
     return caption;
@@ -371,46 +372,46 @@ void Options::load() {
     BufferedReader* br = new BufferedReader(
         new InputStreamReader(new FileInputStream(optionsFile)));
 
-    std::wstring line = L"";
+    std::string line = "";
     while ((line = br->readLine()) !=
-           L"")  // 4J - was check against nullptr - do we need to distinguish
+           "")  // 4J - was check against nullptr - do we need to distinguish
                  // between empty lines and a fail here?
     {
         // 4J - removed try/catch
         //            try {
-        std::wstring cmds[2];
-        int splitpos = (int)line.find(L":");
-        if (splitpos == std::wstring::npos) {
+        std::string cmds[2];
+        int splitpos = (int)line.find(":");
+        if (splitpos == std::string::npos) {
             cmds[0] = line;
-            cmds[1] = L"";
+            cmds[1] = "";
         } else {
             cmds[0] = line.substr(0, splitpos);
             cmds[1] = line.substr(splitpos, line.length() - splitpos);
         }
 
-        if (cmds[0] == L"music") music = readFloat(cmds[1]);
-        if (cmds[0] == L"sound") sound = readFloat(cmds[1]);
-        if (cmds[0] == L"mouseSensitivity") sensitivity = readFloat(cmds[1]);
-        if (cmds[0] == L"fov") fov = readFloat(cmds[1]);
-        if (cmds[0] == L"gamma") gamma = readFloat(cmds[1]);
-        if (cmds[0] == L"invertYMouse") invertYMouse = cmds[1] == L"true";
-        if (cmds[0] == L"viewDistance")
+        if (cmds[0] == "music") music = readFloat(cmds[1]);
+        if (cmds[0] == "sound") sound = readFloat(cmds[1]);
+        if (cmds[0] == "mouseSensitivity") sensitivity = readFloat(cmds[1]);
+        if (cmds[0] == "fov") fov = readFloat(cmds[1]);
+        if (cmds[0] == "gamma") gamma = readFloat(cmds[1]);
+        if (cmds[0] == "invertYMouse") invertYMouse = cmds[1] == "true";
+        if (cmds[0] == "viewDistance")
             viewDistance = fromWString<int>(cmds[1]);
-        if (cmds[0] == L"guiScale") guiScale = fromWString<int>(cmds[1]);
-        if (cmds[0] == L"particles") particles = fromWString<int>(cmds[1]);
-        if (cmds[0] == L"bobView") bobView = cmds[1] == L"true";
-        if (cmds[0] == L"anaglyph3d") anaglyph3d = cmds[1] == L"true";
-        if (cmds[0] == L"advancedOpengl") advancedOpengl = cmds[1] == L"true";
-        if (cmds[0] == L"fpsLimit") framerateLimit = fromWString<int>(cmds[1]);
-        if (cmds[0] == L"difficulty") difficulty = fromWString<int>(cmds[1]);
-        if (cmds[0] == L"fancyGraphics") fancyGraphics = cmds[1] == L"true";
-        if (cmds[0] == L"ao") ambientOcclusion = cmds[1] == L"true";
-        if (cmds[0] == L"clouds") renderClouds = cmds[1] == L"true";
-        if (cmds[0] == L"skin") skin = cmds[1];
-        if (cmds[0] == L"lastServer") lastMpIp = cmds[1];
+        if (cmds[0] == "guiScale") guiScale = fromWString<int>(cmds[1]);
+        if (cmds[0] == "particles") particles = fromWString<int>(cmds[1]);
+        if (cmds[0] == "bobView") bobView = cmds[1] == "true";
+        if (cmds[0] == "anaglyph3d") anaglyph3d = cmds[1] == "true";
+        if (cmds[0] == "advancedOpengl") advancedOpengl = cmds[1] == "true";
+        if (cmds[0] == "fpsLimit") framerateLimit = fromWString<int>(cmds[1]);
+        if (cmds[0] == "difficulty") difficulty = fromWString<int>(cmds[1]);
+        if (cmds[0] == "fancyGraphics") fancyGraphics = cmds[1] == "true";
+        if (cmds[0] == "ao") ambientOcclusion = cmds[1] == "true";
+        if (cmds[0] == "clouds") renderClouds = cmds[1] == "true";
+        if (cmds[0] == "skin") skin = cmds[1];
+        if (cmds[0] == "lastServer") lastMpIp = cmds[1];
 
         for (int i = 0; i < keyMappings_length; i++) {
-            if (cmds[0] == (L"key_" + keyMappings[i]->name)) {
+            if (cmds[0] == ("key_" + keyMappings[i]->name)) {
                 keyMappings[i]->key = fromWString<int>(cmds[1]);
             }
         }
@@ -426,9 +427,9 @@ void Options::load() {
     //    }
 }
 
-float Options::readFloat(std::wstring string) {
-    if (string == L"true") return 1;
-    if (string == L"false") return 0;
+float Options::readFloat(std::string string) {
+    if (string == "true") return 1;
+    if (string == "false") return 0;
     return fromWString<float>(string);
 }
 
@@ -442,33 +443,33 @@ void Options::save() {
     DataOutputStream dos = DataOutputStream(&fos);
     //        PrintWriter pw = new PrintWriter(new FileWriter(optionsFile));
 
-    dos.writeChars(L"music:" + toWString<float>(music) + L"\n");
-    dos.writeChars(L"sound:" + toWString<float>(sound) + L"\n");
-    dos.writeChars(L"invertYMouse:" +
-                   std::wstring(invertYMouse ? L"true" : L"false") + L"\n");
-    dos.writeChars(L"mouseSensitivity:" + toWString<float>(sensitivity));
-    dos.writeChars(L"fov:" + toWString<float>(fov));
-    dos.writeChars(L"gamma:" + toWString<float>(gamma));
-    dos.writeChars(L"viewDistance:" + toWString<int>(viewDistance));
-    dos.writeChars(L"guiScale:" + toWString<int>(guiScale));
-    dos.writeChars(L"particles:" + toWString<int>(particles));
-    dos.writeChars(L"bobView:" + std::wstring(bobView ? L"true" : L"false"));
-    dos.writeChars(L"anaglyph3d:" +
-                   std::wstring(anaglyph3d ? L"true" : L"false"));
-    dos.writeChars(L"advancedOpengl:" +
-                   std::wstring(advancedOpengl ? L"true" : L"false"));
-    dos.writeChars(L"fpsLimit:" + toWString<int>(framerateLimit));
-    dos.writeChars(L"difficulty:" + toWString<int>(difficulty));
-    dos.writeChars(L"fancyGraphics:" +
-                   std::wstring(fancyGraphics ? L"true" : L"false"));
-    dos.writeChars(L"ao:" +
-                   std::wstring(ambientOcclusion ? L"true" : L"false"));
-    dos.writeChars(L"clouds:" + toWString<bool>(renderClouds));
-    dos.writeChars(L"skin:" + skin);
-    dos.writeChars(L"lastServer:" + lastMpIp);
+    dos.writeChars("music:" + toWString<float>(music) + "\n");
+    dos.writeChars("sound:" + toWString<float>(sound) + "\n");
+    dos.writeChars("invertYMouse:" +
+                   std::string(invertYMouse ? "true" : "false") + "\n");
+    dos.writeChars("mouseSensitivity:" + toWString<float>(sensitivity));
+    dos.writeChars("fov:" + toWString<float>(fov));
+    dos.writeChars("gamma:" + toWString<float>(gamma));
+    dos.writeChars("viewDistance:" + toWString<int>(viewDistance));
+    dos.writeChars("guiScale:" + toWString<int>(guiScale));
+    dos.writeChars("particles:" + toWString<int>(particles));
+    dos.writeChars("bobView:" + std::string(bobView ? "true" : "false"));
+    dos.writeChars("anaglyph3d:" +
+                   std::string(anaglyph3d ? "true" : "false"));
+    dos.writeChars("advancedOpengl:" +
+                   std::string(advancedOpengl ? "true" : "false"));
+    dos.writeChars("fpsLimit:" + toWString<int>(framerateLimit));
+    dos.writeChars("difficulty:" + toWString<int>(difficulty));
+    dos.writeChars("fancyGraphics:" +
+                   std::string(fancyGraphics ? "true" : "false"));
+    dos.writeChars("ao:" +
+                   std::string(ambientOcclusion ? "true" : "false"));
+    dos.writeChars("clouds:" + toWString<bool>(renderClouds));
+    dos.writeChars("skin:" + skin);
+    dos.writeChars("lastServer:" + lastMpIp);
 
     for (int i = 0; i < keyMappings_length; i++) {
-        dos.writeChars(L"key_" + keyMappings[i]->name + L":" +
+        dos.writeChars("key_" + keyMappings[i]->name + ":" +
                        toWString<int>(keyMappings[i]->key));
     }
 

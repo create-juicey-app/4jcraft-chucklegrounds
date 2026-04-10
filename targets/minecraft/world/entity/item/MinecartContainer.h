@@ -32,7 +32,7 @@ public:
     virtual void startOpen();
     virtual void stopOpen();
     virtual bool canPlaceItem(int slot, std::shared_ptr<ItemInstance> item);
-    virtual std::wstring getName();
+    virtual std::string getName();
     virtual int getMaxStackSize();
     virtual void changeDimension(int i);
     virtual void remove();
@@ -50,5 +50,5 @@ protected:
 public:
     // 4J Stu - For container
     virtual bool hasCustomName() { return Minecart::hasCustomName(); }
-    virtual std::wstring getCustomName() { return Minecart::getCustomName(); }
+    virtual std::string getCustomName() { return Minecart::getCustomName(); }
 };

@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "DispenserTileEntity.h"
 
 #include <stdint.h>
@@ -16,7 +17,7 @@
 DispenserTileEntity::DispenserTileEntity() : TileEntity() {
     items = std::vector<std::shared_ptr<ItemInstance>>(9);
     random = new Random();
-    name = L"";
+    name = "";
 }
 
 DispenserTileEntity::~DispenserTileEntity() { delete random; }
@@ -123,15 +124,15 @@ int DispenserTileEntity::addItem(std::shared_ptr<ItemInstance> item) {
     return -1;
 }
 
-std::wstring DispenserTileEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_TILE_DISPENSER);
+std::string DispenserTileEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_TILE_DISPENSER);
 }
 
-std::wstring DispenserTileEntity::getCustomName() {
-    return hasCustomName() ? name : L"";
+std::string DispenserTileEntity::getCustomName() {
+    return hasCustomName() ? name : "";
 }
 
-void DispenserTileEntity::setCustomName(const std::wstring& name) {
+void DispenserTileEntity::setCustomName(const std::string& name) {
     this->name = name;
 }
 
@@ -140,15 +141,15 @@ bool DispenserTileEntity::hasCustomName() { return !name.empty(); }
 void DispenserTileEntity::load(CompoundTag* base) {
     TileEntity::load(base);
     ListTag<CompoundTag>* inventoryList =
-        (ListTag<CompoundTag>*)base->getList(L"Items");
+        (ListTag<CompoundTag>*)base->getList("Items");
     items = std::vector<std::shared_ptr<ItemInstance>>(getContainerSize());
     for (int i = 0; i < inventoryList->size(); i++) {
         CompoundTag* tag = inventoryList->get(i);
-        unsigned int slot = tag->getByte(L"Slot") & 0xff;
+        unsigned int slot = tag->getByte("Slot") & 0xff;
         if (slot >= 0 && slot < items.size())
             items[slot] = ItemInstance::fromTag(tag);
     }
-    if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
+    if (base->contains("CustomName")) name = base->getString("CustomName");
 }
 
 void DispenserTileEntity::save(CompoundTag* base) {
@@ -158,13 +159,13 @@ void DispenserTileEntity::save(CompoundTag* base) {
     for (unsigned int i = 0; i < items.size(); i++) {
         if (items[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             items[i]->save(tag);
             listTag->add(tag);
         }
     }
-    base->put(L"Items", listTag);
-    if (hasCustomName()) base->putString(L"CustomName", name);
+    base->put("Items", listTag);
+    if (hasCustomName()) base->putString("CustomName", name);
 }
 
 int DispenserTileEntity::getMaxStackSize() {

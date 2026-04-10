@@ -1,6 +1,6 @@
 #include "Button.h"
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/renderer/Textures.h"
 #include "minecraft/client/resources/ResourceLocation.h"
@@ -10,16 +10,16 @@ class Minecraft;
 ResourceLocation GUI_GUI_LOCATION = ResourceLocation(TN_GUI_GUI);
 #endif
 
-Button::Button(int id, int x, int y, const std::wstring& msg) {
+Button::Button(int id, int x, int y, const std::string& msg) {
     init(id, x, y, 200, 20, msg);
 }
 
-Button::Button(int id, int x, int y, int w, int h, const std::wstring& msg) {
+Button::Button(int id, int x, int y, int w, int h, const std::string& msg) {
     init(id, x, y, w, h, msg);
 }
 
 // 4J - added
-void Button::init(int id, int x, int y, int w, int h, const std::wstring& msg) {
+void Button::init(int id, int x, int y, int w, int h, const std::string& msg) {
     active = true;
     visible = true;
 
@@ -48,7 +48,7 @@ void Button::render(Minecraft* minecraft, int xm, int ym) {
     Font* font = minecraft->font;
 
     // glBindTexture(GL_TEXTURE_2D, minecraft->textures->loadTexture(
-    //  TN_GUI_GUI));  // 4J was L"/gui/gui.png"
+    //  TN_GUI_GUI));  // 4J was "/gui/gui.png"
     minecraft->textures->bindTexture(&GUI_GUI_LOCATION);
     glColor4f(1, 1, 1, 1);
 

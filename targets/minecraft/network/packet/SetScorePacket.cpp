@@ -8,8 +8,8 @@
 #include "minecraft/world/scores/Score.h"
 
 SetScorePacket::SetScorePacket() {
-    owner = L"";
-    objectiveName = L"";
+    owner = "";
+    objectiveName = "";
     score = 0;
     method = 0;
 }
@@ -21,9 +21,9 @@ SetScorePacket::SetScorePacket(Score* score, int method) {
     this->method = method;
 }
 
-SetScorePacket::SetScorePacket(const std::wstring& owner) {
+SetScorePacket::SetScorePacket(const std::string& owner) {
     this->owner = owner;
-    objectiveName = L"";
+    objectiveName = "";
     score = 0;
     method = METHOD_REMOVE;
 }

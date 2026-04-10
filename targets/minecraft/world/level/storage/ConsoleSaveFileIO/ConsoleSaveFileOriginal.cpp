@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/ConsoleSaveFileOriginal.h"
 
 #include <assert.h>
@@ -13,9 +15,9 @@
 #include <vector>
 
 #include "platform/PlatformTypes.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/BuildVer/BuildVer.h"
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/BuildVer/BuildVer.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/compression.h"
@@ -31,8 +33,8 @@
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/ConsoleSavePath.h"
 #include "minecraft/world/level/storage/ConsoleSaveFileIO/FileHeader.h"
 #include "minecraft/world/level/storage/LevelData.h"
-#include "platform/IPlatformStorage.h"
-#include "platform/PlatformServices.h"
+#include "platform/storage/storage.h"
+#include "platform/fs/fs.h"
 
 #define RESERVE_ALLOCATION MEM_RESERVE
 #define COMMIT_ALLOCATION MEM_COMMIT
@@ -41,7 +43,7 @@ unsigned int ConsoleSaveFileOriginal::pagesCommitted = 0;
 void* ConsoleSaveFileOriginal::pvHeap = nullptr;
 
 ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(
-    const std::wstring& fileName, void* pvSaveData /*= nullptr*/,
+    const std::string& fileName, void* pvSaveData /*= nullptr*/,
     unsigned int initialFileSize /*= 0*/, bool forceCleanSave /*= false*/,
     ESavePlatform plat /*= SAVE_FILE_PLATFORM_LOCAL*/) {
     // One time initialise of static stuff required for our storage
@@ -66,7 +68,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(
 
     // Load a save from the game rules
     bool bLevelGenBaseSave = false;
-    LevelGenerationOptions* levelGen = app.getLevelGenerationOptions();
+    LevelGenerationOptions* levelGen = gameServices().getLevelGenerationOptions();
     if (pvSaveData == nullptr && levelGen != nullptr &&
         levelGen->requiresBaseSave()) {
         pvSaveData = levelGen->getBaseSaveData(fileSize);
@@ -89,7 +91,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(
     // pages committed should always be zero at this point.
     if (pagesCommitted != 0) {
 #ifndef _CONTENT_PACKAGE
-        __debugbreak();
+        assert(0);
 #endif
     }
 
@@ -101,7 +103,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(
     if (pvRet == nullptr) {
 #ifndef _CONTENT_PACKAGE
         // Out of physical memory
-        __debugbreak();
+        assert(0);
 #endif
     }
     pagesCommitted = pagesRequired;
@@ -115,7 +117,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(
         } else {
             unsigned int storageLength;
             PlatformStorage.GetSaveData(pvSaveMem, &storageLength);
-            app.DebugPrintf("Filesize - %d, Adjusted size - %d\n", fileSize,
+            Log::info("Filesize - %d, Adjusted size - %d\n", fileSize,
                             storageLength);
             fileSize = storageLength;
         }
@@ -129,7 +131,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(
             if (decompSize == 0) {
                 // 4J Stu - Saves created between 2/12/2011 and 7/12/2011
                 // will have this problem
-                app.DebugPrintf("Invalid save data format\n");
+                Log::info("Invalid save data format\n");
                 std::memset(pvSourceData, 0, fileSize);
                 // Clear the first 8 bytes that reference the header
                 header.WriteHeader(pvSourceData);
@@ -160,7 +162,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(
                                      COMMIT_ALLOCATION, PAGE_READWRITE);
                     if (pvRet == nullptr) {
                         // Out of physical memory
-                        __debugbreak();
+                        assert(0);
                     }
                     pagesCommitted = pagesRequired;
                 }
@@ -314,7 +316,7 @@ bool ConsoleSaveFileOriginal::writeFile(FileEntry* file, const void* lpBuffer,
 
     file->currentFilePointer += *lpNumberOfBytesWritten;
 
-    // wprintf(L"Wrote %d bytes to %s, new file pointer is %I64d\n",
+    // printf("Wrote %d bytes to %s, new file pointer is %I64d\n",
     // *lpNumberOfBytesWritten, file->data.filename, file->currentFilePointer);
 
     file->updateLastModifiedTime();
@@ -348,7 +350,7 @@ bool ConsoleSaveFileOriginal::zeroFile(FileEntry* file,
 
     file->currentFilePointer += *lpNumberOfBytesWritten;
 
-    // wprintf(L"Wrote %d bytes to %s, new file pointer is %I64d\n",
+    // printf("Wrote %d bytes to %s, new file pointer is %I64d\n",
     // *lpNumberOfBytesWritten, file->data.filename, file->currentFilePointer);
 
     file->updateLastModifiedTime();
@@ -388,7 +390,7 @@ bool ConsoleSaveFileOriginal::readFile(FileEntry* file, void* lpBuffer,
 
     file->currentFilePointer += *lpNumberOfBytesRead;
 
-    // wprintf(L"Read %d bytes from %s, new file pointer is %I64d\n",
+    // printf("Read %d bytes from %s, new file pointer is %I64d\n",
     // *lpNumberOfBytesRead, file->data.filename, file->currentFilePointer);
 
     ReleaseSaveAccess();
@@ -436,7 +438,7 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(
                                    COMMIT_ALLOCATION, PAGE_READWRITE);
         if (pvRet == nullptr) {
             // Out of physical memory
-            __debugbreak();
+            assert(0);
         }
         pagesCommitted = pagesRequired;
     }
@@ -585,7 +587,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail) {
     // 4J Stu - Added TU-1 interim
 
     // Attempt to allocate the required memory
-    // We do not own this, it belongs to the StorageManager
+    // We do not own this, it belongs to the PlatformStorage
     std::uint8_t* compData =
         (std::uint8_t*)PlatformStorage.AllocateSaveData(compLength);
 
@@ -606,7 +608,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail) {
                            std::chrono::steady_clock::now() - startTime)
                            .count();
 
-        app.DebugPrintf("Check buffer size: Elapsed time %f\n", fElapsedTime);
+        Log::info("Check buffer size: Elapsed time %f\n", fElapsedTime);
 
         // We add 4 bytes to the start so that we can signal compressed data
         // And another 4 bytes to store the decompressed data size
@@ -626,14 +628,14 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail) {
                            std::chrono::steady_clock::now() - startTime)
                            .count();
 
-        app.DebugPrintf("Compress: Elapsed time %f\n", fElapsedTime);
+        Log::info("Compress: Elapsed time %f\n", fElapsedTime);
 
         std::fill_n(compData, 8, std::uint8_t{0});
         int saveVer = 0;
         memcpy(compData, &saveVer, sizeof(int));
         memcpy(compData + 4, &fileSize, sizeof(int));
 
-        app.DebugPrintf("Save data compressed from %d to %d\n", fileSize,
+        Log::info("Save data compressed from %d to %d\n", fileSize,
                         compLength);
 
         std::uint8_t* pbThumbnailData = nullptr;
@@ -643,7 +645,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail) {
         unsigned int dwDataSizeSaveImage = 0;
 
 #ifdef _WINDOWS64
-        app.GetSaveThumbnail(&pbThumbnailData, &dwThumbnailDataSize,
+        gameServices().getSaveThumbnail(&pbThumbnailData, &dwThumbnailDataSize,
                              &pbDataSaveImage, &dwDataSizeSaveImage);
 #endif
 
@@ -660,9 +662,9 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail) {
             hasSeed = true;
         }
 
-        int iTextMetadataBytes = app.CreateImageTextData(
+        int iTextMetadataBytes = gameServices().createImageTextData(
             bTextMetadata, seed, hasSeed,
-            app.GetGameHostOption(eGameHostOption_All),
+            gameServices().getGameHostOption(eGameHostOption_All),
             Minecraft::GetInstance()->getCurrentTexturePackId());
 
         int32_t saveOrCheckpointId = 0;
@@ -673,14 +675,14 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail) {
         PlatformStorage.SetSaveImages(pbThumbnailData, dwThumbnailDataSize,
                                       pbDataSaveImage, dwDataSizeSaveImage,
                                       bTextMetadata, iTextMetadataBytes);
-        app.DebugPrintf("Save thumbnail size %d\n", dwThumbnailDataSize);
+        Log::info("Save thumbnail size %d\n", dwThumbnailDataSize);
 
         // save the data
         PlatformStorage.SaveSaveData(
             &ConsoleSaveFileOriginal::SaveSaveDataCallback, this);
 #ifndef _CONTENT_PACKAGE
-        if (app.DebugSettingsOn()) {
-            if (app.GetWriteSavesToFolderEnabled()) {
+        if (gameServices().debugSettingsOn()) {
+            if (gameServices().getWriteSavesToFolderEnabled()) {
                 DebugFlushToFile(compData, compLength + 8);
             }
         }
@@ -717,11 +719,11 @@ void ConsoleSaveFileOriginal::DebugFlushToFile(
     unsigned int fileSize = header.GetFileSize();
 
     unsigned int numberOfBytesWritten = 0;
-    File targetFileDir(L"Saves");
+    File targetFileDir("Saves");
 
     if (!targetFileDir.exists()) targetFileDir.mkdir();
 
-    wchar_t* fileName = new wchar_t[XCONTENT_MAX_FILENAME_LENGTH + 1];
+    char* fileName = new char[XCONTENT_MAX_FILENAME_LENGTH + 1];
 
     std::time_t now = std::time(nullptr);
     std::tm t = *std::gmtime(&now);
@@ -729,27 +731,27 @@ void ConsoleSaveFileOriginal::DebugFlushToFile(
     // 14 chars for the digits
     // 11 chars for the separators + suffix
     // 25 chars total
-    std::wstring cutFileName = m_fileName;
+    std::string cutFileName = m_fileName;
     if (m_fileName.length() > XCONTENT_MAX_FILENAME_LENGTH - 25) {
         cutFileName = m_fileName.substr(0, XCONTENT_MAX_FILENAME_LENGTH - 25);
     }
-    swprintf(fileName, XCONTENT_MAX_FILENAME_LENGTH + 1,
-             L"\\v%04d-%ls%02d.%02d.%02d.%02d.%02d.mcs", VER_PRODUCTBUILD,
+    snprintf(fileName, XCONTENT_MAX_FILENAME_LENGTH + 1,
+             "\\v%04d-%s%02d.%02d.%02d.%02d.%02d.mcs", VER_PRODUCTBUILD,
              cutFileName.c_str(), t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min,
              t.tm_sec);
 
-    const std::wstring outputPath =
-        targetFileDir.getPath() + std::wstring(fileName);
+    const std::string outputPath =
+        targetFileDir.getPath() + std::string(fileName);
     bool writeSucceeded = false;
 
     if (compressedData != nullptr && compressedDataSize > 0) {
-        writeSucceeded = PlatformFileIO.writeFile(
+        writeSucceeded = PlatformFilesystem.writeFile(
             outputPath, compressedData, compressedDataSize);
         numberOfBytesWritten = writeSucceeded ? compressedDataSize : 0;
         assert(numberOfBytesWritten == compressedDataSize);
     } else {
         writeSucceeded =
-            PlatformFileIO.writeFile(outputPath, pvSaveMem, fileSize);
+            PlatformFilesystem.writeFile(outputPath, pvSaveMem, fileSize);
         numberOfBytesWritten = writeSucceeded ? fileSize : 0;
         assert(numberOfBytesWritten == fileSize);
     }
@@ -764,10 +766,10 @@ unsigned int ConsoleSaveFileOriginal::getSizeOnDisk() {
     return header.GetFileSize();
 }
 
-std::wstring ConsoleSaveFileOriginal::getFilename() { return m_fileName; }
+std::string ConsoleSaveFileOriginal::getFilename() { return m_fileName; }
 
 std::vector<FileEntry*>* ConsoleSaveFileOriginal::getFilesWithPrefix(
-    const std::wstring& prefix) {
+    const std::string& prefix) {
     return header.getFilesWithPrefix(prefix);
 }
 
@@ -860,17 +862,17 @@ void ConsoleSaveFileOriginal::ConvertToLocalPlatform() {
     }
     // convert each of the region files to the local platform
     std::vector<FileEntry*>* allFilesInSave =
-        getFilesWithPrefix(std::wstring(L""));
+        getFilesWithPrefix(std::string(""));
     for (auto it = allFilesInSave->begin(); it < allFilesInSave->end(); ++it) {
         FileEntry* fe = *it;
-        std::wstring fName(fe->data.filename);
-        std::wstring suffix(L".mcr");
+        std::string fName(fe->data.filename);
+        std::string suffix(".mcr");
         if (fName.compare(fName.length() - suffix.length(), suffix.length(),
                           suffix) == 0) {
-            app.DebugPrintf("Processing a region file: %ls\n", fName.c_str());
+            Log::info("Processing a region file: %s\n", fName.c_str());
             ConvertRegionFile(File(fe->data.filename));
         } else {
-            app.DebugPrintf("%ls is not a region file, ignoring\n",
+            Log::info("%s is not a region file, ignoring\n",
                             fName.c_str());
         }
     }

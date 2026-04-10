@@ -12,7 +12,7 @@ class Material;
 Icon* StainedGlassBlock::ICONS[StainedGlassBlock::ICONS_LENGTH];
 
 StainedGlassBlock::StainedGlassBlock(int id, Material* material)
-    : HalfTransparentTile(id, L"glass", material, false) {}
+    : HalfTransparentTile(id, "glass", material, false) {}
 
 Icon* StainedGlassBlock::getTexture(int face, int data) {
     return ICONS[data % ICONS_LENGTH];
@@ -29,7 +29,7 @@ int StainedGlassBlock::getRenderLayer() { return 1; }
 void StainedGlassBlock::registerIcons(IconRegister* iconRegister) {
     for (int i = 0; i < ICONS_LENGTH; i++) {
         ICONS[i] = iconRegister->registerIcon(
-            getIconName() + L"_" +
+            getIconName() + "_" +
             DyePowderItem::COLOR_TEXTURES[getItemAuxValueForBlockData(i)]);
     }
 }

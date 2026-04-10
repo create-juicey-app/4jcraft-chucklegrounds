@@ -4,10 +4,10 @@
 #include <sstream>
 #include <vector>
 
-#include "app/linux/LinuxGame.h"
+#include "minecraft/IGameServices.h"
 #include "util/StringHelpers.h"
 
-HtmlString::HtmlString(std::wstring text, eMinecraftColour hexColor,
+HtmlString::HtmlString(std::string text, eMinecraftColour hexColor,
                        bool italics, bool indent) {
     this->text = escapeXML(text);
     this->color = hexColor;
@@ -15,11 +15,11 @@ HtmlString::HtmlString(std::wstring text, eMinecraftColour hexColor,
     this->indent = indent;
 }
 
-std::wstring HtmlString::ToString() {
-    std::wstringstream ss;
+std::string HtmlString::ToString() {
+    std::stringstream ss;
 
     if (indent) {
-        ss << L"&nbsp;&nbsp;";
+        ss << "&nbsp;&nbsp;";
     }
 
     if (italics) {
@@ -29,8 +29,8 @@ std::wstring HtmlString::ToString() {
     eMinecraftColour color =
         this->color == eMinecraftColour_NOT_SET ? eHTMLColor_7 : this->color;
 
-    ss << L"<font color=\"#" << std::setfill(L'0') << std::setw(6) << std::hex
-       << app.GetHTMLColor(color) << L"\">" << text << "</font>";
+    ss << "<font color=\"#" << std::setfill('0') << std::setw(6) << std::hex
+       << gameServices().getHTMLColour(color) << "\">" << text << "</font>";
 
     if (italics) {
         ss << "</i>";
@@ -39,17 +39,17 @@ std::wstring HtmlString::ToString() {
     return ss.str();
 }
 
-std::wstring HtmlString::Compose(std::vector<HtmlString>* strings) {
-    if (strings == nullptr) return L"";
+std::string HtmlString::Compose(std::vector<HtmlString>* strings) {
+    if (strings == nullptr) return "";
 
-    std::wstringstream ss;
+    std::stringstream ss;
 
     for (int i = 0; i < strings->size(); i++) {
         ss << strings->at(i).ToString();
 
         // Add a break if there's another line
         if (i + 1 < strings->size()) {
-            ss << L"<br>";
+            ss << "<br>";
         }
     }
 

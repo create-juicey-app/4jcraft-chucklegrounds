@@ -17,8 +17,8 @@
 
 class Icon;
 
-const std::wstring HopperTile::TEXTURE_OUTSIDE = L"hopper_outside";
-const std::wstring HopperTile::TEXTURE_INSIDE = L"hopper_inside";
+const std::string HopperTile::TEXTURE_OUTSIDE = "hopper_outside";
+const std::string HopperTile::TEXTURE_INSIDE = "hopper_inside";
 
 HopperTile::HopperTile(int id) : BaseEntityTile(id, Material::metal, false) {
     setShape(0, 0, 0, 1, 1, 1);
@@ -179,17 +179,17 @@ int HopperTile::getAnalogOutputSignal(Level* level, int x, int y, int z,
 
 void HopperTile::registerIcons(IconRegister* iconRegister) {
     hopperIcon = iconRegister->registerIcon(TEXTURE_OUTSIDE);
-    hopperTopIcon = iconRegister->registerIcon(L"hopper_top");
+    hopperTopIcon = iconRegister->registerIcon("hopper_top");
     hopperInnerIcon = iconRegister->registerIcon(TEXTURE_INSIDE);
 }
 
-Icon* HopperTile::getTexture(const std::wstring& name) {
+Icon* HopperTile::getTexture(const std::string& name) {
     if (name.compare(TEXTURE_OUTSIDE) == 0) return Tile::hopper->hopperIcon;
     if (name.compare(TEXTURE_INSIDE) == 0) return Tile::hopper->hopperInnerIcon;
     return nullptr;
 }
 
-std::wstring HopperTile::getTileItemIconName() { return L"hopper"; }
+std::string HopperTile::getTileItemIconName() { return "hopper"; }
 
 std::shared_ptr<HopperTileEntity> HopperTile::getHopper(LevelSource* level,
                                                         int x, int y, int z) {

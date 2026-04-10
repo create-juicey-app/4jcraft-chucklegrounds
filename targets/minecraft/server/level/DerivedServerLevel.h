@@ -12,7 +12,7 @@ class DerivedServerLevel : public ServerLevel {
 public:
     DerivedServerLevel(MinecraftServer* server,
                        std::shared_ptr<LevelStorage> levelStorage,
-                       const std::wstring& levelName, int dimension,
+                       const std::string& levelName, int dimension,
                        LevelSettings* levelSettings, ServerLevel* wrapped);
     ~DerivedServerLevel();
 

@@ -57,7 +57,9 @@ public:
     int xm, ym, zm;
     AABB bb;
     ClipChunk* clipChunk;
+#ifdef OCCLUSION_MODE_BFS
     uint64_t computeConnectivity(const uint8_t* tileIds);
+#endif
     int id;
     // public:
     //	std::vector<std::shared_ptr<TileEntity> > renderableTileEntities;

@@ -124,7 +124,7 @@ typedef enum IggyDatatype {
 
 #ifdef __RADWIN__
 #include <stddef.h>
-IDOCN typedef wchar_t IggyUTF16;
+IDOCN typedef char IggyUTF16;
 #else
 typedef const char16_t IggyUTF16;
 #endif
@@ -748,7 +748,7 @@ IDOCN typedef rrbool IggyGetMP3Decoder(IggyMP3Interface* decoder);
 #ifdef __RADNT__
 RADEXPFUNC void RADEXPLINK IggyAudioInstallMP3Decoder(void);
 RADEXPFUNC void RADEXPLINK IggySetDLLDirectory(char* path);
-RADEXPFUNC void RADEXPLINK IggySetDLLDirectoryW(wchar_t* path);
+RADEXPFUNC void RADEXPLINK IggySetDLLDirectoryW(char* path);
 #else
 // this is overkill for non-DLL implementations, which could call into Iggy
 // directly, but it means everything goes through the same indirection

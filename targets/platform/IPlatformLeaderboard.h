@@ -137,7 +137,7 @@ public:
 
         PlayerUID m_uid;
         unsigned long m_rank;
-        std::wstring m_name;
+        std::string m_name;
         unsigned long m_totalScore;
         unsigned short m_statsSize;
         unsigned long m_statsData[STATSDATA_MAX];

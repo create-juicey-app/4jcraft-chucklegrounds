@@ -34,7 +34,7 @@ public:
         int methodId, itemId, itemAux, itemCount;
     } Param;
 
-    DsItemEvent(int id, const std::wstring& name);
+    DsItemEvent(int id, const std::string& name);
 
     bool onLeaderboard(ELeaderboardId leaderboard, eAcquisitionMethod methodId,
                        Param* param);
@@ -54,7 +54,7 @@ public:
 
     static const int SPIDER_JOCKEY_ID = 49;
 
-    DsMobKilled(int id, const std::wstring& name);
+    DsMobKilled(int id, const std::string& name);
 
     typedef struct {
         bool isRanged;
@@ -81,7 +81,7 @@ public:
         eInteract_Sheared
     };
 
-    DsMobInteract(int id, const std::wstring& name);
+    DsMobInteract(int id, const std::string& name);
 
     typedef struct {
         int interactionType, mobId;
@@ -112,7 +112,7 @@ public:
 
     static unsigned int CACHE_SIZES[eMethod_MAX];
 
-    DsTravel(int id, const std::wstring& name);
+    DsTravel(int id, const std::string& name);
 
     typedef struct {
         eMethod method;
@@ -132,7 +132,7 @@ protected:
 
 class DsItemUsed : public Stat {
 public:
-    DsItemUsed(int id, const std::wstring& name);
+    DsItemUsed(int id, const std::string& name);
     typedef struct {
         int itemId, aux, count, health, hunger;
     } Param;
@@ -144,7 +144,7 @@ public:
 
 class DsAchievement : public Stat {
 public:
-    DsAchievement(int id, const std::wstring& name);
+    DsAchievement(int id, const std::string& name);
 
     virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr,
                                  std::vector<uint8_t>& paramBlob);
@@ -163,7 +163,7 @@ public:
 
 class DsChangedDimension : public Stat {
 public:
-    DsChangedDimension(int id, const std::wstring& name);
+    DsChangedDimension(int id, const std::string& name);
     typedef struct {
         int fromDimId, toDimId;
     } Param;
@@ -174,7 +174,7 @@ public:
 
 class DsEnteredBiome : public Stat {
 public:
-    DsEnteredBiome(int id, const std::wstring& name);
+    DsEnteredBiome(int id, const std::string& name);
     typedef struct {
         int biomeId;
     } Param;
@@ -327,10 +327,10 @@ public:
     static LPCGUID getPlayerSession();
 
     static void setMultiplayerCorrelationId(Platform::String ^ mpcId);
-    static const wchar_t* getMultiplayerCorrelationId();
+    static const char* getMultiplayerCorrelationId();
 
-    static const wchar_t* getUserId(std::shared_ptr<LocalPlayer> plr);
-    static const wchar_t* getUserId(int iPad);
+    static const char* getUserId(std::shared_ptr<LocalPlayer> plr);
+    static const char* getUserId(int iPad);
 
     static void playerSessionStart(PlayerUID, std::shared_ptr<Player>);
     static void playerSessionStart(int iPad);

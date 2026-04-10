@@ -63,7 +63,7 @@ bool ReadOnlyChunkCache::tick() { return false; }
 
 bool ReadOnlyChunkCache::shouldSave() { return false; }
 
-std::wstring ReadOnlyChunkCache::gatherStats() { return L"ReadOnlyChunkCache"; }
+std::string ReadOnlyChunkCache::gatherStats() { return "ReadOnlyChunkCache"; }
 
 std::vector<Biome::MobSpawnerData*>* ReadOnlyChunkCache::getMobsAt(
     MobCategory* mobCategory, int x, int y, int z) {
@@ -71,6 +71,6 @@ std::vector<Biome::MobSpawnerData*>* ReadOnlyChunkCache::getMobsAt(
 }
 
 TilePos* ReadOnlyChunkCache::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
     return nullptr;
 }

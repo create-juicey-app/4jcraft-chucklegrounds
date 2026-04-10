@@ -198,14 +198,14 @@ bool Sheep::mobInteract(std::shared_ptr<Player> player) {
 
 void Sheep::addAdditonalSaveData(CompoundTag* tag) {
     Animal::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Sheared", isSheared());
-    tag->putByte(L"Color", (uint8_t)getColor());
+    tag->putBoolean("Sheared", isSheared());
+    tag->putByte("Color", (uint8_t)getColor());
 }
 
 void Sheep::readAdditionalSaveData(CompoundTag* tag) {
     Animal::readAdditionalSaveData(tag);
-    setSheared(tag->getBoolean(L"Sheared"));
-    setColor((int)tag->getByte(L"Color"));
+    setSheared(tag->getBoolean("Sheared"));
+    setColor((int)tag->getByte("Color"));
 }
 
 int Sheep::getAmbientSound() { return eSoundType_MOB_SHEEP_AMBIENT; }

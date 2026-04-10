@@ -128,16 +128,16 @@ void Wolf::playStepSound(int xt, int yt, int zt, int t) {
 void Wolf::addAdditonalSaveData(CompoundTag* tag) {
     TamableAnimal::addAdditonalSaveData(tag);
 
-    tag->putBoolean(L"Angry", isAngry());
-    tag->putByte(L"CollarColor", (uint8_t)getCollarColor());
+    tag->putBoolean("Angry", isAngry());
+    tag->putByte("CollarColor", (uint8_t)getCollarColor());
 }
 
 void Wolf::readAdditionalSaveData(CompoundTag* tag) {
     TamableAnimal::readAdditionalSaveData(tag);
 
-    setAngry(tag->getBoolean(L"Angry"));
-    if (tag->contains(L"CollarColor"))
-        setCollarColor(tag->getByte(L"CollarColor"));
+    setAngry(tag->getBoolean("Angry"));
+    if (tag->contains("CollarColor"))
+        setCollarColor(tag->getByte("CollarColor"));
 }
 
 int Wolf::getAmbientSound() {
@@ -299,7 +299,7 @@ void Wolf::setTame(bool value) {
     }
 }
 
-void Wolf::tame(const std::wstring& wsOwnerUUID, bool bDisplayTamingParticles,
+void Wolf::tame(const std::string& wsOwnerUUID, bool bDisplayTamingParticles,
                 bool bSetSitting) {
     setTame(true);
     setPath(nullptr);

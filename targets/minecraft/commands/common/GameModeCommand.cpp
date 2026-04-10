@@ -38,7 +38,7 @@ void GameModeCommand::execute(std::shared_ptr<CommandSender> source,
 }
 
 GameType* GameModeCommand::getModeForString(
-    std::shared_ptr<CommandSender> source, const std::wstring& name) {
+    std::shared_ptr<CommandSender> source, const std::string& name) {
     return nullptr;
     // if (name.equalsIgnoreCase(GameType.SURVIVAL.getName()) ||
     // name.equalsIgnoreCase("s")) { 	return GameType.SURVIVAL; } else if

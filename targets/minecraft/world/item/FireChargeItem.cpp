@@ -62,5 +62,5 @@ Icon* FireChargeItem::getIcon(int itemAuxValue) {
 
 void FireChargeItem::registerIcons(IconRegister* iconRegister) {
     Item::registerIcons(iconRegister);
-    m_dragonFireballIcon = iconRegister->registerIcon(L"dragonFireball");
+    m_dragonFireballIcon = iconRegister->registerIcon("dragonFireball");
 }

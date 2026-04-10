@@ -21,7 +21,7 @@ public:
     virtual void playUI(int iSound, float volume, float pitch) = 0;
 
     // Streaming / music
-    virtual void playStreaming(const std::wstring& name, float x, float y,
+    virtual void playStreaming(const std::string& name, float x, float y,
                                float z, float volume, float pitch,
                                bool bMusicDelay = true) = 0;
     virtual void playMusicTick() = 0;
@@ -30,9 +30,9 @@ public:
     virtual void updateSoundEffectVolume(float fVal) = 0;
 
     // Asset registration
-    virtual void add(const std::wstring& name, File* file) = 0;
-    virtual void addMusic(const std::wstring& name, File* file) = 0;
-    virtual void addStreaming(const std::wstring& name, File* file) = 0;
-    virtual char* ConvertSoundPathToName(const std::wstring& name,
+    virtual void add(const std::string& name, File* file) = 0;
+    virtual void addMusic(const std::string& name, File* file) = 0;
+    virtual void addStreaming(const std::string& name, File* file) = 0;
+    virtual char* ConvertSoundPathToName(const std::string& name,
                                          bool bConvertSpaces = false) = 0;
 };

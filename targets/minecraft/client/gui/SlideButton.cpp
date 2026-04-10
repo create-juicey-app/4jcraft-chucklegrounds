@@ -1,12 +1,12 @@
 #include "SlideButton.h"
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/Options.h"
 #include "minecraft/client/gui/Button.h"
 
 SlideButton::SlideButton(int id, int x, int y, const Options::Option* option,
-                         const std::wstring& msg, float value)
+                         const std::string& msg, float value)
     : Button(id, x, y, 150, 20, msg) {
     this->sliding = false;  // 4J added
     this->option = option;

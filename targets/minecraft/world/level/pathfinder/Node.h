@@ -41,5 +41,5 @@ public:
     bool equals(Node* o);
     int hashCode();
     bool inOpenSet();
-    std::wstring toString();
+    std::string toString();
 };

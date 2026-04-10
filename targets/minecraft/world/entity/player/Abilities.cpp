@@ -21,32 +21,32 @@ Abilities::Abilities() {
 void Abilities::addSaveData(CompoundTag* parentTag) {
     CompoundTag* tag = new CompoundTag();
 
-    tag->putBoolean(L"invulnerable", invulnerable);
-    tag->putBoolean(L"flying", flying);
-    tag->putBoolean(L"mayfly", mayfly);
-    tag->putBoolean(L"instabuild", instabuild);
-    tag->putBoolean(L"mayBuild", mayBuild);
-    tag->putFloat(L"flySpeed", flyingSpeed);
-    tag->putFloat(L"walkSpeed", walkingSpeed);
+    tag->putBoolean("invulnerable", invulnerable);
+    tag->putBoolean("flying", flying);
+    tag->putBoolean("mayfly", mayfly);
+    tag->putBoolean("instabuild", instabuild);
+    tag->putBoolean("mayBuild", mayBuild);
+    tag->putFloat("flySpeed", flyingSpeed);
+    tag->putFloat("walkSpeed", walkingSpeed);
 
-    parentTag->put(L"abilities", tag);
+    parentTag->put("abilities", tag);
 }
 
 void Abilities::loadSaveData(CompoundTag* parentTag) {
-    if (parentTag->contains(L"abilities")) {
-        CompoundTag* tag = parentTag->getCompound(L"abilities");
+    if (parentTag->contains("abilities")) {
+        CompoundTag* tag = parentTag->getCompound("abilities");
 
-        invulnerable = tag->getBoolean(L"invulnerable");
-        flying = tag->getBoolean(L"flying");
-        mayfly = tag->getBoolean(L"mayfly");
-        instabuild = tag->getBoolean(L"instabuild");
+        invulnerable = tag->getBoolean("invulnerable");
+        flying = tag->getBoolean("flying");
+        mayfly = tag->getBoolean("mayfly");
+        instabuild = tag->getBoolean("instabuild");
 
-        if (tag->contains(L"flySpeed")) {
-            flyingSpeed = tag->getFloat(L"flySpeed");
-            walkingSpeed = tag->getFloat(L"walkSpeed");
+        if (tag->contains("flySpeed")) {
+            flyingSpeed = tag->getFloat("flySpeed");
+            walkingSpeed = tag->getFloat("walkSpeed");
         }
-        if (tag->contains(L"mayBuild")) {
-            mayBuild = tag->getBoolean(L"mayBuild");
+        if (tag->contains("mayBuild")) {
+            mayBuild = tag->getBoolean("mayBuild");
         }
     }
 }

@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "TexturePackRepository.h"
 
 #include <wchar.h>
@@ -5,12 +7,12 @@
 #include <algorithm>
 #include <utility>
 
-#include "platform/sdl2/Input.h"
+#include "platform/input/input.h"
 #include "DLCTexturePack.h"
 #include "DefaultTexturePack.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/DLC/DLCManager.h"
-#include "app/common/src/DLC/DLCPack.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/DLC/DLCManager.h"
+#include "app/common/DLC/DLCPack.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Linux_UIController.h"
 #include "java/File.h"
@@ -61,14 +63,14 @@ bool TexturePackRepository::selectSkin(TexturePack* skin) {
     return true;
 }
 
-void TexturePackRepository::selectWebSkin(const std::wstring& url) {
-    app.DebugPrintf(
+void TexturePackRepository::selectWebSkin(const std::string& url) {
+    Log::info(
         "TexturePackRepository::selectWebSkin is not implemented\n");
 }
 
-void TexturePackRepository::downloadWebSkin(const std::wstring& url,
+void TexturePackRepository::downloadWebSkin(const std::string& url,
                                             File file) {
-    app.DebugPrintf(
+    Log::info(
         "TexturePackRepository::selectWebSkin is not implemented\n");
 }
 
@@ -85,13 +87,13 @@ void TexturePackRepository::updateList() {
     // up-to-date as we go
 }
 
-std::wstring TexturePackRepository::getIdOrNull(File file) {
-    app.DebugPrintf("TexturePackRepository::getIdOrNull is not implemented\n");
-    return L"";
+std::string TexturePackRepository::getIdOrNull(File file) {
+    Log::info("TexturePackRepository::getIdOrNull is not implemented\n");
+    return "";
 }
 
 std::vector<File> TexturePackRepository::getWorkDirContents() {
-    app.DebugPrintf(
+    Log::info(
         "TexturePackRepository::getWorkDirContents is not implemented\n");
     return std::vector<File>();
 }
@@ -109,25 +111,25 @@ TexturePack* TexturePackRepository::getSelected() {
 }
 
 bool TexturePackRepository::shouldPromptForWebSkin() {
-    app.DebugPrintf(
+    Log::info(
         "TexturePackRepository::shouldPromptForWebSkin is not implemented\n");
     return false;
 }
 
 bool TexturePackRepository::canUseWebSkin() {
-    app.DebugPrintf(
+    Log::info(
         "TexturePackRepository::canUseWebSkin is not implemented\n");
     return false;
 }
 
-std::vector<std::pair<std::uint32_t, std::wstring> >*
+std::vector<std::pair<std::uint32_t, std::string> >*
 TexturePackRepository::getTexturePackIdNames() {
-    std::vector<std::pair<std::uint32_t, std::wstring> >* packList =
-        new std::vector<std::pair<std::uint32_t, std::wstring> >();
+    std::vector<std::pair<std::uint32_t, std::string> >* packList =
+        new std::vector<std::pair<std::uint32_t, std::string> >();
 
     for (auto it = texturePacks->begin(); it != texturePacks->end(); ++it) {
         TexturePack* pack = *it;
-        packList->push_back(std::pair<std::uint32_t, std::wstring>(
+        packList->push_back(std::pair<std::uint32_t, std::string>(
             pack->getId(), pack->getName()));
     }
     return packList;
@@ -140,7 +142,7 @@ bool TexturePackRepository::selectTexturePackById(std::uint32_t id) {
     // invite games
     //  (where they don't have the texture pack) can check this when the texture
     //  pack is installed
-    app.SetRequiredTexturePackID(id);
+    gameServices().setRequiredTexturePackID(id);
 
     auto it = cacheById.find(id);
     if (it != cacheById.end()) {
@@ -149,7 +151,7 @@ bool TexturePackRepository::selectTexturePackById(std::uint32_t id) {
             selectSkin(newPack);
 
             if (newPack->hasData()) {
-                app.SetAction(InputManager.GetPrimaryPad(),
+                gameServices().setAction(PlatformInput.GetPrimaryPad(),
                               eAppAction_ReloadTexturePack);
             } else {
                 newPack->loadData();
@@ -157,15 +159,15 @@ bool TexturePackRepository::selectTexturePackById(std::uint32_t id) {
             // Minecraft *pMinecraft = Minecraft::GetInstance();
             // pMinecraft->textures->reloadAll();
         } else {
-            app.DebugPrintf("TexturePack with id %d is already selected\n", id);
+            Log::info("TexturePack with id %d is already selected\n", id);
         }
         bDidSelect = true;
     } else {
-        app.DebugPrintf(
+        Log::info(
             "Failed to select texture pack %d as it is not in the list\n", id);
         // Fail safely
         if (selectSkin(DEFAULT_TEXTURE_PACK)) {
-            app.SetAction(InputManager.GetPrimaryPad(),
+            gameServices().setAction(PlatformInput.GetPrimaryPad(),
                           eAppAction_ReloadTexturePack);
         }
     }
@@ -196,11 +198,11 @@ TexturePack* TexturePackRepository::addTexturePackFromDLC(DLCPack* dlcPack,
         cacheById[parentId] = newPack;
 
 #if !defined(_CONTENT_PACKAGE)
-        if (dlcPack->hasPurchasedFile(DLCManager::e_DLCType_TexturePack, L"")) {
-            wprintf(L"Added new FULL DLCTexturePack: %ls - id=%u\n",
+        if (dlcPack->hasPurchasedFile(DLCManager::e_DLCType_TexturePack, "")) {
+            printf("Added new FULL DLCTexturePack: %s - id=%u\n",
                     dlcPack->getName().c_str(), parentId);
         } else {
-            wprintf(L"Added new TRIAL DLCTexturePack: %ls - id=%u\n",
+            printf("Added new TRIAL DLCTexturePack: %s - id=%u\n",
                     dlcPack->getName().c_str(), parentId);
         }
 #endif

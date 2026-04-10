@@ -13,7 +13,7 @@
 #include "strings.h"
 
 PlayerEnderChestContainer::PlayerEnderChestContainer()
-    : SimpleContainer(IDS_TILE_ENDERCHEST, L"", false, 9 * 3) {
+    : SimpleContainer(IDS_TILE_ENDERCHEST, "", false, 9 * 3) {
     activeChest = nullptr;
 }
 
@@ -33,19 +33,19 @@ void PlayerEnderChestContainer::setItemsByTag(
     }
     for (int i = 0; i < enderItemsList->size(); i++) {
         CompoundTag* tag = enderItemsList->get(i);
-        int slot = tag->getByte(L"Slot") & 0xff;
+        int slot = tag->getByte("Slot") & 0xff;
         if (slot >= 0 && slot < getContainerSize())
             setItem(slot, ItemInstance::fromTag(tag));
     }
 }
 
 ListTag<CompoundTag>* PlayerEnderChestContainer::createTag() {
-    ListTag<CompoundTag>* items = new ListTag<CompoundTag>(L"EnderItems");
+    ListTag<CompoundTag>* items = new ListTag<CompoundTag>("EnderItems");
     for (int i = 0; i < getContainerSize(); i++) {
         std::shared_ptr<ItemInstance> item = getItem(i);
         if (item != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             item->save(tag);
             items->add(tag);
         }

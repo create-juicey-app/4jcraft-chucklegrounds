@@ -22,24 +22,24 @@ public:
 
 private:
     int successCount;
-    std::wstring command;
-    std::wstring name;
+    std::string command;
+    std::string name;
 
 public:
     CommandBlockEntity();
 
-    void setCommand(const std::wstring& command);
-    std::wstring getCommand();
+    void setCommand(const std::string& command);
+    std::string getCommand();
     int performCommand(Level* level);
-    std::wstring getName();
-    void setName(const std::wstring& name);
+    std::string getName();
+    void setName(const std::string& name);
     virtual void sendMessage(
-        const std::wstring& message,
+        const std::string& message,
         ChatPacket::EChatPacketMessage type = ChatPacket::e_ChatCustom,
-        int customData = -1, const std::wstring& additionalMessage = L"");
+        int customData = -1, const std::string& additionalMessage = "");
     virtual bool hasPermission(EGameCommand command);
     // void sendMessage(ChatMessageComponent *message);
-    // bool hasPermission(int permissionLevel, const std::wstring &commandName);
+    // bool hasPermission(int permissionLevel, const std::string &commandName);
     void save(CompoundTag* tag);
     void load(CompoundTag* tag);
     Pos* getCommandSenderWorldPosition();

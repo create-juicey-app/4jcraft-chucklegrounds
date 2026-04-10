@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "HopperTileEntity.h"
 
 #include <stdint.h>
@@ -29,7 +30,7 @@ class Entity;
 
 HopperTileEntity::HopperTileEntity() {
     items = std::vector<std::shared_ptr<ItemInstance>>(5);
-    name = L"";
+    name = "";
     cooldownTime = -1;
 }
 
@@ -39,13 +40,13 @@ void HopperTileEntity::load(CompoundTag* base) {
     TileEntity::load(base);
 
     ListTag<CompoundTag>* inventoryList =
-        (ListTag<CompoundTag>*)base->getList(L"Items");
+        (ListTag<CompoundTag>*)base->getList("Items");
     items = std::vector<std::shared_ptr<ItemInstance>>(getContainerSize());
-    if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
-    cooldownTime = base->getInt(L"TransferCooldown");
+    if (base->contains("CustomName")) name = base->getString("CustomName");
+    cooldownTime = base->getInt("TransferCooldown");
     for (int i = 0; i < inventoryList->size(); i++) {
         CompoundTag* tag = inventoryList->get(i);
-        int slot = tag->getByte(L"Slot");
+        int slot = tag->getByte("Slot");
         if (slot >= 0 && slot < items.size())
             items[slot] = ItemInstance::fromTag(tag);
     }
@@ -58,14 +59,14 @@ void HopperTileEntity::save(CompoundTag* base) {
     for (int i = 0; i < items.size(); i++) {
         if (items[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             items[i]->save(tag);
             listTag->add(tag);
         }
     }
-    base->put(L"Items", listTag);
-    base->putInt(L"TransferCooldown", cooldownTime);
-    if (hasCustomName()) base->putString(L"CustomName", name);
+    base->put("Items", listTag);
+    base->putInt("TransferCooldown", cooldownTime);
+    if (hasCustomName()) base->putString("CustomName", name);
 }
 
 void HopperTileEntity::setChanged() { TileEntity::setChanged(); }
@@ -108,17 +109,17 @@ void HopperTileEntity::setItem(unsigned int slot,
         item->count = getMaxStackSize();
 }
 
-std::wstring HopperTileEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_CONTAINER_HOPPER);
+std::string HopperTileEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_CONTAINER_HOPPER);
 }
 
-std::wstring HopperTileEntity::getCustomName() {
-    return hasCustomName() ? name : L"";
+std::string HopperTileEntity::getCustomName() {
+    return hasCustomName() ? name : "";
 }
 
 bool HopperTileEntity::hasCustomName() { return !name.empty(); }
 
-void HopperTileEntity::setCustomName(const std::wstring& name) {
+void HopperTileEntity::setCustomName(const std::string& name) {
     this->name = name;
 }
 

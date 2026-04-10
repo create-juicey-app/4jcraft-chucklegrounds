@@ -1,8 +1,9 @@
+#include "minecraft/IGameServices.h"
 #include "PlanterTileItem.h"
 
 #include <memory>
 
-#include "app/common/src/Console_Debug_enum.h"
+#include "app/common/Console_Debug_enum.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/Facing.h"
 #include "minecraft/stats/GenericStats.h"
@@ -70,8 +71,8 @@ bool TilePlanterItem::useOn(std::shared_ptr<ItemInstance> instance,
                 // 4J-PB - If we have the debug option on, don't reduce the
                 // number of this item
 #ifndef _FINAL_BUILD
-                if (!(app.DebugSettingsOn() &&
-                      app.GetGameSettingsDebugMask() &
+                if (!(gameServices().debugSettingsOn() &&
+                      gameServices().debugGetMask() &
                           (1L << eDebugSetting_CraftAnything)))
 #endif
                 {

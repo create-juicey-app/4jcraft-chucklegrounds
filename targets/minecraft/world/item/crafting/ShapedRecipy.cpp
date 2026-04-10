@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 // package net.minecraft.world.item.crafting;
 //
 // import net.minecraft.world.inventory.CraftingContainer;
@@ -97,7 +98,7 @@ int ShapedRecipy::size() { return width * height; }
 
 // 4J-PB
 bool ShapedRecipy::requiresRecipe(int iRecipe) {
-    app.DebugPrintf("ShapedRecipy %d\n", iRecipe);
+    Log::info("ShapedRecipy %d\n", iRecipe);
     int iCount = 0;
     for (int x = 0; x < 3; x++) {
         for (int y = 0; y < 3; y++) {

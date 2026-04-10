@@ -8,12 +8,12 @@
 
 void ComparatorTileEntity::save(CompoundTag* tag) {
     TileEntity::save(tag);
-    tag->putInt(L"OutputSignal", output);
+    tag->putInt("OutputSignal", output);
 }
 
 void ComparatorTileEntity::load(CompoundTag* tag) {
     TileEntity::load(tag);
-    output = tag->getInt(L"OutputSignal");
+    output = tag->getInt("OutputSignal");
 }
 
 int ComparatorTileEntity::getOutputSignal() { return output; }

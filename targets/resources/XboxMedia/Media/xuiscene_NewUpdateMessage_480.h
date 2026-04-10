@@ -1,3 +1,3 @@
 #pragma once
-#define IDC_XuiHTMLMessage L"XuiHTMLMessage"
-#define IDC_NewUpdate L"NewUpdate"
+#define IDC_XuiHTMLMessage "XuiHTMLMessage"
+#define IDC_NewUpdate "NewUpdate"

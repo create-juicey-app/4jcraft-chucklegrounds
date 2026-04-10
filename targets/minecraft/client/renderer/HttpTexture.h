@@ -11,5 +11,5 @@ public:
     int id;
     bool isLoaded;
 
-    HttpTexture(const std::wstring& _url, HttpTextureProcessor* processor);
+    HttpTexture(const std::string& _url, HttpTextureProcessor* processor);
 };

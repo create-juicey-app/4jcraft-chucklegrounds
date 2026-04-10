@@ -14,12 +14,12 @@ public:
     static const int MUSHROOM_TYPE_BROWN = 0;
     static const int MUSHROOM_TYPE_RED = 1;
 
-    static const std::wstring TEXTURE_STEM;
-    static const std::wstring TEXTURE_INSIDE;
+    static const std::string TEXTURE_STEM;
+    static const std::string TEXTURE_INSIDE;
 
 private:
     static const int HUGE_MUSHROOM_TEXTURE_COUNT = 2;
-    static const std::wstring TEXTURE_TYPE[];
+    static const std::string TEXTURE_TYPE[];
     int type;
     Icon** icons;
     Icon* iconStem;

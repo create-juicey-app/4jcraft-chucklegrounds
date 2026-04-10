@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "DLCTexturePack.h"
 
 #include <cstdint>
@@ -5,29 +7,29 @@
 #include <limits>
 #include <vector>
 
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Storage.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Audio/SoundEngine.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/common/src/DLC/DLCAudioFile.h"
-#include "app/common/src/DLC/DLCColourTableFile.h"
-#include "app/common/src/DLC/DLCFile.h"
-#include "app/common/src/DLC/DLCGameRulesHeader.h"
-#include "app/common/src/DLC/DLCLocalisationFile.h"
-#include "app/common/src/DLC/DLCManager.h"
-#include "app/common/src/DLC/DLCPack.h"
-#include "app/common/src/DLC/DLCTextureFile.h"
-#include "app/common/src/DLC/DLCUIDataFile.h"
-#include "app/common/src/GameRules/GameRuleManager.h"
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
-#include "app/common/src/Localisation/StringTable.h"
-#include "app/common/src/UI/All Platforms/ArchiveFile.h"
+#include "platform/input/input.h"
+#include "platform/storage/storage.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Audio/SoundEngine.h"
+#include "app/common/Colours/ColourTable.h"
+#include "app/common/DLC/DLCAudioFile.h"
+#include "app/common/DLC/DLCColourTableFile.h"
+#include "app/common/DLC/DLCFile.h"
+#include "app/common/DLC/DLCGameRulesHeader.h"
+#include "app/common/DLC/DLCLocalisationFile.h"
+#include "app/common/DLC/DLCManager.h"
+#include "app/common/DLC/DLCPack.h"
+#include "app/common/DLC/DLCTextureFile.h"
+#include "app/common/DLC/DLCUIDataFile.h"
+#include "app/common/GameRules/GameRuleManager.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/Localisation/StringTable.h"
+#include "app/common/UI/All Platforms/ArchiveFile.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Linux_UIController.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/BufferedImage.h"
-#include "platform/PlatformServices.h"
+#include "minecraft/client/BufferedImage.h"
+#include "platform/fs/fs.h"
 #include "java/File.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/skins/AbstractTexturePack.h"
@@ -53,8 +55,8 @@ bool ReadPortableBinaryFile(File& file, std::uint8_t*& data,
     const std::size_t capacity = static_cast<std::size_t>(fileLength);
     std::uint8_t* buffer = new std::uint8_t[capacity == 0 ? 1 : capacity];
     auto readResult =
-        PlatformFileIO.readFile(file.getPath(), buffer, capacity);
-    if (readResult.status != IPlatformFileIO::ReadStatus::Ok ||
+        PlatformFilesystem.readFile(file.getPath(), buffer, capacity);
+    if (readResult.status != IPlatformFilesystem::ReadStatus::Ok ||
         readResult.fileSize > std::numeric_limits<unsigned int>::max()) {
         delete[] buffer;
         data = nullptr;
@@ -77,17 +79,17 @@ DLCTexturePack::DLCTexturePack(std::uint32_t id, DLCPack* pack,
     m_bLoadingData = false;
     m_bHasLoadedData = false;
     m_archiveFile = nullptr;
-    if (app.getLevelGenerationOptions())
-        app.getLevelGenerationOptions()->setLoadedData();
+    if (gameServices().getLevelGenerationOptions())
+        gameServices().getLevelGenerationOptions()->setLoadedData();
     m_bUsingDefaultColourTable = true;
 
     m_stringTable = nullptr;
 
     if (m_dlcInfoPack->doesPackContainFile(
-            DLCManager::e_DLCType_LocalisationData, L"languages.loc")) {
+            DLCManager::e_DLCType_LocalisationData, "languages.loc")) {
         DLCLocalisationFile* localisationFile =
             (DLCLocalisationFile*)m_dlcInfoPack->getFile(
-                DLCManager::e_DLCType_LocalisationData, L"languages.loc");
+                DLCManager::e_DLCType_LocalisationData, "languages.loc");
         m_stringTable = localisationFile->getStringTable();
     }
 
@@ -100,9 +102,9 @@ DLCTexturePack::DLCTexturePack(std::uint32_t id, DLCPack* pack,
 
 void DLCTexturePack::loadIcon() {
     if (m_dlcInfoPack->doesPackContainFile(DLCManager::e_DLCType_Texture,
-                                           L"icon.png")) {
+                                           "icon.png")) {
         DLCTextureFile* textureFile = (DLCTextureFile*)m_dlcInfoPack->getFile(
-            DLCManager::e_DLCType_Texture, L"icon.png");
+            DLCManager::e_DLCType_Texture, "icon.png");
         std::uint32_t iconSize = 0;
         m_iconData = textureFile->getData(iconSize);
         m_iconSize = iconSize;
@@ -113,9 +115,9 @@ void DLCTexturePack::loadIcon() {
 
 void DLCTexturePack::loadComparison() {
     if (m_dlcInfoPack->doesPackContainFile(DLCManager::e_DLCType_Texture,
-                                           L"comparison.png")) {
+                                           "comparison.png")) {
         DLCTextureFile* textureFile = (DLCTextureFile*)m_dlcInfoPack->getFile(
-            DLCManager::e_DLCType_Texture, L"comparison.png");
+            DLCManager::e_DLCType_Texture, "comparison.png");
         std::uint32_t comparisonSize = 0;
         m_comparisonData = textureFile->getData(comparisonSize);
         m_comparisonSize = comparisonSize;
@@ -123,48 +125,48 @@ void DLCTexturePack::loadComparison() {
 }
 
 void DLCTexturePack::loadName() {
-    texname = L"";
+    texname = "";
 
     if (m_dlcInfoPack->GetPackID() & 1024) {
         if (m_stringTable != nullptr) {
-            texname = m_stringTable->getString(L"IDS_DISPLAY_NAME");
-            m_wsWorldName = m_stringTable->getString(L"IDS_WORLD_NAME");
+            texname = m_stringTable->getString("IDS_DISPLAY_NAME");
+            m_wsWorldName = m_stringTable->getString("IDS_WORLD_NAME");
         }
     } else {
         if (m_stringTable != nullptr) {
-            texname = m_stringTable->getString(L"IDS_DISPLAY_NAME");
+            texname = m_stringTable->getString("IDS_DISPLAY_NAME");
         }
     }
 }
 
 void DLCTexturePack::loadDescription() {
-    desc1 = L"";
+    desc1 = "";
 
     if (m_stringTable != nullptr) {
-        desc1 = m_stringTable->getString(L"IDS_TP_DESCRIPTION");
+        desc1 = m_stringTable->getString("IDS_TP_DESCRIPTION");
     }
 }
 
-std::wstring DLCTexturePack::getResource(const std::wstring& name) {
+std::string DLCTexturePack::getResource(const std::string& name) {
     // 4J Stu - We should never call this function
 #if !defined(__CONTENT_PACKAGE)
-    __debugbreak();
+    assert(0);
 #endif
-    return L"";
+    return "";
 }
 
 InputStream* DLCTexturePack::getResourceImplementation(
-    const std::wstring& name)  // throws IOException
+    const std::string& name)  // throws IOException
 {
     // 4J Stu - We should never call this function
 #if !defined(_CONTENT_PACKAGE)
-    __debugbreak();
+    assert(0);
     if (hasFile(name)) return nullptr;
 #endif
     return nullptr;  // resource;
 }
 
-bool DLCTexturePack::hasFile(const std::wstring& name) {
+bool DLCTexturePack::hasFile(const std::string& name) {
     bool hasFile = false;
     if (m_dlcDataPack != nullptr)
         hasFile = m_dlcDataPack->doesPackContainFile(
@@ -174,16 +176,16 @@ bool DLCTexturePack::hasFile(const std::wstring& name) {
 
 bool DLCTexturePack::isTerrainUpdateCompatible() { return true; }
 
-std::wstring DLCTexturePack::getPath(bool bTitleUpdateTexture /*= false*/,
+std::string DLCTexturePack::getPath(bool bTitleUpdateTexture /*= false*/,
                                      const char* pchBDPatchFilename) {
-    return L"";
+    return "";
 }
 
-std::wstring DLCTexturePack::getAnimationString(const std::wstring& textureName,
-                                                const std::wstring& path) {
-    std::wstring result = L"";
+std::string DLCTexturePack::getAnimationString(const std::string& textureName,
+                                                const std::string& path) {
+    std::string result = "";
 
-    std::wstring fullpath = L"res/" + path + textureName + L".png";
+    std::string fullpath = "res/" + path + textureName + ".png";
     if (hasFile(fullpath)) {
         result = m_dlcDataPack->getFile(DLCManager::e_DLCType_Texture, fullpath)
                      ->getParameterAsString(DLCManager::e_DLCParamType_Anim);
@@ -193,10 +195,10 @@ std::wstring DLCTexturePack::getAnimationString(const std::wstring& textureName,
 }
 
 BufferedImage* DLCTexturePack::getImageResource(
-    const std::wstring& File, bool filenameHasExtension /*= false*/,
-    bool bTitleUpdateTexture /*=false*/, const std::wstring& drive /*=L""*/) {
+    const std::string& File, bool filenameHasExtension /*= false*/,
+    bool bTitleUpdateTexture /*=false*/, const std::string& drive /*=""*/) {
     if (m_dlcDataPack)
-        return new BufferedImage(m_dlcDataPack, L"/" + File,
+        return new BufferedImage(m_dlcDataPack, "/" + File,
                                  filenameHasExtension);
     else
         return fallback->getImageResource(File, filenameHasExtension,
@@ -209,10 +211,10 @@ void DLCTexturePack::loadColourTable() {
     // Load the game colours
     if (m_dlcDataPack != nullptr &&
         m_dlcDataPack->doesPackContainFile(DLCManager::e_DLCType_ColourTable,
-                                           L"colours.col")) {
+                                           "colours.col")) {
         DLCColourTableFile* colourFile =
             (DLCColourTableFile*)m_dlcDataPack->getFile(
-                DLCManager::e_DLCType_ColourTable, L"colours.col");
+                DLCManager::e_DLCType_ColourTable, "colours.col");
         m_colourTable = colourFile->getColourTable();
         m_bUsingDefaultColourTable = false;
     } else {
@@ -224,9 +226,9 @@ void DLCTexturePack::loadColourTable() {
     }
 
     // Load the text colours
-    if (app.hasArchiveFile(L"HTMLColours.col")) {
+    if (gameServices().hasArchiveFile("HTMLColours.col")) {
         std::vector<uint8_t> textColours =
-            app.getArchiveFile(L"HTMLColours.col");
+            gameServices().getArchiveFile("HTMLColours.col");
         m_colourTable->loadColoursFromData(textColours.data(),
                                            textColours.size());
     }
@@ -236,36 +238,36 @@ void DLCTexturePack::loadData() {
     int mountIndex = m_dlcInfoPack->GetDLCMountIndex();
 
     if (mountIndex > -1) {
-        if (StorageManager.MountInstalledDLC(
-                InputManager.GetPrimaryPad(), mountIndex,
+        if (PlatformStorage.MountInstalledDLC(
+                PlatformInput.GetPrimaryPad(), mountIndex,
                 [this](int pad, std::uint32_t err, std::uint32_t lic) {
                     return onPackMounted(pad, err, lic);
                 },
                 "TPACK") != ERROR_IO_PENDING) {
             // corrupt DLC
             m_bHasLoadedData = true;
-            if (app.getLevelGenerationOptions())
-                app.getLevelGenerationOptions()->setLoadedData();
-            app.DebugPrintf("Failed to mount texture pack DLC %d for pad %d\n",
-                            mountIndex, InputManager.GetPrimaryPad());
+            if (gameServices().getLevelGenerationOptions())
+                gameServices().getLevelGenerationOptions()->setLoadedData();
+            Log::info("Failed to mount texture pack DLC %d for pad %d\n",
+                            mountIndex, PlatformInput.GetPrimaryPad());
         } else {
             m_bLoadingData = true;
-            app.DebugPrintf("Attempted to mount DLC data for texture pack %d\n",
+            Log::info("Attempted to mount DLC data for texture pack %d\n",
                             mountIndex);
         }
     } else {
         m_bHasLoadedData = true;
-        if (app.getLevelGenerationOptions())
-            app.getLevelGenerationOptions()->setLoadedData();
-        app.SetAction(InputManager.GetPrimaryPad(),
+        if (gameServices().getLevelGenerationOptions())
+            gameServices().getLevelGenerationOptions()->setLoadedData();
+        gameServices().setAction(PlatformInput.GetPrimaryPad(),
                       eAppAction_ReloadTexturePack);
     }
 }
 
-std::wstring DLCTexturePack::getFilePath(std::uint32_t packId,
-                                         std::wstring filename,
+std::string DLCTexturePack::getFilePath(std::uint32_t packId,
+                                         std::string filename,
                                          bool bAddDataFolder) {
-    return app.getFilePath(packId, filename, bAddDataFolder);
+    return gameServices().getFilePath(packId, filename, bAddDataFolder);
 }
 
 int DLCTexturePack::onPackMounted(int iPad, std::uint32_t dwErr,
@@ -274,19 +276,19 @@ int DLCTexturePack::onPackMounted(int iPad, std::uint32_t dwErr,
     texturePack->m_bLoadingData = false;
     if (dwErr != ERROR_SUCCESS) {
         // corrupt DLC
-        app.DebugPrintf("Failed to mount DLC for pad %d: %u\n", iPad, dwErr);
+        Log::info("Failed to mount DLC for pad %d: %u\n", iPad, dwErr);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "Mounted DLC for texture pack, attempting to load data\n");
         texturePack->m_dlcDataPack =
             new DLCPack(texturePack->m_dlcInfoPack->getName(), dwLicenceMask);
         texturePack->setHasAudio(false);
         unsigned int dwFilesProcessed = 0;
         // Load the DLC textures
-        std::wstring dataFilePath =
+        std::string dataFilePath =
             texturePack->m_dlcInfoPack->getFullDataPath();
         if (!dataFilePath.empty()) {
-            if (!app.m_dlcManager.readDLCDataFile(
+            if (!gameServices().dlcReadDataFile(
                     dwFilesProcessed,
                     getFilePath(texturePack->m_dlcInfoPack->GetPackID(),
                                 dataFilePath),
@@ -299,7 +301,7 @@ int DLCTexturePack::onPackMounted(int iPad, std::uint32_t dwErr,
             if (texturePack->m_dlcDataPack != nullptr) {
                 File archivePath(
                     getFilePath(texturePack->m_dlcInfoPack->GetPackID(),
-                                std::wstring(L"media.arc")));
+                                std::string("media.arc")));
                 if (archivePath.exists())
                     texturePack->m_archiveFile = new ArchiveFile(archivePath);
 
@@ -309,7 +311,7 @@ int DLCTexturePack::onPackMounted(int iPad, std::uint32_t dwErr,
                 */
                 DLCPack* pack = texturePack->m_dlcInfoPack->GetParentPack();
                 LevelGenerationOptions* levelGen =
-                    app.getLevelGenerationOptions();
+                    gameServices().getLevelGenerationOptions();
                 if (levelGen != nullptr && !levelGen->hasLoadedData()) {
                     int gameRulesCount = pack->getDLCItemsCount(
                         DLCManager::e_DLCType_GameRulesHeader);
@@ -336,10 +338,10 @@ int DLCTexturePack::onPackMounted(int iPad, std::uint32_t dwErr,
 
                                     delete[] pbData;
 
-                                    app.m_gameRules.setLevelGenerationOptions(
+                                    gameServices().setLevelGenerationOptions(
                                         dlcFile->lgo);
                                 } else {
-                                    app.FatalLoadError();
+                                    gameServices().fatalLoadError();
                                 }
                             }
                         }
@@ -357,7 +359,7 @@ int DLCTexturePack::onPackMounted(int iPad, std::uint32_t dwErr,
                                 // after a read fail and it's not an error?
                                 levelGen->setBaseSaveData(pbData, fileSize);
                             } else {
-                                app.FatalLoadError();
+                                gameServices().fatalLoadError();
                             }
                         }
                     }
@@ -400,15 +402,15 @@ int DLCTexturePack::onPackMounted(int iPad, std::uint32_t dwErr,
     }
 
     texturePack->m_bHasLoadedData = true;
-    if (app.getLevelGenerationOptions())
-        app.getLevelGenerationOptions()->setLoadedData();
-    app.SetAction(InputManager.GetPrimaryPad(), eAppAction_ReloadTexturePack);
+    if (gameServices().getLevelGenerationOptions())
+        gameServices().getLevelGenerationOptions()->setLoadedData();
+    gameServices().setAction(PlatformInput.GetPrimaryPad(), eAppAction_ReloadTexturePack);
 
     return 0;
 }
 
 void DLCTexturePack::loadUI() {
-    if (m_archiveFile && m_archiveFile->hasFile(L"skin.swf")) {
+    if (m_archiveFile && m_archiveFile->hasFile("skin.swf")) {
         ui.ReloadSkin();
         bUILoaded = true;
     } else {
@@ -418,7 +420,7 @@ void DLCTexturePack::loadUI() {
 
     AbstractTexturePack::loadUI();
     if (hasAudio() == false && !ui.IsReloadingSkin()) {
-        StorageManager.UnmountInstalledDLC("TPACK");
+        PlatformStorage.UnmountInstalledDLC("TPACK");
     }
 }
 
@@ -429,7 +431,7 @@ void DLCTexturePack::unloadUI() {
     }
     AbstractTexturePack::unloadUI();
 
-    app.m_dlcManager.removePack(m_dlcDataPack);
+    gameServices().dlcRemovePack(m_dlcDataPack);
     m_dlcDataPack = nullptr;
     delete m_archiveFile;
     m_bHasLoadedData = false;
@@ -437,21 +439,21 @@ void DLCTexturePack::unloadUI() {
     bUILoaded = false;
 }
 
-std::wstring DLCTexturePack::getXuiRootPath() {
-    std::wstring path = L"";
+std::string DLCTexturePack::getXuiRootPath() {
+    std::string path = "";
     if (m_dlcDataPack != nullptr &&
         m_dlcDataPack->doesPackContainFile(DLCManager::e_DLCType_UIData,
-                                           L"TexturePack.xzp")) {
+                                           "TexturePack.xzp")) {
         DLCUIDataFile* dataFile = (DLCUIDataFile*)m_dlcDataPack->getFile(
-            DLCManager::e_DLCType_UIData, L"TexturePack.xzp");
+            DLCManager::e_DLCType_UIData, "TexturePack.xzp");
 
         std::uint32_t dwSize = 0;
         std::uint8_t* pbData = dataFile->getData(dwSize);
 
         constexpr int LOCATOR_SIZE =
             256;  // Use this to allocate space to hold a ResourceLocator string
-        wchar_t szResourceLocator[LOCATOR_SIZE];
-        swprintf(szResourceLocator, LOCATOR_SIZE, L"memory://%08X,%04X#",
+        char szResourceLocator[LOCATOR_SIZE];
+        snprintf(szResourceLocator, LOCATOR_SIZE, "memory://%08X,%04X#",
                  pbData, dwSize);
         path = szResourceLocator;
     }

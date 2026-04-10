@@ -1,3 +1,3 @@
 #pragma once
-#define IDC_XuiCheckbox1 L"XuiCheckbox1"
-#define IDC_SceneDebug L"SceneDebug"
+#define IDC_XuiCheckbox1 "XuiCheckbox1"
+#define IDC_SceneDebug "SceneDebug"

@@ -42,7 +42,7 @@ private:
     int secondaryPower;
 
     std::shared_ptr<ItemInstance> paymentItem;
-    std::wstring name;
+    std::string name;
 
 public:
     BeaconTileEntity();
@@ -71,10 +71,10 @@ public:
     std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
     std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
     void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
-    std::wstring getName();
-    std::wstring getCustomName();
+    std::string getName();
+    std::string getCustomName();
     bool hasCustomName();
-    void setCustomName(const std::wstring& name);
+    void setCustomName(const std::string& name);
     int getMaxStackSize();
     bool stillValid(std::shared_ptr<Player> player);
     void startOpen();

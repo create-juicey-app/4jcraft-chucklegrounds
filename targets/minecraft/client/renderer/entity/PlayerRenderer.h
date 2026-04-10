@@ -2,9 +2,8 @@
 #include <memory>
 #include <string>
 
-#include "app/include/NetTypes.h"
-#include "app/include/SkinBox.h"
-#include "app/include/XboxStubs.h"
+#include "platform/NetTypes.h"
+#include "minecraft/client/model/SkinBox.h"
 #include "MobRenderer.h"
 #include "minecraft/client/renderer/entity/LivingEntityRenderer.h"
 #include "minecraft/world/entity/player/Player.h"
@@ -32,7 +31,7 @@ public:
     static unsigned int getNametagColour(int index);
 
 private:
-    static const std::wstring MATERIAL_NAMES[5];
+    static const std::string MATERIAL_NAMES[5];
 
 protected:
     virtual int prepareArmor(std::shared_ptr<LivingEntity> _player, int layer,
@@ -48,7 +47,7 @@ protected:
     virtual void additionalRendering(std::shared_ptr<LivingEntity> _mob,
                                      float a);
     void renderNameTags(std::shared_ptr<LivingEntity> player, double x,
-                        double y, double z, std::wstring msg, float scale,
+                        double y, double z, std::string msg, float scale,
                         double dist);
 
     virtual void scale(std::shared_ptr<LivingEntity> _player, float a);

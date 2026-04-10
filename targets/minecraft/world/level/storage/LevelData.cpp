@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "LevelData.h"
 
 #include <assert.h>
@@ -6,7 +7,7 @@
 #include <cmath>
 
 #include "app/common/App_Defines.h"
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 #include "java/System.h"
 #include "minecraft/world/level/GameRules.h"
@@ -18,117 +19,117 @@
 LevelData::LevelData() {}
 
 LevelData::LevelData(CompoundTag* tag) {
-    seed = tag->getLong(L"RandomSeed");
+    seed = tag->getLong("RandomSeed");
     m_pGenerator = LevelType::lvl_normal;
-    if (tag->contains(L"generatorName")) {
-        std::wstring generatorName = tag->getString(L"generatorName");
+    if (tag->contains("generatorName")) {
+        std::string generatorName = tag->getString("generatorName");
         m_pGenerator = LevelType::getLevelType(generatorName);
         if (m_pGenerator == nullptr) {
             m_pGenerator = LevelType::lvl_normal;
         } else if (m_pGenerator->hasReplacement()) {
             int generatorVersion = 0;
-            if (tag->contains(L"generatorVersion")) {
-                generatorVersion = tag->getInt(L"generatorVersion");
+            if (tag->contains("generatorVersion")) {
+                generatorVersion = tag->getInt("generatorVersion");
             }
             m_pGenerator =
                 m_pGenerator->getReplacementForVersion(generatorVersion);
         }
 
-        if (tag->contains(L"generatorOptions"))
-            generatorOptions = tag->getString(L"generatorOptions");
+        if (tag->contains("generatorOptions"))
+            generatorOptions = tag->getString("generatorOptions");
     }
 
-    gameType = GameType::byId(tag->getInt(L"GameType"));
-    if (tag->contains(L"MapFeatures")) {
-        generateMapFeatures = tag->getBoolean(L"MapFeatures");
+    gameType = GameType::byId(tag->getInt("GameType"));
+    if (tag->contains("MapFeatures")) {
+        generateMapFeatures = tag->getBoolean("MapFeatures");
     } else {
         generateMapFeatures = true;
     }
-    spawnBonusChest = tag->getBoolean(L"spawnBonusChest");
+    spawnBonusChest = tag->getBoolean("spawnBonusChest");
 
-    xSpawn = tag->getInt(L"SpawnX");
-    ySpawn = tag->getInt(L"SpawnY");
-    zSpawn = tag->getInt(L"SpawnZ");
-    gameTime = tag->getLong(L"Time");
-    if (tag->contains(L"DayTime")) {
-        dayTime = tag->getLong(L"DayTime");
+    xSpawn = tag->getInt("SpawnX");
+    ySpawn = tag->getInt("SpawnY");
+    zSpawn = tag->getInt("SpawnZ");
+    gameTime = tag->getLong("Time");
+    if (tag->contains("DayTime")) {
+        dayTime = tag->getLong("DayTime");
     } else {
         dayTime = gameTime;
     }
-    lastPlayed = tag->getLong(L"LastPlayed");
-    sizeOnDisk = tag->getLong(L"SizeOnDisk");
-    levelName = tag->getString(L"LevelName");
-    version = tag->getInt(L"version");
-    rainTime = tag->getInt(L"rainTime");
-    raining = tag->getBoolean(L"raining");
-    thunderTime = tag->getInt(L"thunderTime");
-    thundering = tag->getBoolean(L"thundering");
-    hardcore = tag->getBoolean(L"hardcore");
+    lastPlayed = tag->getLong("LastPlayed");
+    sizeOnDisk = tag->getLong("SizeOnDisk");
+    levelName = tag->getString("LevelName");
+    version = tag->getInt("version");
+    rainTime = tag->getInt("rainTime");
+    raining = tag->getBoolean("raining");
+    thunderTime = tag->getInt("thunderTime");
+    thundering = tag->getBoolean("thundering");
+    hardcore = tag->getBoolean("hardcore");
 
-    if (tag->contains(L"initialized")) {
-        initialized = tag->getBoolean(L"initialized");
+    if (tag->contains("initialized")) {
+        initialized = tag->getBoolean("initialized");
     } else {
         initialized = true;
     }
 
-    if (tag->contains(L"allowCommands")) {
-        allowCommands = tag->getBoolean(L"allowCommands");
+    if (tag->contains("allowCommands")) {
+        allowCommands = tag->getBoolean("allowCommands");
     } else {
         allowCommands = gameType == GameType::CREATIVE;
     }
 
     // 4J: Game rules are now stored with app game host options
-    /*if (tag->contains(L"GameRules"))
+    /*if (tag->contains("GameRules"))
     {
-            gameRules.loadFromTag(tag->getCompound(L"GameRules"));
+            gameRules.loadFromTag(tag->getCompound("GameRules"));
     }*/
 
     newSeaLevel = tag->getBoolean(
-        L"newSeaLevel");  // 4J added - only use new sea level for newly created
+        "newSeaLevel");  // 4J added - only use new sea level for newly created
                           // maps. This read defaults to false. (sea level
                           // changes in 1.8.2)
     hasBeenInCreative = tag->getBoolean(
-        L"hasBeenInCreative");  // 4J added so we can not award achievements to
+        "hasBeenInCreative");  // 4J added so we can not award achievements to
                                 // levels modified in creative
 
     // 4J added - for stronghold position
-    bStronghold = tag->getBoolean(L"hasStronghold");
+    bStronghold = tag->getBoolean("hasStronghold");
 
     if (bStronghold == false) {
         // we need to generate the position
         xStronghold = yStronghold = zStronghold = 0;
     } else {
-        xStronghold = tag->getInt(L"StrongholdX");
-        yStronghold = tag->getInt(L"StrongholdY");
-        zStronghold = tag->getInt(L"StrongholdZ");
+        xStronghold = tag->getInt("StrongholdX");
+        yStronghold = tag->getInt("StrongholdY");
+        zStronghold = tag->getInt("StrongholdZ");
     }
 
     // 4J added - for stronghold end portal position
-    bStrongholdEndPortal = tag->getBoolean(L"hasStrongholdEndPortal");
+    bStrongholdEndPortal = tag->getBoolean("hasStrongholdEndPortal");
 
     if (bStrongholdEndPortal == false) {
         // we need to generate the position
         xStrongholdEndPortal = zStrongholdEndPortal = 0;
     } else {
-        xStrongholdEndPortal = tag->getInt(L"StrongholdEndPortalX");
-        zStrongholdEndPortal = tag->getInt(L"StrongholdEndPortalZ");
+        xStrongholdEndPortal = tag->getInt("StrongholdEndPortalX");
+        zStrongholdEndPortal = tag->getInt("StrongholdEndPortalZ");
     }
 
     // 4J Added
-    m_xzSize = tag->getInt(L"XZSize");
-    m_hellScale = tag->getInt(L"HellScale");
+    m_xzSize = tag->getInt("XZSize");
+    m_hellScale = tag->getInt("HellScale");
 
 #ifdef _LARGE_WORLDS
-    m_classicEdgeMoat = tag->getInt(L"ClassicMoat");
-    m_smallEdgeMoat = tag->getInt(L"SmallMoat");
-    m_mediumEdgeMoat = tag->getInt(L"MediumMoat");
+    m_classicEdgeMoat = tag->getInt("ClassicMoat");
+    m_smallEdgeMoat = tag->getInt("SmallMoat");
+    m_mediumEdgeMoat = tag->getInt("MediumMoat");
 
-    int newWorldSize = app.GetGameNewWorldSize();
-    int newHellScale = app.GetGameNewHellScale();
+    int newWorldSize = gameServices().getGameNewWorldSize();
+    int newHellScale = gameServices().getGameNewHellScale();
     m_hellScaleOld = m_hellScale;
     m_xzSizeOld = m_xzSize;
     if (newWorldSize > m_xzSize) {
-        bool bUseMoat = app.GetGameNewWorldSizeUseMoat();
+        bool bUseMoat = gameServices().getGameNewWorldSizeUseMoat();
         switch (m_xzSize) {
             case LEVEL_WIDTH_CLASSIC:
                 m_classicEdgeMoat = bUseMoat;
@@ -182,14 +183,14 @@ LevelData::LevelData(CompoundTag* tag) {
             assert(0);
             break;
     }
-    app.SetGameHostOption(eGameHostOption_WorldSize, hostOptionworldSize);
+    gameServices().setGameHostOption(eGameHostOption_WorldSize, hostOptionworldSize);
 #endif
 
     /* 4J - we don't store this anymore
-    if (tag->contains(L"Player"))
+    if (tag->contains("Player"))
     {
-    loadedPlayerTag = tag->getCompound(L"Player");
-    dimension = loadedPlayerTag->getInt(L"Dimension");
+    loadedPlayerTag = tag->getCompound("Player");
+    dimension = loadedPlayerTag->getInt("Dimension");
     }
     else
     {
@@ -200,7 +201,7 @@ LevelData::LevelData(CompoundTag* tag) {
 }
 
 LevelData::LevelData(LevelSettings* levelSettings,
-                     const std::wstring& levelName) {
+                     const std::string& levelName) {
     seed = levelSettings->getSeed();
     gameType = levelSettings->getGameType();
     generateMapFeatures = levelSettings->isGenerateMapFeatures();
@@ -333,50 +334,50 @@ CompoundTag* LevelData::createTag(
 }
 
 void LevelData::setTagData(CompoundTag* tag) {
-    tag->putLong(L"RandomSeed", seed);
-    tag->putString(L"generatorName", m_pGenerator->getGeneratorName());
-    tag->putInt(L"generatorVersion", m_pGenerator->getVersion());
-    tag->putString(L"generatorOptions", generatorOptions);
-    tag->putInt(L"GameType", gameType->getId());
-    tag->putBoolean(L"MapFeatures", generateMapFeatures);
-    tag->putBoolean(L"spawnBonusChest", spawnBonusChest);
-    tag->putInt(L"SpawnX", xSpawn);
-    tag->putInt(L"SpawnY", ySpawn);
-    tag->putInt(L"SpawnZ", zSpawn);
-    tag->putLong(L"Time", gameTime);
-    tag->putLong(L"DayTime", dayTime);
-    tag->putLong(L"SizeOnDisk", sizeOnDisk);
-    tag->putLong(L"LastPlayed", System::currentTimeMillis());
-    tag->putString(L"LevelName", levelName);
-    tag->putInt(L"version", version);
-    tag->putInt(L"rainTime", rainTime);
-    tag->putBoolean(L"raining", raining);
-    tag->putInt(L"thunderTime", thunderTime);
-    tag->putBoolean(L"thundering", thundering);
-    tag->putBoolean(L"hardcore", hardcore);
-    tag->putBoolean(L"allowCommands", allowCommands);
-    tag->putBoolean(L"initialized", initialized);
+    tag->putLong("RandomSeed", seed);
+    tag->putString("generatorName", m_pGenerator->getGeneratorName());
+    tag->putInt("generatorVersion", m_pGenerator->getVersion());
+    tag->putString("generatorOptions", generatorOptions);
+    tag->putInt("GameType", gameType->getId());
+    tag->putBoolean("MapFeatures", generateMapFeatures);
+    tag->putBoolean("spawnBonusChest", spawnBonusChest);
+    tag->putInt("SpawnX", xSpawn);
+    tag->putInt("SpawnY", ySpawn);
+    tag->putInt("SpawnZ", zSpawn);
+    tag->putLong("Time", gameTime);
+    tag->putLong("DayTime", dayTime);
+    tag->putLong("SizeOnDisk", sizeOnDisk);
+    tag->putLong("LastPlayed", System::currentTimeMillis());
+    tag->putString("LevelName", levelName);
+    tag->putInt("version", version);
+    tag->putInt("rainTime", rainTime);
+    tag->putBoolean("raining", raining);
+    tag->putInt("thunderTime", thunderTime);
+    tag->putBoolean("thundering", thundering);
+    tag->putBoolean("hardcore", hardcore);
+    tag->putBoolean("allowCommands", allowCommands);
+    tag->putBoolean("initialized", initialized);
     // 4J: Game rules are now stored with app game host options
-    // tag->putCompound(L"GameRules", gameRules.createTag());
-    tag->putBoolean(L"newSeaLevel", newSeaLevel);
-    tag->putBoolean(L"hasBeenInCreative", hasBeenInCreative);
+    // tag->putCompound("GameRules", gameRules.createTag());
+    tag->putBoolean("newSeaLevel", newSeaLevel);
+    tag->putBoolean("hasBeenInCreative", hasBeenInCreative);
     // store the stronghold position
-    tag->putBoolean(L"hasStronghold", bStronghold);
-    tag->putInt(L"StrongholdX", xStronghold);
-    tag->putInt(L"StrongholdY", yStronghold);
-    tag->putInt(L"StrongholdZ", zStronghold);
+    tag->putBoolean("hasStronghold", bStronghold);
+    tag->putInt("StrongholdX", xStronghold);
+    tag->putInt("StrongholdY", yStronghold);
+    tag->putInt("StrongholdZ", zStronghold);
     // store the stronghold end portal position
-    tag->putBoolean(L"hasStrongholdEndPortal", bStrongholdEndPortal);
-    tag->putInt(L"StrongholdEndPortalX", xStrongholdEndPortal);
-    tag->putInt(L"StrongholdEndPortalZ", zStrongholdEndPortal);
-    tag->putInt(L"XZSize", m_xzSize);
+    tag->putBoolean("hasStrongholdEndPortal", bStrongholdEndPortal);
+    tag->putInt("StrongholdEndPortalX", xStrongholdEndPortal);
+    tag->putInt("StrongholdEndPortalZ", zStrongholdEndPortal);
+    tag->putInt("XZSize", m_xzSize);
 #ifdef _LARGE_WORLDS
-    tag->putInt(L"ClassicMoat", m_classicEdgeMoat);
-    tag->putInt(L"SmallMoat", m_smallEdgeMoat);
-    tag->putInt(L"MediumMoat", m_mediumEdgeMoat);
+    tag->putInt("ClassicMoat", m_classicEdgeMoat);
+    tag->putInt("SmallMoat", m_smallEdgeMoat);
+    tag->putInt("MediumMoat", m_mediumEdgeMoat);
 #endif
 
-    tag->putInt(L"HellScale", m_hellScale);
+    tag->putInt("HellScale", m_hellScale);
 }
 
 int64_t LevelData::getSeed() { return seed; }
@@ -472,9 +473,9 @@ void LevelData::setSpawn(int xSpawn, int ySpawn, int zSpawn) {
     this->zSpawn = zSpawn;
 }
 
-std::wstring LevelData::getLevelName() { return levelName; }
+std::string LevelData::getLevelName() { return levelName; }
 
-void LevelData::setLevelName(const std::wstring& levelName) {
+void LevelData::setLevelName(const std::string& levelName) {
     this->levelName = levelName;
 }
 
@@ -516,7 +517,7 @@ void LevelData::setGameType(GameType* gameType) {
     // 4J Added
     hasBeenInCreative =
         hasBeenInCreative || (gameType == GameType::CREATIVE) ||
-        (app.GetGameHostOption(eGameHostOption_CheatsEnabled) > 0);
+        (gameServices().getGameHostOption(eGameHostOption_CheatsEnabled) > 0);
 }
 
 bool LevelData::useNewSeaLevel() { return newSeaLevel; }
@@ -529,9 +530,9 @@ LevelType* LevelData::getGenerator() { return m_pGenerator; }
 
 void LevelData::setGenerator(LevelType* generator) { m_pGenerator = generator; }
 
-std::wstring LevelData::getGeneratorOptions() { return generatorOptions; }
+std::string LevelData::getGeneratorOptions() { return generatorOptions; }
 
-void LevelData::setGeneratorOptions(const std::wstring& options) {
+void LevelData::setGeneratorOptions(const std::string& options) {
     generatorOptions = options;
 }
 

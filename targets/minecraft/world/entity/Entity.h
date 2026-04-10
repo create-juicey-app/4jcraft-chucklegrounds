@@ -61,7 +61,7 @@ public:
     }
 
 public:
-    static const std::wstring RIDING_TAG;
+    static const std::string RIDING_TAG;
     static const short TOTAL_AIR_SUPPLY = 20 * 15;
 
 private:
@@ -178,7 +178,7 @@ protected:
 
 private:
     bool invulnerable;
-    std::wstring uuid;
+    std::string uuid;
 
 protected:
     // 4J Added so that client side simulations on the host are not affected by
@@ -318,7 +318,7 @@ public:
 
 protected:
     virtual bool repositionEntityAfterLoad();
-    const std::wstring getEncodeId();
+    const std::string getEncodeId();
 
 public:
     virtual void readAdditionalSaveData(CompoundTag* tag) = 0;
@@ -408,7 +408,7 @@ protected:
 public:
     virtual void makeStuckInWeb();
 
-    virtual std::wstring getAName();
+    virtual std::string getAName();
 
     // 4J - added to manage allocation of small ids
 private:
@@ -467,11 +467,11 @@ public:
     virtual int getPortalEntranceDir();
     virtual bool isIgnoringTileTriggers();
     virtual bool displayFireAnimation();
-    virtual void setUUID(const std::wstring& UUID);
-    virtual std::wstring getUUID();
+    virtual void setUUID(const std::string& UUID);
+    virtual std::string getUUID();
     virtual bool isPushedByWater();
-    virtual std::wstring getDisplayName();
-    virtual std::wstring getNetworkName();  // 4J: Added
+    virtual std::string getDisplayName();
+    virtual std::string getNetworkName();  // 4J: Added
 
 private:
     unsigned int m_uiAnimOverrideBitmask;

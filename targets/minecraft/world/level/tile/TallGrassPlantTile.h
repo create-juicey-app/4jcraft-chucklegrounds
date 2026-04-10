@@ -22,7 +22,7 @@ public:
         TALL_GRASS_TILE_NAMES[TALL_GRASS_TILE_NAMES_LENGTH];
 
 private:
-    static const std::wstring TEXTURE_NAMES[];
+    static const std::string TEXTURE_NAMES[];
     Icon** icons;
 
 protected:

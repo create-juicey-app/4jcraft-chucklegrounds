@@ -63,12 +63,12 @@ public:
 
         static const int MAX_MOTIVE_NAME_LENGTH;
 
-        const std::wstring name;
+        const std::string name;
         const int w, h;
         const int uo, vo;
 
         // private:
-        Motive(std::wstring name, int w, int h, int uo, int vo)
+        Motive(std::string name, int w, int h, int uo, int vo)
             : name(name), w(w), h(h), uo(uo), vo(vo) {};
     };
 
@@ -83,7 +83,7 @@ public:
     Painting(Level* level);
     Painting(Level* level, int xTile, int yTile, int zTile, int dir);
     Painting(Level* level, int x, int y, int z, int dir,
-             std::wstring motiveName);
+             std::string motiveName);
 
     // 4J Stu - Added this so that we can use some shared_ptr functions that
     // were needed in the ctor 4J Stu - Added motive param for debugging/artists

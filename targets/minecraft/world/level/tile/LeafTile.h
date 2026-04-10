@@ -13,7 +13,7 @@ class LeafTile : public TransparentTile {
     friend class ChunkRebuildData;
 
 public:
-    static const std::wstring TEXTURES[2][4];
+    static const std::string TEXTURES[2][4];
     static const int REQUIRED_WOOD_RANGE = 4;
 
     static const int UPDATE_LEAF_BIT = 8;

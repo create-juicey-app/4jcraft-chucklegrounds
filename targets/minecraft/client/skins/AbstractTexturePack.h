@@ -13,15 +13,15 @@ class InputStream;
 class AbstractTexturePack : public TexturePack {
 private:
     const std::uint32_t id;
-    const std::wstring name;
+    const std::string name;
 
 protected:
     File* file;
-    std::wstring texname;
-    std::wstring m_wsWorldName;
+    std::string texname;
+    std::string m_wsWorldName;
 
-    std::wstring desc1;
-    std::wstring desc2;
+    std::string desc1;
+    std::string desc2;
 
     std::uint8_t* m_iconData;
     std::uint32_t m_iconSize;
@@ -40,11 +40,11 @@ private:
     int textureId;
 
 protected:
-    AbstractTexturePack(std::uint32_t id, File* file, const std::wstring& name,
+    AbstractTexturePack(std::uint32_t id, File* file, const std::string& name,
                         TexturePack* fallback);
 
 private:
-    static std::wstring trim(std::wstring line);
+    static std::string trim(std::string line);
 
 protected:
     virtual void loadIcon();
@@ -53,47 +53,47 @@ protected:
     virtual void loadName();
 
 public:
-    virtual InputStream* getResource(const std::wstring& name,
+    virtual InputStream* getResource(const std::string& name,
                                      bool allowFallback);  // throws IOException
     // 4J Removed do to current override in TexturePack class
-    // virtual InputStream *getResource(const std::wstring &name); //throws
+    // virtual InputStream *getResource(const std::string &name); //throws
     // IOException
     virtual DLCPack* getDLCPack() = 0;
 
 protected:
     virtual InputStream* getResourceImplementation(
-        const std::wstring& name) = 0;  // throws IOException;
+        const std::string& name) = 0;  // throws IOException;
 public:
     virtual void unload(Textures* textures);
     virtual void load(Textures* textures);
-    virtual bool hasFile(const std::wstring& name, bool allowFallback);
-    virtual bool hasFile(const std::wstring& name) = 0;
+    virtual bool hasFile(const std::string& name, bool allowFallback);
+    virtual bool hasFile(const std::string& name) = 0;
     virtual std::uint32_t getId();
-    virtual std::wstring getName();
-    virtual std::wstring getDesc1();
-    virtual std::wstring getDesc2();
-    virtual std::wstring getWorldName();
+    virtual std::string getName();
+    virtual std::string getDesc1();
+    virtual std::string getDesc2();
+    virtual std::string getWorldName();
 
-    virtual std::wstring getAnimationString(const std::wstring& textureName,
-                                            const std::wstring& path,
+    virtual std::string getAnimationString(const std::string& textureName,
+                                            const std::string& path,
                                             bool allowFallback);
 
 protected:
-    virtual std::wstring getAnimationString(const std::wstring& textureName,
-                                            const std::wstring& path);
+    virtual std::string getAnimationString(const std::string& textureName,
+                                            const std::string& path);
     void loadDefaultUI();
     void loadDefaultColourTable();
     void loadDefaultHTMLColourTable();
 
 public:
-    virtual BufferedImage* getImageResource(const std::wstring& File,
+    virtual BufferedImage* getImageResource(const std::string& File,
                                             bool filenameHasExtension = false,
                                             bool bTitleUpdateTexture = false,
-                                            const std::wstring& drive = L"");
+                                            const std::string& drive = "");
     virtual void loadColourTable();
     virtual void loadUI();
     virtual void unloadUI();
-    virtual std::wstring getXuiRootPath();
+    virtual std::string getXuiRootPath();
     virtual std::uint8_t* getPackIcon(std::uint32_t& imageBytes);
     virtual std::uint8_t* getPackComparison(std::uint32_t& imageBytes);
     virtual unsigned int getDLCParentPackId();

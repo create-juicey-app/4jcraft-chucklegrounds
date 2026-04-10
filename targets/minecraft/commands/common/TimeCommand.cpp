@@ -32,7 +32,7 @@ void TimeCommand::execute(std::shared_ptr<CommandSender> source,
     if (night) amount = 12500;
     doSetTime(source, amount);
     // logAdminAction(source, "commands.time.set", amount);
-    logAdminAction(source, ChatPacket::e_ChatCustom, L"commands.time.set");
+    logAdminAction(source, ChatPacket::e_ChatCustom, "commands.time.set");
 
     // if (args.size() > 1) {
     //	if (args[0].equals("set")) {

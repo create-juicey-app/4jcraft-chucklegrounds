@@ -33,7 +33,7 @@ public:
     int64_t getDayTime();
     int64_t getSizeOnDisk();
     CompoundTag* getLoadedPlayerTag();
-    std::wstring getLevelName();
+    std::string getLevelName();
     int getVersion();
     int64_t getLastPlayed();
     bool isThundering();
@@ -51,7 +51,7 @@ public:
     void setLoadedPlayerTag(CompoundTag* loadedPlayerTag);
     void setDimension(int dimension);
     void setSpawn(int xSpawn, int ySpawn, int zSpawn);
-    void setLevelName(const std::wstring& levelName);
+    void setLevelName(const std::string& levelName);
     void setVersion(int version);
     void setThundering(bool thundering);
     void setThunderTime(int thunderTime);

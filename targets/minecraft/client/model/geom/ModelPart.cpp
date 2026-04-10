@@ -1,10 +1,10 @@
 #include "ModelPart.h"
 
-#include <GL/gl.h>
+
 
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "Cube.h"
 #include "TexOffs.h"
 #include "minecraft/client/MemoryTracker.h"
@@ -28,7 +28,7 @@ void ModelPart::_init() {
 
 ModelPart::ModelPart() { _init(); }
 
-ModelPart::ModelPart(Model* model, const std::wstring& id) {
+ModelPart::ModelPart(Model* model, const std::string& id) {
     construct(model, id);
 }
 
@@ -38,7 +38,7 @@ ModelPart::ModelPart(Model* model, int xTexOffs, int yTexOffs) {
     construct(model, xTexOffs, yTexOffs);
 }
 
-void ModelPart::construct(Model* model, const std::wstring& id) {
+void ModelPart::construct(Model* model, const std::string& id) {
     _init();
     this->model = model;
     model->cubes.push_back(this);
@@ -48,7 +48,7 @@ void ModelPart::construct(Model* model, const std::wstring& id) {
 
 void ModelPart::construct(Model* model) {
     _init();
-    construct(model, L"");
+    construct(model, "");
 }
 
 void ModelPart::construct(Model* model, int xTexOffs, int yTexOffs) {
@@ -95,9 +95,9 @@ ModelPart* ModelPart::texOffs(int xTexOffs, int yTexOffs) {
     return this;
 }
 
-ModelPart* ModelPart::addBox(std::wstring id, float x0, float y0, float z0,
+ModelPart* ModelPart::addBox(std::string id, float x0, float y0, float z0,
                              int w, int h, int d) {
-    id = this->id + L"." + id;
+    id = this->id + "." + id;
     TexOffs* offs = model->getMapTex(id);
     texOffs(offs->x, offs->y);
     cubes.push_back((new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, 0))

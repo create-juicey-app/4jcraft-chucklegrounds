@@ -15,11 +15,11 @@ const unsigned int TreeTile::TREE_NAMES[TreeTile::TREE_NAMES_LENGTH] = {
     IDS_TILE_LOG_OAK, IDS_TILE_LOG_SPRUCE, IDS_TILE_LOG_BIRCH,
     IDS_TILE_LOG_JUNGLE};
 
-const std::wstring TreeTile::TREE_STRING_NAMES[TreeTile::TREE_NAMES_LENGTH] = {
-    L"oak", L"spruce", L"birch", L"jungle"};
+const std::string TreeTile::TREE_STRING_NAMES[TreeTile::TREE_NAMES_LENGTH] = {
+    "oak", "spruce", "birch", "jungle"};
 
-const std::wstring TreeTile::TREE_TEXTURES[] = {L"tree_side", L"tree_spruce",
-                                                L"tree_birch", L"tree_jungle"};
+const std::string TreeTile::TREE_TEXTURES[] = {"tree_side", "tree_spruce",
+                                                "tree_birch", "tree_jungle"};
 
 TreeTile::TreeTile(int id) : RotatedPillarTile(id, Material::wood) {}
 
@@ -72,9 +72,9 @@ std::shared_ptr<ItemInstance> TreeTile::getSilkTouchItemInstance(int data) {
 
 void TreeTile::registerIcons(IconRegister* iconRegister) {
     for (int i = 0; i < TREE_NAMES_LENGTH; i++) {
-        icons_side[i] = iconRegister->registerIcon(getIconName() + L"_" +
+        icons_side[i] = iconRegister->registerIcon(getIconName() + "_" +
                                                    TREE_STRING_NAMES[i]);
         icons_top[i] = iconRegister->registerIcon(
-            getIconName() + L"_" + TREE_STRING_NAMES[i] + L"_top");
+            getIconName() + "_" + TREE_STRING_NAMES[i] + "_top");
     }
 }

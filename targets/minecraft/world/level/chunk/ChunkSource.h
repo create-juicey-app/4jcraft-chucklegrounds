@@ -80,12 +80,12 @@ public:
     /**
      * Returns some stats that are rendered when the user holds F3.
      */
-    virtual std::wstring gatherStats() = 0;
+    virtual std::string gatherStats() = 0;
 
     virtual std::vector<Biome::MobSpawnerData*>* getMobsAt(
         MobCategory* mobCategory, int x, int y, int z) = 0;
     virtual TilePos* findNearestMapFeature(Level* level,
-                                           const std::wstring& featureName,
+                                           const std::string& featureName,
                                            int x, int y, int z) = 0;
 
     /**

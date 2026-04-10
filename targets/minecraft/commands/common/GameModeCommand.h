@@ -20,5 +20,5 @@ public:
 
 protected:
     GameType* getModeForString(std::shared_ptr<CommandSender> source,
-                               const std::wstring& name);
+                               const std::string& name);
 };

@@ -4,32 +4,39 @@
 #include <mutex>
 
 #include "util/Timer.h"
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Storage.h"
+#include "platform/profile/profile.h"
+#include "platform/storage/storage.h"
 
 // using namespace std;
 
+#include "app/common/ArchiveManager.h"
+#include "app/common/BannedListManager.h"
+#include "app/common/DebugOptions.h"
+#include "app/common/DLCController.h"
+#include "app/common/GameSettingsManager.h"
 #include "app/common/IPlatformGame.h"
 #include "app/common/App_structs.h"
-#include "app/common/src/Audio/Consoles_SoundEngine.h"
-#include "app/common/src/DLC/DLCManager.h"
-#include "app/common/src/GameRules/ConsoleGameRulesConstants.h"
-#include "app/common/src/GameRules/GameRuleManager.h"
-#include "app/common/src/Localisation/StringTable.h"
-#include "app/common/src/Tutorial/TutorialEnum.h"
-#include "app/common/src/UI/All Platforms/ArchiveFile.h"
-#include "app/common/src/UI/All Platforms/UIStructs.h"
-#include "app/include/NetTypes.h"
-#include "app/include/SkinBox.h"
-#include "app/include/XboxStubs.h"
+#include "app/common/LocalizationManager.h"
+#include "app/common/MenuController.h"
+#include "app/common/NetworkController.h"
+#include "app/common/SaveManager.h"
+#include "app/common/SkinManager.h"
+#include "app/common/TerrainFeatureManager.h"
+#include "app/common/Audio/Consoles_SoundEngine.h"
+#include "app/common/DLC/DLCManager.h"
+#include "app/common/GameRules/ConsoleGameRulesConstants.h"
+#include "app/common/GameRules/GameRuleManager.h"
+#include "app/common/Localisation/StringTable.h"
+#include "app/common/Tutorial/TutorialEnum.h"
+#include "app/common/UI/All Platforms/ArchiveFile.h"
+#include "app/common/UI/All Platforms/UIStructs.h"
+#include "platform/NetTypes.h"
+#include "minecraft/client/model/SkinBox.h"
+#include "platform/XboxStubs.h"
 #include "minecraft/network/packet/DisconnectPacket.h"
 #include "minecraft/world/entity/item/MinecartHopper.h"
 
-typedef struct _JoinFromInviteData {
-    std::uint32_t dwUserIndex;       // dwUserIndex
-    std::uint32_t dwLocalUsersMask;  // dwUserMask
-    const INVITE_INFO* pInviteInfo;  // pInviteInfo
-} JoinFromInviteData;
+// JoinFromInviteData moved to NetworkController.h
 
 class Player;
 class Inventory;
@@ -56,9 +63,6 @@ class Merchant;
 class CMinecraftAudio;
 
 class Game : public IPlatformGame {
-private:
-    static int s_iHTMLFontSizesA[eHTMLSize_COUNT];
-
 public:
     Game();
 
@@ -68,13 +72,23 @@ public:
     typedef std::vector<PMEMDATA> VMEMFILES;
     typedef std::vector<PNOTIFICATION> VNOTIFICATIONS;
 
-    // storing skin files
-    std::vector<std::wstring> vSkinNames;
+    // storing skin files - delegated to SkinManager
+    std::vector<std::string>& vSkinNames = m_skinManager.vSkinNames;
     DLCManager m_dlcManager;
+    SaveManager m_saveManager;
+    BannedListManager m_bannedListManager;
+    TerrainFeatureManager m_terrainFeatureManager;
+    DebugOptions m_debugOptions;
+    LocalizationManager m_localizationManager;
+    ArchiveManager m_archiveManager;
+    SkinManager m_skinManager;
+    GameSettingsManager m_gameSettingsManager;
+    DLCController m_dlcController;
+    NetworkController m_networkController;
+    MenuController m_menuController;
 
-    // storing credits text from the DLC
-    std::vector<std::wstring> m_vCreditText;  // hold the credit text lines so
-                                              // we can avoid duplicating them
+    // storing credits text from the DLC - delegated to DLCController
+    std::vector<std::string>& m_vCreditText = m_dlcController.m_vCreditText;
 
     // In builds prior to TU5, the size of the GAME_SETTINGS struct was 204
     // bytes. We added a few new values to the internal struct in TU5, and even
@@ -117,7 +131,7 @@ public:
     static const int USER_UI =
         7;  // 4J Stu - This also makes it appear on the UI console
 
-    void HandleButtonPresses();
+    void HandleButtonPresses() { m_gameSettingsManager.handleButtonPresses(); }
     bool IntroRunning() { return m_bIntroRunning; }
     void SetIntroRunning(bool bSet) { m_bIntroRunning = bSet; }
 #if defined(_CONTENT_PACKAGE)
@@ -131,7 +145,9 @@ public:
 
     bool IsAppPaused();
     void SetAppPaused(bool val);
-    int displaySavingMessage(const C4JStorage::ESavingMessage eMsg, int iPad);
+    int displaySavingMessage(const IPlatformStorage::ESavingMessage eMsg, int iPad) {
+        return m_gameSettingsManager.displaySavingMessage(eMsg, iPad);
+    }
     bool GetGameStarted() { return m_bGameStarted; }
     void SetGameStarted(bool bVal) {
         if (bVal)
@@ -143,125 +159,175 @@ public:
     }
     int GetLocalPlayerCount(void);
     bool LoadInventoryMenu(int iPad, std::shared_ptr<LocalPlayer> player,
-                           bool bNavigateBack = false);
+                           bool bNavigateBack = false) {
+        return m_menuController.loadInventoryMenu(iPad, player, bNavigateBack);
+    }
     bool LoadCreativeMenu(int iPad, std::shared_ptr<LocalPlayer> player,
-                          bool bNavigateBack = false);
+                          bool bNavigateBack = false) {
+        return m_menuController.loadCreativeMenu(iPad, player, bNavigateBack);
+    }
     bool LoadEnchantingMenu(int iPad, std::shared_ptr<Inventory> inventory,
                             int x, int y, int z, Level* level,
-                            const std::wstring& name);
+                            const std::string& name) {
+        return m_menuController.loadEnchantingMenu(iPad, inventory, x, y, z, level, name);
+    }
     bool LoadFurnaceMenu(int iPad, std::shared_ptr<Inventory> inventory,
-                         std::shared_ptr<FurnaceTileEntity> furnace);
+                         std::shared_ptr<FurnaceTileEntity> furnace) {
+        return m_menuController.loadFurnaceMenu(iPad, inventory, furnace);
+    }
     bool LoadBrewingStandMenu(
         int iPad, std::shared_ptr<Inventory> inventory,
-        std::shared_ptr<BrewingStandTileEntity> brewingStand);
+        std::shared_ptr<BrewingStandTileEntity> brewingStand) {
+        return m_menuController.loadBrewingStandMenu(iPad, inventory, brewingStand);
+    }
     bool LoadContainerMenu(int iPad, std::shared_ptr<Container> inventory,
-                           std::shared_ptr<Container> container);
+                           std::shared_ptr<Container> container) {
+        return m_menuController.loadContainerMenu(iPad, inventory, container);
+    }
     bool LoadTrapMenu(int iPad, std::shared_ptr<Container> inventory,
-                      std::shared_ptr<DispenserTileEntity> trap);
-    bool LoadCrafting2x2Menu(int iPad, std::shared_ptr<LocalPlayer> player);
+                      std::shared_ptr<DispenserTileEntity> trap) {
+        return m_menuController.loadTrapMenu(iPad, inventory, trap);
+    }
+    bool LoadCrafting2x2Menu(int iPad, std::shared_ptr<LocalPlayer> player) {
+        return m_menuController.loadCrafting2x2Menu(iPad, player);
+    }
     bool LoadCrafting3x3Menu(int iPad, std::shared_ptr<LocalPlayer> player,
-                             int x, int y, int z);
+                             int x, int y, int z) {
+        return m_menuController.loadCrafting3x3Menu(iPad, player, x, y, z);
+    }
     bool LoadFireworksMenu(int iPad, std::shared_ptr<LocalPlayer> player, int x,
-                           int y, int z);
-    bool LoadSignEntryMenu(int iPad, std::shared_ptr<SignTileEntity> sign);
+                           int y, int z) {
+        return m_menuController.loadFireworksMenu(iPad, player, x, y, z);
+    }
+    bool LoadSignEntryMenu(int iPad, std::shared_ptr<SignTileEntity> sign) {
+        return m_menuController.loadSignEntryMenu(iPad, sign);
+    }
     bool LoadRepairingMenu(int iPad, std::shared_ptr<Inventory> inventory,
-                           Level* level, int x, int y, int z);
+                           Level* level, int x, int y, int z) {
+        return m_menuController.loadRepairingMenu(iPad, inventory, level, x, y, z);
+    }
     bool LoadTradingMenu(int iPad, std::shared_ptr<Inventory> inventory,
                          std::shared_ptr<Merchant> trader, Level* level,
-                         const std::wstring& name);
+                         const std::string& name) {
+        return m_menuController.loadTradingMenu(iPad, inventory, trader, level, name);
+    }
 
     bool LoadCommandBlockMenu(
         int iPad, std::shared_ptr<CommandBlockEntity> commandBlock) {
         return false;
     }
     bool LoadHopperMenu(int iPad, std::shared_ptr<Inventory> inventory,
-                        std::shared_ptr<HopperTileEntity> hopper);
+                        std::shared_ptr<HopperTileEntity> hopper) {
+        return m_menuController.loadHopperMenu(iPad, inventory, hopper);
+    }
     bool LoadHopperMenu(int iPad, std::shared_ptr<Inventory> inventory,
-                        std::shared_ptr<MinecartHopper> hopper);
+                        std::shared_ptr<MinecartHopper> hopper) {
+        return m_menuController.loadHopperMenu(iPad, inventory, hopper);
+    }
     bool LoadHorseMenu(int iPad, std::shared_ptr<Inventory> inventory,
                        std::shared_ptr<Container> container,
-                       std::shared_ptr<EntityHorse> horse);
+                       std::shared_ptr<EntityHorse> horse) {
+        return m_menuController.loadHorseMenu(iPad, inventory, container, horse);
+    }
     bool LoadBeaconMenu(int iPad, std::shared_ptr<Inventory> inventory,
-                        std::shared_ptr<BeaconTileEntity> beacon);
+                        std::shared_ptr<BeaconTileEntity> beacon) {
+        return m_menuController.loadBeaconMenu(iPad, inventory, beacon);
+    }
 
     bool GetTutorialMode() { return m_bTutorialMode; }
     void SetTutorialMode(bool bSet) { m_bTutorialMode = bSet; }
 
-    void SetSpecialTutorialCompletionFlag(int iPad, int index);
+    void SetSpecialTutorialCompletionFlag(int iPad, int index) {
+        m_gameSettingsManager.setSpecialTutorialCompletionFlag(iPad, index);
+    }
 
-    static const wchar_t* GetString(int iID);
+    static const char* GetString(int iID);
+    StringTable* getStringTable() const { return m_localizationManager.getStringTable(); }
 
     eGameMode GetGameMode() { return m_eGameMode; }
     void SetGameMode(eGameMode eMode) { m_eGameMode = eMode; }
 
-    eXuiAction GetGlobalXuiAction() { return m_eGlobalXuiAction; }
-    void SetGlobalXuiAction(eXuiAction action) { m_eGlobalXuiAction = action; }
-    eXuiAction GetXuiAction(int iPad) { return m_eXuiAction[iPad]; }
-    void SetAction(int iPad, eXuiAction action, void* param = nullptr);
-    void SetTMSAction(int iPad, eTMSAction action) {
-        m_eTMSAction[iPad] = action;
+    eXuiAction GetGlobalXuiAction() { return m_menuController.getGlobalXuiAction(); }
+    void SetGlobalXuiAction(eXuiAction action) { m_menuController.setGlobalXuiAction(action); }
+    eXuiAction GetXuiAction(int iPad) { return m_menuController.getXuiAction(iPad); }
+    void SetAction(int iPad, eXuiAction action, void* param = nullptr) {
+        m_menuController.setAction(iPad, action, param);
     }
-    eTMSAction GetTMSAction(int iPad) { return m_eTMSAction[iPad]; }
+    void SetTMSAction(int iPad, eTMSAction action) {
+        m_menuController.setTMSAction(iPad, action);
+    }
+    eTMSAction GetTMSAction(int iPad) { return m_menuController.getTMSAction(iPad); }
     eXuiServerAction GetXuiServerAction(int iPad) {
-        return m_eXuiServerAction[iPad];
+        return m_menuController.getXuiServerAction(iPad);
     }
     void* GetXuiServerActionParam(int iPad) {
-        return m_eXuiServerActionParam[iPad];
+        return m_menuController.getXuiServerActionParam(iPad);
     }
     void SetXuiServerAction(int iPad, eXuiServerAction action,
                             void* param = nullptr) {
-        m_eXuiServerAction[iPad] = action;
-        m_eXuiServerActionParam[iPad] = param;
+        m_menuController.setXuiServerAction(iPad, action, param);
     }
     eXuiServerAction GetGlobalXuiServerAction() {
-        return m_eGlobalXuiServerAction;
+        return m_menuController.getGlobalXuiServerAction();
     }
     void SetGlobalXuiServerAction(eXuiServerAction action) {
-        m_eGlobalXuiServerAction = action;
+        m_menuController.setGlobalXuiServerAction(action);
     }
 
     DisconnectPacket::eDisconnectReason GetDisconnectReason() {
-        return m_disconnectReason;
+        return m_networkController.getDisconnectReason();
     }
     void SetDisconnectReason(DisconnectPacket::eDisconnectReason bVal) {
-        m_disconnectReason = bVal;
+        m_networkController.setDisconnectReason(bVal);
     }
 
-    bool GetChangingSessionType() { return m_bChangingSessionType; }
-    void SetChangingSessionType(bool bVal) { m_bChangingSessionType = bVal; }
+    bool GetChangingSessionType() { return m_networkController.getChangingSessionType(); }
+    void SetChangingSessionType(bool bVal) { m_networkController.setChangingSessionType(bVal); }
 
-    bool GetReallyChangingSessionType() { return m_bReallyChangingSessionType; }
+    bool GetReallyChangingSessionType() { return m_networkController.getReallyChangingSessionType(); }
     void SetReallyChangingSessionType(bool bVal) {
-        m_bReallyChangingSessionType = bVal;
+        m_networkController.setReallyChangingSessionType(bVal);
     }
 
     // 4J Stu - Added so that we can call this when a confirmation box is
     // selected
-    static void SetActionConfirmed(void* param);
+    static void SetActionConfirmed(void* param) {
+        GameSettingsManager::setActionConfirmed(param);
+    }
     void HandleXuiActions(void);
 
     // 4J Stu - Functions used for Minecon and other promo work
     bool GetLoadSavesFromFolderEnabled() {
-        return m_bLoadSavesFromFolderEnabled;
+        return m_debugOptions.getLoadSavesFromFolderEnabled();
     }
     void SetLoadSavesFromFolderEnabled(bool bVal) {
-        m_bLoadSavesFromFolderEnabled = bVal;
+        m_debugOptions.setLoadSavesFromFolderEnabled(bVal);
     }
 
     // 4J Stu - Useful for debugging
-    bool GetWriteSavesToFolderEnabled() { return m_bWriteSavesToFolderEnabled; }
-    void SetWriteSavesToFolderEnabled(bool bVal) {
-        m_bWriteSavesToFolderEnabled = bVal;
+    bool GetWriteSavesToFolderEnabled() {
+        return m_debugOptions.getWriteSavesToFolderEnabled();
     }
-    bool GetMobsDontAttackEnabled() { return m_bMobsDontAttack; }
-    void SetMobsDontAttackEnabled(bool bVal) { m_bMobsDontAttack = bVal; }
-    bool GetUseDPadForDebug() { return m_bUseDPadForDebug; }
-    void SetUseDPadForDebug(bool bVal) { m_bUseDPadForDebug = bVal; }
-    bool GetMobsDontTickEnabled() { return m_bMobsDontTick; }
-    void SetMobsDontTickEnabled(bool bVal) { m_bMobsDontTick = bVal; }
+    void SetWriteSavesToFolderEnabled(bool bVal) {
+        m_debugOptions.setWriteSavesToFolderEnabled(bVal);
+    }
+    bool GetMobsDontAttackEnabled() {
+        return m_debugOptions.getMobsDontAttack();
+    }
+    void SetMobsDontAttackEnabled(bool bVal) {
+        m_debugOptions.setMobsDontAttack(bVal);
+    }
+    bool GetUseDPadForDebug() { return m_debugOptions.getUseDPadForDebug(); }
+    void SetUseDPadForDebug(bool bVal) {
+        m_debugOptions.setUseDPadForDebug(bVal);
+    }
+    bool GetMobsDontTickEnabled() { return m_debugOptions.getMobsDontTick(); }
+    void SetMobsDontTickEnabled(bool bVal) {
+        m_debugOptions.setMobsDontTick(bVal);
+    }
 
-    bool GetFreezePlayers() { return m_bFreezePlayers; }
-    void SetFreezePlayers(bool bVal) { m_bFreezePlayers = bVal; }
+    bool GetFreezePlayers() { return m_debugOptions.getFreezePlayers(); }
+    void SetFreezePlayers(bool bVal) { m_debugOptions.setFreezePlayers(bVal); }
 
     // debug -0 show safe area
     void ShowSafeArea(bool show) {}
@@ -270,85 +336,166 @@ public:
     // void			GetPreviewImage(int iPad,XSOCIAL_PREVIEWIMAGE
     // *preview);
 
-    void InitGameSettings();
+    void InitGameSettings() { m_gameSettingsManager.initGameSettings(); }
     static int OldProfileVersionCallback(void* pParam, unsigned char* pucData,
                                          const unsigned short usVersion,
-                                         const int iPad);
+                                         const int iPad) {
+        return GameSettingsManager::oldProfileVersionCallback(pParam, pucData, usVersion, iPad);
+    }
 
     static int DefaultOptionsCallback(void* pParam,
-                                      C_4JProfile::PROFILESETTINGS* pSettings,
-                                      const int iPad);
-    int SetDefaultOptions(C_4JProfile::PROFILESETTINGS* pSettings,
-                          const int iPad);
+                                      IPlatformProfile::PROFILESETTINGS* pSettings,
+                                      const int iPad) {
+        return GameSettingsManager::defaultOptionsCallback(pParam, pSettings, iPad);
+    }
+    int SetDefaultOptions(IPlatformProfile::PROFILESETTINGS* pSettings,
+                          const int iPad) {
+        return m_gameSettingsManager.setDefaultOptions(pSettings, iPad);
+    }
     void SetRichPresenceContext(int iPad, int contextId) override = 0;
 
-    void SetGameSettings(int iPad, eGameSetting eVal, unsigned char ucVal);
-    unsigned char GetGameSettings(int iPad, eGameSetting eVal);
-    unsigned char GetGameSettings(eGameSetting eVal);  // for the primary pad
-    void SetPlayerSkin(int iPad, const std::wstring& name);
-    void SetPlayerSkin(int iPad, std::uint32_t dwSkinId);
-    void SetPlayerCape(int iPad, const std::wstring& name);
-    void SetPlayerCape(int iPad, std::uint32_t dwCapeId);
-    void SetPlayerFavoriteSkin(int iPad, int iIndex, unsigned int uiSkinID);
-    unsigned int GetPlayerFavoriteSkin(int iPad, int iIndex);
-    unsigned char GetPlayerFavoriteSkinsPos(int iPad);
-    void SetPlayerFavoriteSkinsPos(int iPad, int iPos);
-    unsigned int GetPlayerFavoriteSkinsCount(int iPad);
-    void ValidateFavoriteSkins(
-        int iPad);  // check the DLC is available for the skins
+    void SetGameSettings(int iPad, eGameSetting eVal, unsigned char ucVal) {
+        m_gameSettingsManager.setGameSettings(iPad, eVal, ucVal);
+    }
+    unsigned char GetGameSettings(int iPad, eGameSetting eVal) {
+        return m_gameSettingsManager.getGameSettings(iPad, eVal);
+    }
+    unsigned char GetGameSettings(eGameSetting eVal) {
+        return m_gameSettingsManager.getGameSettings(eVal);
+    }
+    void SetPlayerSkin(int iPad, const std::string& name) {
+        m_skinManager.setPlayerSkin(iPad, name, GameSettingsA);
+    }
+    void SetPlayerSkin(int iPad, std::uint32_t dwSkinId) {
+        m_skinManager.setPlayerSkin(iPad, dwSkinId, GameSettingsA);
+    }
+    void SetPlayerCape(int iPad, const std::string& name) {
+        m_skinManager.setPlayerCape(iPad, name, GameSettingsA);
+    }
+    void SetPlayerCape(int iPad, std::uint32_t dwCapeId) {
+        m_skinManager.setPlayerCape(iPad, dwCapeId, GameSettingsA);
+    }
+    void SetPlayerFavoriteSkin(int iPad, int iIndex, unsigned int uiSkinID) {
+        m_skinManager.setPlayerFavoriteSkin(iPad, iIndex, uiSkinID, GameSettingsA);
+    }
+    unsigned int GetPlayerFavoriteSkin(int iPad, int iIndex) {
+        return m_skinManager.getPlayerFavoriteSkin(iPad, iIndex, GameSettingsA);
+    }
+    unsigned char GetPlayerFavoriteSkinsPos(int iPad) {
+        return m_skinManager.getPlayerFavoriteSkinsPos(iPad, GameSettingsA);
+    }
+    void SetPlayerFavoriteSkinsPos(int iPad, int iPos) {
+        m_skinManager.setPlayerFavoriteSkinsPos(iPad, iPos, GameSettingsA);
+    }
+    unsigned int GetPlayerFavoriteSkinsCount(int iPad) {
+        return m_skinManager.getPlayerFavoriteSkinsCount(iPad, GameSettingsA);
+    }
+    void ValidateFavoriteSkins(int iPad) {
+        m_skinManager.validateFavoriteSkins(iPad, GameSettingsA, m_dlcManager);
+    }
 
-    // Mash-up pack worlds hide/display
-    void HideMashupPackWorld(int iPad, unsigned int iMashupPackID);
-    void EnableMashupPackWorlds(int iPad);
-    unsigned int GetMashupPackWorlds(int iPad);
+    // Mash-up pack worlds hide/display - delegated to GameSettingsManager
+    void HideMashupPackWorld(int iPad, unsigned int iMashupPackID) {
+        m_gameSettingsManager.hideMashupPackWorld(iPad, iMashupPackID);
+    }
+    void EnableMashupPackWorlds(int iPad) {
+        m_gameSettingsManager.enableMashupPackWorlds(iPad);
+    }
+    unsigned int GetMashupPackWorlds(int iPad) {
+        return m_gameSettingsManager.getMashupPackWorlds(iPad);
+    }
 
-    // Minecraft language select
-    void SetMinecraftLanguage(int iPad, unsigned char ucLanguage);
-    unsigned char GetMinecraftLanguage(int iPad);
-    void SetMinecraftLocale(int iPad, unsigned char ucLanguage);
-    unsigned char GetMinecraftLocale(int iPad);
+    // Minecraft language select - delegated to GameSettingsManager
+    void SetMinecraftLanguage(int iPad, unsigned char ucLanguage) {
+        m_gameSettingsManager.setMinecraftLanguage(iPad, ucLanguage);
+    }
+    unsigned char GetMinecraftLanguage(int iPad) {
+        return m_gameSettingsManager.getMinecraftLanguage(iPad);
+    }
+    void SetMinecraftLocale(int iPad, unsigned char ucLanguage) {
+        m_gameSettingsManager.setMinecraftLocale(iPad, ucLanguage);
+    }
+    unsigned char GetMinecraftLocale(int iPad) {
+        return m_gameSettingsManager.getMinecraftLocale(iPad);
+    }
 
     // 4J-PB - set a timer when the user navigates the quickselect, so we can
     // bring the opacity back to defaults for a short time
     unsigned int GetOpacityTimer(int iPad) {
-        return m_uiOpacityCountDown[iPad];
+        return m_menuController.getOpacityTimer(iPad);
     }
     void SetOpacityTimer(int iPad) {
-        m_uiOpacityCountDown[iPad] = 120;
+        m_menuController.setOpacityTimer(iPad);
     }  // 6 seconds
     void TickOpacityTimer(int iPad) {
-        if (m_uiOpacityCountDown[iPad] > 0) m_uiOpacityCountDown[iPad]--;
+        m_menuController.tickOpacityTimer(iPad);
     }
 
 public:
-    std::wstring GetPlayerSkinName(int iPad);
-    std::uint32_t GetPlayerSkinId(int iPad);
-    std::wstring GetPlayerCapeName(int iPad);
-    std::uint32_t GetPlayerCapeId(int iPad);
-    std::uint32_t GetAdditionalModelParts(int iPad);
+    std::string GetPlayerSkinName(int iPad) {
+        return m_skinManager.getPlayerSkinName(iPad, GameSettingsA);
+    }
+    std::uint32_t GetPlayerSkinId(int iPad) {
+        return m_skinManager.getPlayerSkinId(iPad, GameSettingsA, m_dlcManager);
+    }
+    std::string GetPlayerCapeName(int iPad) {
+        return m_skinManager.getPlayerCapeName(iPad, GameSettingsA);
+    }
+    std::uint32_t GetPlayerCapeId(int iPad) {
+        return m_skinManager.getPlayerCapeId(iPad, GameSettingsA);
+    }
+    std::uint32_t GetAdditionalModelParts(int iPad) {
+        return m_skinManager.getAdditionalModelParts(iPad);
+    }
     void CheckGameSettingsChanged(bool bOverride5MinuteTimer = false,
-                                  int iPad = XUSER_INDEX_ANY);
-    void ApplyGameSettingsChanged(int iPad);
-    void ClearGameSettingsChangedFlag(int iPad);
-    void ActionGameSettings(int iPad, eGameSetting eVal);
+                                  int iPad = XUSER_INDEX_ANY) {
+        m_gameSettingsManager.checkGameSettingsChanged(bOverride5MinuteTimer, iPad);
+    }
+    void ApplyGameSettingsChanged(int iPad) {
+        m_gameSettingsManager.applyGameSettingsChanged(iPad);
+    }
+    void ClearGameSettingsChangedFlag(int iPad) {
+        m_gameSettingsManager.clearGameSettingsChangedFlag(iPad);
+    }
+    void ActionGameSettings(int iPad, eGameSetting eVal) {
+        m_gameSettingsManager.actionGameSettings(iPad, eVal);
+    }
     unsigned int GetGameSettingsDebugMask(int iPad = -1,
-                                          bool bOverridePlayer = false);
-    void SetGameSettingsDebugMask(int iPad, unsigned int uiVal);
-    void ActionDebugMask(int iPad, bool bSetAllClear = false);
+                                          bool bOverridePlayer = false) {
+        return m_gameSettingsManager.getGameSettingsDebugMask(iPad, bOverridePlayer);
+    }
+    void SetGameSettingsDebugMask(int iPad, unsigned int uiVal) {
+        m_gameSettingsManager.setGameSettingsDebugMask(iPad, uiVal);
+    }
+    void ActionDebugMask(int iPad, bool bSetAllClear = false) {
+        m_gameSettingsManager.actionDebugMask(iPad, bSetAllClear);
+    }
 
     //
     bool IsLocalMultiplayerAvailable();
 
-    // for sign in change monitoring
+    // for sign in change monitoring - delegated to NetworkController
     static void SignInChangeCallback(void* pParam, bool bVal,
-                                     unsigned int uiSignInData);
-    static void ClearSignInChangeUsersMask();
-    static int SignoutExitWorldThreadProc(void* lpParameter);
+                                     unsigned int uiSignInData) {
+        NetworkController::signInChangeCallback(pParam, bVal, uiSignInData);
+    }
+    static void ClearSignInChangeUsersMask() {
+        NetworkController::clearSignInChangeUsersMask();
+    }
+    static int SignoutExitWorldThreadProc(void* lpParameter) {
+        return NetworkController::signoutExitWorldThreadProc(lpParameter);
+    }
     static int PrimaryPlayerSignedOutReturned(void* pParam, int iPad,
-                                              const C4JStorage::EMessageResult);
+                                              const IPlatformStorage::EMessageResult result) {
+        return NetworkController::primaryPlayerSignedOutReturned(pParam, iPad, result);
+    }
     static int EthernetDisconnectReturned(void* pParam, int iPad,
-                                          const C4JStorage::EMessageResult);
-    static void ProfileReadErrorCallback(void* pParam);
+                                          const IPlatformStorage::EMessageResult result) {
+        return NetworkController::ethernetDisconnectReturned(pParam, iPad, result);
+    }
+    static void ProfileReadErrorCallback(void* pParam) {
+        NetworkController::profileReadErrorCallback(pParam);
+    }
 
     // FATAL LOAD ERRORS
     virtual void FatalLoadError();
@@ -356,15 +503,19 @@ public:
     // Notifications from the game listener to be passed to the qnet listener
     static void NotificationsCallback(void* pParam,
                                       std::uint32_t dwNotification,
-                                      unsigned int uiParam);
+                                      unsigned int uiParam) {
+        NetworkController::notificationsCallback(pParam, dwNotification, uiParam);
+    }
 
     // for the ethernet being disconnected
-    static void LiveLinkChangeCallback(void* pParam, bool bConnected);
-    bool GetLiveLinkRequired() { return m_bLiveLinkRequired; }
-    void SetLiveLinkRequired(bool required) { m_bLiveLinkRequired = required; }
+    static void LiveLinkChangeCallback(void* pParam, bool bConnected) {
+        NetworkController::liveLinkChangeCallback(pParam, bConnected);
+    }
+    bool GetLiveLinkRequired() { return m_networkController.getLiveLinkRequired(); }
+    void SetLiveLinkRequired(bool required) { m_networkController.setLiveLinkRequired(required); }
 
 #if defined(_DEBUG_MENUS_ENABLED)
-    bool DebugSettingsOn() { return m_bDebugOptions; }
+    bool DebugSettingsOn() { return m_debugOptions.settingsOn(); }
     bool DebugArtToolsOn();
 #else
     bool DebugSettingsOn() { return false; }
@@ -372,90 +523,98 @@ public:
 #endif
     void SetDebugSequence(const char* pchSeq);
     // bool			UploadFileToGlobalStorage(int iQuadrant,
-    // C4JStorage::eGlobalStorage eStorageFacility, std::wstring *wsFile  );
+    // IPlatformStorage::eGlobalStorage eStorageFacility, std::string *wsFile  );
 
-    // Installed DLC
-    bool StartInstallDLCProcess(int iPad);
-    int dlcInstalledCallback(int iOfferC, int iPad);
+    // Installed DLC - delegated to DLCController
+    bool StartInstallDLCProcess(int iPad) { return m_dlcController.startInstallDLCProcess(iPad); }
+    int dlcInstalledCallback(int iOfferC, int iPad) { return m_dlcController.dlcInstalledCallback(iOfferC, iPad); }
     void HandleDLCLicenseChange();
     int dlcMountedCallback(int iPad, std::uint32_t dwErr,
-                           std::uint32_t dwLicenceMask);
-    void MountNextDLC(int iPad);
-    // static int DLCReadCallback(void* pParam,C4JStorage::DLC_FILE_DETAILS
-    // *pDLCData);
-    void HandleDLC(DLCPack* pack);
-    bool DLCInstallPending() { return m_bDLCInstallPending; }
-    bool DLCInstallProcessCompleted() { return m_bDLCInstallProcessCompleted; }
-    void ClearDLCInstalled() { m_bDLCInstallProcessCompleted = false; }
+                           std::uint32_t dwLicenceMask) {
+        return m_dlcController.dlcMountedCallback(iPad, dwErr, dwLicenceMask);
+    }
+    void MountNextDLC(int iPad) { m_dlcController.mountNextDLC(iPad); }
+    void HandleDLC(DLCPack* pack) { m_dlcController.handleDLC(pack); }
+    bool DLCInstallPending() { return m_dlcController.dlcInstallPending(); }
+    bool DLCInstallProcessCompleted() { return m_dlcController.dlcInstallProcessCompleted(); }
+    void ClearDLCInstalled() { m_dlcController.clearDLCInstalled(); }
     static int MarketplaceCountsCallback(void* pParam,
-                                         C4JStorage::DLC_TMS_DETAILS*,
-                                         int iPad);
-
-    bool AlreadySeenCreditText(const std::wstring& wstemp);
-
-    void ClearNewDLCAvailable(void) {
-        m_bNewDLCAvailable = false;
-        m_bSeenNewDLCTip = true;
+                                         IPlatformStorage::DLC_TMS_DETAILS* details,
+                                         int iPad) {
+        return DLCController::marketplaceCountsCallback(pParam, details, iPad);
     }
-    bool GetNewDLCAvailable() { return m_bNewDLCAvailable; }
-    void DisplayNewDLCTipAgain() { m_bSeenNewDLCTip = false; }
-    bool DisplayNewDLCTip() {
-        if (!m_bSeenNewDLCTip) {
-            m_bSeenNewDLCTip = true;
-            return true;
-        } else
-            return false;
+
+    bool AlreadySeenCreditText(const std::string& wstemp) {
+        return m_dlcController.alreadySeenCreditText(wstemp);
     }
+
+    void ClearNewDLCAvailable(void) { m_dlcController.clearNewDLCAvailable(); }
+    bool GetNewDLCAvailable() { return m_dlcController.getNewDLCAvailable(); }
+    void DisplayNewDLCTipAgain() { m_dlcController.displayNewDLCTipAgain(); }
+    bool DisplayNewDLCTip() { return m_dlcController.displayNewDLCTip(); }
 
     // functions to store launch data, and to exit the game - required due to
     // possibly being on a demo disc
     virtual void StoreLaunchData();
     virtual void ExitGame();
 
-    bool isXuidNotch(PlayerUID xuid);
+    bool isXuidNotch(PlayerUID xuid) {
+        return m_skinManager.isXuidNotch(xuid);
+    }
     bool isXuidDeadmau5(PlayerUID xuid);
 
-    void AddMemoryTextureFile(const std::wstring& wName, std::uint8_t* pbData,
-                              unsigned int byteCount);
-    void RemoveMemoryTextureFile(const std::wstring& wName);
-    void GetMemFileDetails(const std::wstring& wName, std::uint8_t** ppbData,
-                           unsigned int* pByteCount);
-    bool IsFileInMemoryTextures(const std::wstring& wName);
+    void AddMemoryTextureFile(const std::string& wName, std::uint8_t* pbData,
+                              unsigned int byteCount) {
+        m_skinManager.addMemoryTextureFile(wName, pbData, byteCount);
+    }
+    void RemoveMemoryTextureFile(const std::string& wName) {
+        m_skinManager.removeMemoryTextureFile(wName);
+    }
+    void GetMemFileDetails(const std::string& wName, std::uint8_t** ppbData,
+                           unsigned int* pByteCount) {
+        m_skinManager.getMemFileDetails(wName, ppbData, pByteCount);
+    }
+    bool IsFileInMemoryTextures(const std::string& wName) {
+        return m_skinManager.isFileInMemoryTextures(wName);
+    }
 
     // Texture Pack Data files (icon, banner, comparison shot & text)
     void AddMemoryTPDFile(int iConfig, std::uint8_t* pbData,
-                          unsigned int byteCount);
-    void RemoveMemoryTPDFile(int iConfig);
-    bool IsFileInTPD(int iConfig);
-    void GetTPD(int iConfig, std::uint8_t** ppbData, unsigned int* pByteCount);
-    int GetTPDSize() { return m_MEM_TPD.size(); }
-    int GetTPConfigVal(wchar_t* pwchDataFile);
+                          unsigned int byteCount) {
+        m_archiveManager.addMemoryTPDFile(iConfig, pbData, byteCount);
+    }
+    void RemoveMemoryTPDFile(int iConfig) {
+        m_archiveManager.removeMemoryTPDFile(iConfig);
+    }
+    bool IsFileInTPD(int iConfig) {
+        return m_archiveManager.isFileInTPD(iConfig);
+    }
+    void GetTPD(int iConfig, std::uint8_t** ppbData, unsigned int* pByteCount) {
+        m_archiveManager.getTPD(iConfig, ppbData, pByteCount);
+    }
+    int GetTPDSize() { return m_archiveManager.getTPDSize(); }
+    int GetTPConfigVal(char* pwchDataFile) {
+        return m_archiveManager.getTPConfigVal(pwchDataFile);
+    }
 
-    bool DefaultCapeExists();
+    bool DefaultCapeExists() {
+        return m_skinManager.defaultCapeExists();
+    }
     // void InstallDefaultCape(); // attempt  to install the default cape once
     // per game launch
 
-    // invites
-    // void ProcessInvite(JoinFromInviteData *pJoinData);
+    // invites - delegated to NetworkController
     void ProcessInvite(std::uint32_t dwUserIndex,
                        std::uint32_t dwLocalUsersMask,
-                       const INVITE_INFO* pInviteInfo);
+                       const INVITE_INFO* pInviteInfo) {
+        m_networkController.processInvite(dwUserIndex, dwLocalUsersMask, pInviteInfo);
+    }
 
-    // Add credits for DLC installed
-    void AddCreditText(const wchar_t* lpStr);
+    // Add credits for DLC installed - delegated to DLCController
+    void AddCreditText(const char* lpStr) { m_dlcController.addCreditText(lpStr); }
 
 private:
-    PlayerUID m_xuidNotch;
     std::unordered_map<PlayerUID, std::uint8_t*> m_GTS_Files;
-
-    // for storing memory textures - player skin
-    std::unordered_map<std::wstring, PMEMDATA> m_MEM_Files;
-    // for storing texture pack data files
-    std::unordered_map<int, PMEMDATA> m_MEM_TPD;
-    std::mutex csMemFilesLock;  // For locking access to the above map
-    std::mutex csMemTPDLock;    // For locking access to the above map
-
-    VNOTIFICATIONS m_vNotifications;
 
 public:
     // launch data
@@ -465,13 +624,25 @@ public:
 public:
     // BAN LIST
     void AddLevelToBannedLevelList(int iPad, PlayerUID xuid, char* pszLevelName,
-                                   bool bWriteToTMS);
-    bool IsInBannedLevelList(int iPad, PlayerUID xuid, char* pszLevelName);
+                                   bool bWriteToTMS) {
+        m_bannedListManager.addLevel(iPad, xuid, pszLevelName, bWriteToTMS);
+    }
+    bool IsInBannedLevelList(int iPad, PlayerUID xuid, char* pszLevelName) {
+        return m_bannedListManager.isInList(iPad, xuid, pszLevelName);
+    }
     void RemoveLevelFromBannedLevelList(int iPad, PlayerUID xuid,
-                                        char* pszLevelName);
-    void InvalidateBannedList(int iPad);
-    void SetUniqueMapName(char* pszUniqueMapName);
-    char* GetUniqueMapName(void);
+                                        char* pszLevelName) {
+        m_bannedListManager.removeLevel(iPad, xuid, pszLevelName);
+    }
+    void InvalidateBannedList(int iPad) {
+        m_bannedListManager.invalidate(iPad);
+    }
+    void SetUniqueMapName(char* pszUniqueMapName) {
+        m_bannedListManager.setUniqueMapName(pszUniqueMapName);
+    }
+    char* GetUniqueMapName(void) {
+        return m_bannedListManager.getUniqueMapName();
+    }
 
 public:
     bool GetResourcesLoaded() { return m_bResourcesLoaded; }
@@ -483,33 +654,34 @@ public:
     bool m_bTutorialMode;
     bool m_bIsAppPaused;
 
-    bool m_bChangingSessionType;
-    bool m_bReallyChangingSessionType;
+    // m_bChangingSessionType and m_bReallyChangingSessionType moved to NetworkController
 
     // trial, and trying to unlock full
     // version on an upsell
 
-    void loadMediaArchive();
-    void loadStringTable();
-
-protected:
-    ArchiveFile* m_mediaArchive;
-    StringTable* m_stringTable;
+    void loadMediaArchive() { m_archiveManager.loadMediaArchive(); }
+    void loadStringTable() {
+        m_localizationManager.loadStringTable(m_archiveManager.getMediaArchive());
+    }
 
 public:
-    int getArchiveFileSize(const std::wstring& filename);
-    bool hasArchiveFile(const std::wstring& filename);
-    std::vector<uint8_t> getArchiveFile(const std::wstring& filename);
+    int getArchiveFileSize(const std::string& filename) {
+        return m_archiveManager.getArchiveFileSize(filename);
+    }
+    bool hasArchiveFile(const std::string& filename) {
+        return m_archiveManager.hasArchiveFile(filename);
+    }
+    std::vector<uint8_t> getArchiveFile(const std::string& filename) {
+        return m_archiveManager.getArchiveFile(filename);
+    }
 
 private:
     static int BannedLevelDialogReturned(void* pParam, int iPad,
-                                         const C4JStorage::EMessageResult);
+                                         const IPlatformStorage::EMessageResult);
     static int TexturePackDialogReturned(void* pParam, int iPad,
-                                         C4JStorage::EMessageResult result);
-
-    VBANNEDLIST* m_vBannedListA[XUSER_MAX_COUNT];
-
-    void HandleButtonPresses(int iPad);
+                                         IPlatformStorage::EMessageResult result) {
+        return MenuController::texturePackDialogReturned(pParam, iPad, result);
+    }
 
     bool m_bResourcesLoaded;
 
@@ -530,27 +702,12 @@ private:
 
     eGameMode m_eGameMode;  // single or multiplayer
 
-    static unsigned int m_uiLastSignInData;
+    // GameSettingsA reference alias into GameSettingsManager
+    GAME_SETTINGS* (&GameSettingsA)[XUSER_MAX_COUNT] = m_gameSettingsManager.GameSettingsA;
 
-    // We've got sizeof(GAME_SETTINGS) bytes reserved at the start of the
-    // gamedefined data per player for settings
-    GAME_SETTINGS* GameSettingsA[XUSER_MAX_COUNT];
+    // m_uiLastSignInData moved to NetworkController
 
-    // For promo work
-    bool m_bLoadSavesFromFolderEnabled;
-
-    // For debugging
-    bool m_bWriteSavesToFolderEnabled;
-    bool m_bMobsDontAttack;
-    bool m_bUseDPadForDebug;
-    bool m_bMobsDontTick;
-    bool m_bFreezePlayers;
-
-    // 4J : WESTY : For taking screen shots.
-    // bool m_bInterfaceRenderingOff;
-    // bool m_bHandRenderingOff;
-
-    DisconnectPacket::eDisconnectReason m_disconnectReason;
+    // Debug options now in m_debugOptions
 
 public:
     virtual void RunFrame() {};
@@ -565,46 +722,54 @@ public:
     void SetTrialTimerStart(void);
     float getTrialTimer(void);
 
-    // notifications from the game for qnet
-    VNOTIFICATIONS* GetNotifications() { return &m_vNotifications; }
+    // notifications from the game for qnet - delegated to NetworkController
+    NetworkController::VNOTIFICATIONS* GetNotifications() {
+        return m_networkController.getNotifications();
+    }
 
 private:
-    // To avoid problems with threads being kicked off from xuis that alter
-    // things that may be in progress within the run_middle, we'll action these
-    // at the end of the game loop
-    eXuiAction m_eXuiAction[XUSER_MAX_COUNT];
-    eTMSAction m_eTMSAction[XUSER_MAX_COUNT];
-    void* m_eXuiActionParam[XUSER_MAX_COUNT];
-    eXuiAction m_eGlobalXuiAction;
-    eXuiServerAction m_eXuiServerAction[XUSER_MAX_COUNT];
-    void* m_eXuiServerActionParam[XUSER_MAX_COUNT];
-    eXuiServerAction m_eGlobalXuiServerAction;
-
-    bool m_bLiveLinkRequired;
 
     static int UnlockFullExitReturned(void* pParam, int iPad,
-                                      C4JStorage::EMessageResult result);
+                                      IPlatformStorage::EMessageResult result) {
+        return MenuController::unlockFullExitReturned(pParam, iPad, result);
+    }
     static int UnlockFullSaveReturned(void* pParam, int iPad,
-                                      C4JStorage::EMessageResult result);
+                                      IPlatformStorage::EMessageResult result) {
+        return MenuController::unlockFullSaveReturned(pParam, iPad, result);
+    }
     static int UnlockFullInviteReturned(void* pParam, int iPad,
-                                        C4JStorage::EMessageResult result);
+                                        IPlatformStorage::EMessageResult result) {
+        return MenuController::unlockFullInviteReturned(pParam, iPad, result);
+    }
     static int TrialOverReturned(void* pParam, int iPad,
-                                 C4JStorage::EMessageResult result);
+                                 IPlatformStorage::EMessageResult result) {
+        return MenuController::trialOverReturned(pParam, iPad, result);
+    }
     static int ExitAndJoinFromInvite(void* pParam, int iPad,
-                                     C4JStorage::EMessageResult result);
+                                     IPlatformStorage::EMessageResult result) {
+        return NetworkController::exitAndJoinFromInvite(pParam, iPad, result);
+    }
     static int ExitAndJoinFromInviteSaveDialogReturned(
-        void* pParam, int iPad, C4JStorage::EMessageResult result);
+        void* pParam, int iPad, IPlatformStorage::EMessageResult result) {
+        return NetworkController::exitAndJoinFromInviteSaveDialogReturned(pParam, iPad, result);
+    }
     static int ExitAndJoinFromInviteAndSaveReturned(
-        void* pParam, int iPad, C4JStorage::EMessageResult result);
+        void* pParam, int iPad, IPlatformStorage::EMessageResult result) {
+        return NetworkController::exitAndJoinFromInviteAndSaveReturned(pParam, iPad, result);
+    }
     static int ExitAndJoinFromInviteDeclineSaveReturned(
-        void* pParam, int iPad, C4JStorage::EMessageResult result);
+        void* pParam, int iPad, IPlatformStorage::EMessageResult result) {
+        return NetworkController::exitAndJoinFromInviteDeclineSaveReturned(pParam, iPad, result);
+    }
     static int FatalErrorDialogReturned(void* pParam, int iPad,
-                                        C4JStorage::EMessageResult result);
+                                        IPlatformStorage::EMessageResult result);
     static int WarningTrialTexturePackReturned(
-        void* pParam, int iPad, C4JStorage::EMessageResult result);
+        void* pParam, int iPad, IPlatformStorage::EMessageResult result) {
+        return NetworkController::warningTrialTexturePackReturned(pParam, iPad, result);
+    }
 
-    JoinFromInviteData m_InviteData;
-    bool m_bDebugOptions;  // toggle debug things on or off
+    JoinFromInviteData& m_InviteData = m_networkController.m_InviteData;
+    // m_bDebugOptions moved to m_debugOptions
 
     // Trial timer
     float m_fTrialTimerStart, mfTrialPausedTime;
@@ -618,62 +783,81 @@ private:
 
     TimeInfo m_Time;
 
-protected:
-    static const int MAX_TIPS_GAMETIP = 50;
-    static const int MAX_TIPS_TRIVIATIP = 20;
-    static TIPSTRUCT m_GameTipA[MAX_TIPS_GAMETIP];
-    static TIPSTRUCT m_TriviaTipA[MAX_TIPS_TRIVIATIP];
-    static Random* TipRandom;
-
 public:
-    void InitialiseTips();
-    int GetNextTip();
-    int GetHTMLColour(eMinecraftColour colour);
+    void InitialiseTips() { m_localizationManager.initialiseTips(); }
+    int GetNextTip() { return m_localizationManager.getNextTip(); }
+    int GetHTMLColour(eMinecraftColour colour) {
+        return m_localizationManager.getHTMLColour(colour);
+    }
     int GetHTMLColor(eMinecraftColour colour) { return GetHTMLColour(colour); }
-    int GetHTMLFontSize(EHTMLFontSize size);
-    std::wstring FormatHTMLString(int iPad, const std::wstring& desc,
-                                  int shadowColour = 0xFFFFFFFF);
-    std::wstring GetActionReplacement(int iPad, unsigned char ucAction);
-    std::wstring GetVKReplacement(unsigned int uiVKey);
-    std::wstring GetIconReplacement(unsigned int uiIcon);
+    int GetHTMLFontSize(EHTMLFontSize size) {
+        return m_localizationManager.getHTMLFontSize(size);
+    }
+    std::string FormatHTMLString(int iPad, const std::string& desc,
+                                  int shadowColour = 0xFFFFFFFF) {
+        return m_localizationManager.formatHTMLString(iPad, desc, shadowColour);
+    }
+    std::string GetActionReplacement(int iPad, unsigned char ucAction) {
+        return m_localizationManager.getActionReplacement(iPad, ucAction);
+    }
+    std::string GetVKReplacement(unsigned int uiVKey) {
+        return m_localizationManager.getVKReplacement(uiVKey);
+    }
+    std::string GetIconReplacement(unsigned int uiIcon) {
+        return m_localizationManager.getIconReplacement(uiIcon);
+    }
 
     float getAppTime() { return m_Time.fAppTime; }
     void UpdateTrialPausedTimer() { mfTrialPausedTime += m_Time.fElapsedTime; }
 
-    static int RemoteSaveThreadProc(void* lpParameter);
-    static void ExitGameFromRemoteSave(void* lpParameter);
+    static int RemoteSaveThreadProc(void* lpParameter) {
+        return MenuController::remoteSaveThreadProc(lpParameter);
+    }
+    static void ExitGameFromRemoteSave(void* lpParameter) {
+        MenuController::exitGameFromRemoteSave(lpParameter);
+    }
     static int ExitGameFromRemoteSaveDialogReturned(
-        void* pParam, int iPad, C4JStorage::EMessageResult result);
-
-private:
-    int m_TipIDA[MAX_TIPS_GAMETIP + MAX_TIPS_TRIVIATIP];
-    unsigned int m_uiCurrentTip;
-    static int TipsSortFunction(const void* a, const void* b);
+        void* pParam, int iPad, IPlatformStorage::EMessageResult result) {
+        return MenuController::exitGameFromRemoteSaveDialogReturned(pParam, iPad, result);
+    }
 
     // XML
 public:
     // Hold a vector of terrain feature positions
-    void AddTerrainFeaturePosition(_eTerrainFeatureType, int, int);
-    void ClearTerrainFeaturePosition();
-    _eTerrainFeatureType IsTerrainFeature(int x, int z);
+    void AddTerrainFeaturePosition(_eTerrainFeatureType eType, int x, int z) {
+        m_terrainFeatureManager.add(eType, x, z);
+    }
+    void ClearTerrainFeaturePosition() { m_terrainFeatureManager.clear(); }
+    _eTerrainFeatureType IsTerrainFeature(int x, int z) {
+        return m_terrainFeatureManager.isFeature(x, z);
+    }
     bool GetTerrainFeaturePosition(_eTerrainFeatureType eType, int* pX,
-                                   int* pZ);
-    std::vector<FEATURE_DATA*> m_vTerrainFeatures;
+                                   int* pZ) {
+        return m_terrainFeatureManager.getPosition(eType, pX, pZ);
+    }
 
-    static int32_t RegisterMojangData(wchar_t*, PlayerUID, wchar_t*, wchar_t*);
+    static int32_t RegisterMojangData(char*, PlayerUID, char*, char*);
     MOJANG_DATA* GetMojangDataForXuid(PlayerUID xuid);
-    static int32_t RegisterConfigValues(wchar_t* pType, int iValue);
+    static int32_t RegisterConfigValues(char* pType, int iValue);
 
-    static int32_t RegisterDLCData(wchar_t*, wchar_t*, int, uint64_t, uint64_t,
-                                   wchar_t*, unsigned int, int,
-                                   wchar_t* pDataFile);
-    bool GetDLCFullOfferIDForSkinID(const std::wstring& FirstSkin,
-                                    uint64_t* pullVal);
-    DLC_INFO* GetDLCInfoForTrialOfferID(uint64_t ullOfferID_Trial);
-    DLC_INFO* GetDLCInfoForFullOfferID(uint64_t ullOfferID_Full);
+    static int32_t RegisterDLCData(char* a, char* b, int c, uint64_t d, uint64_t e,
+                                   char* f, unsigned int g, int h,
+                                   char* pDataFile) {
+        return DLCController::registerDLCData(a, b, c, d, e, f, g, h, pDataFile);
+    }
+    bool GetDLCFullOfferIDForSkinID(const std::string& FirstSkin,
+                                    uint64_t* pullVal) {
+        return m_dlcController.getDLCFullOfferIDForSkinID(FirstSkin, pullVal);
+    }
+    DLC_INFO* GetDLCInfoForTrialOfferID(uint64_t ullOfferID_Trial) {
+        return m_dlcController.getDLCInfoForTrialOfferID(ullOfferID_Trial);
+    }
+    DLC_INFO* GetDLCInfoForFullOfferID(uint64_t ullOfferID_Full) {
+        return m_dlcController.getDLCInfoForFullOfferID(ullOfferID_Full);
+    }
 
-    unsigned int GetDLCCreditsCount();
-    SCreditTextItemDef* GetDLCCredits(int iIndex);
+    unsigned int GetDLCCreditsCount() { return m_dlcController.getDLCCreditsCount(); }
+    SCreditTextItemDef* GetDLCCredits(int iIndex) { return m_dlcController.getDLCCredits(iIndex); }
 
     // TMS
     void ReadDLCFileFromTMS(int iPad, eTMSAction action,
@@ -692,90 +876,51 @@ public:
     void ReadBannedList(int iPad, eTMSAction action = (eTMSAction)0,
                         bool bCallback = false) override = 0;
 
-private:
-    std::vector<SCreditTextItemDef*> vDLCCredits;
-
-    static std::unordered_map<PlayerUID, MOJANG_DATA*> MojangData;
-    static std::unordered_map<int, uint64_t>
-        DLCTextures_PackID;  // for mash-up packs & texture packs
-    static std::unordered_map<uint64_t, DLC_INFO*>
-        DLCInfo_Trial;  // full offerid, dlc_info
-    static std::unordered_map<uint64_t, DLC_INFO*>
-        DLCInfo_Full;  // full offerid, dlc_info
-    static std::unordered_map<std::wstring, uint64_t>
-        DLCInfo_SkinName;  // skin name, full offer id
-    //	bool m_bRead_TMS_XUIDS_XML; // track whether we have already read the
-    // TMS xuids.xml file 	bool m_bRead_TMS_DLCINFO_XML; // track whether
-    // we have already read the TMS DLC.xml file
-
-    bool m_bDefaultCapeInstallAttempted;  // have we attempted to install the
-                                          // default cape from tms
-
-    // bool m_bwasHidingGui; // 4J Stu - Removed 1.8.2 bug fix (TU6) as not
-    // needed
-    bool m_bDLCInstallProcessCompleted;
-    bool m_bDLCInstallPending;
-    int m_iTotalDLC;
-    int m_iTotalDLCInstalled;
+    // DLC data members moved to DLCController
+    // Sign-in info moved to NetworkController
 
 public:
-    // 4J Stu - We need to be able to detect when a guest player signs in or out
-    // causing other guest players to change their xuid The simplest way to do
-    // this is to check if their guest number has changed, so store the last
-    // known one here 4J Stu - Now storing the whole XUSER_SIGNIN_INFO so we can
-    // detect xuid changes
-    XUSER_SIGNIN_INFO m_currentSigninInfo[XUSER_MAX_COUNT];
 
     // void OverrideFontRenderer(bool set, bool immediate = true);
     //	void ToggleFontRenderer() {
     // OverrideFontRenderer(!m_bFontRendererOverridden,false); }
-    BANNEDLIST BannedListA[XUSER_MAX_COUNT];
-
-private:
-    // 	XUI_FontRenderer *m_fontRenderer;
-    // 	bool m_bFontRendererOverridden;
-    // 	bool m_bOverrideFontRenderer;
-
-    bool m_bRead_BannedListA[XUSER_MAX_COUNT];
-    char m_pszUniqueMapName[14];
-    bool m_BanListCheck[XUSER_MAX_COUNT];
+    BANNEDLIST (&BannedListA)[XUSER_MAX_COUNT] = m_bannedListManager.BannedListA;
 
 public:
-    void SetBanListCheck(int iPad, bool bVal) { m_BanListCheck[iPad] = bVal; }
-    bool GetBanListCheck(int iPad) { return m_BanListCheck[iPad]; }
+    void SetBanListCheck(int iPad, bool bVal) {
+        m_bannedListManager.setBanListCheck(iPad, bVal);
+    }
+    bool GetBanListCheck(int iPad) {
+        return m_bannedListManager.getBanListCheck(iPad);
+    }
     // AUTOSAVE
 public:
     void SetAutosaveTimerTime(void);
-    bool AutosaveDue(void);
-    int64_t SecondsToAutosave();
+    bool AutosaveDue(void) { return m_saveManager.autosaveDue(); }
+    int64_t SecondsToAutosave() { return m_saveManager.secondsToAutosave(); }
 
-private:
-    time_util::time_point m_uiAutosaveTimer;
-    unsigned int m_uiOpacityCountDown[XUSER_MAX_COUNT];
-
-    // DLC
-    bool m_bNewDLCAvailable;
-    bool m_bSeenNewDLCTip;
-
-    // Host options
-private:
-    unsigned int m_uiGameHostSettings;
-    static unsigned char m_szPNG[8];
+    // m_uiOpacityCountDown moved to MenuController
+    // DLC flags moved to DLCController
+    // Host options - m_uiGameHostSettings moved to GameSettingsManager
+    unsigned int& m_uiGameHostSettings = m_gameSettingsManager.m_uiGameHostSettings;
 
 #if defined(_LARGE_WORLDS)
     unsigned int m_GameNewWorldSize;
     bool m_bGameNewWorldSizeUseMoat;
     unsigned int m_GameNewHellScale;
 #endif
-    unsigned int FromBigEndian(unsigned int uiValue);
 
 public:
     void SetGameHostOption(eGameHostOption eVal, unsigned int uiVal);
     void SetGameHostOption(unsigned int& uiHostSettings, eGameHostOption eVal,
-                           unsigned int uiVal);
+                           unsigned int uiVal) {
+        m_gameSettingsManager.setGameHostOption(uiHostSettings, eVal, uiVal);
+    }
     unsigned int GetGameHostOption(eGameHostOption eVal);
     unsigned int GetGameHostOption(unsigned int uiHostSettings,
-                                   eGameHostOption eVal);
+                                   eGameHostOption eVal) {
+        return m_gameSettingsManager.getGameHostOption(uiHostSettings, eVal);
+    }
 
 #if defined(_LARGE_WORLDS)
     void SetGameNewWorldSize(unsigned int newSize, bool useMoat) {
@@ -793,15 +938,21 @@ public:
 #endif
     void SetResetNether(bool bResetNether) { m_bResetNether = bResetNether; }
     bool GetResetNether() { return m_bResetNether; }
-    bool CanRecordStatsAndAchievements();
+    bool CanRecordStatsAndAchievements() {
+        return m_gameSettingsManager.canRecordStatsAndAchievements();
+    }
 
-    // World seed from png image
+    // World seed from png image - delegated to MenuController
     void GetImageTextData(std::uint8_t* imageData, unsigned int imageBytes,
                           unsigned char* seedText, unsigned int& uiHostOptions,
-                          bool& bHostOptionsRead, std::uint32_t& uiTexturePack);
+                          bool& bHostOptionsRead, std::uint32_t& uiTexturePack) {
+        m_menuController.getImageTextData(imageData, imageBytes, seedText, uiHostOptions, bHostOptionsRead, uiTexturePack);
+    }
     unsigned int CreateImageTextData(std::uint8_t* textMetadata, int64_t seed,
                                      bool hasSeed, unsigned int uiHostOptions,
-                                     unsigned int uiTexturePackId);
+                                     unsigned int uiTexturePackId) {
+        return m_menuController.createImageTextData(textMetadata, seed, hasSeed, uiHostOptions, uiTexturePackId);
+    }
 
     // Game rules
     GameRuleManager m_gameRules;
@@ -820,114 +971,130 @@ public:
     LevelGenerationOptions* getLevelGenerationOptions() {
         return m_gameRules.getLevelGenerationOptions();
     }
-    const wchar_t* GetGameRulesString(const std::wstring& key);
+    const char* GetGameRulesString(const std::string& key);
 
-private:
-    std::uint8_t m_playerColours[MINECRAFT_NET_MAX_PLAYERS];  // An array of
-                                                              // QNet small-id's
-    unsigned int m_playerGamePrivileges[MINECRAFT_NET_MAX_PLAYERS];
+    // m_playerColours and m_playerGamePrivileges moved to NetworkController
 
 public:
     void UpdatePlayerInfo(std::uint8_t networkSmallId,
                           int16_t playerColourIndex,
-                          unsigned int playerGamePrivileges);
-    short GetPlayerColour(std::uint8_t networkSmallId);
-    unsigned int GetPlayerPrivileges(std::uint8_t networkSmallId);
+                          unsigned int playerGamePrivileges) {
+        m_networkController.updatePlayerInfo(networkSmallId, playerColourIndex, playerGamePrivileges);
+    }
+    short GetPlayerColour(std::uint8_t networkSmallId) {
+        return m_networkController.getPlayerColour(networkSmallId);
+    }
+    unsigned int GetPlayerPrivileges(std::uint8_t networkSmallId) {
+        return m_networkController.getPlayerPrivileges(networkSmallId);
+    }
 
-    std::wstring getEntityName(eINSTANCEOF type);
+    std::string getEntityName(eINSTANCEOF type);
 
     unsigned int AddDLCRequest(eDLCMarketplaceType eContentType,
-                               bool bPromote = false);
-    bool RetrieveNextDLCContent();
-    bool CheckTMSDLCCanStop();
-    int dlcOffersReturned(int iOfferC, std::uint32_t dwType, int iPad);
-    std::uint32_t GetDLCContentType(eDLCContentType eType) {
-        return m_dwContentTypeA[eType];
+                               bool bPromote = false) {
+        return m_dlcController.addDLCRequest(eContentType, bPromote);
     }
-    eDLCContentType Find_eDLCContentType(std::uint32_t dwType);
-    int GetDLCOffersCount() { return m_iDLCOfferC; }
-    bool DLCContentRetrieved(eDLCMarketplaceType eType);
-    void TickDLCOffersRetrieved();
-    void ClearAndResetDLCDownloadQueue();
-    bool RetrieveNextTMSPPContent();
-    void TickTMSPPFilesRetrieved();
-    void ClearTMSPPFilesRetrieved();
+    bool RetrieveNextDLCContent() { return m_dlcController.retrieveNextDLCContent(); }
+    bool CheckTMSDLCCanStop() { return m_dlcController.checkTMSDLCCanStop(); }
+    int dlcOffersReturned(int iOfferC, std::uint32_t dwType, int iPad) {
+        return m_dlcController.dlcOffersReturned(iOfferC, dwType, iPad);
+    }
+    std::uint32_t GetDLCContentType(eDLCContentType eType) {
+        return m_dlcController.getDLCContentType(eType);
+    }
+    eDLCContentType Find_eDLCContentType(std::uint32_t dwType) {
+        return m_dlcController.find_eDLCContentType(dwType);
+    }
+    int GetDLCOffersCount() { return m_dlcController.getDLCOffersCount(); }
+    bool DLCContentRetrieved(eDLCMarketplaceType eType) {
+        return m_dlcController.dlcContentRetrieved(eType);
+    }
+    void TickDLCOffersRetrieved() { m_dlcController.tickDLCOffersRetrieved(); }
+    void ClearAndResetDLCDownloadQueue() { m_dlcController.clearAndResetDLCDownloadQueue(); }
+    bool RetrieveNextTMSPPContent() { return m_dlcController.retrieveNextTMSPPContent(); }
+    void TickTMSPPFilesRetrieved() { m_dlcController.tickTMSPPFilesRetrieved(); }
+    void ClearTMSPPFilesRetrieved() { m_dlcController.clearTMSPPFilesRetrieved(); }
     unsigned int AddTMSPPFileTypeRequest(eDLCContentType eType,
-                                         bool bPromote = false);
-    int GetDLCInfoTexturesOffersCount();
+                                         bool bPromote = false) {
+        return m_dlcController.addTMSPPFileTypeRequest(eType, bPromote);
+    }
+    int GetDLCInfoTexturesOffersCount() { return m_dlcController.getDLCInfoTexturesOffersCount(); }
 
     static int TMSPPFileReturned(void* pParam, int iPad, int iUserData,
-                                 C4JStorage::PTMSPP_FILEDATA pFileData,
-                                 const char* szFilename);
-    DLC_INFO* GetDLCInfoTrialOffer(int iIndex);
-    DLC_INFO* GetDLCInfoFullOffer(int iIndex);
+                                 IPlatformStorage::PTMSPP_FILEDATA pFileData,
+                                 const char* szFilename) {
+        return DLCController::tmsPPFileReturned(pParam, iPad, iUserData, pFileData, szFilename);
+    }
+    DLC_INFO* GetDLCInfoTrialOffer(int iIndex) { return m_dlcController.getDLCInfoTrialOffer(iIndex); }
+    DLC_INFO* GetDLCInfoFullOffer(int iIndex) { return m_dlcController.getDLCInfoFullOffer(iIndex); }
 
-    int GetDLCInfoTrialOffersCount();
-    int GetDLCInfoFullOffersCount();
-    bool GetDLCFullOfferIDForPackID(const int iPackID, uint64_t* pullVal);
-    uint64_t GetDLCInfoTexturesFullOffer(int iIndex);
+    int GetDLCInfoTrialOffersCount() { return m_dlcController.getDLCInfoTrialOffersCount(); }
+    int GetDLCInfoFullOffersCount() { return m_dlcController.getDLCInfoFullOffersCount(); }
+    bool GetDLCFullOfferIDForPackID(const int iPackID, uint64_t* pullVal) {
+        return m_dlcController.getDLCFullOfferIDForPackID(iPackID, pullVal);
+    }
+    uint64_t GetDLCInfoTexturesFullOffer(int iIndex) {
+        return m_dlcController.getDLCInfoTexturesFullOffer(iIndex);
+    }
 
     void SetCorruptSaveDeleted(bool bVal) { m_bCorruptSaveDeleted = bVal; }
     bool GetCorruptSaveDeleted(void) { return m_bCorruptSaveDeleted; }
 
-    void lockSaveNotification();
-    void unlockSaveNotification();
+    void lockSaveNotification() { m_saveManager.lock(); }
+    void unlockSaveNotification() { m_saveManager.unlock(); }
 
-private:
-    std::mutex m_saveNotificationMutex;
-    int m_saveNotificationDepth;
-    // Download Status
-
-    // Request current_download;
-    std::vector<DLCRequest*> m_DLCDownloadQueue;
-    std::vector<TMSPPRequest*> m_TMSPPDownloadQueue;
-    static std::uint32_t m_dwContentTypeA[e_Marketplace_MAX];
-    int m_iDLCOfferC;
-    bool m_bAllDLCContentRetrieved;
-    bool m_bAllTMSContentRetrieved;
-    bool m_bTickTMSDLCFiles;
-    std::mutex csDLCDownloadQueue;
-    std::mutex csTMSPPDownloadQueue;
-    std::mutex csAdditionalModelParts;
-    std::mutex csAdditionalSkinBoxes;
-    std::mutex csAnimOverrideBitmask;
+    // Download status members moved to DLCController
     bool m_bCorruptSaveDeleted;
 
-    std::uint32_t m_dwAdditionalModelParts[XUSER_MAX_COUNT];
-
-    std::uint8_t* m_pBannedListFileBuffer;
-    unsigned int m_dwBannedListFileSize;
+    std::uint8_t*& m_pBannedListFileBuffer = m_bannedListManager.m_pBannedListFileBuffer;
+    unsigned int& m_dwBannedListFileSize = m_bannedListManager.m_dwBannedListFileSize;
 
 public:
-    unsigned int m_dwDLCFileSize;
-    std::uint8_t* m_pDLCFileBuffer;
+    unsigned int& m_dwDLCFileSize = m_dlcController.m_dwDLCFileSize;
+    std::uint8_t*& m_pDLCFileBuffer = m_dlcController.m_pDLCFileBuffer;
 
-    // 	static int CallbackReadXuidsFileFromTMS(void* lpParam, wchar_t
+    // 	static int CallbackReadXuidsFileFromTMS(void* lpParam, char
     // *wchFilename, int iPad, bool bResult, int iAction); 	static int
-    // CallbackDLCFileFromTMS(void* lpParam, wchar_t *wchFilename, int iPad,
+    // CallbackDLCFileFromTMS(void* lpParam, char *wchFilename, int iPad,
     // bool bResult, int iAction); 	static int
-    // CallbackBannedListFileFromTMS(void* lpParam, wchar_t *wchFilename, int
+    // CallbackBannedListFileFromTMS(void* lpParam, char *wchFilename, int
     // iPad, bool bResult, int iAction);
 
     // Storing additional model parts per skin texture
     void SetAdditionalSkinBoxes(std::uint32_t dwSkinID, SKIN_BOX* SkinBoxA,
-                                unsigned int dwSkinBoxC);
+                                unsigned int dwSkinBoxC) {
+        m_skinManager.setAdditionalSkinBoxes(dwSkinID, SkinBoxA, dwSkinBoxC);
+    }
     std::vector<ModelPart*>* SetAdditionalSkinBoxes(
-        std::uint32_t dwSkinID, std::vector<SKIN_BOX*>* pvSkinBoxA);
-    std::vector<ModelPart*>* GetAdditionalModelParts(std::uint32_t dwSkinID);
-    std::vector<SKIN_BOX*>* GetAdditionalSkinBoxes(std::uint32_t dwSkinID);
+        std::uint32_t dwSkinID, std::vector<SKIN_BOX*>* pvSkinBoxA) {
+        return m_skinManager.setAdditionalSkinBoxes(dwSkinID, pvSkinBoxA);
+    }
+    std::vector<ModelPart*>* GetAdditionalModelParts(std::uint32_t dwSkinID) {
+        return m_skinManager.getAdditionalModelParts(dwSkinID);
+    }
+    std::vector<SKIN_BOX*>* GetAdditionalSkinBoxes(std::uint32_t dwSkinID) {
+        return m_skinManager.getAdditionalSkinBoxes(dwSkinID);
+    }
     void SetAnimOverrideBitmask(std::uint32_t dwSkinID,
-                                unsigned int uiAnimOverrideBitmask);
-    unsigned int GetAnimOverrideBitmask(std::uint32_t dwSkinID);
+                                unsigned int uiAnimOverrideBitmask) {
+        m_skinManager.setAnimOverrideBitmask(dwSkinID, uiAnimOverrideBitmask);
+    }
+    unsigned int GetAnimOverrideBitmask(std::uint32_t dwSkinID) {
+        return m_skinManager.getAnimOverrideBitmask(dwSkinID);
+    }
 
-    static std::uint32_t getSkinIdFromPath(const std::wstring& skin);
-    static std::wstring getSkinPathFromId(std::uint32_t skinId);
+    static std::uint32_t getSkinIdFromPath(const std::string& skin) {
+        return SkinManager::getSkinIdFromPath(skin);
+    }
+    static std::string getSkinPathFromId(std::uint32_t skinId) {
+        return SkinManager::getSkinPathFromId(skinId);
+    }
 
-    int LoadLocalTMSFile(wchar_t* wchTMSFile) override = 0;
-    int LoadLocalTMSFile(wchar_t* wchTMSFile,
+    int LoadLocalTMSFile(char* wchTMSFile) override = 0;
+    int LoadLocalTMSFile(char* wchTMSFile,
                          eFileExtensionType eExt) override = 0;
     void FreeLocalTMSFiles(eTMSFileType eType) override = 0;
-    int GetLocalTMSFileIndex(wchar_t* wchTMSFile,
+    int GetLocalTMSFileIndex(char* wchTMSFile,
                              bool bFilenameIncludesExtension,
                              eFileExtensionType eEXT) override = 0;
 
@@ -935,62 +1102,56 @@ public:
     virtual bool GetTMSDLCInfoRead() { return true; }
     virtual bool GetTMSXUIDsFileRead() { return true; }
 
-    bool GetBanListRead(int iPad) { return m_bRead_BannedListA[iPad]; }
+    bool GetBanListRead(int iPad) {
+        return m_bannedListManager.getBanListRead(iPad);
+    }
     void SetBanListRead(int iPad, bool bVal) {
-        m_bRead_BannedListA[iPad] = bVal;
+        m_bannedListManager.setBanListRead(iPad, bVal);
     }
-    void ClearBanList(int iPad) {
-        BannedListA[iPad].pBannedList = nullptr;
-        BannedListA[iPad].byteCount = 0;
-    }
+    void ClearBanList(int iPad) { m_bannedListManager.clearBanList(iPad); }
 
     std::uint32_t GetRequiredTexturePackID() {
-        return m_dwRequiredTexturePackID;
+        return m_archiveManager.getRequiredTexturePackID();
     }
     void SetRequiredTexturePackID(std::uint32_t texturePackId) {
-        m_dwRequiredTexturePackID = texturePackId;
+        m_archiveManager.setRequiredTexturePackID(texturePackId);
     }
 
     virtual void GetFileFromTPD(eTPDFileType eType, std::uint8_t* pbData,
                                 unsigned int byteCount, std::uint8_t** ppbData,
                                 unsigned int* pByteCount) {
-        *ppbData = nullptr;
-        *pByteCount = 0;
+        m_archiveManager.getFileFromTPD(eType, pbData, byteCount, ppbData,
+                                        pByteCount);
     }
 
     // XTITLE_DEPLOYMENT_TYPE getDeploymentType() { return
     // m_titleDeploymentType; }
 
 private:
-    // vector of additional skin model parts, indexed by the skin texture id
-    std::unordered_map<std::uint32_t, std::vector<ModelPart*>*>
-        m_AdditionalModelParts;
-    std::unordered_map<std::uint32_t, std::vector<SKIN_BOX*>*>
-        m_AdditionalSkinBoxes;
-    std::unordered_map<std::uint32_t, unsigned int> m_AnimOverrides;
-
     bool m_bResetNether;
-    std::uint32_t m_dwRequiredTexturePackID;
 
     // 4J-PB - language and locale functions
 public:
-    void LocaleAndLanguageInit();
-    void getLocale(std::vector<std::wstring>& vecWstrLocales);
-    int get_eMCLang(wchar_t* pwchLocale);
-    int get_xcLang(wchar_t* pwchLocale);
+    void LocaleAndLanguageInit() { m_localizationManager.localeAndLanguageInit(); }
+    void getLocale(std::vector<std::string>& vecWstrLocales) {
+        m_localizationManager.getLocale(vecWstrLocales);
+    }
+    int get_eMCLang(char* pwchLocale) {
+        return m_localizationManager.get_eMCLang(pwchLocale);
+    }
+    int get_xcLang(char* pwchLocale) {
+        return m_localizationManager.get_xcLang(pwchLocale);
+    }
 
-    void SetTickTMSDLCFiles(bool bVal);
+    void SetTickTMSDLCFiles(bool bVal) { m_dlcController.setTickTMSDLCFiles(bVal); }
 
-    std::wstring getFilePath(std::uint32_t packId, std::wstring filename,
+    std::string getFilePath(std::uint32_t packId, std::string filename,
                              bool bAddDataFolder,
-                             std::wstring mountPoint = L"TPACK:");
+                             std::string mountPoint = "TPACK:");
 
 private:
-    std::unordered_map<int, std::wstring> m_localeA;
-    std::unordered_map<std::wstring, int> m_eMCLangA;
-    std::unordered_map<std::wstring, int> m_xcLangA;
-    std::wstring getRootPath(std::uint32_t packId, bool allowOverride,
-                             bool bAddDataFolder, std::wstring mountPoint);
+    std::string getRootPath(std::uint32_t packId, bool allowOverride,
+                             bool bAddDataFolder, std::string mountPoint);
 
 public:
 #if defined(_WINDOWS64)

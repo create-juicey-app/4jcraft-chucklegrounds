@@ -130,7 +130,7 @@ public:
     virtual bool startCrafting(int x, int y, int z);  // 4J added bool return
     virtual bool openFireworks(int x, int y, int z);  // 4J added
     virtual bool startEnchanting(
-        int x, int y, int z, const std::wstring& name);  // 4J added bool return
+        int x, int y, int z, const std::string& name);  // 4J added bool return
     virtual bool startRepairing(int x, int y, int z);
     virtual bool openFurnace(
         std::shared_ptr<FurnaceTileEntity> furnace);  // 4J added bool return
@@ -141,11 +141,11 @@ public:
     virtual bool openTrap(
         std::shared_ptr<DispenserTileEntity> trap);  // 4J added bool return
     virtual bool openTrading(std::shared_ptr<Merchant> traderTarget,
-                             const std::wstring& name);
+                             const std::string& name);
     virtual void crit(std::shared_ptr<Entity> e);
     virtual void magicCrit(std::shared_ptr<Entity> e);
     virtual void take(std::shared_ptr<Entity> e, int orgCount);
-    virtual void chat(const std::wstring& message);
+    virtual void chat(const std::string& message);
     virtual bool isSneaking();
     // virtual bool isIdle();
     virtual void hurtTo(float newHealth, uint8_t damageSource);

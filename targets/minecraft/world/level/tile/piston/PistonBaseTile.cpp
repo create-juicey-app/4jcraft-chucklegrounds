@@ -25,11 +25,11 @@
 
 class Icon;
 
-const std::wstring PistonBaseTile::EDGE_TEX = L"piston_side";
-const std::wstring PistonBaseTile::PLATFORM_TEX = L"piston_top";
-const std::wstring PistonBaseTile::PLATFORM_STICKY_TEX = L"piston_top_sticky";
-const std::wstring PistonBaseTile::BACK_TEX = L"piston_bottom";
-const std::wstring PistonBaseTile::INSIDE_TEX = L"piston_inner_top";
+const std::string PistonBaseTile::EDGE_TEX = "piston_side";
+const std::string PistonBaseTile::PLATFORM_TEX = "piston_top";
+const std::string PistonBaseTile::PLATFORM_STICKY_TEX = "piston_top_sticky";
+const std::string PistonBaseTile::BACK_TEX = "piston_bottom";
+const std::string PistonBaseTile::INSIDE_TEX = "piston_inner_top";
 
 const float PistonBaseTile::PLATFORM_THICKNESS = 4.0f;
 
@@ -95,7 +95,7 @@ Icon* PistonBaseTile::getTexture(int face, int data) {
     return icon;
 }
 
-Icon* PistonBaseTile::getTexture(const std::wstring& name) {
+Icon* PistonBaseTile::getTexture(const std::string& name) {
     if (name.compare(EDGE_TEX) == 0) return Tile::pistonBase->icon;
     if (name.compare(PLATFORM_TEX) == 0) return Tile::pistonBase->iconPlatform;
     if (name.compare(PLATFORM_STICKY_TEX) == 0)

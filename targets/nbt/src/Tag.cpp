@@ -17,9 +17,9 @@
 #include "nbt/ShortTag.h"
 #include "nbt/StringTag.h"
 
-Tag::Tag(const std::wstring& name) {
+Tag::Tag(const std::string& name) {
     if (name.empty()) {
-        this->name = L"";
+        this->name = "";
     } else {
         this->name = name;
     }
@@ -47,21 +47,21 @@ bool Tag::equals(Tag* obj) {
 
 void Tag::print(std::ostream& out) { out << ""; }
 
-void Tag::print(char* prefix, std::wostream& out) {
-    std::wstring name = getName();
+void Tag::print(char* prefix, std::ostream& out) {
+    std::string name = getName();
 
     out << prefix;
     out << getTagName(getId());
     if (name.length() > 0) {
-        out << L"(\"" << name << L"\")";
+        out << "(\"" << name << "\")";
     }
-    out << L": ";
+    out << ": ";
     out << toString() << std::endl;
 }
 
-std::wstring Tag::getName() { return name; }
+std::string Tag::getName() { return name; }
 
-Tag* Tag::setName(const std::wstring& name) {
+Tag* Tag::setName(const std::string& name) {
     this->name = name;
     return this;
 }
@@ -79,7 +79,7 @@ Tag* Tag::readNamedTag(DataInput* dis, int tagDepth) {
         return new EndTag();
     }
 
-    std::wstring name = dis->readUTF();  // new String(bytes, "UTF-8");
+    std::string name = dis->readUTF();  // new String(bytes, "UTF-8");
 
     Tag* tag = newTag(type, name);
     //        short length = dis.readShort();
@@ -102,7 +102,7 @@ void Tag::writeNamedTag(Tag* tag, DataOutput* dos) {
     tag->write(dos);
 }
 
-Tag* Tag::newTag(uint8_t type, const std::wstring& name) {
+Tag* Tag::newTag(uint8_t type, const std::string& name) {
     switch (type) {
         case TAG_End:
             return new EndTag(name);
@@ -132,32 +132,32 @@ Tag* Tag::newTag(uint8_t type, const std::wstring& name) {
     return nullptr;
 }
 
-const wchar_t* Tag::getTagName(uint8_t type) {
+const char* Tag::getTagName(uint8_t type) {
     switch (type) {
         case TAG_End:
-            return L"TAG_End";
+            return "TAG_End";
         case TAG_Byte:
-            return L"TAG_Byte";
+            return "TAG_Byte";
         case TAG_Short:
-            return L"TAG_Short";
+            return "TAG_Short";
         case TAG_Int:
-            return L"TAG_Int";
+            return "TAG_Int";
         case TAG_Long:
-            return L"TAG_Long";
+            return "TAG_Long";
         case TAG_Float:
-            return L"TAG_Float";
+            return "TAG_Float";
         case TAG_Double:
-            return L"TAG_Double";
+            return "TAG_Double";
         case TAG_Byte_Array:
-            return L"TAG_Byte_Array";
+            return "TAG_Byte_Array";
         case TAG_Int_Array:
-            return L"TAG_Int_Array";
+            return "TAG_Int_Array";
         case TAG_String:
-            return L"TAG_String";
+            return "TAG_String";
         case TAG_List:
-            return L"TAG_List";
+            return "TAG_List";
         case TAG_Compound:
-            return L"TAG_Compound";
+            return "TAG_Compound";
     }
-    return L"UNKNOWN";
+    return "UNKNOWN";
 }

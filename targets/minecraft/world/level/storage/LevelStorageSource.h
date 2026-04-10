@@ -12,14 +12,14 @@ class ConsoleSaveFile;
 
 class LevelStorageSource {
 public:
-    virtual std::wstring getName() = 0;
+    virtual std::string getName() = 0;
     virtual std::shared_ptr<LevelStorage> selectLevel(
-        ConsoleSaveFile* saveFile, const std::wstring& levelId,
+        ConsoleSaveFile* saveFile, const std::string& levelId,
         bool createPlayerDir) = 0;
     virtual std::vector<LevelSummary*>* getLevelList() = 0;
     virtual void clearAll() = 0;
     virtual LevelData* getDataTagFor(ConsoleSaveFile* saveFile,
-                                     const std::wstring& levelId) = 0;
+                                     const std::string& levelId) = 0;
 
     /**
      * Tests if a levelId can be used to store a level. For example, a levelId
@@ -31,15 +31,15 @@ public:
      * @param levelId
      * @return
      */
-    virtual bool isNewLevelIdAcceptable(const std::wstring& levelId) = 0;
-    virtual void deleteLevel(const std::wstring& levelId) = 0;
-    virtual void renameLevel(const std::wstring& levelId,
-                             const std::wstring& newLevelName) = 0;
+    virtual bool isNewLevelIdAcceptable(const std::string& levelId) = 0;
+    virtual void deleteLevel(const std::string& levelId) = 0;
+    virtual void renameLevel(const std::string& levelId,
+                             const std::string& newLevelName) = 0;
     virtual bool isConvertible(ConsoleSaveFile* saveFile,
-                               const std::wstring& levelId) = 0;
+                               const std::string& levelId) = 0;
     virtual bool requiresConversion(ConsoleSaveFile* saveFile,
-                                    const std::wstring& levelId) = 0;
+                                    const std::string& levelId) = 0;
     virtual bool convertLevel(ConsoleSaveFile* saveFile,
-                              const std::wstring& levelId,
+                              const std::string& levelId,
                               ProgressListener* progress) = 0;
 };

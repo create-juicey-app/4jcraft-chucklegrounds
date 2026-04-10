@@ -144,7 +144,7 @@ void Mob::ate() {}
 void Mob::defineSynchedData() {
     LivingEntity::defineSynchedData();
     entityData->define(DATA_CUSTOM_NAME_VISIBLE, (uint8_t)0);
-    entityData->define(DATA_CUSTOM_NAME, L"");
+    entityData->define(DATA_CUSTOM_NAME, "");
 }
 
 int Mob::getAmbientSoundInterval() { return 20 * 4; }
@@ -231,8 +231,8 @@ void Mob::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel) {
 
 void Mob::addAdditonalSaveData(CompoundTag* entityTag) {
     LivingEntity::addAdditonalSaveData(entityTag);
-    entityTag->putBoolean(L"CanPickUpLoot", canPickUpLoot());
-    entityTag->putBoolean(L"PersistenceRequired", persistenceRequired);
+    entityTag->putBoolean("CanPickUpLoot", canPickUpLoot());
+    entityTag->putBoolean("PersistenceRequired", persistenceRequired);
 
     ListTag<CompoundTag>* gear = new ListTag<CompoundTag>();
     for (int i = 0; i < equipment.size(); i++) {
@@ -240,65 +240,65 @@ void Mob::addAdditonalSaveData(CompoundTag* entityTag) {
         if (equipment[i] != nullptr) equipment[i]->save(tag);
         gear->add(tag);
     }
-    entityTag->put(L"Equipment", gear);
+    entityTag->put("Equipment", gear);
 
     ListTag<FloatTag>* dropChanceList = new ListTag<FloatTag>();
     for (int i = 0; i < dropChances.size(); i++) {
         dropChanceList->add(new FloatTag(toWString(i), dropChances[i]));
     }
-    entityTag->put(L"DropChances", dropChanceList);
-    entityTag->putString(L"CustomName", getCustomName());
-    entityTag->putBoolean(L"CustomNameVisible", isCustomNameVisible());
+    entityTag->put("DropChances", dropChanceList);
+    entityTag->putString("CustomName", getCustomName());
+    entityTag->putBoolean("CustomNameVisible", isCustomNameVisible());
 
     // leash info
-    entityTag->putBoolean(L"Leashed", _isLeashed);
+    entityTag->putBoolean("Leashed", _isLeashed);
     if (leashHolder != nullptr) {
-        CompoundTag* leashTag = new CompoundTag(L"Leash");
+        CompoundTag* leashTag = new CompoundTag("Leash");
         if (leashHolder->instanceof(eTYPE_LIVINGENTITY)) {
             // a walking, talking, leash holder
-            leashTag->putString(L"UUID", leashHolder->getUUID());
+            leashTag->putString("UUID", leashHolder->getUUID());
         } else if (leashHolder->instanceof(eTYPE_HANGING_ENTITY)) {
             // a fixed holder (that doesn't save itself)
             std::shared_ptr<HangingEntity> hangInThere =
                 std::dynamic_pointer_cast<HangingEntity>(leashHolder);
-            leashTag->putInt(L"X", hangInThere->xTile);
-            leashTag->putInt(L"Y", hangInThere->yTile);
-            leashTag->putInt(L"Z", hangInThere->zTile);
+            leashTag->putInt("X", hangInThere->xTile);
+            leashTag->putInt("Y", hangInThere->yTile);
+            leashTag->putInt("Z", hangInThere->zTile);
         }
-        entityTag->put(L"Leash", leashTag);
+        entityTag->put("Leash", leashTag);
     }
 }
 
 void Mob::readAdditionalSaveData(CompoundTag* tag) {
     LivingEntity::readAdditionalSaveData(tag);
 
-    setCanPickUpLoot(tag->getBoolean(L"CanPickUpLoot"));
-    persistenceRequired = tag->getBoolean(L"PersistenceRequired");
-    if (tag->contains(L"CustomName") &&
-        tag->getString(L"CustomName").length() > 0)
-        setCustomName(tag->getString(L"CustomName"));
-    setCustomNameVisible(tag->getBoolean(L"CustomNameVisible"));
+    setCanPickUpLoot(tag->getBoolean("CanPickUpLoot"));
+    persistenceRequired = tag->getBoolean("PersistenceRequired");
+    if (tag->contains("CustomName") &&
+        tag->getString("CustomName").length() > 0)
+        setCustomName(tag->getString("CustomName"));
+    setCustomNameVisible(tag->getBoolean("CustomNameVisible"));
 
-    if (tag->contains(L"Equipment")) {
+    if (tag->contains("Equipment")) {
         ListTag<CompoundTag>* gear =
-            (ListTag<CompoundTag>*)tag->getList(L"Equipment");
+            (ListTag<CompoundTag>*)tag->getList("Equipment");
 
         for (int i = 0; i < equipment.size(); i++) {
             equipment[i] = ItemInstance::fromTag(gear->get(i));
         }
     }
 
-    if (tag->contains(L"DropChances")) {
+    if (tag->contains("DropChances")) {
         ListTag<FloatTag>* items =
-            (ListTag<FloatTag>*)tag->getList(L"DropChances");
+            (ListTag<FloatTag>*)tag->getList("DropChances");
         for (int i = 0; i < items->size(); i++) {
             dropChances[i] = items->get(i)->data;
         }
     }
 
-    _isLeashed = tag->getBoolean(L"Leashed");
-    if (_isLeashed && tag->contains(L"Leash")) {
-        leashInfoTag = (CompoundTag*)tag->getCompound(L"Leash")->copy();
+    _isLeashed = tag->getBoolean("Leashed");
+    if (_isLeashed && tag->contains("Leash")) {
+        leashInfoTag = (CompoundTag*)tag->getCompound("Leash")->copy();
     }
 }
 
@@ -706,18 +706,18 @@ void Mob::finalizeSpawnEggSpawn(int extraData) {}
 
 bool Mob::canBeControlledByRider() { return false; }
 
-std::wstring Mob::getAName() {
+std::string Mob::getAName() {
     if (hasCustomName()) return getCustomName();
     return LivingEntity::getAName();
 }
 
 void Mob::setPersistenceRequired() { persistenceRequired = true; }
 
-void Mob::setCustomName(const std::wstring& name) {
+void Mob::setCustomName(const std::string& name) {
     entityData->set(DATA_CUSTOM_NAME, name);
 }
 
-std::wstring Mob::getCustomName() {
+std::string Mob::getCustomName() {
     return entityData->getString(DATA_CUSTOM_NAME);
 }
 
@@ -847,8 +847,8 @@ void Mob::setLeashedTo(std::shared_ptr<Entity> holder, bool synch) {
 void Mob::restoreLeashFromSave() {
     // after being added to the world, attempt to recreate leash bond
     if (_isLeashed && leashInfoTag != nullptr) {
-        if (leashInfoTag->contains(L"UUID")) {
-            std::wstring leashUuid = leashInfoTag->getString(L"UUID");
+        if (leashInfoTag->contains("UUID")) {
+            std::string leashUuid = leashInfoTag->getString("UUID");
             AABB grown = bb.grow(10, 10, 10);
             std::vector<std::shared_ptr<Entity>>* livingEnts =
                 level->getEntitiesOfClass(typeid(LivingEntity), &grown);
@@ -862,12 +862,12 @@ void Mob::restoreLeashFromSave() {
                 }
             }
             delete livingEnts;
-        } else if (leashInfoTag->contains(L"X") &&
-                   leashInfoTag->contains(L"Y") &&
-                   leashInfoTag->contains(L"Z")) {
-            int x = leashInfoTag->getInt(L"X");
-            int y = leashInfoTag->getInt(L"Y");
-            int z = leashInfoTag->getInt(L"Z");
+        } else if (leashInfoTag->contains("X") &&
+                   leashInfoTag->contains("Y") &&
+                   leashInfoTag->contains("Z")) {
+            int x = leashInfoTag->getInt("X");
+            int y = leashInfoTag->getInt("Y");
+            int z = leashInfoTag->getInt("Z");
 
             std::shared_ptr<LeashFenceKnotEntity> activeKnot =
                 LeashFenceKnotEntity::findKnotAt(level, x, y, z);

@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/Class.h"
 #include "java/Random.h"
 #include "minecraft/client/Minecraft.h"
@@ -73,7 +73,7 @@ void Biome::staticCtor() {
     Biome::ocean =
         (new OceanBiome(0))
             ->setColor(0x000070)
-            ->setName(L"Ocean")
+            ->setName("Ocean")
             ->setDepthAndScale(-1, 0.4f)
             ->setLeafFoliageWaterSkyColor(
                 eMinecraftColour_Grass_Ocean, eMinecraftColour_Foliage_Ocean,
@@ -81,7 +81,7 @@ void Biome::staticCtor() {
     Biome::plains =
         (new PlainsBiome(1))
             ->setColor(0x8db360)
-            ->setName(L"Plains")
+            ->setName("Plains")
             ->setTemperatureAndDownfall(0.8f, 0.4f)
             ->setLeafFoliageWaterSkyColor(
                 eMinecraftColour_Grass_Plains, eMinecraftColour_Foliage_Plains,
@@ -89,7 +89,7 @@ void Biome::staticCtor() {
     Biome::desert =
         (new DesertBiome(2))
             ->setColor(0xFA9418)
-            ->setName(L"Desert")
+            ->setName("Desert")
             ->setNoRain()
             ->setTemperatureAndDownfall(2, 0)
             ->setDepthAndScale(0.1f, 0.2f)
@@ -100,7 +100,7 @@ void Biome::staticCtor() {
     Biome::extremeHills =
         (new ExtremeHillsBiome(3))
             ->setColor(0x606060)
-            ->setName(L"Extreme Hills")
+            ->setName("Extreme Hills")
             ->setDepthAndScale(0.3f, 1.5f)
             ->setTemperatureAndDownfall(0.2f, 0.3f)
             ->setLeafFoliageWaterSkyColor(eMinecraftColour_Grass_ExtremeHills,
@@ -110,7 +110,7 @@ void Biome::staticCtor() {
     Biome::forest =
         (new ForestBiome(4))
             ->setColor(0x056621)
-            ->setName(L"Forest")
+            ->setName("Forest")
             ->setLeafColor(0x4EBA31)
             ->setTemperatureAndDownfall(0.7f, 0.8f)
             ->setLeafFoliageWaterSkyColor(
@@ -121,7 +121,7 @@ void Biome::staticCtor() {
     Biome::taiga =
         (new TaigaBiome(5))
             ->setColor(0x0b6659)
-            ->setName(L"Taiga")
+            ->setName("Taiga")
             ->setLeafColor(0x4EBA31)
             ->setSnowCovered()
             ->setTemperatureAndDownfall(0.05f, 0.8f)
@@ -133,7 +133,7 @@ void Biome::staticCtor() {
     Biome::swampland =
         (new SwampBiome(6))
             ->setColor(0x07F9B2)
-            ->setName(L"Swampland")
+            ->setName("Swampland")
             ->setLeafColor(0x8BAF48)
             ->setDepthAndScale(-0.2f, 0.1f)
             ->setTemperatureAndDownfall(0.8f, 0.9f)
@@ -144,7 +144,7 @@ void Biome::staticCtor() {
     Biome::river =
         (new RiverBiome(7))
             ->setColor(0x0000ff)
-            ->setName(L"River")
+            ->setName("River")
             ->setDepthAndScale(-0.5f, 0)
             ->setLeafFoliageWaterSkyColor(
                 eMinecraftColour_Grass_River, eMinecraftColour_Foliage_River,
@@ -153,7 +153,7 @@ void Biome::staticCtor() {
     Biome::hell =
         (new HellBiome(8))
             ->setColor(0xff0000)
-            ->setName(L"Hell")
+            ->setName("Hell")
             ->setNoRain()
             ->setTemperatureAndDownfall(2, 0)
             ->setLeafFoliageWaterSkyColor(
@@ -161,7 +161,7 @@ void Biome::staticCtor() {
                 eMinecraftColour_Water_Hell, eMinecraftColour_Sky_Hell);
     Biome::sky = (new TheEndBiome(9))
                      ->setColor(0x8080ff)
-                     ->setName(L"Sky")
+                     ->setName("Sky")
                      ->setNoRain()
                      ->setLeafFoliageWaterSkyColor(eMinecraftColour_Grass_Sky,
                                                    eMinecraftColour_Foliage_Sky,
@@ -171,7 +171,7 @@ void Biome::staticCtor() {
     Biome::frozenOcean =
         (new OceanBiome(10))
             ->setColor(0x9090a0)
-            ->setName(L"FrozenOcean")
+            ->setName("FrozenOcean")
             ->setSnowCovered()
             ->setDepthAndScale(-1, 0.5f)
             ->setTemperatureAndDownfall(0, 0.5f)
@@ -182,7 +182,7 @@ void Biome::staticCtor() {
     Biome::frozenRiver =
         (new RiverBiome(11))
             ->setColor(0xa0a0ff)
-            ->setName(L"FrozenRiver")
+            ->setName("FrozenRiver")
             ->setSnowCovered()
             ->setDepthAndScale(-0.5f, 0)
             ->setTemperatureAndDownfall(0, 0.5f)
@@ -193,7 +193,7 @@ void Biome::staticCtor() {
     Biome::iceFlats =
         (new IceBiome(12))
             ->setColor(0xffffff)
-            ->setName(L"Ice Plains")
+            ->setName("Ice Plains")
             ->setSnowCovered()
             ->setTemperatureAndDownfall(0, 0.5f)
             ->setLeafFoliageWaterSkyColor(eMinecraftColour_Grass_IcePlains,
@@ -203,7 +203,7 @@ void Biome::staticCtor() {
     Biome::iceMountains =
         (new IceBiome(13))
             ->setColor(0xa0a0a0)
-            ->setName(L"Ice Mountains")
+            ->setName("Ice Mountains")
             ->setSnowCovered()
             ->setDepthAndScale(0.3f, 1.3f)
             ->setTemperatureAndDownfall(0, 0.5f)
@@ -214,7 +214,7 @@ void Biome::staticCtor() {
 
     Biome::mushroomIsland = (new MushroomIslandBiome(14))
                                 ->setColor(0xff00ff)
-                                ->setName(L"MushroomIsland")
+                                ->setName("MushroomIsland")
                                 ->setTemperatureAndDownfall(0.9f, 1.0f)
                                 ->setDepthAndScale(0.2f, 1.0f)
                                 ->setLeafFoliageWaterSkyColor(
@@ -225,7 +225,7 @@ void Biome::staticCtor() {
     Biome::mushroomIslandShore =
         (new MushroomIslandBiome(15))
             ->setColor(0xa000ff)
-            ->setName(L"MushroomIslandShore")
+            ->setName("MushroomIslandShore")
             ->setTemperatureAndDownfall(0.9f, 1.0f)
             ->setDepthAndScale(-1, 0.1f)
             ->setLeafFoliageWaterSkyColor(
@@ -237,7 +237,7 @@ void Biome::staticCtor() {
     Biome::beaches =
         (new BeachBiome(16))
             ->setColor(0xfade55)
-            ->setName(L"Beach")
+            ->setName("Beach")
             ->setTemperatureAndDownfall(0.8f, 0.4f)
             ->setDepthAndScale(0.0f, 0.1f)
             ->setLeafFoliageWaterSkyColor(
@@ -246,7 +246,7 @@ void Biome::staticCtor() {
     Biome::desertHills =
         (new DesertBiome(17))
             ->setColor(0xd25f12)
-            ->setName(L"DesertHills")
+            ->setName("DesertHills")
             ->setNoRain()
             ->setTemperatureAndDownfall(2, 0)
             ->setDepthAndScale(0.3f, 0.8f)
@@ -257,7 +257,7 @@ void Biome::staticCtor() {
     Biome::forestHills =
         (new ForestBiome(18))
             ->setColor(0x22551c)
-            ->setName(L"ForestHills")
+            ->setName("ForestHills")
             ->setLeafColor(0x4EBA31)
             ->setTemperatureAndDownfall(0.7f, 0.8f)
             ->setDepthAndScale(0.3f, 0.7f)
@@ -268,7 +268,7 @@ void Biome::staticCtor() {
     Biome::taigaHills =
         (new TaigaBiome(19))
             ->setColor(0x163933)
-            ->setName(L"TaigaHills")
+            ->setName("TaigaHills")
             ->setSnowCovered()
             ->setLeafColor(0x4EBA31)
             ->setTemperatureAndDownfall(0.05f, 0.8f)
@@ -280,7 +280,7 @@ void Biome::staticCtor() {
     Biome::smallerExtremeHills =
         (new ExtremeHillsBiome(20))
             ->setColor(0x72789a)
-            ->setName(L"Extreme Hills Edge")
+            ->setName("Extreme Hills Edge")
             ->setDepthAndScale(0.2f, 0.8f)
             ->setTemperatureAndDownfall(0.2f, 0.3f)
             ->setLeafFoliageWaterSkyColor(
@@ -292,7 +292,7 @@ void Biome::staticCtor() {
     Biome::jungle =
         (new JungleBiome(21))
             ->setColor(0x537b09)
-            ->setName(L"Jungle")
+            ->setName("Jungle")
             ->setLeafColor(0x537b09)
             ->setTemperatureAndDownfall(1.2f, 0.9f)
             ->setDepthAndScale(0.2f, 0.4f)
@@ -302,7 +302,7 @@ void Biome::staticCtor() {
     Biome::jungleHills =
         (new JungleBiome(22))
             ->setColor(0x2c4205)
-            ->setName(L"JungleHills")
+            ->setName("JungleHills")
             ->setLeafColor(0x537b09)
             ->setTemperatureAndDownfall(1.2f, 0.9f)
             ->setDepthAndScale(1.8f, 0.5f)
@@ -420,7 +420,7 @@ Biome* Biome::setSnowCovered() {
     return this;
 }
 
-Biome* Biome::setName(const std::wstring& name) {
+Biome* Biome::setName(const std::string& name) {
     this->m_name = name;
     return this;
 }

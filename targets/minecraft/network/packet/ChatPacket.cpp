@@ -12,7 +12,7 @@ const unsigned int ChatPacket::MAX_LENGTH =
 
 ChatPacket::ChatPacket() { m_messageType = e_ChatCustom; }
 
-ChatPacket::ChatPacket(const std::wstring& message,
+ChatPacket::ChatPacket(const std::string& message,
                        EChatPacketMessage type /*= e_ChatCustom*/,
                        int customData /*= -1*/) {
     m_messageType = type;
@@ -21,8 +21,8 @@ ChatPacket::ChatPacket(const std::wstring& message,
     m_stringArgs.push_back(message);
 }
 
-ChatPacket::ChatPacket(const std::wstring& message, EChatPacketMessage type,
-                       int sourceEntityType, const std::wstring& sourceName) {
+ChatPacket::ChatPacket(const std::string& message, EChatPacketMessage type,
+                       int sourceEntityType, const std::string& sourceName) {
     m_messageType = type;
     if (sourceEntityType != -1) m_intArgs.push_back(sourceEntityType);
 
@@ -30,9 +30,9 @@ ChatPacket::ChatPacket(const std::wstring& message, EChatPacketMessage type,
     m_stringArgs.push_back(sourceName);
 }
 
-ChatPacket::ChatPacket(const std::wstring& message, EChatPacketMessage type,
-                       int sourceEntityType, const std::wstring& sourceName,
-                       const std::wstring& itemName) {
+ChatPacket::ChatPacket(const std::string& message, EChatPacketMessage type,
+                       int sourceEntityType, const std::string& sourceName,
+                       const std::string& itemName) {
     m_messageType = type;
     if (sourceEntityType != -1) m_intArgs.push_back(sourceEntityType);
 

@@ -75,10 +75,10 @@ StructurePiece::~StructurePiece() {
 CompoundTag* StructurePiece::createTag() {
     CompoundTag* tag = new CompoundTag();
 
-    tag->putString(L"id", StructureFeatureIO::getEncodeId(this));
-    tag->put(L"BB", boundingBox->createTag(L"BB"));
-    tag->putInt(L"O", orientation);
-    tag->putInt(L"GD", genDepth);
+    tag->putString("id", StructureFeatureIO::getEncodeId(this));
+    tag->put("BB", boundingBox->createTag("BB"));
+    tag->putInt("O", orientation);
+    tag->putInt("GD", genDepth);
 
     addAdditonalSaveData(tag);
 
@@ -86,11 +86,11 @@ CompoundTag* StructurePiece::createTag() {
 }
 
 void StructurePiece::load(Level* level, CompoundTag* tag) {
-    if (tag->contains(L"BB")) {
-        boundingBox = new BoundingBox(tag->getIntArray(L"BB"));
+    if (tag->contains("BB")) {
+        boundingBox = new BoundingBox(tag->getIntArray("BB"));
     }
-    orientation = tag->getInt(L"O");
-    genDepth = tag->getInt(L"GD");
+    orientation = tag->getInt("O");
+    genDepth = tag->getInt("GD");
 
     readAdditonalSaveData(tag);
 }

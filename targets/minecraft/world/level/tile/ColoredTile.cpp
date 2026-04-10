@@ -25,7 +25,7 @@ int ColoredTile::getItemAuxValueForTileData(int data) { return (~data & 0xf); }
 void ColoredTile::registerIcons(IconRegister* iconRegister) {
     for (int i = 0; i < ICON_COUNT; i++) {
         icons[i] = iconRegister->registerIcon(
-            getIconName() + L"_" +
+            getIconName() + "_" +
             DyePowderItem::COLOR_TEXTURES[getItemAuxValueForTileData(i)]);
     }
 }

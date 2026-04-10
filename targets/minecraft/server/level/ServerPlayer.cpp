@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "ServerPlayer.h"
 
 #include <assert.h>
@@ -8,12 +10,12 @@
 #include <cmath>
 #include <format>
 
-#include "platform/sdl2/Input.h"
+#include "platform/input/input.h"
 #include "EntityTracker.h"
-#include "app/common/src/Console_Debug_enum.h"
-#include "app/common/src/GameRules/LevelRules/Rules/GameRulesInstance.h"
-#include "app/common/src/Network/GameNetworkManager.h"
-#include "app/common/src/Network/NetworkPlayerInterface.h"
+#include "app/common/Console_Debug_enum.h"
+#include "app/common/GameRules/LevelRules/Rules/GameRulesInstance.h"
+#include "app/common/Network/GameNetworkManager.h"
+#include "app/common/Network/NetworkPlayerInterface.h"
 #include "app/linux/LinuxGame.h"
 #include "ServerLevel.h"
 #include "ServerPlayerGameMode.h"
@@ -112,7 +114,7 @@
 class Objective;
 
 ServerPlayer::ServerPlayer(MinecraftServer* server, Level* level,
-                           const std::wstring& name,
+                           const std::string& name,
                            ServerPlayerGameMode* gameMode)
     : Player(level, name) {
     // 4J - added initialisers
@@ -246,7 +248,7 @@ void ServerPlayer::flagEntitiesToBeRemoved(unsigned int* flags,
 void ServerPlayer::readAdditionalSaveData(CompoundTag* entityTag) {
     Player::readAdditionalSaveData(entityTag);
 
-    if (entityTag->contains(L"playerGameType")) {
+    if (entityTag->contains("playerGameType")) {
         // 4J Stu - We do not want to change the game mode for the player,
         // instead we let the server override it globally
         // if (MinecraftServer::getInstance()->getForceGameType())
@@ -255,13 +257,13 @@ void ServerPlayer::readAdditionalSaveData(CompoundTag* entityTag) {
         //}
         // else
         //{
-        //	gameMode->setGameModeForPlayer(GameType::byId(entityTag->getInt(L"playerGameType")));
+        //	gameMode->setGameModeForPlayer(GameType::byId(entityTag->getInt("playerGameType")));
         //}
     }
 
     GameRulesInstance* grs = gameMode->getGameRules();
-    if (entityTag->contains(L"GameRules") && grs != nullptr) {
-        std::vector<uint8_t> ba = entityTag->getByteArray(L"GameRules");
+    if (entityTag->contains("GameRules") && grs != nullptr) {
+        std::vector<uint8_t> ba = entityTag->getByteArray("GameRules");
         ByteArrayInputStream bais(ba);
         DataInputStream dis(&bais);
         grs->read(&dis);
@@ -278,7 +280,7 @@ void ServerPlayer::addAdditonalSaveData(CompoundTag* entityTag) {
         ByteArrayOutputStream baos;
         DataOutputStream dos(&baos);
         grs->write(&dos);
-        entityTag->putByteArray(L"GameRules", baos.buf);
+        entityTag->putByteArray("GameRules", baos.buf);
         baos.buf.clear();
         dos.close();
         baos.close();
@@ -286,7 +288,7 @@ void ServerPlayer::addAdditonalSaveData(CompoundTag* entityTag) {
 
     // 4J Stu - We do not want to change the game mode for the player, instead
     // we let the server override it globally
-    // entityTag->putInt(L"playerGameType",
+    // entityTag->putInt("playerGameType",
     // gameMode->getGameModeForPlayer()->getId());
 }
 
@@ -431,11 +433,11 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks) {
                     MinecraftServer::chunkPacketManagement_CanSendTo(
                         connection->getNetworkPlayer());
 
-                //				app.DebugPrintf(">>> %d\n",
+                //				Log::info(">>> %d\n",
                 // canSendToPlayer); 				if(
                 // connection->getNetworkPlayer() )
                 //				{
-                //					app.DebugPrintf("%d:
+                //					Log::info("%d:
                 // canSendToPlayer %d, countDelayedPackets %d
                 // GetSendQueueSizeBytes %d done: %d\n",
                 //						connection->getNetworkPlayer()->GetSmallId(),
@@ -460,17 +462,17 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks) {
                         connection->getNetworkPlayer());
 
                     //					static
-                    // unordered_map<wstring,int64_t> mapLastTime;
+                    // unordered_map<string,int64_t> mapLastTime;
                     //					int64_t thisTime =
                     // System::currentTimeMillis();
                     //					int64_t lastTime =
                     // mapLastTime[connection->getNetworkPlayer()->GetUID().toString()];
-                    //					app.DebugPrintf(" - OK
+                    //					Log::info(" - OK
                     // to send (%d ms since last)\n", thisTime - lastTime);
                     //					mapLastTime[connection->getNetworkPlayer()->GetUID().toString()]
                     //= thisTime;
                 } else {
-                    //					app.DebugPrintf(" - <NOT
+                    //					Log::info(" - <NOT
                     // OK>\n");
                 }
             }
@@ -505,7 +507,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks) {
                     //     finite set of chunks as the player moves
                     if (!g_NetworkManager.SystemFlagGet(
                             connection->getNetworkPlayer(), flagIndex)) {
-                        //						app.DebugPrintf("Creating
+                        //						Log::info("Creating
                         // BRUP for %d %d\n",nearest.x, nearest.z);
                         int64_t before = System::currentTimeMillis();
                         std::shared_ptr<BlockRegionUpdatePacket> packet =
@@ -514,7 +516,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks) {
                                     nearest.x * 16, 0, nearest.z * 16, 16,
                                     Level::maxBuildHeight, 16, level));
                         int64_t after = System::currentTimeMillis();
-                        //						app.DebugPrintf(">>><<<
+                        //						Log::info(">>><<<
                         //%d ms\n",after-before);
 
                         if (dontDelayChunks) packet->shouldDelay = false;
@@ -583,7 +585,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks) {
 void ServerPlayer::doTickB() {
 #if !defined(_CONTENT_PACKAGE)
     // check if there's a debug dimension change requested
-    // if(app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToNether))
+    // if(gameServices().debugGetMask(PlatformInput.GetPrimaryPad())&(1L<<eDebugSetting_GoToNether))
     //{
     //	if(level->dimension->id == 0 )
     //	{
@@ -591,11 +593,11 @@ void ServerPlayer::doTickB() {
     //		portalTime=1;
     //	}
     //	unsigned int
-    // uiVal=app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad());
-    //	app.SetGameSettingsDebugMask(InputManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToNether));
+    // uiVal=gameServices().debugGetMask(PlatformInput.GetPrimaryPad());
+    //	gameServices().setGameSettingsDebugMask(PlatformInput.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToNether));
     //}
     // 	else if
-    // (app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToEnd))
+    // (gameServices().debugGetMask(PlatformInput.GetPrimaryPad())&(1L<<eDebugSetting_GoToEnd))
     // 	{
     // 		if(level->dimension->id == 0 )
     // 		{
@@ -603,20 +605,20 @@ void ServerPlayer::doTickB() {
     // std::dynamic_pointer_cast<ServerPlayer>( shared_from_this() ), 1 );
     // 		}
     // 		unsigned int
-    // uiVal=app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad());
-    // 		app.SetGameSettingsDebugMask(InputManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToEnd));
+    // uiVal=gameServices().debugGetMask(PlatformInput.GetPrimaryPad());
+    // 		gameServices().setGameSettingsDebugMask(PlatformInput.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToEnd));
     // 	}
     // else
-    if (app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad()) &
+    if (gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
         (1L << eDebugSetting_GoToOverworld)) {
         if (level->dimension->id != 0) {
             isInsidePortal = true;
             portalTime = 1;
         }
         unsigned int uiVal =
-            app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad());
-        app.SetGameSettingsDebugMask(
-            InputManager.GetPrimaryPad(),
+            gameServices().debugGetMask(PlatformInput.GetPrimaryPad());
+        gameServices().setGameSettingsDebugMask(
+            PlatformInput.GetPrimaryPad(),
             uiVal & ~(1L << eDebugSetting_GoToOverworld));
     }
 #endif
@@ -703,7 +705,7 @@ bool ServerPlayer::hurt(DamageSource* dmgSource, float dmg) {
     // way out of 'fall traps'
     // bool allowFallDamage = server->isPvpAllowed() &&
     // server->isDedicatedServer() && server->isPvpAllowed() &&
-    // (dmgSource->msgId.compare(L"fall") == 0);
+    // (dmgSource->msgId.compare("fall") == 0);
     if (!server->isPvpAllowed() && invulnerableTime > 0 &&
         dmgSource != DamageSource::outOfWorld)
         return false;
@@ -744,7 +746,7 @@ bool ServerPlayer::canHarmPlayer(std::shared_ptr<Player> target) {
 
 // 4J: Added for checking when only player name is provided (possible player
 // isn't on server), e.g. can harm owned animals
-bool ServerPlayer::canHarmPlayer(std::wstring targetName) {
+bool ServerPlayer::canHarmPlayer(std::string targetName) {
     bool canHarm = true;
 
     std::shared_ptr<ServerPlayer> owner =
@@ -765,7 +767,7 @@ void ServerPlayer::changeDimension(int i) {
     if (!connection->hasClientTickedOnce()) return;
 
     if (dimension == 1 && i == 1) {
-        app.DebugPrintf("Start win game\n");
+        Log::info("Start win game\n");
         awardStat(GenericStats::winGame(), GenericStats::param_winGame());
 
         // All players on the same system as this player should also be removed
@@ -779,7 +781,7 @@ void ServerPlayer::changeDimension(int i) {
                 true;  // We only flag this for the player in the portal
             connection->send(std::make_shared<GameEventPacket>(
                 GameEventPacket::WIN_GAME, thisPlayer->GetUserIndex()));
-            app.DebugPrintf("Sending packet to %d\n",
+            Log::info("Sending packet to %d\n",
                             thisPlayer->GetUserIndex());
         }
         if (thisPlayer != nullptr) {
@@ -800,12 +802,12 @@ void ServerPlayer::changeDimension(int i) {
                         std::shared_ptr<GameEventPacket>(
                             new GameEventPacket(GameEventPacket::WIN_GAME,
                                                 thisPlayer->GetUserIndex())));
-                    app.DebugPrintf("Sending packet to %d\n",
+                    Log::info("Sending packet to %d\n",
                                     thisPlayer->GetUserIndex());
                 }
             }
         }
-        app.DebugPrintf("End win game\n");
+        Log::info("End win game\n");
     } else {
         if (dimension == 0 && i == 1) {
             awardStat(GenericStats::theEnd(), GenericStats::param_theEnd());
@@ -915,12 +917,12 @@ bool ServerPlayer::startCrafting(int x, int y, int z) {
     if (containerMenu == inventoryMenu) {
         nextContainerCounter();
         connection->send(std::make_shared<ContainerOpenPacket>(
-            containerCounter, ContainerOpenPacket::WORKBENCH, L"", 9, false));
+            containerCounter, ContainerOpenPacket::WORKBENCH, "", 9, false));
         containerMenu = new CraftingMenu(inventory, level, x, y, z);
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open crafting container when one was "
             "already open\n");
     }
@@ -932,7 +934,7 @@ bool ServerPlayer::openFireworks(int x, int y, int z) {
     if (containerMenu == inventoryMenu) {
         nextContainerCounter();
         connection->send(std::make_shared<ContainerOpenPacket>(
-            containerCounter, ContainerOpenPacket::FIREWORKS, L"", 9, false));
+            containerCounter, ContainerOpenPacket::FIREWORKS, "", 9, false));
         containerMenu = new FireworksMenu(inventory, level, x, y, z);
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
@@ -941,12 +943,12 @@ bool ServerPlayer::openFireworks(int x, int y, int z) {
 
         nextContainerCounter();
         connection->send(std::make_shared<ContainerOpenPacket>(
-            containerCounter, ContainerOpenPacket::FIREWORKS, L"", 9, false));
+            containerCounter, ContainerOpenPacket::FIREWORKS, "", 9, false));
         containerMenu = new FireworksMenu(inventory, level, x, y, z);
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open crafting container when one was "
             "already open\n");
     }
@@ -955,17 +957,17 @@ bool ServerPlayer::openFireworks(int x, int y, int z) {
 }
 
 bool ServerPlayer::startEnchanting(int x, int y, int z,
-                                   const std::wstring& name) {
+                                   const std::string& name) {
     if (containerMenu == inventoryMenu) {
         nextContainerCounter();
         connection->send(std::make_shared<ContainerOpenPacket>(
             containerCounter, ContainerOpenPacket::ENCHANTMENT,
-            name.empty() ? L"" : name, 9, !name.empty()));
+            name.empty() ? "" : name, 9, !name.empty()));
         containerMenu = new EnchantmentMenu(inventory, level, x, y, z);
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open enchanting container when one was "
             "already open\n");
     }
@@ -977,7 +979,7 @@ bool ServerPlayer::startRepairing(int x, int y, int z) {
     if (containerMenu == inventoryMenu) {
         nextContainerCounter();
         connection->send(std::make_shared<ContainerOpenPacket>(
-            containerCounter, ContainerOpenPacket::REPAIR_TABLE, L"", 9,
+            containerCounter, ContainerOpenPacket::REPAIR_TABLE, "", 9,
             false));
         containerMenu = new AnvilMenu(
             inventory, level, x, y, z,
@@ -985,7 +987,7 @@ bool ServerPlayer::startRepairing(int x, int y, int z) {
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open enchanting container when one was "
             "already open\n");
     }
@@ -1010,7 +1012,7 @@ bool ServerPlayer::openContainer(std::shared_ptr<Container> container) {
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open container when one was already open\n");
     }
 
@@ -1028,7 +1030,7 @@ bool ServerPlayer::openHopper(std::shared_ptr<HopperTileEntity> container) {
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open hopper container when one was already "
             "open\n");
     }
@@ -1047,7 +1049,7 @@ bool ServerPlayer::openHopper(std::shared_ptr<MinecartHopper> container) {
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open minecart hopper container when one was "
             "already open\n");
     }
@@ -1066,7 +1068,7 @@ bool ServerPlayer::openFurnace(std::shared_ptr<FurnaceTileEntity> furnace) {
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open furnace when one was already open\n");
     }
 
@@ -1087,7 +1089,7 @@ bool ServerPlayer::openTrap(std::shared_ptr<DispenserTileEntity> trap) {
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open dispenser when one was already open\n");
     }
 
@@ -1106,7 +1108,7 @@ bool ServerPlayer::openBrewingStand(
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open brewing stand when one was already "
             "open\n");
     }
@@ -1125,7 +1127,7 @@ bool ServerPlayer::openBeacon(std::shared_ptr<BeaconTileEntity> beacon) {
         containerMenu->containerId = containerCounter;
         containerMenu->addSlotListener(this);
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open beacon when one was already open\n");
     }
 
@@ -1133,7 +1135,7 @@ bool ServerPlayer::openBeacon(std::shared_ptr<BeaconTileEntity> beacon) {
 }
 
 bool ServerPlayer::openTrading(std::shared_ptr<Merchant> traderTarget,
-                               const std::wstring& name) {
+                               const std::string& name) {
     if (containerMenu == inventoryMenu) {
         nextContainerCounter();
         containerMenu = new MerchantMenu(inventory, traderTarget, level);
@@ -1144,7 +1146,7 @@ bool ServerPlayer::openTrading(std::shared_ptr<Merchant> traderTarget,
 
         connection->send(std::make_shared<ContainerOpenPacket>(
             containerCounter, ContainerOpenPacket::TRADER_NPC,
-            name.empty() ? L"" : name, container->getContainerSize(),
+            name.empty() ? "" : name, container->getContainerSize(),
             !name.empty()));
 
         MerchantRecipeList* offers = traderTarget->getOffers(
@@ -1162,7 +1164,7 @@ bool ServerPlayer::openTrading(std::shared_ptr<Merchant> traderTarget,
                                         rawOutput.toByteArray())));
         }
     } else {
-        app.DebugPrintf(
+        Log::info(
             "ServerPlayer tried to open trading menu when one was already "
             "open\n");
     }
@@ -1299,19 +1301,19 @@ void ServerPlayer::displayClientMessage(int messageId) {
     switch (messageId) {
         case IDS_TILE_BED_OCCUPIED:
             messageType = ChatPacket::e_ChatBedOccupied;
-            connection->send(std::make_shared<ChatPacket>(L"", messageType));
+            connection->send(std::make_shared<ChatPacket>("", messageType));
             break;
         case IDS_TILE_BED_NO_SLEEP:
             messageType = ChatPacket::e_ChatBedNoSleep;
-            connection->send(std::make_shared<ChatPacket>(L"", messageType));
+            connection->send(std::make_shared<ChatPacket>("", messageType));
             break;
         case IDS_TILE_BED_NOT_VALID:
             messageType = ChatPacket::e_ChatBedNotValid;
-            connection->send(std::make_shared<ChatPacket>(L"", messageType));
+            connection->send(std::make_shared<ChatPacket>("", messageType));
             break;
         case IDS_TILE_BED_NOTSAFE:
             messageType = ChatPacket::e_ChatBedNotSafe;
-            connection->send(std::make_shared<ChatPacket>(L"", messageType));
+            connection->send(std::make_shared<ChatPacket>("", messageType));
             break;
         case IDS_TILE_BED_PLAYERSLEEP:
             messageType = ChatPacket::e_ChatBedPlayerSleep;
@@ -1354,7 +1356,7 @@ void ServerPlayer::displayClientMessage(int messageId) {
             break;
         case IDS_TILE_BED_MESLEEP:
             messageType = ChatPacket::e_ChatBedMeSleep;
-            connection->send(std::make_shared<ChatPacket>(L"", messageType));
+            connection->send(std::make_shared<ChatPacket>("", messageType));
             break;
 
         case IDS_MAX_PIGS_SHEEP_COWS_CATS_SPAWNED:
@@ -1540,7 +1542,7 @@ void ServerPlayer::displayClientMessage(int messageId) {
             break;
 
         default:
-            app.DebugPrintf(
+            Log::info(
                 "Tried to send a chat packet to the player with an unhandled "
                 "messageId\n");
             assert(false);
@@ -1548,9 +1550,9 @@ void ServerPlayer::displayClientMessage(int messageId) {
     }
 
     // Language *language = Language::getInstance();
-    // wstring languageString =
-    // app.GetString(messageId);//language->getElement(messageId);
-    // connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"",
+    // string languageString =
+    // gameServices().getString(messageId);//language->getElement(messageId);
+    // connection->send( shared_ptr<ChatPacket>( new ChatPacket("",
     // messageType) ) );
 }
 
@@ -1633,9 +1635,9 @@ void ServerPlayer::setGameMode(GameType* mode) {
 }
 
 void ServerPlayer::sendMessage(
-    const std::wstring& message,
+    const std::string& message,
     ChatPacket::EChatPacketMessage type /*= e_ChatCustom*/,
-    int customData /*= -1*/, const std::wstring& additionalMessage /*= L""*/) {
+    int customData /*= -1*/, const std::string& additionalMessage /*= ""*/) {
     connection->send(std::shared_ptr<ChatPacket>(
         new ChatPacket(message, type, customData, additionalMessage)));
 }

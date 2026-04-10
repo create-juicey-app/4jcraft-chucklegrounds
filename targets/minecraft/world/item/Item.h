@@ -149,7 +149,7 @@ public:
 
 protected:
     static const int ICON_COLUMNS = ITEM_ICON_COLUMNS;
-    static std::wstring
+    static std::string
         ICON_DESCRIPTION_PREFIX;  // 4J Stu - Was const but we have to static
                                   // initialise it outside of this class
 
@@ -640,7 +640,7 @@ protected:
 
 private:
     Item* craftingRemainingItem;
-    std::wstring potionBrewingFormula;
+    std::string potionBrewingFormula;
 
     // 4J Stu - A value from strings.h, that is the name of the item
     unsigned int descriptionId;
@@ -648,15 +648,15 @@ private:
     // 4J Stu - A value from strings.h that says what this does
     unsigned int useDescriptionId;
 
-    std::wstring m_textureName;
+    std::string m_textureName;
 
 protected:
     Item(int id);
 
 public:
     // 4J Using per-item textures now
-    Item* setIconName(const std::wstring& name);
-    std::wstring getIconName();
+    Item* setIconName(const std::string& name);
+    std::string getIconName();
     Item* setMaxStackSize(int max);
     Item* setBaseItemTypeAndMaterial(int iType, int iMaterial);
     int getBaseItemType();
@@ -731,8 +731,8 @@ public:
     virtual bool isHandEquipped();
     virtual bool isMirroredArt();
     Item* setDescriptionId(unsigned int id);
-    const wchar_t* getDescription();
-    const wchar_t* getDescription(std::shared_ptr<ItemInstance> instance);
+    const char* getDescription();
+    const char* getDescription(std::shared_ptr<ItemInstance> instance);
     virtual unsigned int getDescriptionId(int iData = -1);
     virtual unsigned int getDescriptionId(
         std::shared_ptr<ItemInstance> instance);
@@ -746,7 +746,7 @@ public:
     virtual bool shouldOverrideMultiplayerNBT();
     Item* getCraftingRemainingItem();
     bool hasCraftingRemainingItem();
-    std::wstring getName();
+    std::string getName();
     virtual int getColor(std::shared_ptr<ItemInstance> item, int spriteLayer);
     virtual void inventoryTick(std::shared_ptr<ItemInstance> itemInstance,
                                Level* level, std::shared_ptr<Entity> owner,
@@ -763,22 +763,22 @@ public:
 
 protected:
     virtual Item* setPotionBrewingFormula(
-        const std::wstring& potionBrewingFormula);
+        const std::string& potionBrewingFormula);
 
 public:
-    virtual std::wstring getPotionBrewingFormula();
+    virtual std::string getPotionBrewingFormula();
     virtual bool hasPotionBrewingFormula();
     // 4jcraft: re-added old TU18 overload for java gui
     virtual void appendHoverText(
         std::shared_ptr<ItemInstance> itemInstance,
-        std::shared_ptr<Player> player, std::vector<std::wstring>* lines,
+        std::shared_ptr<Player> player, std::vector<std::string>* lines,
         bool advanced,
-        std::vector<std::wstring>&
+        std::vector<std::string>&
             unformattedStrings);  // 4J Added unformattedStrings
     virtual void appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
                                  std::shared_ptr<Player> player,
                                  std::vector<HtmlString>* lines, bool advanced);
-    virtual std::wstring getHoverName(
+    virtual std::string getHoverName(
         std::shared_ptr<ItemInstance> itemInstance);
     virtual bool isFoil(std::shared_ptr<ItemInstance> itemInstance);
     virtual const Rarity* getRarity(std::shared_ptr<ItemInstance> itemInstance);

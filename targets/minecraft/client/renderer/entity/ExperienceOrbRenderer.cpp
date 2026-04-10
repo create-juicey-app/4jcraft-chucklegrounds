@@ -5,7 +5,7 @@
 #include <memory>
 #include <numbers>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "EntityRenderDispatcher.h"
 
 #include "minecraft/SharedConstants.h"
@@ -31,7 +31,7 @@ void ExperienceOrbRenderer::render(std::shared_ptr<Entity> _orb, double x,
     glTranslatef((float)x, (float)y, (float)z);
 
     int icon = orb->getIcon();
-    bindTexture(orb);  // 4J was L"/item/xporb.png"
+    bindTexture(orb);  // 4J was "/item/xporb.png"
 
     float u0 = ((icon % 4) * 16 + 0) / 64.0f;
     float u1 = ((icon % 4) * 16 + 16) / 64.0f;

@@ -91,8 +91,8 @@ std::optional<Vec3> Vec3::clipZ(const Vec3& b, const double zt) const {
     return Vec3{x + xd * d, y + yd * d, z + zd * d};
 }
 
-std::wstring Vec3::toString() const {
-    return std::format(L"({},{},{})", x, y, z);
+std::string Vec3::toString() const {
+    return std::format("({},{},{})", x, y, z);
 }
 
 Vec3 Vec3::lerp(const Vec3& v, const double a) const {

@@ -225,11 +225,11 @@ bool Ghast::canSpawn() {
 int Ghast::getMaxSpawnClusterSize() { return 1; }
 void Ghast::addAdditonalSaveData(CompoundTag* tag) {
     FlyingMob::addAdditonalSaveData(tag);
-    tag->putInt(L"ExplosionPower", explosionPower);
+    tag->putInt("ExplosionPower", explosionPower);
 }
 
 void Ghast::readAdditionalSaveData(CompoundTag* tag) {
     FlyingMob::readAdditionalSaveData(tag);
-    if (tag->contains(L"ExplosionPower"))
-        explosionPower = tag->getInt(L"ExplosionPower");
+    if (tag->contains("ExplosionPower"))
+        explosionPower = tag->getInt("ExplosionPower");
 }

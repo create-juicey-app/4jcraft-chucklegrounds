@@ -19,7 +19,7 @@ Icon* PoweredRailTile::getTexture(int face, int data) {
 
 void PoweredRailTile::registerIcons(IconRegister* iconRegister) {
     BaseRailTile::registerIcons(iconRegister);
-    iconPowered = iconRegister->registerIcon(getIconName() + L"_powered");
+    iconPowered = iconRegister->registerIcon(getIconName() + "_powered");
 }
 
 bool PoweredRailTile::findPoweredRailSignal(Level* level, int x, int y, int z,

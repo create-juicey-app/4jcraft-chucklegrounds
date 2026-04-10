@@ -48,7 +48,7 @@ private:
     int tickInterval;
 
     int type;
-    std::wstring name;
+    std::string name;
 
 public:
     virtual unsigned int getContainerSize();
@@ -57,10 +57,10 @@ public:
                                                      int count);
     virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
     virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
-    virtual std::wstring getName();
-    virtual std::wstring getCustomName();
+    virtual std::string getName();
+    virtual std::string getCustomName();
     virtual bool hasCustomName();
-    virtual void setCustomName(const std::wstring& name);
+    virtual void setCustomName(const std::string& name);
     virtual void load(CompoundTag* base);
     virtual void save(CompoundTag* base);
     virtual int getMaxStackSize();

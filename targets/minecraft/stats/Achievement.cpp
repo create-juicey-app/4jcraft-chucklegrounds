@@ -48,35 +48,35 @@ void Achievement::_init() {
  * @param icon Item used as the achievement icon
  * @param prerequisite Achievement object that is required to unlock this one
  */
-Achievement::Achievement(int id, const std::wstring& name, int x, int y,
+Achievement::Achievement(int id, const std::string& name, int x, int y,
                          Item* icon, Achievement* prerequisite)
     : Stat(Achievements::ACHIEVEMENT_OFFSET + id,
-           I18n::get(std::wstring(L"achievement.").append(name))),
+           I18n::get(std::string("achievement.").append(name))),
       desc(I18n::get(
-          std::wstring(L"achievement.").append(name).append(L".desc"))),
+          std::string("achievement.").append(name).append(".desc"))),
       icon(new ItemInstance(icon)),
       x(x),
       y(y),
       prerequisite(prerequisite) {}
 
-Achievement::Achievement(int id, const std::wstring& name, int x, int y,
+Achievement::Achievement(int id, const std::string& name, int x, int y,
                          Tile* icon, Achievement* prerequisite)
     : Stat(Achievements::ACHIEVEMENT_OFFSET + id,
-           I18n::get(std::wstring(L"achievement.").append(name))),
+           I18n::get(std::string("achievement.").append(name))),
       desc(I18n::get(
-          std::wstring(L"achievement.").append(name).append(L".desc"))),
+          std::string("achievement.").append(name).append(".desc"))),
       icon(new ItemInstance(icon)),
       x(x),
       y(y),
       prerequisite(prerequisite) {}
 
-Achievement::Achievement(int id, const std::wstring& name, int x, int y,
+Achievement::Achievement(int id, const std::string& name, int x, int y,
                          std::shared_ptr<ItemInstance> icon,
                          Achievement* prerequisite)
     : Stat(Achievements::ACHIEVEMENT_OFFSET + id,
-           I18n::get(std::wstring(L"achievement.").append(name))),
+           I18n::get(std::string("achievement.").append(name))),
       desc(I18n::get(
-          std::wstring(L"achievement.").append(name).append(L".desc"))),
+          std::string("achievement.").append(name).append(".desc"))),
       icon(icon),
       x(x),
       y(y),
@@ -125,9 +125,9 @@ bool Achievement::isAchievement() { return true; }
 
 /**
  * @brief Gets the description of an Achivement according to it's DescFormatter'
- * @return wstring
+ * @return string
  **/
-std::wstring Achievement::getDescription() {
+std::string Achievement::getDescription() {
     if (descFormatter != nullptr) {
         return descFormatter->format(desc);
     }

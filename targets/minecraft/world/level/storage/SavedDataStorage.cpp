@@ -25,9 +25,9 @@
 
 SavedDataStorage::SavedDataStorage(LevelStorage* levelStorage) {
     /*
-    cache = new unordered_map<wstring, shared_ptr<SavedData> >;
+    cache = new unordered_map<string, shared_ptr<SavedData> >;
     savedDatas = new vector<shared_ptr<SavedData> >;
-    usedAuxIds = new unordered_map<wstring, short*>;
+    usedAuxIds = new unordered_map<string, short*>;
     */
 
     this->levelStorage = levelStorage;
@@ -35,7 +35,7 @@ SavedDataStorage::SavedDataStorage(LevelStorage* levelStorage) {
 }
 
 std::shared_ptr<SavedData> SavedDataStorage::get(const std::type_info& clazz,
-                                                 const std::wstring& id) {
+                                                 const std::string& id) {
     auto it = cache.find(id);
     if (it != cache.end()) return (*it).second;
 
@@ -63,7 +63,7 @@ std::shared_ptr<SavedData> SavedDataStorage::get(const std::type_info& clazz,
                         new StructureFeatureSavedData(id)));
             } else {
                 // Handling of new SavedData class required
-                __debugbreak();
+                assert(0);
             }
 
             ConsoleSaveFileInputStream fis =
@@ -71,13 +71,13 @@ std::shared_ptr<SavedData> SavedDataStorage::get(const std::type_info& clazz,
             CompoundTag* root = NbtIo::readCompressed(&fis);
             fis.close();
 
-            data->load(root->getCompound(L"data"));
+            data->load(root->getCompound("data"));
         }
     }
 
     if (data != nullptr) {
         cache.insert(
-            std::unordered_map<std::wstring,
+            std::unordered_map<std::string,
                                std::shared_ptr<SavedData> >::value_type(id,
                                                                         data));
         savedDatas.push_back(data);
@@ -85,7 +85,7 @@ std::shared_ptr<SavedData> SavedDataStorage::get(const std::type_info& clazz,
     return data;
 }
 
-void SavedDataStorage::set(const std::wstring& id,
+void SavedDataStorage::set(const std::string& id,
                            std::shared_ptr<SavedData> data) {
     if (data == nullptr) {
         // TODO 4J Stu - throw new RuntimeException("Can't set null data");
@@ -123,7 +123,7 @@ void SavedDataStorage::save(std::shared_ptr<SavedData> data) {
         data->save(dataTag);
 
         CompoundTag* tag = new CompoundTag();
-        tag->putCompound(L"data", dataTag);
+        tag->putCompound("data", dataTag);
 
         ConsoleSaveFileOutputStream fos =
             ConsoleSaveFileOutputStream(levelStorage->getSaveFile(), file);
@@ -138,8 +138,8 @@ void SavedDataStorage::loadAuxValues() {
     usedAuxIds.clear();
 
     if (levelStorage == nullptr) return;
-    // File file = levelStorage->getDataFile(L"idcounts");
-    ConsoleSavePath file = levelStorage->getDataFile(L"idcounts");
+    // File file = levelStorage->getDataFile("idcounts");
+    ConsoleSavePath file = levelStorage->getDataFile("idcounts");
     if (!file.getName().empty() &&
         levelStorage->getSaveFile()->doesFileExist(file)) {
         ConsoleSaveFileInputStream fis =
@@ -156,7 +156,7 @@ void SavedDataStorage::loadAuxValues() {
 
             if (dynamic_cast<ShortTag*>(tag) != nullptr) {
                 ShortTag* sTag = (ShortTag*)tag;
-                std::wstring id = sTag->getName();
+                std::string id = sTag->getName();
                 short val = sTag->data;
                 usedAuxIds.insert(uaiMapType::value_type(id, val));
             }
@@ -164,7 +164,7 @@ void SavedDataStorage::loadAuxValues() {
     }
 }
 
-int SavedDataStorage::getFreeAuxValueFor(const std::wstring& id) {
+int SavedDataStorage::getFreeAuxValueFor(const std::string& id) {
     auto it = usedAuxIds.find(id);
     short val = 0;
     if (it != usedAuxIds.end()) {
@@ -174,8 +174,8 @@ int SavedDataStorage::getFreeAuxValueFor(const std::wstring& id) {
 
     usedAuxIds[id] = val;
     if (levelStorage == nullptr) return val;
-    // File file = levelStorage->getDataFile(L"idcounts");
-    ConsoleSavePath file = levelStorage->getDataFile(L"idcounts");
+    // File file = levelStorage->getDataFile("idcounts");
+    ConsoleSavePath file = levelStorage->getDataFile("idcounts");
     if (!file.getName().empty()) {
         CompoundTag* tag = new CompoundTag();
 
@@ -185,7 +185,7 @@ int SavedDataStorage::getFreeAuxValueFor(const std::wstring& id) {
         for (uaiMapType::iterator it2 = usedAuxIds.begin(); it2 != itEndAuxIds;
              it2++) {
             short value = it2->second;
-            tag->putShort((wchar_t*)it2->first.c_str(), value);
+            tag->putShort((char*)it2->first.c_str(), value);
         }
 
         ConsoleSaveFileOutputStream fos =

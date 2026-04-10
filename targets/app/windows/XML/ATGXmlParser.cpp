@@ -103,7 +103,7 @@ int32_t XMLParser::ConsumeSpace() {
 //-------------------------------------------------------------------------------------
 int32_t XMLParser::ConvertEscape() {
     int32_t hr;
-    wchar_t wVal = 0;
+    char wVal = 0;
 
     if (FAILED(hr = AdvanceCharacter())) return hr;
 
@@ -161,7 +161,7 @@ int32_t XMLParser::ConvertEscape() {
 
     // must be an entity reference
 
-    wchar_t* pEntityRefVal = m_pWritePtr;
+    char* pEntityRefVal = m_pWritePtr;
     uint32_t EntityRefLen;
 
     SkipNextAdvance();
@@ -175,15 +175,15 @@ int32_t XMLParser::ConvertEscape() {
         return E_INVALID_XML_SYNTAX;
     }
 
-    if (!wcsncmp(pEntityRefVal, L"lt", EntityRefLen))
+    if (!strncmp(pEntityRefVal, "lt", EntityRefLen))
         wVal = '<';
-    else if (!wcsncmp(pEntityRefVal, L"gt", EntityRefLen))
+    else if (!strncmp(pEntityRefVal, "gt", EntityRefLen))
         wVal = '>';
-    else if (!wcsncmp(pEntityRefVal, L"amp", EntityRefLen))
+    else if (!strncmp(pEntityRefVal, "amp", EntityRefLen))
         wVal = '&';
-    else if (!wcsncmp(pEntityRefVal, L"apos", EntityRefLen))
+    else if (!strncmp(pEntityRefVal, "apos", EntityRefLen))
         wVal = '\'';
-    else if (!wcsncmp(pEntityRefVal, L"quot", EntityRefLen))
+    else if (!strncmp(pEntityRefVal, "quot", EntityRefLen))
         wVal = '"';
     else {
         Error(E_INVALID_XML_SYNTAX,
@@ -213,7 +213,7 @@ int32_t XMLParser::ConvertEscape() {
 //-------------------------------------------------------------------------------------
 int32_t XMLParser::AdvanceAttrVal() {
     int32_t hr;
-    wchar_t wQuoteChar;
+    char wQuoteChar;
 
     if (FAILED(hr = AdvanceCharacter())) return hr;
 
@@ -331,7 +331,7 @@ int32_t XMLParser::AdvanceCharacter(bool bOkToFail) {
         m_pReadPtr++;
     } else  // if( m_bUnicode == true )
     {
-        m_Ch = *((wchar_t*)m_pReadPtr);
+        m_Ch = *((char*)m_pReadPtr);
 
         if (m_bReverseBytes) {
             m_Ch = (m_Ch << 8) + (m_Ch >> 8);
@@ -413,7 +413,7 @@ int32_t XMLParser::AdvanceElement() {
         }
         if (FAILED(hr = AdvanceCDATA())) return hr;
     } else if (m_Ch == '/') {
-        wchar_t* pEntityRefVal = m_pWritePtr;
+        char* pEntityRefVal = m_pWritePtr;
 
         if (FAILED(hr = AdvanceName())) return hr;
 
@@ -442,7 +442,7 @@ int32_t XMLParser::AdvanceElement() {
         XMLAttribute Attributes[XML_MAX_ATTRIBUTES_PER_ELEMENT];
         uint32_t NumAttrs;
 
-        wchar_t* pEntityRefVal = m_pWritePtr;
+        char* pEntityRefVal = m_pWritePtr;
         uint32_t EntityRefLen;
 
         NumAttrs = 0;
@@ -626,18 +626,18 @@ int32_t XMLParser::MainParseLoop() {
 
     FillBuffer();
 
-    if (*((wchar_t*)m_pReadBuf) == 0xFEFF) {
+    if (*((char*)m_pReadBuf) == 0xFEFF) {
         m_bUnicode = true;
         m_bReverseBytes = false;
         m_pReadPtr += 2;
-    } else if (*((wchar_t*)m_pReadBuf) == 0xFFFE) {
+    } else if (*((char*)m_pReadBuf) == 0xFFFE) {
         m_bUnicode = true;
         m_bReverseBytes = true;
         m_pReadPtr += 2;
-    } else if (*((wchar_t*)m_pReadBuf) == 0x003C) {
+    } else if (*((char*)m_pReadBuf) == 0x003C) {
         m_bUnicode = true;
         m_bReverseBytes = false;
-    } else if (*((wchar_t*)m_pReadBuf) == 0x3C00) {
+    } else if (*((char*)m_pReadBuf) == 0x3C00) {
         m_bUnicode = true;
         m_bReverseBytes = true;
     } else if (m_pReadBuf[0] == 0x3C) {

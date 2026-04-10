@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "EntityRenderDispatcher.h"
 
 #include "java/Class.h"
@@ -42,7 +42,7 @@ void EntityRenderer::bindTexture(ResourceLocation* location) {
     entityRenderDispatcher->textures->bindTexture(location);
 }
 
-bool EntityRenderer::bindTexture(const std::wstring& urlTexture,
+bool EntityRenderer::bindTexture(const std::string& urlTexture,
                                  int backupTexture) {
     Textures* t = entityRenderDispatcher->textures;
 
@@ -60,8 +60,8 @@ bool EntityRenderer::bindTexture(const std::wstring& urlTexture,
     }
 }
 
-bool EntityRenderer::bindTexture(const std::wstring& urlTexture,
-                                 const std::wstring& backupTexture) {
+bool EntityRenderer::bindTexture(const std::string& urlTexture,
+                                 const std::string& backupTexture) {
     Textures* t = entityRenderDispatcher->textures;
 
     // 4J-PB - no http textures on the xbox, mem textures instead

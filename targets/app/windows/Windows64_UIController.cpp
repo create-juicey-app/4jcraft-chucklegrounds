@@ -25,7 +25,7 @@ void ConsoleUIController::init(ID3D11Device* dev, ID3D11DeviceContext* ctx,
     if (!gdraw_funcs) {
         app.DebugPrintf("Failed to initialise GDraw!\n");
 #ifndef _CONTENT_PACKAGE
-        __debugbreak();
+        assert(0);
 #endif
         app.FatalLoadError();
     }
@@ -150,7 +150,7 @@ GDrawTexture* ConsoleUIController::getSubstitutionTexture(int textureId) {
     this texture, or stream video into it. Wrapped textures take up a handle.
     They will never be freed or otherwise modified by GDraw; nor will GDraw
     change any reference counts. All this is up to the application. */
-    ID3D11ShaderResourceView* tex = RenderManager.TextureGetTexture(textureId);
+    ID3D11ShaderResourceView* tex = PlatformRenderer.TextureGetTexture(textureId);
     ID3D11Resource* resource;
     tex->GetResource(&resource);
     ID3D11Texture2D* tex2d = (ID3D11Texture2D*)resource;

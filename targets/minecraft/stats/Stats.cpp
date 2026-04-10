@@ -80,70 +80,70 @@ Stat* Stats::completeTheEnd =
               // present when the Enderdragon has died
 
 void Stats::staticCtor() {
-    Stats::walkOneM = (new GeneralStat(2000, L"stat.walkOneM",
+    Stats::walkOneM = (new GeneralStat(2000, "stat.walkOneM",
                                        (StatFormatter*)Stat::distanceFormatter))
                           ->setAwardLocallyOnly()
                           ->postConstruct();
-    Stats::swimOneM = (new GeneralStat(2001, L"stat.swimOneM",
+    Stats::swimOneM = (new GeneralStat(2001, "stat.swimOneM",
                                        (StatFormatter*)Stat::distanceFormatter))
                           ->setAwardLocallyOnly()
                           ->postConstruct();
-    Stats::fallOneM = (new GeneralStat(2002, L"stat.fallOneM",
+    Stats::fallOneM = (new GeneralStat(2002, "stat.fallOneM",
                                        (StatFormatter*)Stat::distanceFormatter))
                           ->setAwardLocallyOnly()
                           ->postConstruct();
     Stats::climbOneM =
-        (new GeneralStat(2003, L"stat.climbOneM",
+        (new GeneralStat(2003, "stat.climbOneM",
                          (StatFormatter*)Stat::distanceFormatter))
             ->setAwardLocallyOnly()
             ->postConstruct();
     Stats::minecartOneM =
-        (new GeneralStat(2004, L"stat.minecartOneM",
+        (new GeneralStat(2004, "stat.minecartOneM",
                          (StatFormatter*)Stat::distanceFormatter))
             ->setAwardLocallyOnly()
             ->postConstruct();
-    Stats::boatOneM = (new GeneralStat(2005, L"stat.boatOneM",
+    Stats::boatOneM = (new GeneralStat(2005, "stat.boatOneM",
                                        (StatFormatter*)Stat::distanceFormatter))
                           ->setAwardLocallyOnly()
                           ->postConstruct();
-    Stats::pigOneM = (new GeneralStat(2006, L"stat.pigOneM",
+    Stats::pigOneM = (new GeneralStat(2006, "stat.pigOneM",
                                       (StatFormatter*)Stat::distanceFormatter))
                          ->setAwardLocallyOnly()
                          ->postConstruct();
     Stats::portalsCreated =
-        (new GeneralStat(2007, L"stat.portalsUsed"))->postConstruct();
+        (new GeneralStat(2007, "stat.portalsUsed"))->postConstruct();
     Stats::cowsMilked =
-        (new GeneralStat(2008, L"stat.cowsMilked"))->postConstruct();
+        (new GeneralStat(2008, "stat.cowsMilked"))->postConstruct();
     Stats::netherLavaCollected =
-        (new GeneralStat(2009, L"stat.netherLavaCollected"))->postConstruct();
+        (new GeneralStat(2009, "stat.netherLavaCollected"))->postConstruct();
     Stats::killsZombie =
-        (new GeneralStat(2010, L"stat.killsZombie"))->postConstruct();
+        (new GeneralStat(2010, "stat.killsZombie"))->postConstruct();
     Stats::killsSkeleton =
-        (new GeneralStat(2011, L"stat.killsSkeleton"))->postConstruct();
+        (new GeneralStat(2011, "stat.killsSkeleton"))->postConstruct();
     Stats::killsCreeper =
-        (new GeneralStat(2012, L"stat.killsCreeper"))->postConstruct();
+        (new GeneralStat(2012, "stat.killsCreeper"))->postConstruct();
     Stats::killsSpider =
-        (new GeneralStat(2013, L"stat.killsSpider"))->postConstruct();
+        (new GeneralStat(2013, "stat.killsSpider"))->postConstruct();
     Stats::killsSpiderJockey =
-        (new GeneralStat(2014, L"stat.killsSpiderJockey"))->postConstruct();
+        (new GeneralStat(2014, "stat.killsSpiderJockey"))->postConstruct();
     Stats::killsZombiePigman =
-        (new GeneralStat(2015, L"stat.killsZombiePigman"))->postConstruct();
+        (new GeneralStat(2015, "stat.killsZombiePigman"))->postConstruct();
     Stats::killsSlime =
-        (new GeneralStat(2016, L"stat.killsSlime"))->postConstruct();
+        (new GeneralStat(2016, "stat.killsSlime"))->postConstruct();
     Stats::killsGhast =
-        (new GeneralStat(2017, L"stat.killsGhast"))->postConstruct();
+        (new GeneralStat(2017, "stat.killsGhast"))->postConstruct();
     Stats::killsNetherZombiePigman =
-        (new GeneralStat(2018, L"stat.killsNetherZombiePigman"))
+        (new GeneralStat(2018, "stat.killsNetherZombiePigman"))
             ->postConstruct();
 
     // 4J : WESTY : Added for new achievements.
     Stats::befriendsWolf =
-        (new GeneralStat(2019, L"stat.befriendsWolf"))->postConstruct();
+        (new GeneralStat(2019, "stat.befriendsWolf"))->postConstruct();
     Stats::totalBlocksMined =
-        (new GeneralStat(2020, L"stat.totalBlocksMined"))->postConstruct();
+        (new GeneralStat(2020, "stat.totalBlocksMined"))->postConstruct();
 
     // 4J-PB - don't want the time played going to the server
-    Stats::timePlayed = (new GeneralStat(2021, L"stat.timePlayed"))
+    Stats::timePlayed = (new GeneralStat(2021, "stat.timePlayed"))
                             ->setAwardLocallyOnly()
                             ->postConstruct();
 
@@ -171,7 +171,7 @@ bool Stats::blockStatsLoaded = false;
 void Stats::buildBlockStats() {
     blocksMined = std::vector<Stat*>(32000);
 
-    ItemStat* newStat = new ItemStat(BLOCKS_MINED_OFFSET + 0, L"mineBlock.dirt",
+    ItemStat* newStat = new ItemStat(BLOCKS_MINED_OFFSET + 0, "mineBlock.dirt",
                                      Tile::dirt->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::dirt->id] = newStat;
@@ -179,98 +179,98 @@ void Stats::buildBlockStats() {
     blocksMined[Tile::farmland->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 1, L"mineBlock.stone",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 1, "mineBlock.stone",
                            Tile::cobblestone->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::cobblestone->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 2, L"mineBlock.sand",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 2, "mineBlock.sand",
                            Tile::sand->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::sand->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 3, L"mineBlock.cobblestone",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 3, "mineBlock.cobblestone",
                            Tile::stone->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::stone->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 4, L"mineBlock.gravel",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 4, "mineBlock.gravel",
                            Tile::gravel->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::gravel->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 5, L"mineBlock.clay",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 5, "mineBlock.clay",
                            Tile::clay->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::clay->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 6, L"mineBlock.obsidian",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 6, "mineBlock.obsidian",
                            Tile::obsidian->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::obsidian->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 7, L"mineBlock.coal",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 7, "mineBlock.coal",
                            Tile::coalOre->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::coalOre->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 8, L"mineBlock.iron",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 8, "mineBlock.iron",
                            Tile::ironOre->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::ironOre->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 9, L"mineBlock.gold",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 9, "mineBlock.gold",
                            Tile::goldOre->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::goldOre->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 10, L"mineBlock.diamond",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 10, "mineBlock.diamond",
                            Tile::diamondOre->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::diamondOre->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 11, L"mineBlock.redstone",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 11, "mineBlock.redstone",
                            Tile::redStoneOre->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::redStoneOre->id] = newStat;
     blocksMined[Tile::redStoneOre_lit->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 12, L"mineBlock.lapisLazuli",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 12, "mineBlock.lapisLazuli",
                            Tile::lapisOre->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::lapisOre->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 13, L"mineBlock.netherrack",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 13, "mineBlock.netherrack",
                            Tile::netherRack->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::netherRack->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 14, L"mineBlock.soulSand",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 14, "mineBlock.soulSand",
                            Tile::soulsand->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::soulsand->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 15, L"mineBlock.glowstone",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 15, "mineBlock.glowstone",
                            Tile::glowstone->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::glowstone->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 16, L"mineBlock.wood",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 16, "mineBlock.wood",
                            Tile::treeTrunk->id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::treeTrunk->id] = newStat;
@@ -310,7 +310,7 @@ void Stats::buildCraftableStats() {
     itemsCollected = std::vector<Stat*>(32000);
 
     ItemStat* newStat = new ItemStat(ITEMS_COLLECTED_OFFSET + 0,
-                                     L"collectItem.egg", Item::egg->id);
+                                     "collectItem.egg", Item::egg->id);
     itemsCollectedStats->push_back(newStat);
     itemsCollected[Item::egg->id] = newStat;
     newStat->postConstruct();
@@ -318,25 +318,25 @@ void Stats::buildCraftableStats() {
     // 4J Stu - The following stats were added as it was too easy to cheat the
     // leaderboards by dropping and picking up these items They are now changed
     // to mining the block which involves a tiny bit more effort
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 18, L"mineBlock.wheat",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 18, "mineBlock.wheat",
                            Tile::wheat_Id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::wheat_Id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 19, L"mineBlock.mushroom1",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 19, "mineBlock.mushroom1",
                            Tile::mushroom_brown_Id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::mushroom_brown_Id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 17, L"mineBlock.sugar",
+    newStat = new ItemStat(BLOCKS_MINED_OFFSET + 17, "mineBlock.sugar",
                            Tile::reeds_Id);
     blocksMinedStats->push_back(newStat);
     blocksMined[Tile::reeds_Id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_COLLECTED_OFFSET + 4, L"collectItem.pumpkin",
+    newStat = new ItemStat(ITEMS_COLLECTED_OFFSET + 4, "collectItem.pumpkin",
                            Tile::pumpkin->id);
     itemsCollectedStats->push_back(newStat);
     itemsCollected[Tile::pumpkin->id] = newStat;
@@ -347,196 +347,196 @@ void Stats::buildCraftableStats() {
 
     itemsCrafted = std::vector<Stat*>(32000);
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 0, L"craftItem.plank",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 0, "craftItem.plank",
                            Tile::wood->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Tile::wood->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 1, L"craftItem.workbench",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 1, "craftItem.workbench",
                            Tile::workBench->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Tile::workBench->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 2, L"craftItem.stick",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 2, "craftItem.stick",
                            Item::stick->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::stick->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 3, L"craftItem.woodenShovel",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 3, "craftItem.woodenShovel",
                            Item::shovel_wood->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::shovel_wood->id] = newStat;
     newStat->postConstruct();
 
     // 4J : WESTY : Added for new achievements.
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 4, L"craftItem.woodenPickAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 4, "craftItem.woodenPickAxe",
                            Item::pickAxe_wood->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::pickAxe_wood->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 5, L"craftItem.stonePickAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 5, "craftItem.stonePickAxe",
                            Item::pickAxe_stone->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::pickAxe_stone->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 6, L"craftItem.ironPickAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 6, "craftItem.ironPickAxe",
                            Item::pickAxe_iron->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::pickAxe_iron->id] = newStat;
     newStat->postConstruct();
 
     newStat =
-        new ItemStat(ITEMS_CRAFTED_OFFSET + 7, L"craftItem.diamondPickAxe",
+        new ItemStat(ITEMS_CRAFTED_OFFSET + 7, "craftItem.diamondPickAxe",
                      Item::pickAxe_diamond->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::pickAxe_diamond->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 8, L"craftItem.goldPickAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 8, "craftItem.goldPickAxe",
                            Item::pickAxe_gold->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::pickAxe_gold->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 9, L"craftItem.stoneShovel",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 9, "craftItem.stoneShovel",
                            Item::shovel_stone->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::shovel_stone->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 10, L"craftItem.ironShovel",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 10, "craftItem.ironShovel",
                            Item::shovel_iron->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::shovel_iron->id] = newStat;
     newStat->postConstruct();
 
     newStat =
-        new ItemStat(ITEMS_CRAFTED_OFFSET + 11, L"craftItem.diamondShovel",
+        new ItemStat(ITEMS_CRAFTED_OFFSET + 11, "craftItem.diamondShovel",
                      Item::shovel_diamond->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::shovel_diamond->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 12, L"craftItem.goldShovel",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 12, "craftItem.goldShovel",
                            Item::shovel_gold->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::shovel_gold->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 13, L"craftItem.woodenAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 13, "craftItem.woodenAxe",
                            Item::hatchet_wood->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hatchet_wood->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 14, L"craftItem.stoneAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 14, "craftItem.stoneAxe",
                            Item::hatchet_stone->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hatchet_stone->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 15, L"craftItem.ironAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 15, "craftItem.ironAxe",
                            Item::hatchet_iron->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hatchet_iron->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 16, L"craftItem.diamondAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 16, "craftItem.diamondAxe",
                            Item::hatchet_diamond->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hatchet_diamond->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 17, L"craftItem.goldAxe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 17, "craftItem.goldAxe",
                            Item::hatchet_gold->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hatchet_gold->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 18, L"craftItem.woodenHoe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 18, "craftItem.woodenHoe",
                            Item::hoe_wood->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hoe_wood->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 19, L"craftItem.stoneHoe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 19, "craftItem.stoneHoe",
                            Item::hoe_stone->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hoe_stone->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 20, L"craftItem.ironHoe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 20, "craftItem.ironHoe",
                            Item::hoe_iron->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hoe_iron->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 21, L"craftItem.diamondHoe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 21, "craftItem.diamondHoe",
                            Item::hoe_diamond->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hoe_diamond->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 22, L"craftItem.goldHoe",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 22, "craftItem.goldHoe",
                            Item::hoe_gold->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::hoe_gold->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 23, L"craftItem.glowstone",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 23, "craftItem.glowstone",
                            Tile::glowstone_Id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Tile::glowstone_Id] = newStat;
     newStat->postConstruct();
 
     newStat =
-        new ItemStat(ITEMS_CRAFTED_OFFSET + 24, L"craftItem.tnt", Tile::tnt_Id);
+        new ItemStat(ITEMS_CRAFTED_OFFSET + 24, "craftItem.tnt", Tile::tnt_Id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Tile::tnt_Id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 25, L"craftItem.bowl",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 25, "craftItem.bowl",
                            Item::bowl->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::bowl->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 26, L"craftItem.bucket",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 26, "craftItem.bucket",
                            Item::bucket_empty->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::bucket_empty->id] = newStat;
     newStat->postConstruct();
 
     newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 27,
-                           L"craftItem.flintAndSteel", Item::flintAndSteel->id);
+                           "craftItem.flintAndSteel", Item::flintAndSteel->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::flintAndSteel->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 28, L"craftItem.fishingRod",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 28, "craftItem.fishingRod",
                            Item::fishingRod->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::fishingRod->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 29, L"craftItem.clock",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 29, "craftItem.clock",
                            Item::clock->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::clock->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 30, L"craftItem.compass",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 30, "craftItem.compass",
                            Item::compass->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::compass->id] = newStat;
     newStat->postConstruct();
 
-    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 31, L"craftItem.map",
+    newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 31, "craftItem.map",
                            Item::map->id);
     itemsCraftedStats->push_back(newStat);
     itemsCrafted[Item::map->id] = newStat;
@@ -561,28 +561,28 @@ void Stats::buildAdditionalStats() {
     // The number of times this player has dealt the killing blow to the
     // Enderdragon
     Stats::killsEnderdragon =
-        (new GeneralStat(offset++, L"stat.killsEnderdragon"))->postConstruct();
+        (new GeneralStat(offset++, "stat.killsEnderdragon"))->postConstruct();
 
     // The number of times this player has been present when the Enderdragon has
     // died
     Stats::completeTheEnd =
-        (new GeneralStat(offset++, L"stat.completeTheEnd"))->postConstruct();
+        (new GeneralStat(offset++, "stat.completeTheEnd"))->postConstruct();
 
 #if defined(_EXTENDED_ACHIEVEMENTS)
     {
         ItemStat* itemStat =
-            new ItemStat(offset++, L"craftItem.flowerPot", Item::flowerPot_Id);
+            new ItemStat(offset++, "craftItem.flowerPot", Item::flowerPot_Id);
         itemsCraftedStats->push_back(itemStat);
         itemsCrafted[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
 
-        itemStat = new ItemStat(offset++, L"craftItem.sign", Item::sign_Id);
+        itemStat = new ItemStat(offset++, "craftItem.sign", Item::sign_Id);
         itemsCraftedStats->push_back(itemStat);
         itemsCrafted[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
 
         itemStat =
-            new ItemStat(offset++, L"mineBlock.emerald", Tile::emeraldOre_Id);
+            new ItemStat(offset++, "mineBlock.emerald", Tile::emeraldOre_Id);
         blocksMinedStats->push_back(itemStat);
         blocksMined[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
@@ -591,7 +591,7 @@ void Stats::buildAdditionalStats() {
         // stor itemsBought(emerald) so I don't have to make yet another massive
         // std::vector<Stat*>& for Items Bought.
         itemStat =
-            new ItemStat(offset++, L"itemsBought.emerald", Item::emerald_Id);
+            new ItemStat(offset++, "itemsBought.emerald", Item::emerald_Id);
         itemsCollectedStats->push_back(itemStat);
         itemsCollected[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
@@ -602,19 +602,19 @@ void Stats::buildAdditionalStats() {
         // we don't need those record items (and we only need 2).
         blocksPlaced = std::vector<Stat*>(1000);
 
-        itemStat = new ItemStat(offset++, L"blockPlaced.flowerPot",
+        itemStat = new ItemStat(offset++, "blockPlaced.flowerPot",
                                 Tile::flowerPot_Id);
         blocksPlacedStats->push_back(itemStat);
         blocksPlaced[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
 
-        itemStat = new ItemStat(offset++, L"blockPlaced.sign", Tile::sign_Id);
+        itemStat = new ItemStat(offset++, "blockPlaced.sign", Tile::sign_Id);
         blocksPlacedStats->push_back(itemStat);
         blocksPlaced[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
 
         itemStat =
-            new ItemStat(offset++, L"blockPlaced.wallsign", Tile::wallSign_Id);
+            new ItemStat(offset++, "blockPlaced.wallsign", Tile::wallSign_Id);
         blocksPlacedStats->push_back(itemStat);
         blocksPlaced[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
@@ -624,7 +624,7 @@ void Stats::buildAdditionalStats() {
         rainbowCollection = std::vector<Stat*>(16);
         for (unsigned int i = 0; i < 16; i++) {
             generalStat = new GeneralStat(
-                offset++, L"rainbowCollection." + toWString<unsigned int>(i));
+                offset++, "rainbowCollection." + toWString<unsigned int>(i));
             generalStats->push_back(generalStat);
             rainbowCollection[i] = generalStat;
             generalStat->postConstruct();
@@ -633,19 +633,19 @@ void Stats::buildAdditionalStats() {
         biomesVisisted = std::vector<Stat*>(23);
         for (unsigned int i = 0; i < 23; i++) {
             generalStat = new GeneralStat(
-                offset++, L"biomesVisited." + toWString<unsigned int>(i));
+                offset++, "biomesVisited." + toWString<unsigned int>(i));
             generalStats->push_back(generalStat);
             biomesVisisted[i] = generalStat;
             generalStat->postConstruct();
         }
 
-        itemStat = new ItemStat(offset++, L"itemCrafted.porkchop",
+        itemStat = new ItemStat(offset++, "itemCrafted.porkchop",
                                 Item::porkChop_cooked_Id);
         itemsCraftedStats->push_back(itemStat);
         itemsCrafted[itemStat->getItemId()] = itemStat;
         itemStat->postConstruct();
 
-        itemStat = new ItemStat(offset++, L"itemEaten.porkchop",
+        itemStat = new ItemStat(offset++, "itemEaten.porkchop",
                                 Item::porkChop_cooked_Id);
         blocksPlacedStats->push_back(itemStat);
         blocksPlaced[itemStat->getItemId()] = itemStat;

@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "BrewingStandTileEntity.h"
 
 #include <stdint.h>
@@ -34,22 +35,22 @@ std::vector<int> BrewingStandTileEntity::SLOTS_FOR_OTHER_FACES =
 BrewingStandTileEntity::BrewingStandTileEntity() {
     brewTime = 0;
     items = std::vector<std::shared_ptr<ItemInstance>>(4);
-    name = L"";
+    name = "";
 }
 
 BrewingStandTileEntity::~BrewingStandTileEntity() {}
 
-std::wstring BrewingStandTileEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_TILE_BREWINGSTAND);
+std::string BrewingStandTileEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_TILE_BREWINGSTAND);
 }
 
-std::wstring BrewingStandTileEntity::getCustomName() {
-    return hasCustomName() ? name : L"";
+std::string BrewingStandTileEntity::getCustomName() {
+    return hasCustomName() ? name : "";
 }
 
 bool BrewingStandTileEntity::hasCustomName() { return !name.empty(); }
 
-void BrewingStandTileEntity::setCustomName(const std::wstring& name) {
+void BrewingStandTileEntity::setCustomName(const std::string& name) {
     this->name = name;
 }
 
@@ -276,35 +277,35 @@ void BrewingStandTileEntity::load(CompoundTag* base) {
     TileEntity::load(base);
 
     ListTag<CompoundTag>* inventoryList =
-        (ListTag<CompoundTag>*)base->getList(L"Items");
+        (ListTag<CompoundTag>*)base->getList("Items");
     items = std::vector<std::shared_ptr<ItemInstance>>(getContainerSize());
     for (int i = 0; i < inventoryList->size(); i++) {
         CompoundTag* tag = inventoryList->get(i);
-        int slot = tag->getByte(L"Slot");
+        int slot = tag->getByte("Slot");
         if (slot >= 0 && slot < items.size())
             items[slot] = ItemInstance::fromTag(tag);
     }
 
-    brewTime = base->getShort(L"BrewTime");
-    if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
+    brewTime = base->getShort("BrewTime");
+    if (base->contains("CustomName")) name = base->getString("CustomName");
 }
 
 void BrewingStandTileEntity::save(CompoundTag* base) {
     TileEntity::save(base);
 
-    base->putShort(L"BrewTime", (short)(brewTime));
+    base->putShort("BrewTime", (short)(brewTime));
     ListTag<CompoundTag>* listTag = new ListTag<CompoundTag>();
 
     for (int i = 0; i < items.size(); i++) {
         if (items[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             items[i]->save(tag);
             listTag->add(tag);
         }
     }
-    base->put(L"Items", listTag);
-    if (hasCustomName()) base->putString(L"CustomName", name);
+    base->put("Items", listTag);
+    if (hasCustomName()) base->putString("CustomName", name);
 }
 
 std::shared_ptr<ItemInstance> BrewingStandTileEntity::getItem(

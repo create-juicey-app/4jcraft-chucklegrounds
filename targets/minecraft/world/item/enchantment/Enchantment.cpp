@@ -1,10 +1,10 @@
+#include "minecraft/util/Log.h"
 #include "Enchantment.h"
 
 #include <assert.h>
 #include <wchar.h>
 
-#include "app/common/App_enums.h"
-#include "app/linux/LinuxGame.h"
+#include "minecraft/IGameServices.h"
 #include "minecraft/util/HtmlString.h"
 #include "minecraft/world/item/ItemInstance.h"
 #include "minecraft/world/item/enchantment/ArrowDamageEnchantment.h"
@@ -109,7 +109,7 @@ void Enchantment::staticCtor() {
 
 void Enchantment::_init(int id) {
     if (enchantments[id] != nullptr) {
-        app.DebugPrintf("Duplicate enchantment id!");
+        Log::info("Duplicate enchantment id!");
 #ifndef _CONTENT_PACKAGE
         assert(0);
 #endif
@@ -160,19 +160,19 @@ Enchantment* Enchantment::setDescriptionId(int id) {
 int Enchantment::getDescriptionId() { return descriptionId; }
 
 // 4jcraft: re-added old TU18 overload for java gui
-std::wstring Enchantment::getFullname(int level, std::wstring& unformatted) {
-    wchar_t formatted[256];
-    swprintf(formatted, 256, L"%ls %ls", app.GetString(getDescriptionId()),
+std::string Enchantment::getFullname(int level, std::string& unformatted) {
+    char formatted[256];
+    snprintf(formatted, 256, "%s %s", gameServices().getString(getDescriptionId()),
              getLevelString(level).c_str());
     unformatted = formatted;
-    swprintf(formatted, 256, L"<font color=\"#%08x\">%ls</font>",
-             app.GetHTMLColour(eHTMLColor_f), unformatted.c_str());
+    snprintf(formatted, 256, "<font color=\"#%08x\">%s</font>",
+             gameServices().getHTMLColour(eHTMLColor_f), unformatted.c_str());
     return formatted;
 }
 
 HtmlString Enchantment::getFullname(int level) {
-    wchar_t formatted[256];
-    swprintf(formatted, 256, L"%ls %ls", app.GetString(getDescriptionId()),
+    char formatted[256];
+    snprintf(formatted, 256, "%s %s", gameServices().getString(getDescriptionId()),
              getLevelString(level).c_str());
 
     return HtmlString(formatted, eHTMLColor_f);
@@ -183,7 +183,7 @@ bool Enchantment::canEnchant(std::shared_ptr<ItemInstance> item) {
 }
 
 // 4J Added
-std::wstring Enchantment::getLevelString(int level) {
+std::string Enchantment::getLevelString(int level) {
     int stringId = IDS_ENCHANTMENT_LEVEL_1;
     switch (level) {
         case 2:
@@ -214,5 +214,5 @@ std::wstring Enchantment::getLevelString(int level) {
             stringId = IDS_ENCHANTMENT_LEVEL_10;
             break;
     };
-    return app.GetString(stringId);  // I18n.get("enchantment.level." + level);
+    return gameServices().getString(stringId);  // I18n.get("enchantment.level." + level);
 }

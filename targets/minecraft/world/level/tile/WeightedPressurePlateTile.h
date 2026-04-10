@@ -11,7 +11,7 @@ private:
     int maxWeight;
 
 public:
-    WeightedPressurePlateTile(int id, const std::wstring& tex,
+    WeightedPressurePlateTile(int id, const std::string& tex,
                               Material* material, int maxWeight);
 
 protected:

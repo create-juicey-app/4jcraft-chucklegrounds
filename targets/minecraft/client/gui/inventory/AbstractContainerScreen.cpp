@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "AbstractContainerScreen.h"
 
 #include <wchar.h>
@@ -5,7 +6,7 @@
 #include <vector>
 
 #include "app/linux/LinuxGame.h"
-#include "app/include/stubs.h"
+#include "platform/stubs.h"
 #include "minecraft/client/KeyMapping.h"
 #include "minecraft/client/Lighting.h"
 #include "minecraft/client/Minecraft.h"
@@ -126,7 +127,7 @@ void AbstractContainerScreen::render(int xm, int ym, float a) {
 // update: also added 1.6.x era overloads (for the creative inventory and other
 // places)
 void AbstractContainerScreen::renderTooltipInternal(
-    const std::vector<std::wstring>& cleanedLines,
+    const std::vector<std::string>& cleanedLines,
     const std::vector<int>& lineColors, int xm, int ym) {
     if (cleanedLines.empty()) return;
 
@@ -173,7 +174,7 @@ void AbstractContainerScreen::renderTooltipInternal(
 
     int currentY = tooltipY;
     for (size_t lineIndex = 0; lineIndex < cleanedLines.size(); ++lineIndex) {
-        const std::wstring& currentLine = cleanedLines[lineIndex];
+        const std::string& currentLine = cleanedLines[lineIndex];
         int textColor = lineColors[lineIndex];
 
         font->drawShadow(currentLine, tooltipX, currentY, textColor);
@@ -189,18 +190,18 @@ void AbstractContainerScreen::renderTooltip(std::shared_ptr<ItemInstance> item,
                                             int xm, int ym) {
     if (item == nullptr) return;
 
-    std::vector<std::wstring> elementName;
-    std::vector<std::wstring>* tooltipLines =
+    std::vector<std::string> elementName;
+    std::vector<std::string>* tooltipLines =
         item->getHoverText(minecraft->player, false, elementName);
 
     if (tooltipLines != nullptr && tooltipLines->size() > 0) {
-        std::vector<std::wstring> cleanedLines;
+        std::vector<std::string> cleanedLines;
         std::vector<int> lineColors;
 
         for (int lineIndex = 0; lineIndex < (int)tooltipLines->size();
              ++lineIndex) {
-            std::wstring rawLine = (*tooltipLines)[lineIndex];
-            std::wstring clean = L"";
+            std::string rawLine = (*tooltipLines)[lineIndex];
+            std::string clean = "";
             int lineColor = 0xffffffff;
 
             // 4jcraft: LCE is using HTML font elements for its tooltip
@@ -208,23 +209,23 @@ void AbstractContainerScreen::renderTooltip(std::shared_ptr<ItemInstance> item,
             //
             // examples would be enchantment books, potions and music
             // discs
-            size_t fontPos = rawLine.find(L"<font");
-            if (fontPos != std::wstring::npos) {
-                size_t colorPos = rawLine.find(L"color=\"", fontPos);
-                if (colorPos != std::wstring::npos) {
+            size_t fontPos = rawLine.find("<font");
+            if (fontPos != std::string::npos) {
+                size_t colorPos = rawLine.find("color=\"", fontPos);
+                if (colorPos != std::string::npos) {
                     colorPos += 7;
-                    size_t colorEnd = rawLine.find(L'"', colorPos);
-                    if (colorEnd != std::wstring::npos) {
-                        std::wstring colorStr =
+                    size_t colorEnd = rawLine.find('"', colorPos);
+                    if (colorEnd != std::string::npos) {
+                        std::string colorStr =
                             rawLine.substr(colorPos, colorEnd - colorPos);
-                        if (!colorStr.empty() && colorStr[0] == L'#') {
+                        if (!colorStr.empty() && colorStr[0] == '#') {
                             colorStr = colorStr.substr(1);
                         }
                         if (!colorStr.empty()) {
-                            wchar_t* endPtr;
+                            char* endPtr;
                             long hexColor =
-                                wcstol(colorStr.c_str(), &endPtr, 16);
-                            if (*endPtr == L'\0') {
+                                strtol(colorStr.c_str(), &endPtr, 16);
+                            if (*endPtr == '\0') {
                                 lineColor = 0xff000000 | (int)hexColor;
                             }
                         }
@@ -233,10 +234,10 @@ void AbstractContainerScreen::renderTooltip(std::shared_ptr<ItemInstance> item,
             }
 
             bool inTag = false;
-            for (wchar_t currentChar : rawLine) {
-                if (currentChar == L'<') {
+            for (char currentChar : rawLine) {
+                if (currentChar == '<') {
                     inTag = true;
-                } else if (currentChar == L'>') {
+                } else if (currentChar == '>') {
                     inTag = false;
                 } else if (!inTag) {
                     clean += currentChar;
@@ -248,7 +249,7 @@ void AbstractContainerScreen::renderTooltip(std::shared_ptr<ItemInstance> item,
         }
 
         if (!cleanedLines.empty()) {
-            lineColors[0] = app.GetHTMLColour(item->getRarity()->color);
+            lineColors[0] = gameServices().getHTMLColour(item->getRarity()->color);
         }
 
         renderTooltipInternal(cleanedLines, lineColors, xm, ym);
@@ -256,10 +257,10 @@ void AbstractContainerScreen::renderTooltip(std::shared_ptr<ItemInstance> item,
 }
 
 void AbstractContainerScreen::renderTooltip(
-    const std::vector<std::wstring>& lines, int xm, int ym) {
+    const std::vector<std::string>& lines, int xm, int ym) {
     if (lines.empty()) return;
 
-    std::vector<std::wstring> cleanedLines = lines;
+    std::vector<std::string> cleanedLines = lines;
     std::vector<int> lineColors;
     lineColors.reserve(lines.size());
 
@@ -274,9 +275,9 @@ void AbstractContainerScreen::renderTooltip(
     renderTooltipInternal(cleanedLines, lineColors, xm, ym);
 }
 
-void AbstractContainerScreen::renderTooltip(const std::wstring& line, int xm,
+void AbstractContainerScreen::renderTooltip(const std::string& line, int xm,
                                             int ym) {
-    renderTooltip(std::vector<std::wstring>{line}, xm, ym);
+    renderTooltip(std::vector<std::string>{line}, xm, ym);
 }
 
 void AbstractContainerScreen::renderLabels() {}
@@ -293,7 +294,7 @@ void AbstractContainerScreen::renderSlot(Slot* slot) {
     //     if (icon >= 0)
     // 	{
     //         glDisable(GL_LIGHTING);
-    //         minecraft->textures->bind(minecraft->textures->loadTexture(TN_GUI_ITEMS));//L"/gui/items.png"));
+    //         minecraft->textures->bind(minecraft->textures->loadTexture(TN_GUI_ITEMS));//"/gui/items.png"));
     //         blit(x, y, icon % 16 * 16, icon / 16 * 16, 16, 16);
     //         glEnable(GL_LIGHTING);
     //         return;
@@ -369,7 +370,7 @@ void AbstractContainerScreen::mouseReleased(int x, int y, int buttonNum) {
     }
 }
 
-void AbstractContainerScreen::keyPressed(wchar_t eventCharacter, int eventKey) {
+void AbstractContainerScreen::keyPressed(char eventCharacter, int eventKey) {
     if (eventKey == Keyboard::KEY_ESCAPE ||
         eventKey == minecraft->options->keyBuild->key) {
         minecraft->player->closeContainer();

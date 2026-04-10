@@ -17,12 +17,12 @@ MusicTileEntity::MusicTileEntity() : TileEntity() {
 
 void MusicTileEntity::save(CompoundTag* tag) {
     TileEntity::save(tag);
-    tag->putByte(L"note", note);
+    tag->putByte("note", note);
 }
 
 void MusicTileEntity::load(CompoundTag* tag) {
     TileEntity::load(tag);
-    note = tag->getByte(L"note");
+    note = tag->getByte("note");
     if (note < 0) note = 0;
     if (note > 24) note = 24;
 }

@@ -3,7 +3,7 @@
 #include <cmath>
 #include <memory>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 
 #include "minecraft/client/renderer/Tesselator.h"
 #include "minecraft/client/renderer/TileRenderer.h"
@@ -33,7 +33,7 @@ void FallingTileRenderer::render(std::shared_ptr<Entity> _tile, double x,
         glPushMatrix();
         glTranslatef((float)x, (float)y, (float)z);
 
-        bindTexture(tile);  // 4J was L"/terrain.png"
+        bindTexture(tile);  // 4J was "/terrain.png"
         Tile* tt = Tile::tiles[tile->tile];
 
         Level* level = tile->getLevel();

@@ -111,8 +111,8 @@ public:
                                               bool isServer);
     static void writePacket(std::shared_ptr<Packet> packet,
                             DataOutputStream* dos);
-    static void writeUtf(const std::wstring& value, DataOutputStream* dos);
-    static std::wstring readUtf(DataInputStream* dis, int maxLength);
+    static void writeUtf(const std::string& value, DataOutputStream* dos);
+    static std::string readUtf(DataInputStream* dis, int maxLength);
     virtual void read(
         DataInputStream* dis) = 0;  // throws IOException = 0; TODO 4J JEV,
                                     // should this declare a throws?

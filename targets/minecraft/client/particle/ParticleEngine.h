@@ -59,5 +59,5 @@ public:
     void moveParticleInList(std::shared_ptr<Particle> particle, int source,
                             int destination);
 
-    std::wstring countParticles();
+    std::string countParticles();
 };

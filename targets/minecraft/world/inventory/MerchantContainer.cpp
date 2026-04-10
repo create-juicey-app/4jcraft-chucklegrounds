@@ -78,9 +78,9 @@ void MerchantContainer::setItem(unsigned int slot,
     }
 }
 
-std::wstring MerchantContainer::getName() { return merchant->getDisplayName(); }
+std::string MerchantContainer::getName() { return merchant->getDisplayName(); }
 
-std::wstring MerchantContainer::getCustomName() { return L""; }
+std::string MerchantContainer::getCustomName() { return ""; }
 
 bool MerchantContainer::hasCustomName() { return false; }
 

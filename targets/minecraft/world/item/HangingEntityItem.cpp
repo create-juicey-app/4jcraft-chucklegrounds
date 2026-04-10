@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "HangingEntityItem.h"
 
 #include <string.h>
@@ -8,7 +9,7 @@
 
 #include "Direction.h"
 #include "Facing.h"
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/stats/GenericStats.h"
 #include "minecraft/util/HtmlString.h"
@@ -82,7 +83,7 @@ std::shared_ptr<HangingEntity> HangingEntityItem::createEntity(
             std::make_shared<Painting>(level, x, y, z, dir);
 
 #ifndef _CONTENT_PACKAGE
-        if (app.DebugArtToolsOn() && auxValue > 0) {
+        if (gameServices().debugArtToolsOn() && auxValue > 0) {
             painting->PaintingPostConstructor(dir, auxValue - 1);
         } else
 #endif
@@ -106,18 +107,18 @@ void HangingEntityItem::appendHoverText(
     std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Player> player,
     std::vector<HtmlString>* lines, bool advanced) {
 #ifndef _CONTENT_PACKAGE
-    if (eType == eTYPE_PAINTING && app.DebugArtToolsOn() &&
+    if (eType == eTYPE_PAINTING && gameServices().debugArtToolsOn() &&
         itemInstance->getAuxValue() > 0) {
         int motive = itemInstance->getAuxValue() - 1;
 
-        wchar_t formatted[256];
-        memset(formatted, 0, 256 * sizeof(wchar_t));
-        swprintf(formatted, 256, L"** %ls %dx%d",
+        char formatted[256];
+        memset(formatted, 0, 256 * sizeof(char));
+        snprintf(formatted, 256, "** %s %dx%d",
                  Painting::Motive::values[motive]->name.c_str(),
                  Painting::Motive::values[motive]->w / 16,
                  Painting::Motive::values[motive]->h / 16);
 
-        std::wstring motiveName = formatted;
+        std::string motiveName = formatted;
 
         lines->push_back(HtmlString(motiveName.c_str(), eHTMLColor_c));
     } else

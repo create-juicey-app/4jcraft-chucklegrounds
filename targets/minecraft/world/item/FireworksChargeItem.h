@@ -26,7 +26,7 @@ public:
     virtual bool hasMultipleSpriteLayers();
 
     static Tag* getExplosionTagField(std::shared_ptr<ItemInstance> instance,
-                                     const std::wstring& field);
+                                     const std::string& field);
 
     virtual void appendHoverText(std::shared_ptr<ItemInstance> itemInstance,
                                  std::shared_ptr<Player> player,

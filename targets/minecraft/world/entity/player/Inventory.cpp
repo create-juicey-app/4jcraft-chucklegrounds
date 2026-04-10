@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "Inventory.h"
 
 #include <stdint.h>
@@ -390,15 +392,15 @@ std::shared_ptr<ItemInstance> Inventory::removeItemNoUpdate(int slot) {
 void Inventory::setItem(unsigned int slot, std::shared_ptr<ItemInstance> item) {
 #ifdef _DEBUG
     if (item != nullptr) {
-        std::wstring itemstring = item->toString();
-        app.DebugPrintf("Inventory::setItem - slot = %d,\t item = %d ", slot,
+        std::string itemstring = item->toString();
+        Log::info("Inventory::setItem - slot = %d,\t item = %d ", slot,
                         item->id);
         // OutputDebugStringW(itemstring.c_str());
-        app.DebugPrintf("\n");
+        Log::info("\n");
     }
 #else
     if (item != nullptr) {
-        app.DebugPrintf(
+        Log::info(
             "Inventory::setItem - slot = %d,\t item = %d, aux = %d\n", slot,
             item->id, item->getAuxValue());
     }
@@ -433,7 +435,7 @@ ListTag<CompoundTag>* Inventory::save(ListTag<CompoundTag>* listTag) {
     for (unsigned int i = 0; i < items.size(); i++) {
         if (items[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             items[i]->save(tag);
             listTag->add(tag);
         }
@@ -441,7 +443,7 @@ ListTag<CompoundTag>* Inventory::save(ListTag<CompoundTag>* listTag) {
     for (unsigned int i = 0; i < armor.size(); i++) {
         if (armor[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)(i + 100));
+            tag->putByte("Slot", (uint8_t)(i + 100));
             armor[i]->save(tag);
             listTag->add(tag);
         }
@@ -456,7 +458,7 @@ void Inventory::load(ListTag<CompoundTag>* inventoryList) {
     armor = std::vector<std::shared_ptr<ItemInstance>>(4);
     for (int i = 0; i < inventoryList->size(); i++) {
         CompoundTag* tag = inventoryList->get(i);
-        unsigned int slot = tag->getByte(L"Slot") & 0xff;
+        unsigned int slot = tag->getByte("Slot") & 0xff;
         std::shared_ptr<ItemInstance> item =
             std::shared_ptr<ItemInstance>(ItemInstance::fromTag(tag));
         if (item != nullptr) {
@@ -488,9 +490,9 @@ std::shared_ptr<ItemInstance> Inventory::getItem(unsigned int slot) {
     */
 }
 
-std::wstring Inventory::getName() { return app.GetString(IDS_INVENTORY); }
+std::string Inventory::getName() { return gameServices().getString(IDS_INVENTORY); }
 
-std::wstring Inventory::getCustomName() { return L""; }
+std::string Inventory::getCustomName() { return ""; }
 
 bool Inventory::hasCustomName() { return false; }
 

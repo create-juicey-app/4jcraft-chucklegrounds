@@ -109,5 +109,5 @@ void EnderChestTile::animateTick(Level* level, int xt, int yt, int zt,
 void EnderChestTile::registerIcons(IconRegister* iconRegister) {
     // Register obsidian as the chest's icon, because it's used by the
     // particles when destroying the chest
-    icon = iconRegister->registerIcon(L"obsidian");
+    icon = iconRegister->registerIcon("obsidian");
 }

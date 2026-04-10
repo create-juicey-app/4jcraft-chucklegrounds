@@ -9,8 +9,8 @@
 
 class Icon;
 
-ThinFenceTile::ThinFenceTile(int id, const std::wstring& tex,
-                             const std::wstring& edgeTex, Material* material,
+ThinFenceTile::ThinFenceTile(int id, const std::string& tex,
+                             const std::string& edgeTex, Material* material,
                              bool dropsResources)
     : Tile(id, material, false) {
     iconSide = nullptr;

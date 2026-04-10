@@ -45,5 +45,5 @@ public:
 
     // 4J Added
     virtual std::shared_ptr<TileEntity> clone();
-    void setEntityId(const std::wstring& id);
+    void setEntityId(const std::string& id);
 };

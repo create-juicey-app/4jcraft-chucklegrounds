@@ -3,60 +3,60 @@
 #include "minecraft/world/scores/Scoreboard.h"
 #include "minecraft/world/scores/Team.h"
 
-PlayerTeam::PlayerTeam(Scoreboard* scoreboard, const std::wstring& name) {
+PlayerTeam::PlayerTeam(Scoreboard* scoreboard, const std::string& name) {
     this->scoreboard = scoreboard;
     this->name = name;
     displayName = name;
 
-    prefix = L"";
-    suffix = L"";
+    prefix = "";
+    suffix = "";
     allowFriendlyFire = true;
     seeFriendlyInvisibles = true;
 }
 
 Scoreboard* PlayerTeam::getScoreboard() { return scoreboard; }
 
-std::wstring PlayerTeam::getName() { return name; }
+std::string PlayerTeam::getName() { return name; }
 
-std::wstring PlayerTeam::getDisplayName() { return displayName; }
+std::string PlayerTeam::getDisplayName() { return displayName; }
 
-void PlayerTeam::setDisplayName(const std::wstring& displayName) {
+void PlayerTeam::setDisplayName(const std::string& displayName) {
     // if (displayName == null) throw new IllegalArgumentException("Name cannot
     // be null");
     this->displayName = displayName;
     scoreboard->onTeamChanged(this);
 }
 
-std::unordered_set<std::wstring>* PlayerTeam::getPlayers() { return &players; }
+std::unordered_set<std::string>* PlayerTeam::getPlayers() { return &players; }
 
-std::wstring PlayerTeam::getPrefix() { return prefix; }
+std::string PlayerTeam::getPrefix() { return prefix; }
 
-void PlayerTeam::setPrefix(const std::wstring& prefix) {
+void PlayerTeam::setPrefix(const std::string& prefix) {
     // if (prefix == null) throw new IllegalArgumentException("Prefix cannot be
     // null");
     this->prefix = prefix;
     scoreboard->onTeamChanged(this);
 }
 
-std::wstring PlayerTeam::getSuffix() { return suffix; }
+std::string PlayerTeam::getSuffix() { return suffix; }
 
-void PlayerTeam::setSuffix(const std::wstring& suffix) {
+void PlayerTeam::setSuffix(const std::string& suffix) {
     // if (suffix == null) throw new IllegalArgumentException("Suffix cannot be
     // null");
     this->suffix = suffix;
     scoreboard->onTeamChanged(this);
 }
 
-std::wstring PlayerTeam::getFormattedName(const std::wstring& teamMemberName) {
+std::string PlayerTeam::getFormattedName(const std::string& teamMemberName) {
     return getPrefix() + teamMemberName + getSuffix();
 }
 
-std::wstring PlayerTeam::formatNameForTeam(PlayerTeam* team) {
+std::string PlayerTeam::formatNameForTeam(PlayerTeam* team) {
     return formatNameForTeam(team, team->getDisplayName());
 }
 
-std::wstring PlayerTeam::formatNameForTeam(Team* team,
-                                           const std::wstring& name) {
+std::string PlayerTeam::formatNameForTeam(Team* team,
+                                           const std::string& name) {
     if (team == nullptr) return name;
     return team->getFormattedName(name);
 }

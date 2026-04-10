@@ -66,7 +66,7 @@ void Minecart::_init() {
     setSize(0.98f, 0.7f);
     heightOffset = bbHeight / 2.0f;
     soundUpdater = nullptr;
-    name = L"";
+    name = "";
     //
 
     // 4J Added
@@ -689,27 +689,27 @@ std::optional<Vec3> Minecart::getPos(double x, double y, double z) {
 }
 
 void Minecart::readAdditionalSaveData(CompoundTag* tag) {
-    if (tag->getBoolean(L"CustomDisplayTile")) {
-        setDisplayTile(tag->getInt(L"DisplayTile"));
-        setDisplayData(tag->getInt(L"DisplayData"));
-        setDisplayOffset(tag->getInt(L"DisplayOffset"));
+    if (tag->getBoolean("CustomDisplayTile")) {
+        setDisplayTile(tag->getInt("DisplayTile"));
+        setDisplayData(tag->getInt("DisplayData"));
+        setDisplayOffset(tag->getInt("DisplayOffset"));
     }
 
-    if (tag->contains(L"CustomName") &&
-        tag->getString(L"CustomName").length() > 0)
-        name = tag->getString(L"CustomName");
+    if (tag->contains("CustomName") &&
+        tag->getString("CustomName").length() > 0)
+        name = tag->getString("CustomName");
 }
 
 void Minecart::addAdditonalSaveData(CompoundTag* tag) {
     if (hasCustomDisplay()) {
-        tag->putBoolean(L"CustomDisplayTile", true);
-        tag->putInt(L"DisplayTile",
+        tag->putBoolean("CustomDisplayTile", true);
+        tag->putInt("DisplayTile",
                     getDisplayTile() == nullptr ? 0 : getDisplayTile()->id);
-        tag->putInt(L"DisplayData", getDisplayData());
-        tag->putInt(L"DisplayOffset", getDisplayOffset());
+        tag->putInt("DisplayData", getDisplayData());
+        tag->putInt("DisplayOffset", getDisplayOffset());
     }
 
-    if (!name.empty()) tag->putString(L"CustomName", name);
+    if (!name.empty()) tag->putString("CustomName", name);
 }
 
 float Minecart::getShadowHeightOffs() { return 0; }
@@ -914,13 +914,13 @@ void Minecart::setCustomDisplay(bool value) {
     getEntityData()->set(DATA_ID_CUSTOM_DISPLAY, (uint8_t)(value ? 1 : 0));
 }
 
-void Minecart::setCustomName(const std::wstring& name) { this->name = name; }
+void Minecart::setCustomName(const std::string& name) { this->name = name; }
 
-std::wstring Minecart::getAName() {
+std::string Minecart::getAName() {
     if (!name.empty()) return name;
     return Entity::getAName();
 }
 
 bool Minecart::hasCustomName() { return !name.empty(); }
 
-std::wstring Minecart::getCustomName() { return name; }
+std::string Minecart::getCustomName() { return name; }

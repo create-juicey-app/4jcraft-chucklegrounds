@@ -85,18 +85,18 @@ bool MerchantRecipe::isDeprecated() { return uses >= maxUses; }
 void MerchantRecipe::enforceDeprecated() { uses = maxUses; }
 
 void MerchantRecipe::load(CompoundTag* tag) {
-    CompoundTag* buyTag = tag->getCompound(L"buy");
+    CompoundTag* buyTag = tag->getCompound("buy");
     buyA = ItemInstance::fromTag(buyTag);
-    CompoundTag* sellTag = tag->getCompound(L"sell");
+    CompoundTag* sellTag = tag->getCompound("sell");
     sell = ItemInstance::fromTag(sellTag);
-    if (tag->contains(L"buyB")) {
-        buyB = ItemInstance::fromTag(tag->getCompound(L"buyB"));
+    if (tag->contains("buyB")) {
+        buyB = ItemInstance::fromTag(tag->getCompound("buyB"));
     }
-    if (tag->contains(L"uses")) {
-        uses = tag->getInt(L"uses");
+    if (tag->contains("uses")) {
+        uses = tag->getInt("uses");
     }
-    if (tag->contains(L"maxUses")) {
-        maxUses = tag->getInt(L"maxUses");
+    if (tag->contains("maxUses")) {
+        maxUses = tag->getInt("maxUses");
     } else {
         maxUses = 7;
     }
@@ -104,12 +104,12 @@ void MerchantRecipe::load(CompoundTag* tag) {
 
 CompoundTag* MerchantRecipe::createTag() {
     CompoundTag* tag = new CompoundTag();
-    tag->putCompound(L"buy", buyA->save(new CompoundTag(L"buy")));
-    tag->putCompound(L"sell", sell->save(new CompoundTag(L"sell")));
+    tag->putCompound("buy", buyA->save(new CompoundTag("buy")));
+    tag->putCompound("sell", sell->save(new CompoundTag("sell")));
     if (buyB != nullptr) {
-        tag->putCompound(L"buyB", buyB->save(new CompoundTag(L"buyB")));
+        tag->putCompound("buyB", buyB->save(new CompoundTag("buyB")));
     }
-    tag->putInt(L"uses", uses);
-    tag->putInt(L"maxUses", maxUses);
+    tag->putInt("uses", uses);
+    tag->putInt("maxUses", maxUses);
     return tag;
 }

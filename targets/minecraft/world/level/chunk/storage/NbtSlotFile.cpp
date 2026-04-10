@@ -7,9 +7,9 @@
 namespace {
 std::FILE* OpenBinaryFileForReadWrite(const File& file) {
 #if defined(_WIN32)
-    std::FILE* stream = _wfopen(file.getPath().c_str(), L"r+b");
+    std::FILE* stream = _wfopen(file.getPath().c_str(), "r+b");
     if (stream == nullptr) {
-        stream = _wfopen(file.getPath().c_str(), L"w+b");
+        stream = _wfopen(file.getPath().c_str(), "w+b");
     }
 #else
     const std::string nativePath = std::filesystem::path(file.getPath()).string();
@@ -186,11 +186,11 @@ void NbtSlotFile::replaceSlot(int slot, std::vector<CompoundTag*>* tags) {
         CompoundTag* tag = *it;  // tags->at(i);
         std::vector<uint8_t> compressed = NbtIo::compress(tag);
         if (compressed.size() > largest) {
-            wchar_t buf[256];
+            char buf[256];
             largest = compressed.size();
 #ifndef _CONTENT_PACKAGE
-            swprintf(buf, 256, L"New largest: %I64d (%ls)\n", largest,
-                     tag->getString(L"id").c_str());
+            snprintf(buf, 256, "New largest: %I64d (%s)\n", largest,
+                     tag->getString("id").c_str());
             OutputDebugStringW(buf);
 #endif
         }

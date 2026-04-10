@@ -162,7 +162,7 @@ unsigned char DataInputStream::readUnsignedByte() {
 //
 // This method is suitable for reading bytes written by the writeChar method of
 // interface DataOutput. Returns: the char value read.
-wchar_t DataInputStream::readChar() {
+char DataInputStream::readChar() {
     if (stream == nullptr) {
         fprintf(
             stderr,
@@ -171,7 +171,7 @@ wchar_t DataInputStream::readChar() {
     }
     int a = stream->read();
     int b = stream->read();
-    return (wchar_t)((a << 8) | (b & 0xff));
+    return (char)((a << 8) | (b & 0xff));
 }
 
 // Reads some bytes from an input stream and stores them into the buffer array
@@ -399,8 +399,8 @@ unsigned short DataInputStream::readUnsignedShort() {
 //
 // Returns:
 // a Unicode string.
-std::wstring DataInputStream::readUTF() {
-    std::wstring outputString;
+std::string DataInputStream::readUTF() {
+    std::string outputString;
     if (stream == nullptr) {
         fprintf(
             stderr,
@@ -413,11 +413,11 @@ std::wstring DataInputStream::readUTF() {
 
     //// 4J Stu - I decided while writing DataOutputStream that we didn't need
     /// to bother using the UTF8 format / used in the java libs, and just write
-    /// in/out as wchar_t all the time
+    /// in/out as char all the time
 
     /*for( unsigned short i = 0; i < UTFLength; i++)
     {
-            wchar_t theChar = readChar();
+            char theChar = readChar();
             outputString.push_back(theChar);
     }*/
 
@@ -447,7 +447,7 @@ std::wstring DataInputStream::readUTF() {
             break;
         } else if ((firstByte & 0x80) == 0x00) {
             // One byte UTF
-            wchar_t readChar = (wchar_t)firstByte;
+            char readChar = (char)firstByte;
             outputString.push_back(readChar);
             continue;
         } else if ((firstByte & 0xE0) == 0xC0) {
@@ -473,9 +473,8 @@ std::wstring DataInputStream::readUTF() {
                 break;
             }
 
-            wchar_t readChar =
-                (wchar_t)(((firstByte & 0x1F) << 6) | (secondByte & 0x3F));
-            outputString.push_back(readChar);
+            outputString.push_back((char)firstByte);
+            outputString.push_back((char)secondByte);
             continue;
         } else if ((firstByte & 0xF0) == 0xE0) {
             // Three byte UTF
@@ -516,10 +515,9 @@ std::wstring DataInputStream::readUTF() {
                 break;
             }
 
-            wchar_t readChar =
-                (wchar_t)(((firstByte & 0x0F) << 12) |
-                          ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
-            outputString.push_back(readChar);
+            outputString.push_back((char)firstByte);
+            outputString.push_back((char)secondByte);
+            outputString.push_back((char)thirdByte);
             continue;
         }
     }

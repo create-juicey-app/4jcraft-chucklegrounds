@@ -85,10 +85,10 @@ Icon* DispenserTile::getTexture(int face, int data) {
 }
 
 void DispenserTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"furnace_side");
-    iconTop = iconRegister->registerIcon(L"furnace_top");
-    iconFront = iconRegister->registerIcon(L"dispenser_front");
-    iconFrontVertical = iconRegister->registerIcon(L"dispenser_front_vertical");
+    icon = iconRegister->registerIcon("furnace_side");
+    iconTop = iconRegister->registerIcon("furnace_top");
+    iconFront = iconRegister->registerIcon("dispenser_front");
+    iconFrontVertical = iconRegister->registerIcon("dispenser_front_vertical");
 }
 
 // 4J-PB - Adding a TestUse for tooltip display

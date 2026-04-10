@@ -53,11 +53,11 @@ public:
     bool save(bool force, ProgressListener* progressListener);
     bool tick();
     bool shouldSave();
-    std::wstring gatherStats();
+    std::string gatherStats();
     virtual std::vector<Biome::MobSpawnerData*>* getMobsAt(
         MobCategory* mobCategory, int x, int y, int z);
     virtual TilePos* findNearestMapFeature(Level* level,
-                                           const std::wstring& featureName,
+                                           const std::string& featureName,
                                            int x, int y, int z);
     virtual void recreateLogicStructuresForChunk(int chunkX, int chunkZ);
 };

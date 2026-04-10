@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "BeaconTileEntity.h"
 
 #include <format>
@@ -62,7 +63,7 @@ BeaconTileEntity::BeaconTileEntity() {
     secondaryPower = 0;
 
     paymentItem = nullptr;
-    name = L"";
+    name = "";
 }
 
 void BeaconTileEntity::tick() {
@@ -225,18 +226,18 @@ double BeaconTileEntity::getViewDistance() { return 256 * 256; }
 void BeaconTileEntity::load(CompoundTag* tag) {
     TileEntity::load(tag);
 
-    primaryPower = tag->getInt(L"Primary");
-    secondaryPower = tag->getInt(L"Secondary");
-    levels = tag->getInt(L"Levels");
+    primaryPower = tag->getInt("Primary");
+    secondaryPower = tag->getInt("Secondary");
+    levels = tag->getInt("Levels");
 }
 
 void BeaconTileEntity::save(CompoundTag* tag) {
     TileEntity::save(tag);
 
-    tag->putInt(L"Primary", primaryPower);
-    tag->putInt(L"Secondary", secondaryPower);
+    tag->putInt("Primary", primaryPower);
+    tag->putInt("Secondary", secondaryPower);
     // this value is re-calculated, but save it anyway to avoid update lag
-    tag->putInt(L"Levels", levels);
+    tag->putInt("Levels", levels);
 }
 
 unsigned int BeaconTileEntity::getContainerSize() { return 1; }
@@ -280,17 +281,17 @@ void BeaconTileEntity::setItem(unsigned int slot,
     }
 }
 
-std::wstring BeaconTileEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_CONTAINER_BEACON);
+std::string BeaconTileEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_CONTAINER_BEACON);
 }
 
-std::wstring BeaconTileEntity::getCustomName() {
-    return hasCustomName() ? name : L"";
+std::string BeaconTileEntity::getCustomName() {
+    return hasCustomName() ? name : "";
 }
 
 bool BeaconTileEntity::hasCustomName() { return !name.empty(); }
 
-void BeaconTileEntity::setCustomName(const std::wstring& name) {
+void BeaconTileEntity::setCustomName(const std::string& name) {
     this->name = name;
 }
 

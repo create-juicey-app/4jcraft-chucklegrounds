@@ -9,13 +9,13 @@ class CompoundTag;
 
 class SavedData : public std::enable_shared_from_this<SavedData> {
 public:
-    const std::wstring id;
+    const std::string id;
 
 private:
     bool dirty;
 
 public:
-    SavedData(const std::wstring& id);
+    SavedData(const std::string& id);
     virtual ~SavedData() {}
 
     virtual void load(CompoundTag* tag) = 0;

@@ -17,7 +17,7 @@
 class ItemInstance;
 
 IceTile::IceTile(int id)
-    : HalfTransparentTile(id, L"ice", Material::ice, false) {
+    : HalfTransparentTile(id, "ice", Material::ice, false) {
     friction = 0.98f;
     setTicking(true);
 }

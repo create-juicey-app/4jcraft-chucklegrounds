@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "LevelChunk.h"
 
 #include <string.h>
@@ -8,7 +9,7 @@
 #include <string>
 #include <utility>
 
-#include "app/common/src/Network/GameNetworkManager.h"
+#include "app/common/Network/GameNetworkManager.h"
 #include "app/linux/LinuxGame.h"
 #include "SparseLightStorage.h"
 #include "java/Class.h"
@@ -962,13 +963,13 @@ bool LevelChunk::setTileAndData(int x, int y, int z, int _tile, int _data) {
             if (te == nullptr) {
                 te = dynamic_cast<EntityTile*>(Tile::tiles[_tile])
                          ->newTileEntity(level);
-                // app.DebugPrintf("%s: Setting tile id %d, created tileEntity
+                // Log::info("%s: Setting tile id %d, created tileEntity
                 // type %d\n", level->isClientSide?"Client":"Server", _tile,
                 // te->GetType());
                 level->setTileEntity(xOffs, y, zOffs, te);
             }
             if (te != nullptr) {
-                // app.DebugPrintf("%s: Setting tile id %d, found tileEntity
+                // Log::info("%s: Setting tile id %d, found tileEntity
                 // type %d\n", level->isClientSide?"Client":"Server", _tile,
                 // te->GetType());
                 te->clearCache();
@@ -1151,7 +1152,7 @@ void LevelChunk::addEntity(std::shared_ptr<Entity> e) {
     int xc = Mth::floor(e->x / 16);
     int zc = Mth::floor(e->z / 16);
     if (xc != this->x || zc != this->z) {
-        app.DebugPrintf("Wrong location!");
+        Log::info("Wrong location!");
         //        System.out.println("Wrong location! " + e);
         //        Thread.dumpStack();
     }
@@ -1298,7 +1299,7 @@ void LevelChunk::setTileEntity(int x, int y, int z,
              ->isEntityTile())  // 4J - was !(Tile.tiles[getTile(x, y, z)]
                                 // instanceof EntityTile))
     {
-        app.DebugPrintf(
+        Log::info(
             "Attempted to place a tile entity where there was no entity "
             "tile!\n");
         return;
@@ -1331,7 +1332,7 @@ void LevelChunk::removeTileEntity(int x, int y, int z) {
                 tileEntities.erase(pos);
                 if (te != nullptr) {
                     if (level->isClientSide) {
-                        app.DebugPrintf("Removing tile entity of type %d\n",
+                        Log::info("Removing tile entity of type %d\n",
                                         te->GetType());
                     }
                     te->setRemoved();
@@ -1349,7 +1350,7 @@ void LevelChunk::load() {
         if (m_bUnloaded && m_unloadedEntitiesTag) {
             ListTag<CompoundTag>* entityTags =
                 (ListTag<CompoundTag>*)m_unloadedEntitiesTag->getList(
-                    L"Entities");
+                    "Entities");
             if (entityTags != nullptr) {
                 for (int i = 0; i < entityTags->size(); i++) {
                     CompoundTag* teTag = entityTags->get(i);
@@ -1364,7 +1365,7 @@ void LevelChunk::load() {
 
             ListTag<CompoundTag>* tileEntityTags =
                 (ListTag<CompoundTag>*)m_unloadedEntitiesTag->getList(
-                    L"TileEntities");
+                    "TileEntities");
             if (tileEntityTags != nullptr) {
                 for (int i = 0; i < tileEntityTags->size(); i++) {
                     CompoundTag* teTag = tileEntityTags->get(i);
@@ -1430,7 +1431,7 @@ void LevelChunk::unload(bool unloadTileEntities)  // 4J - added parameter
             level->removeEntities(entityBlocks[i]);
         }
     }
-    // app.DebugPrintf("Unloaded chunk %d, %d\n", x, z);
+    // Log::info("Unloaded chunk %d, %d\n", x, z);
 
 #if defined(_LARGE_WORLDS)
     if (!m_bUnloaded)  // 4J-JEV: If we unload a chunk twice, we delete all the
@@ -1463,7 +1464,7 @@ void LevelChunk::unload(bool unloadTileEntities)  // 4J - added parameter
                 }
             }
 
-            m_unloadedEntitiesTag->put(L"Entities", entityTags);
+            m_unloadedEntitiesTag->put("Entities", entityTags);
 
             ListTag<CompoundTag>* tileEntityTags = new ListTag<CompoundTag>();
 
@@ -1480,7 +1481,7 @@ void LevelChunk::unload(bool unloadTileEntities)  // 4J - added parameter
             // Clear out the tileEntities list
             tileEntities.clear();
 
-            m_unloadedEntitiesTag->put(L"TileEntities", tileEntityTags);
+            m_unloadedEntitiesTag->put("TileEntities", tileEntityTags);
         }
     }
 #endif

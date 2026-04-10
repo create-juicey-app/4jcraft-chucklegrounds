@@ -40,7 +40,7 @@ void MoveEntityPacket::write(DataOutputStream* dos)  // throws IOException
     if ((id < 0) || (id >= 2048)) {
         // We shouln't be tracking an entity that doesn't have a short type of
         // id
-        __debugbreak();
+        assert(0);
     }
     dos->writeShort((short)id);
 }

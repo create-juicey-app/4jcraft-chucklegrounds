@@ -32,7 +32,7 @@ public:
     static Entity* create(Level* level) { return new EntityHorse(level); }
 
 private:
-    static const std::wstring TEX_FOLDER;
+    static const std::string TEX_FOLDER;
 
     static const EntitySelector* PARENT_HORSE_SELECTOR;
 
@@ -66,9 +66,9 @@ public:
 
 private:
     static const int ARMORS = 4;
-    static std::wstring ARMOR_TEXTURES[ARMORS];
+    static std::string ARMOR_TEXTURES[ARMORS];
     static int ARMOR_TEXTURES_ID[ARMORS];
-    static std::wstring ARMOR_HASHES[ARMORS];
+    static std::string ARMOR_HASHES[ARMORS];
     static int ARMOR_PROTECTION[ARMORS];
 
 public:
@@ -88,9 +88,9 @@ public:
 
 private:
     static const int VARIANTS = 7;
-    static std::wstring VARIANT_TEXTURES[VARIANTS];
+    static std::string VARIANT_TEXTURES[VARIANTS];
     static int VARIANT_TEXTURES_ID[VARIANTS];
-    static std::wstring VARIANT_HASHES[VARIANTS];
+    static std::string VARIANT_HASHES[VARIANTS];
 
 public:
     static const int MARKING_NONE = 0;
@@ -101,9 +101,9 @@ public:
 
 private:
     static const int MARKINGS = 5;
-    static std::wstring MARKING_TEXTURES[MARKINGS];
+    static std::string MARKING_TEXTURES[MARKINGS];
     static int MARKING_TEXTURES_ID[MARKINGS];
-    static std::wstring MARKING_HASHES[MARKINGS];
+    static std::string MARKING_HASHES[MARKINGS];
 
 private:
     int countEating;  // eating timer
@@ -145,7 +145,7 @@ public:
     virtual int getType();
     virtual void setVariant(int i);
     virtual int getVariant();
-    virtual std::wstring getAName();
+    virtual std::string getAName();
 
 private:
     virtual bool getHorseFlag(int flag);
@@ -155,8 +155,8 @@ public:
     virtual bool isAdult();
     virtual bool isTamed();
     virtual bool isRidable();
-    virtual std::wstring getOwnerName();
-    virtual void setOwner(const std::wstring& par1Str);
+    virtual std::string getOwnerName();
+    virtual void setOwner(const std::string& par1Str);
     virtual float getFoalScale();
     virtual void updateSize(bool isBaby);
     virtual bool getIsJumping();
@@ -242,7 +242,7 @@ public:
     virtual bool hasLayeredTextures();
 
 private:
-    std::wstring layerTextureHashName;
+    std::string layerTextureHashName;
     std::vector<int> layerTextureLayers;
 
 private:
@@ -250,7 +250,7 @@ private:
     virtual void rebuildLayeredTextureInfo();
 
 public:
-    virtual std::wstring getLayeredTextureHashName();
+    virtual std::string getLayeredTextureHashName();
     virtual std::vector<int> getLayeredTextureLayers();
     virtual void openInventory(std::shared_ptr<Player> player);
     virtual bool mobInteract(std::shared_ptr<Player> player);

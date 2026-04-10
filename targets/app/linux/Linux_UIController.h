@@ -1,9 +1,10 @@
 #pragma once
 
-#include "app/common/src/UI/All Platforms/UIStructs.h"
-#include "app/common/src/UI/UIController.h"
+#include "app/common/UI/All Platforms/UIStructs.h"
+#include "app/common/UI/UIController.h"
 #include "app/linux/Iggy/include/iggy.h"
 #include "app/linux/Iggy/include/rrCore.h"
+#include "platform/profile/profile.h"
 
 class ConsoleUIController : public UIController {
 public:

@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "AnvilMenu.h"
 
 #include <algorithm>
@@ -72,7 +73,7 @@ void AnvilMenu::createResult() {
     int tax = 0;
     int namingCost = 0;
 
-    if (DEBUG_COST) app.DebugPrintf("----");
+    if (DEBUG_COST) Log::info("----");
 
     if (input == nullptr) {
         resultSlots->setItem(0, nullptr);
@@ -89,7 +90,7 @@ void AnvilMenu::createResult() {
         tax += input->getBaseRepairCost() +
                (addition == nullptr ? 0 : addition->getBaseRepairCost());
         if (DEBUG_COST) {
-            app.DebugPrintf(
+            Log::info(
                 "Starting with base repair tax of %d (%d + %d)\n", tax,
                 input->getBaseRepairCost(),
                 (addition == nullptr ? 0 : addition->getBaseRepairCost()));
@@ -146,7 +147,7 @@ void AnvilMenu::createResult() {
                         result->setAuxValue(resultDamage);
                         price += std::max(1, additional / 100);
                         if (DEBUG_COST) {
-                            app.DebugPrintf(
+                            Log::info(
                                 "Repairing; price is now %d (went up by %d)\n",
                                 price, std::max(1, additional / 100));
                         }
@@ -183,7 +184,7 @@ void AnvilMenu::createResult() {
 
                             price += extra;
                             if (DEBUG_COST) {
-                                app.DebugPrintf(
+                                Log::info(
                                     "Enchantment incompatibility fee; price is "
                                     "now %d (went up by %d)\n",
                                     price, extra);
@@ -216,7 +217,7 @@ void AnvilMenu::createResult() {
 
                     price += fee * extra;
                     if (DEBUG_COST) {
-                        app.DebugPrintf(
+                        Log::info(
                             "Enchantment increase fee; price is now %d (went "
                             "up by %d)\n",
                             price, fee * extra);
@@ -232,7 +233,7 @@ void AnvilMenu::createResult() {
 
                 price += namingCost;
                 if (DEBUG_COST) {
-                    app.DebugPrintf(
+                    Log::info(
                         "Un-naming cost; price is now %d (went up by %d)",
                         price, namingCost);
                 }
@@ -245,7 +246,7 @@ void AnvilMenu::createResult() {
 
             price += namingCost;
             if (DEBUG_COST) {
-                app.DebugPrintf("Naming cost; price is now %d (went up by %d)",
+                Log::info("Naming cost; price is now %d (went up by %d)",
                                 price, namingCost);
             }
 
@@ -253,7 +254,7 @@ void AnvilMenu::createResult() {
                 tax += namingCost / 2;
 
                 if (DEBUG_COST) {
-                    app.DebugPrintf(
+                    Log::info(
                         "Already-named tax; tax is now %d (went up by %d)", tax,
                         (namingCost / 2));
                 }
@@ -290,7 +291,7 @@ void AnvilMenu::createResult() {
 
             tax += count + level * fee;
             if (DEBUG_COST) {
-                app.DebugPrintf(
+                Log::info(
                     "Enchantment tax; tax is now %d (went up by %d)", tax,
                     (count + level * fee));
             }
@@ -300,18 +301,18 @@ void AnvilMenu::createResult() {
 
         cost = tax + price;
         if (price <= 0) {
-            if (DEBUG_COST) app.DebugPrintf("No purchase, only tax; aborting");
+            if (DEBUG_COST) Log::info("No purchase, only tax; aborting");
             result = nullptr;
         }
         if (namingCost == price && namingCost > 0 && cost >= 40) {
-            if (DEBUG_COST) app.DebugPrintf("Cost is too high; aborting");
-            app.DebugPrintf(
+            if (DEBUG_COST) Log::info("Cost is too high; aborting");
+            Log::info(
                 "Naming an item only, cost too high; giving discount to cap "
                 "cost to 39 levels");
             cost = 39;
         }
         if (cost >= 40 && !player->abilities.instabuild) {
-            if (DEBUG_COST) app.DebugPrintf("Cost is too high; aborting");
+            if (DEBUG_COST) Log::info("Cost is too high; aborting");
             result = nullptr;
         }
 
@@ -334,10 +335,10 @@ void AnvilMenu::createResult() {
 
     if (DEBUG_COST) {
         if (level->isClientSide) {
-            app.DebugPrintf("CLIENT Cost is %d (%d price, %d tax)\n", cost,
+            Log::info("CLIENT Cost is %d (%d price, %d tax)\n", cost,
                             price, tax);
         } else {
-            app.DebugPrintf("SERVER Cost is %d (%d price, %d tax)\n", cost,
+            Log::info("SERVER Cost is %d (%d price, %d tax)\n", cost,
                             price, tax);
         }
     }
@@ -413,7 +414,7 @@ std::shared_ptr<ItemInstance> AnvilMenu::quickMoveStack(
     return clicked;
 }
 
-void AnvilMenu::setItemName(const std::wstring& name) {
+void AnvilMenu::setItemName(const std::string& name) {
     itemName = name;
     if (getSlot(RESULT_SLOT)->hasItem()) {
         std::shared_ptr<ItemInstance> item = getSlot(RESULT_SLOT)->getItem();

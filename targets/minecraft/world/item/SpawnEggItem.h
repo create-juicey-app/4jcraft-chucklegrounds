@@ -33,7 +33,7 @@ public:
 
     SpawnEggItem(int id);
 
-    virtual std::wstring getHoverName(
+    virtual std::string getHoverName(
         std::shared_ptr<ItemInstance> itemInstance);
     virtual int getColor(std::shared_ptr<ItemInstance> item, int spriteLayer);
     virtual bool hasMultipleSpriteLayers();

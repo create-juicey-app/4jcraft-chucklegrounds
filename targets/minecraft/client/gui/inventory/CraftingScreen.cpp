@@ -29,7 +29,7 @@ void CraftingScreen::removed() {
 }
 
 void CraftingScreen::renderLabels() {
-    font->draw(Language::getInstance()->getElement(L"container.crafting"),
+    font->draw(Language::getInstance()->getElement("container.crafting"),
                8 + 16 + 4, 2 + 2 + 2, 0x404040);
     font->draw(inventory->getName(), 8, imageHeight - 96 + 2, 0x404040);
 }

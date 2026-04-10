@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-#include "app/common/src/Network/NetworkPlayerInterface.h"
+#include "app/common/Network/NetworkPlayerInterface.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "ServerLevel.h"
 #include "ServerPlayer.h"
@@ -102,7 +102,7 @@ void EntityTracker::addEntity(std::shared_ptr<Entity> e, int range,
         assert(false);  // Entity already tracked
     }
     if (e->entityId >= 2048) {
-        __debugbreak();
+        assert(0);
     }
     std::shared_ptr<TrackedEntity> te = std::shared_ptr<TrackedEntity>(
         new TrackedEntity(e, range, updateInterval, trackDeltas));

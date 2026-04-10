@@ -48,7 +48,7 @@ void UpdateAttributesPacket::read(DataInputStream* dis) {
             double amount = dis->readDouble();
             uint8_t operation = dis->readByte();
             modifiers.insert(new AttributeModifier(
-                id, /*L"Unknown synced attribute modifier",*/ amount,
+                id, /*"Unknown synced attribute modifier",*/ amount,
                 operation));
         }
 

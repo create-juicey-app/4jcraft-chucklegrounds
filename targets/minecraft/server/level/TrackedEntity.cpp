@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "TrackedEntity.h"
 
 #include <assert.h>
@@ -10,7 +11,7 @@
 
 #include "platform/PlatformTypes.h"
 #include "EntityTracker.h"
-#include "app/common/src/Network/NetworkPlayerInterface.h"
+#include "app/common/Network/NetworkPlayerInterface.h"
 #include "app/linux/LinuxGame.h"
 #include "ServerPlayer.h"
 #include "java/Class.h"
@@ -440,7 +441,7 @@ void TrackedEntity::broadcast(std::shared_ptr<Packet> packet) {
                             // (packet);
                             // if(emp!=nullptr)
                             // 					{
-                            // 						app.DebugPrintf("Not
+                            // 						Log::info("Not
                             // sending this SetEntityMotionPacket to player -
                             // it's already been sent to a player on their
                             // console\n");
@@ -597,8 +598,8 @@ void TrackedEntity::updatePlayer(EntityTracker* tracker,
 
         if (e->instanceof(eTYPE_PLAYER)) {
             std::shared_ptr<Player> plr = std::dynamic_pointer_cast<Player>(e);
-            app.DebugPrintf(
-                "TrackedEntity:: Player '%ls' is now visible to player '%ls', "
+            Log::info(
+                "TrackedEntity:: Player '%s' is now visible to player '%s', "
                 "%s.\n",
                 plr->name.c_str(), sp->name.c_str(),
                 (e->riding == nullptr ? "not riding minecart" : "in minecart"));
@@ -711,7 +712,7 @@ void TrackedEntity::updatePlayers(
 
 std::shared_ptr<Packet> TrackedEntity::getAddEntityPacket() {
     if (e->removed) {
-        app.DebugPrintf("Fetching addPacket for removed entity - %ls\n",
+        Log::info("Fetching addPacket for removed entity - %s\n",
                         e->getAName().c_str());
     }
 
@@ -841,7 +842,7 @@ std::shared_ptr<Packet> TrackedEntity::getAddEntityPacket() {
             int ix = (int)frame->xTile;
             int iy = (int)frame->yTile;
             int iz = (int)frame->zTile;
-            app.DebugPrintf("eTYPE_ITEM_FRAME xyz %d,%d,%d\n", ix, iy, iz);
+            Log::info("eTYPE_ITEM_FRAME xyz %d,%d,%d\n", ix, iy, iz);
         }
 
         std::shared_ptr<AddEntityPacket> packet =

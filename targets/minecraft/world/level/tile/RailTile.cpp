@@ -18,7 +18,7 @@ Icon* RailTile::getTexture(int face, int data) {
 
 void RailTile::registerIcons(IconRegister* iconRegister) {
     BaseRailTile::registerIcons(iconRegister);
-    iconTurn = iconRegister->registerIcon(getIconName() + L"_turned");
+    iconTurn = iconRegister->registerIcon(getIconName() + "_turned");
 }
 
 void RailTile::updateState(Level* level, int x, int y, int z, int data, int dir,

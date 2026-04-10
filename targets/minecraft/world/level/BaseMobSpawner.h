@@ -16,10 +16,10 @@ public:
     class SpawnData : public WeighedRandomItem {
     public:
         CompoundTag* tag;
-        std::wstring type;
+        std::string type;
 
         SpawnData(CompoundTag* base);
-        SpawnData(CompoundTag* tag, std::wstring type);
+        SpawnData(CompoundTag* tag, std::string type);
         ~SpawnData();
 
         virtual CompoundTag* save();
@@ -32,7 +32,7 @@ public:
     int spawnDelay;
 
 private:
-    std::wstring entityId;
+    std::string entityId;
     std::vector<SpawnData*>* spawnPotentials;
     SpawnData* nextSpawnData;
 
@@ -52,8 +52,8 @@ public:
     BaseMobSpawner();
     virtual ~BaseMobSpawner();
 
-    virtual std::wstring getEntityId();
-    virtual void setEntityId(const std::wstring& entityId);
+    virtual std::string getEntityId();
+    virtual void setEntityId(const std::string& entityId);
     virtual bool isNearPlayer();
     virtual void tick();
     virtual std::shared_ptr<Entity> loadDataAndAddEntity(

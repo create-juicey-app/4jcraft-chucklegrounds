@@ -23,10 +23,10 @@
 
 class Icon;
 
-const std::wstring LiquidTile::TEXTURE_LAVA_STILL = L"lava";
-const std::wstring LiquidTile::TEXTURE_WATER_STILL = L"water";
-const std::wstring LiquidTile::TEXTURE_WATER_FLOW = L"water_flow";
-const std::wstring LiquidTile::TEXTURE_LAVA_FLOW = L"lava_flow";
+const std::string LiquidTile::TEXTURE_LAVA_STILL = "lava";
+const std::string LiquidTile::TEXTURE_WATER_STILL = "water";
+const std::string LiquidTile::TEXTURE_WATER_FLOW = "water_flow";
+const std::string LiquidTile::TEXTURE_LAVA_FLOW = "lava_flow";
 
 LiquidTile::LiquidTile(int id, Material* material) : Tile(id, material, false) {
     float yo = 0;
@@ -384,7 +384,7 @@ void LiquidTile::registerIcons(IconRegister* iconRegister) {
     }
 }
 
-Icon* LiquidTile::getTexture(const std::wstring& name) {
+Icon* LiquidTile::getTexture(const std::string& name) {
     if (name.compare(TEXTURE_WATER_STILL) == 0) return Tile::water->icons[0];
     if (name.compare(TEXTURE_WATER_FLOW) == 0) return Tile::water->icons[1];
     if (name.compare(TEXTURE_LAVA_STILL) == 0) return Tile::lava->icons[0];

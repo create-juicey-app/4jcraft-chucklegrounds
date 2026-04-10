@@ -8,12 +8,12 @@
 TextureChangePacket::TextureChangePacket() {
     id = -1;
     action = e_TextureChange_Skin;
-    path = L"";
+    path = "";
 }
 
 TextureChangePacket::TextureChangePacket(std::shared_ptr<Entity> e,
                                          ETextureChangeType action,
-                                         const std::wstring& path) {
+                                         const std::string& path) {
     id = e->entityId;
     this->action = action;
     this->path = path;

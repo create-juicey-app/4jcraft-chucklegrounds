@@ -9,8 +9,8 @@ void Settings::generateNewProperties() {}
 
 void Settings::saveProperties() {}
 
-std::wstring Settings::getString(const std::wstring& key,
-                                 const std::wstring& defaultValue) {
+std::string Settings::getString(const std::string& key,
+                                 const std::string& defaultValue) {
     if (properties.find(key) == properties.end()) {
         properties[key] = defaultValue;
         saveProperties();
@@ -18,7 +18,7 @@ std::wstring Settings::getString(const std::wstring& key,
     return properties[key];
 }
 
-int Settings::getInt(const std::wstring& key, int defaultValue) {
+int Settings::getInt(const std::string& key, int defaultValue) {
     if (properties.find(key) == properties.end()) {
         properties[key] = toWString<int>(defaultValue);
         saveProperties();
@@ -26,7 +26,7 @@ int Settings::getInt(const std::wstring& key, int defaultValue) {
     return fromWString<int>(properties[key]);
 }
 
-bool Settings::getBoolean(const std::wstring& key, bool defaultValue) {
+bool Settings::getBoolean(const std::string& key, bool defaultValue) {
     if (properties.find(key) == properties.end()) {
         properties[key] = toWString<bool>(defaultValue);
         saveProperties();
@@ -35,7 +35,7 @@ bool Settings::getBoolean(const std::wstring& key, bool defaultValue) {
     return retval;
 }
 
-void Settings::setBooleanAndSave(const std::wstring& key, bool value) {
+void Settings::setBooleanAndSave(const std::string& key, bool value) {
     properties[key] = toWString<bool>(value);
     saveProperties();
 }

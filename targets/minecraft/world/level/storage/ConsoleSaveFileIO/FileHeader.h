@@ -81,7 +81,7 @@ enum ESavePlatform {
 
 struct FileEntrySaveDataV1 {
 public:
-    wchar_t filename[64];  // 64 * 2B
+    char filename[64];  // 64 * 2B
     unsigned int length;   // In bytes	// 4B
 
     // This is only valid once the save file has been written/loaded at least
@@ -93,7 +93,7 @@ public:
 // updating 4J Stu - As of writing the tutorial level uses a V1 save file
 struct FileEntrySaveDataV2 {
 public:
-    wchar_t filename[64];  // 64 * 2B
+    char filename[64];  // 64 * 2B
     unsigned int length;   // In bytes	// 4B
 
     union {
@@ -120,11 +120,11 @@ public:
 
     FileEntry() { memset(&data, 0, sizeof(FileEntrySaveData)); }
 
-    FileEntry(wchar_t name[64], unsigned int length, unsigned int startOffset) {
+    FileEntry(char name[64], unsigned int length, unsigned int startOffset) {
         data.length = length;
         data.startOffset = startOffset;
-        memset(&data.filename, 0, sizeof(wchar_t) * 64);
-        memcpy(&data.filename, name, sizeof(wchar_t) * 64);
+        memset(&data.filename, 0, sizeof(char) * 64);
+        memcpy(&data.filename, name, sizeof(char) * 64);
 
         data.lastModifiedTime = 0;
 
@@ -178,7 +178,7 @@ public:
     ~FileHeader();
 
 protected:
-    FileEntry* AddFile(const std::wstring& name, unsigned int length = 0);
+    FileEntry* AddFile(const std::string& name, unsigned int length = 0);
     void RemoveFile(FileEntry*);
     void WriteHeader(void* saveMem);
     void ReadHeader(void* saveMem,
@@ -191,9 +191,9 @@ protected:
     void AdjustStartOffsets(FileEntry* file, unsigned int nNumberOfBytesToWrite,
                             bool subtract = false);
 
-    bool fileExists(const std::wstring& name);
+    bool fileExists(const std::string& name);
 
-    std::vector<FileEntry*>* getFilesWithPrefix(const std::wstring& prefix);
+    std::vector<FileEntry*>* getFilesWithPrefix(const std::string& prefix);
 
     std::vector<FileEntry*>* getValidPlayerDatFiles();
 

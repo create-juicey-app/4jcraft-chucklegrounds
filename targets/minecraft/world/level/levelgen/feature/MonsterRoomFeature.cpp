@@ -133,11 +133,11 @@ bool MonsterRoomFeature::place(Level* level, Random* random, int x, int y,
     return true;
 }
 
-std::wstring MonsterRoomFeature::randomEntityId(Random* random) {
+std::string MonsterRoomFeature::randomEntityId(Random* random) {
     int id = random->nextInt(4);
-    if (id == 0) return std::wstring(L"Skeleton");
-    if (id == 1) return std::wstring(L"Zombie");
-    if (id == 2) return std::wstring(L"Zombie");
-    if (id == 3) return std::wstring(L"Spider");
-    return std::wstring(L"");
+    if (id == 0) return std::string("Skeleton");
+    if (id == 1) return std::string("Zombie");
+    if (id == 2) return std::string("Zombie");
+    if (id == 3) return std::string("Spider");
+    return std::string("");
 }

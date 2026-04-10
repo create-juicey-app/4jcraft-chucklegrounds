@@ -42,7 +42,7 @@ void User::staticCtor() {
     allowedTiles.push_back(Tile::obsidian);
 }
 
-User::User(const std::wstring& name, const std::wstring& sessionId) {
+User::User(const std::string& name, const std::string& sessionId) {
     this->name = name;
     this->sessionId = sessionId;
 }

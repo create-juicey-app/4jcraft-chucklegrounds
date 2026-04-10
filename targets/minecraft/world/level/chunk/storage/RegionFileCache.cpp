@@ -24,24 +24,24 @@ bool RegionFileCache::useSplitSaves(ESavePlatform platform) {
 }
 
 RegionFile* RegionFileCache::_getRegionFile(
-    ConsoleSaveFile* saveFile, const std::wstring& prefix, int chunkX,
+    ConsoleSaveFile* saveFile, const std::string& prefix, int chunkX,
     int chunkZ)  // 4J - TODO was synchronized
 {
     // 4J Jev - changed back to use of the File class.
     // char file[MAX_PATH_SIZE];
     // sprintf(file,"%s\\region\\r.%d.%d.mcr",basePath,chunkX >> 5,chunkZ >> 5);
 
-    // File regionDir(basePath, L"region");
+    // File regionDir(basePath, "region");
 
-    // File file(regionDir, wstring(L"r.") + toWString(chunkX>>5) + L"." +
-    // toWString(chunkZ>>5) + L".mcr" );
+    // File file(regionDir, string("r.") + toWString(chunkX>>5) + "." +
+    // toWString(chunkZ>>5) + ".mcr" );
     File file;
     if (useSplitSaves(saveFile->getSavePlatform())) {
-        file = File(prefix + std::wstring(L"r.") + toWString(chunkX >> 4) +
-                    L"." + toWString(chunkZ >> 4) + L".mcr");
+        file = File(prefix + std::string("r.") + toWString(chunkX >> 4) +
+                    "." + toWString(chunkZ >> 4) + ".mcr");
     } else {
-        file = File(prefix + std::wstring(L"r.") + toWString(chunkX >> 5) +
-                    L"." + toWString(chunkZ >> 5) + L".mcr");
+        file = File(prefix + std::string("r.") + toWString(chunkX >> 5) +
+                    "." + toWString(chunkZ >> 5) + ".mcr");
     }
 
     RegionFile* ref = nullptr;
@@ -88,14 +88,14 @@ void RegionFileCache::_clear()  // 4J - TODO was synchronized
 }
 
 int RegionFileCache::_getSizeDelta(ConsoleSaveFile* saveFile,
-                                   const std::wstring& prefix, int chunkX,
+                                   const std::string& prefix, int chunkX,
                                    int chunkZ) {
     RegionFile* r = _getRegionFile(saveFile, prefix, chunkX, chunkZ);
     return r->getSizeDelta();
 }
 
 DataInputStream* RegionFileCache::_getChunkDataInputStream(
-    ConsoleSaveFile* saveFile, const std::wstring& prefix, int chunkX,
+    ConsoleSaveFile* saveFile, const std::string& prefix, int chunkX,
     int chunkZ) {
     RegionFile* r = _getRegionFile(saveFile, prefix, chunkX, chunkZ);
     if (useSplitSaves(saveFile->getSavePlatform())) {
@@ -106,7 +106,7 @@ DataInputStream* RegionFileCache::_getChunkDataInputStream(
 }
 
 DataOutputStream* RegionFileCache::_getChunkDataOutputStream(
-    ConsoleSaveFile* saveFile, const std::wstring& prefix, int chunkX,
+    ConsoleSaveFile* saveFile, const std::string& prefix, int chunkX,
     int chunkZ) {
     RegionFile* r = _getRegionFile(saveFile, prefix, chunkX, chunkZ);
     if (useSplitSaves(saveFile->getSavePlatform())) {

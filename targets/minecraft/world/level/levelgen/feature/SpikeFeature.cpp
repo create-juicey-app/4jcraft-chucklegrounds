@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "SpikeFeature.h"
 
 #include <memory>
@@ -59,7 +60,7 @@ bool SpikeFeature::place(Level* level, Random* random, int x, int y, int z) {
 
 bool SpikeFeature::placeWithIndex(Level* level, Random* random, int x, int y,
                                   int z, int iIndex, int iRadius) {
-    app.DebugPrintf("Spike - %d,%d,%d - index %d\n", x, y, z, iIndex);
+    Log::info("Spike - %d,%d,%d - index %d\n", x, y, z, iIndex);
 
     int hh = 12 + (iIndex * 3);
 
@@ -104,7 +105,7 @@ bool SpikeFeature::placeWithIndex(Level* level, Random* random, int x, int y,
                 }
             }
         } else {
-            app.DebugPrintf("Breaking out of spike feature\n");
+            Log::info("Breaking out of spike feature\n");
             break;
         }
     }
@@ -132,7 +133,7 @@ bool SpikeFeature::placeWithIndex(Level* level, Random* random, int x, int y,
                     }
                 }
             } else {
-                app.DebugPrintf("Breaking out of spike feature\n");
+                Log::info("Breaking out of spike feature\n");
                 break;
             }
         }

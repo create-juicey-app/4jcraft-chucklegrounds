@@ -7,7 +7,7 @@
 #include "java/InputOutputStream/DataOutputStream.h"
 
 UpdateGameRuleProgressPacket::UpdateGameRuleProgressPacket() {
-    m_messageId = L"";
+    m_messageId = "";
     m_icon = -1;
     m_auxValue = 0;
     m_definitionType = ConsoleGameRules::eGameRuleType_LevelRules;
@@ -16,7 +16,7 @@ UpdateGameRuleProgressPacket::UpdateGameRuleProgressPacket() {
 
 UpdateGameRuleProgressPacket::UpdateGameRuleProgressPacket(
     ConsoleGameRules::EGameRuleType definitionType,
-    const std::wstring& messageId, int icon, int auxValue, int dataTag,
+    const std::string& messageId, int icon, int auxValue, int dataTag,
     void* data, int dataLength) {
     m_definitionType = definitionType;
     m_messageId = messageId;

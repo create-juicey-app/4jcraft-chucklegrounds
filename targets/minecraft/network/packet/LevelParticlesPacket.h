@@ -10,7 +10,7 @@ class LevelParticlesPacket
     : public Packet,
       public std::enable_shared_from_this<LevelParticlesPacket> {
 private:
-    std::wstring name;
+    std::string name;
     float x;
     float y;
     float z;
@@ -22,13 +22,13 @@ private:
 
 public:
     LevelParticlesPacket();
-    LevelParticlesPacket(const std::wstring& name, float x, float y, float z,
+    LevelParticlesPacket(const std::string& name, float x, float y, float z,
                          float xDist, float yDist, float zDist, float maxSpeed,
                          int count);
 
     void read(DataInputStream* dis);
     void write(DataOutputStream* dos);
-    std::wstring getName();
+    std::string getName();
     double getX();
     double getY();
     double getZ();

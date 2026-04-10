@@ -149,10 +149,10 @@ void ThrownPotion::onHit(HitResult* res) {
 void ThrownPotion::readAdditionalSaveData(CompoundTag* tag) {
     Throwable::readAdditionalSaveData(tag);
 
-    if (tag->contains(L"Potion")) {
-        potionItem = ItemInstance::fromTag(tag->getCompound(L"Potion"));
+    if (tag->contains("Potion")) {
+        potionItem = ItemInstance::fromTag(tag->getCompound("Potion"));
     } else {
-        setPotionValue(tag->getInt(L"potionValue"));
+        setPotionValue(tag->getInt("potionValue"));
     }
 
     if (potionItem == nullptr) remove();
@@ -162,5 +162,5 @@ void ThrownPotion::addAdditonalSaveData(CompoundTag* tag) {
     Throwable::addAdditonalSaveData(tag);
 
     if (potionItem != nullptr)
-        tag->putCompound(L"Potion", potionItem->save(new CompoundTag()));
+        tag->putCompound("Potion", potionItem->save(new CompoundTag()));
 }

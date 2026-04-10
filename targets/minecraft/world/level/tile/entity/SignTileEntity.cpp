@@ -16,10 +16,10 @@ class Player;
 const int SignTileEntity::MAX_LINE_LENGTH = 15;
 
 SignTileEntity::SignTileEntity() : TileEntity() {
-    m_wsmessages[0] = L"";
-    m_wsmessages[1] = L"";
-    m_wsmessages[2] = L"";
-    m_wsmessages[3] = L"";
+    m_wsmessages[0] = "";
+    m_wsmessages[1] = "";
+    m_wsmessages[2] = "";
+    m_wsmessages[3] = "";
     m_bVerified = true;
     m_bCensored = false;
 
@@ -38,15 +38,15 @@ SignTileEntity::~SignTileEntity() {
 
 void SignTileEntity::save(CompoundTag* tag) {
     TileEntity::save(tag);
-    tag->putString(L"Text1", m_wsmessages[0]);
-    tag->putString(L"Text2", m_wsmessages[1]);
-    tag->putString(L"Text3", m_wsmessages[2]);
-    tag->putString(L"Text4", m_wsmessages[3]);
+    tag->putString("Text1", m_wsmessages[0]);
+    tag->putString("Text2", m_wsmessages[1]);
+    tag->putString("Text3", m_wsmessages[2]);
+    tag->putString("Text4", m_wsmessages[3]);
 #if !defined(_CONTENT_PACKAGE)
-    OutputDebugStringW(L"### - Saving a sign with text - \n");
+    fprintf(stderr, "### - Saving a sign with text - \n");
     for (int i = 0; i < 4; i++) {
-        OutputDebugStringW(m_wsmessages[i].c_str());
-        OutputDebugStringW(L"\n");
+        fprintf(stderr, m_wsmessages[i].c_str());
+        fprintf(stderr, "\n");
     }
 #endif
 }
@@ -55,17 +55,17 @@ void SignTileEntity::load(CompoundTag* tag) {
     _isEditable = false;
     TileEntity::load(tag);
     for (int i = 0; i < MAX_SIGN_LINES; i++) {
-        wchar_t* buf = new wchar_t[256];
-        swprintf(buf, 256, L"Text%d", (i + 1));
+        char* buf = new char[256];
+        snprintf(buf, 256, "Text%d", (i + 1));
         m_wsmessages[i] = tag->getString(buf);
         if (m_wsmessages[i].length() > MAX_LINE_LENGTH)
             m_wsmessages[i] = m_wsmessages[i].substr(0, MAX_LINE_LENGTH);
     }
 #if !defined(_CONTENT_PACKAGE)
-    OutputDebugStringW(L"### - Loaded a sign with text - \n");
+    fprintf(stderr, "### - Loaded a sign with text - \n");
     for (int i = 0; i < 4; i++) {
-        OutputDebugStringW(m_wsmessages[i].c_str());
-        OutputDebugStringW(L"\n");
+        fprintf(stderr, m_wsmessages[i].c_str());
+        fprintf(stderr, "\n");
     }
 #endif
 
@@ -77,7 +77,7 @@ void SignTileEntity::load(CompoundTag* tag) {
 }
 
 std::shared_ptr<Packet> SignTileEntity::getUpdatePacket() {
-    std::wstring copy[MAX_SIGN_LINES];
+    std::string copy[MAX_SIGN_LINES];
     for (int i = 0; i < MAX_SIGN_LINES; i++) {
         copy[i] = m_wsmessages[i];
     }
@@ -111,20 +111,20 @@ void SignTileEntity::setChanged() {
     if(!g_NetworkManager.IsLocalGame() && !m_bVerified)
     //if (pMinecraft->level->isClientSide)
     {
-            wchar_t *wcMessages[MAX_SIGN_LINES];
+            char *wcMessages[MAX_SIGN_LINES];
             for (int i = 0; i < MAX_SIGN_LINES; ++i)
             {
-                    wcMessages[i]=new wchar_t [MAX_LINE_LENGTH+1];
+                    wcMessages[i]=new char [MAX_LINE_LENGTH+1];
                     memset(wcMessages[i], 0,
-sizeof(wchar_t)*(MAX_LINE_LENGTH+1)); if(m_wsmessages[i].length()>0)
+sizeof(char)*(MAX_LINE_LENGTH+1)); if(m_wsmessages[i].length()>0)
                     {
-                            memcpy(wcMessages[i],m_wsmessages[i].c_str(),m_wsmessages[i].length()*sizeof(wchar_t));
+                            memcpy(wcMessages[i],m_wsmessages[i].c_str(),m_wsmessages[i].length()*sizeof(char));
                     }
             }
             // at this point, we can ask the online string verifier if our sign
 text is ok #if 0 m_bVerified=true; #else
 
-            if(!PlatformInput.VerifyStrings((wchar_t**)&wcMessages,MAX_SIGN_LINES,[this](STRING_VERIFY_RESPONSE* r) { return handleStringVerify(r); }))
+            if(!PlatformInput.VerifyStrings((char**)&wcMessages,MAX_SIGN_LINES,[this](STRING_VERIFY_RESPONSE* r) { return handleStringVerify(r); }))
             {
                     // Nothing to verify
                     m_bVerified=true;
@@ -143,7 +143,7 @@ text is ok #if 0 m_bVerified=true; #else
     */
 }
 
-void SignTileEntity::SetMessage(int iIndex, std::wstring& wsText) {
+void SignTileEntity::SetMessage(int iIndex, std::string& wsText) {
     m_wsmessages[iIndex] = wsText;
 }
 

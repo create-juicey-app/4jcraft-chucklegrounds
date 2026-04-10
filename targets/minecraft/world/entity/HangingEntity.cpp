@@ -217,33 +217,33 @@ void HangingEntity::push(double xa, double ya, double za) {
 }
 
 void HangingEntity::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putByte(L"Direction", (uint8_t)dir);
-    tag->putInt(L"TileX", xTile);
-    tag->putInt(L"TileY", yTile);
-    tag->putInt(L"TileZ", zTile);
+    tag->putByte("Direction", (uint8_t)dir);
+    tag->putInt("TileX", xTile);
+    tag->putInt("TileY", yTile);
+    tag->putInt("TileZ", zTile);
 
     // Back compat
     switch (dir) {
         case Direction::NORTH:
-            tag->putByte(L"Dir", (uint8_t)0);
+            tag->putByte("Dir", (uint8_t)0);
             break;
         case Direction::WEST:
-            tag->putByte(L"Dir", (uint8_t)1);
+            tag->putByte("Dir", (uint8_t)1);
             break;
         case Direction::SOUTH:
-            tag->putByte(L"Dir", (uint8_t)2);
+            tag->putByte("Dir", (uint8_t)2);
             break;
         case Direction::EAST:
-            tag->putByte(L"Dir", (uint8_t)3);
+            tag->putByte("Dir", (uint8_t)3);
             break;
     }
 }
 
 void HangingEntity::readAdditionalSaveData(CompoundTag* tag) {
-    if (tag->contains(L"Direction")) {
-        dir = tag->getByte(L"Direction");
+    if (tag->contains("Direction")) {
+        dir = tag->getByte("Direction");
     } else {
-        switch (tag->getByte(L"Dir")) {
+        switch (tag->getByte("Dir")) {
             case 0:
                 dir = Direction::NORTH;
                 break;
@@ -258,9 +258,9 @@ void HangingEntity::readAdditionalSaveData(CompoundTag* tag) {
                 break;
         }
     }
-    xTile = tag->getInt(L"TileX");
-    yTile = tag->getInt(L"TileY");
-    zTile = tag->getInt(L"TileZ");
+    xTile = tag->getInt("TileX");
+    yTile = tag->getInt("TileY");
+    zTile = tag->getInt("TileZ");
     setDir(dir);
 }
 

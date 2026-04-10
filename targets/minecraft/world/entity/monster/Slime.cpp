@@ -69,12 +69,12 @@ int Slime::getSize() { return entityData->getByte(ID_SIZE); }
 
 void Slime::addAdditonalSaveData(CompoundTag* tag) {
     Mob::addAdditonalSaveData(tag);
-    tag->putInt(L"Size", getSize() - 1);
+    tag->putInt("Size", getSize() - 1);
 }
 
 void Slime::readAdditionalSaveData(CompoundTag* tag) {
     Mob::readAdditionalSaveData(tag);
-    setSize(tag->getInt(L"Size") + 1);
+    setSize(tag->getInt("Size") + 1);
 }
 
 ePARTICLE_TYPE Slime::getParticleName() { return eParticleType_slime; }

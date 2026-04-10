@@ -14,8 +14,8 @@ class ResourceLocation;
 
 class HumanoidMobRenderer : public MobRenderer {
 private:
-    static const std::wstring MATERIAL_NAMES[5];
-    static std::map<std::wstring, ResourceLocation> ARMOR_LOCATION_CACHE;
+    static const std::string MATERIAL_NAMES[5];
+    static std::map<std::string, ResourceLocation> ARMOR_LOCATION_CACHE;
 
 protected:
     HumanoidModel* humanoidModel;

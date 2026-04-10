@@ -5,10 +5,10 @@
 
 class DisconnectedScreen : public Screen {
 private:
-    std::wstring title, reason;
+    std::string title, reason;
 
 public:
-    DisconnectedScreen(const std::wstring& title, const std::wstring reason,
+    DisconnectedScreen(const std::string& title, const std::string reason,
                        void* reasonObjects, ...);
     virtual void tick() override;
 

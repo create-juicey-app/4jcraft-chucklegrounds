@@ -7,5 +7,5 @@ private:
     static const int32_t serialVersionUID = 1L;
 
 public:
-    LevelConflictException(const std::wstring& msg);
+    LevelConflictException(const std::string& msg);
 };

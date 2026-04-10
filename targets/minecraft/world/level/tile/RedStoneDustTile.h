@@ -16,10 +16,10 @@ class RedStoneDustTile : public Tile {
     friend ChunkRebuildData;
 
 public:
-    static const std::wstring TEXTURE_CROSS;
-    static const std::wstring TEXTURE_LINE;
-    static const std::wstring TEXTURE_CROSS_OVERLAY;
-    static const std::wstring TEXTURE_LINE_OVERLAY;
+    static const std::string TEXTURE_CROSS;
+    static const std::string TEXTURE_LINE;
+    static const std::string TEXTURE_CROSS_OVERLAY;
+    static const std::string TEXTURE_LINE_OVERLAY;
 
 private:
     bool shouldSignal;
@@ -72,5 +72,5 @@ public:
     virtual int cloneTileId(Level* level, int x, int y, int z);
 
     void registerIcons(IconRegister* iconRegister);
-    static Icon* getTexture(const std::wstring& name);
+    static Icon* getTexture(const std::string& name);
 };

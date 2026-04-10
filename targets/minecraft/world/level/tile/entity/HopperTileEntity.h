@@ -25,7 +25,7 @@ public:
 
 private:
     std::vector<std::shared_ptr<ItemInstance>> items;
-    std::wstring name;
+    std::string name;
     int cooldownTime;
 
 public:
@@ -41,10 +41,10 @@ public:
                                                      int count);
     virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
     virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
-    virtual std::wstring getName();
-    virtual std::wstring getCustomName();
+    virtual std::string getName();
+    virtual std::string getCustomName();
     virtual bool hasCustomName();
-    virtual void setCustomName(const std::wstring& name);
+    virtual void setCustomName(const std::string& name);
     virtual int getMaxStackSize();
     virtual bool stillValid(std::shared_ptr<Player> player);
     virtual void startOpen();

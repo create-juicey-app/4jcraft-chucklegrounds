@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 
+
 #include "minecraft/client/Lighting.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Font.h"

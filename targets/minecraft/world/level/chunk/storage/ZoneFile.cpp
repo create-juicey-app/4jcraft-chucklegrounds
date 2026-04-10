@@ -8,9 +8,9 @@
 namespace {
 std::FILE* OpenBinaryFileForReadWrite(const File& file) {
 #if defined(_WIN32)
-    std::FILE* stream = _wfopen(file.getPath().c_str(), L"r+b");
+    std::FILE* stream = _wfopen(file.getPath().c_str(), "r+b");
     if (stream == nullptr) {
-        stream = _wfopen(file.getPath().c_str(), L"w+b");
+        stream = _wfopen(file.getPath().c_str(), "w+b");
     }
 #else
     const std::string nativePath = std::filesystem::path(file.getPath()).string();

@@ -33,11 +33,11 @@ private:
     Minecraft* minecraft;
 
 public:
-    std::wstring selectedName;
+    std::string selectedName;
 
 private:
     int tickCount;
-    std::wstring overlayMessageString;
+    std::string overlayMessageString;
     int overlayMessageTime;
     bool animateOverlayMessageColor;
 
@@ -73,19 +73,19 @@ private:
 public:
     void tick();
     void clearMessages(int iPad = -1);
-    void addMessage(const std::wstring& string, int iPad,
+    void addMessage(const std::string& string, int iPad,
                     bool bIsDeathMessage = false);
-    void setNowPlaying(const std::wstring& string);
+    void setNowPlaying(const std::string& string);
     void displayClientMessage(int messageId, int iPad);
 
     // 4J Added
     std::size_t getMessagesCount(int iPad) { return guiMessages[iPad].size(); }
-    std::wstring getMessage(int iPad, std::size_t index) {
+    std::string getMessage(int iPad, std::size_t index) {
         return guiMessages[iPad].at(index).string;
     }
     float getOpacity(int iPad, std::size_t index);
 
-    std::wstring getJukeboxMessage(int iPad) { return overlayMessageString; }
+    std::string getJukeboxMessage(int iPad) { return overlayMessageString; }
     float getJukeboxOpacity(int iPad);
 
     // 4J Added

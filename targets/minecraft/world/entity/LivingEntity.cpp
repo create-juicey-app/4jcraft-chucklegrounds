@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "LivingEntity.h"
 
 #include <stdint.h>
@@ -336,7 +337,7 @@ int LivingEntity::decreaseAirSupply(int currentSupply) {
         }
     }
     if (instanceof(eTYPE_PLAYER)) {
-        app.DebugPrintf("++++++++++ %s: Player decreasing air supply to %d\n",
+        Log::info("++++++++++ %s: Player decreasing air supply to %d\n",
                         level->isClientSide ? "CLIENT" : "SERVER",
                         currentSupply - 1);
     }
@@ -380,12 +381,12 @@ void LivingEntity::setLastHurtMob(std::shared_ptr<Entity> target) {
 int LivingEntity::getNoActionTime() { return noActionTime; }
 
 void LivingEntity::addAdditonalSaveData(CompoundTag* entityTag) {
-    entityTag->putFloat(L"HealF", getHealth());
-    entityTag->putShort(L"Health", (short)ceil(getHealth()));
-    entityTag->putShort(L"HurtTime", (short)hurtTime);
-    entityTag->putShort(L"DeathTime", (short)deathTime);
-    entityTag->putShort(L"AttackTime", (short)attackTime);
-    entityTag->putFloat(L"AbsorptionAmount", getAbsorptionAmount());
+    entityTag->putFloat("HealF", getHealth());
+    entityTag->putShort("Health", (short)ceil(getHealth()));
+    entityTag->putShort("HurtTime", (short)hurtTime);
+    entityTag->putShort("DeathTime", (short)deathTime);
+    entityTag->putShort("AttackTime", (short)attackTime);
+    entityTag->putFloat("AbsorptionAmount", getAbsorptionAmount());
 
     std::vector<std::shared_ptr<ItemInstance>> items = getEquipmentSlots();
     for (unsigned int i = 0; i < items.size(); ++i) {
@@ -395,7 +396,7 @@ void LivingEntity::addAdditonalSaveData(CompoundTag* entityTag) {
         }
     }
 
-    entityTag->put(L"Attributes",
+    entityTag->put("Attributes",
                    SharedMonsterAttributes::saveAttributes(getAttributes()));
 
     for (unsigned int i = 0; i < items.size(); ++i) {
@@ -412,23 +413,23 @@ void LivingEntity::addAdditonalSaveData(CompoundTag* entityTag) {
             MobEffectInstance* effect = it->second;
             listTag->add(effect->save(new CompoundTag()));
         }
-        entityTag->put(L"ActiveEffects", listTag);
+        entityTag->put("ActiveEffects", listTag);
     }
 }
 
 void LivingEntity::readAdditionalSaveData(CompoundTag* tag) {
-    setAbsorptionAmount(tag->getFloat(L"AbsorptionAmount"));
+    setAbsorptionAmount(tag->getFloat("AbsorptionAmount"));
 
-    if (tag->contains(L"Attributes") && level != nullptr &&
+    if (tag->contains("Attributes") && level != nullptr &&
         !level->isClientSide) {
         SharedMonsterAttributes::loadAttributes(
             getAttributes(),
-            (ListTag<CompoundTag>*)tag->getList(L"Attributes"));
+            (ListTag<CompoundTag>*)tag->getList("Attributes"));
     }
 
-    if (tag->contains(L"ActiveEffects")) {
+    if (tag->contains("ActiveEffects")) {
         ListTag<CompoundTag>* effects =
-            (ListTag<CompoundTag>*)tag->getList(L"ActiveEffects");
+            (ListTag<CompoundTag>*)tag->getList("ActiveEffects");
         for (int i = 0; i < effects->size(); i++) {
             CompoundTag* effectTag = effects->get(i);
             MobEffectInstance* effect = MobEffectInstance::load(effectTag);
@@ -438,10 +439,10 @@ void LivingEntity::readAdditionalSaveData(CompoundTag* tag) {
         }
     }
 
-    if (tag->contains(L"HealF")) {
-        setHealth(tag->getFloat(L"HealF"));
+    if (tag->contains("HealF")) {
+        setHealth(tag->getFloat("HealF"));
     } else {
-        Tag* healthTag = tag->get(L"Health");
+        Tag* healthTag = tag->get("Health");
         if (healthTag == nullptr) {
             setHealth(getMaxHealth());
         } else if (healthTag->getId() == Tag::TAG_Float) {
@@ -452,9 +453,9 @@ void LivingEntity::readAdditionalSaveData(CompoundTag* tag) {
         }
     }
 
-    hurtTime = tag->getShort(L"HurtTime");
-    deathTime = tag->getShort(L"DeathTime");
-    attackTime = tag->getShort(L"AttackTime");
+    hurtTime = tag->getShort("HurtTime");
+    deathTime = tag->getShort("DeathTime");
+    attackTime = tag->getShort("AttackTime");
 }
 
 void LivingEntity::tickEffects() {

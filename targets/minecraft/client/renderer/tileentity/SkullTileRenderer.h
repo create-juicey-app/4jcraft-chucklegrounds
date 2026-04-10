@@ -29,5 +29,5 @@ public:
                 float a, bool setColor, float alpha, bool useCompiled = true);
     void init(TileEntityRenderDispatcher* tileEntityRenderDispatcher);
     void renderSkull(float x, float y, float z, int face, float rot, int type,
-                     const std::wstring& extra);
+                     const std::string& extra);
 };

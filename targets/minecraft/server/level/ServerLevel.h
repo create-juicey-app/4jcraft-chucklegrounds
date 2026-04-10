@@ -79,7 +79,7 @@ public:
     static void staticCtor();
     ServerLevel(MinecraftServer* server,
                 std::shared_ptr<LevelStorage> levelStorage,
-                const std::wstring& levelName, int dimension,
+                const std::string& levelName, int dimension,
                 LevelSettings* levelSettings);
     ~ServerLevel();
     void tick();
@@ -184,9 +184,9 @@ public:
     void setTimeAndAdjustTileTicks(int64_t newTime);
     PlayerChunkMap* getChunkMap();
     PortalForcer* getPortalForcer();
-    void sendParticles(const std::wstring& name, double x, double y, double z,
+    void sendParticles(const std::string& name, double x, double y, double z,
                        int count);
-    void sendParticles(const std::wstring& name, double x, double y, double z,
+    void sendParticles(const std::string& name, double x, double y, double z,
                        int count, double xDist, double yDist, double zDist,
                        double speed);
 

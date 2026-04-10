@@ -17,6 +17,6 @@ public:
     double sanitizeValue(double value);
 
     // 4J: Removed legacy name
-    // RangedAttribute *importLegacyName(const std::wstring &name);
-    // std::wstring getImportLegacyName();
+    // RangedAttribute *importLegacyName(const std::string &name);
+    // std::string getImportLegacyName();
 };

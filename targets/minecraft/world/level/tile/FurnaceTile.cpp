@@ -71,10 +71,10 @@ Icon* FurnaceTile::getTexture(int face, int data) {
 }
 
 void FurnaceTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"furnace_side");
-    iconFront = iconRegister->registerIcon(lit ? L"furnace_front_lit"
-                                               : L"furnace_front");
-    iconTop = iconRegister->registerIcon(L"furnace_top");
+    icon = iconRegister->registerIcon("furnace_side");
+    iconFront = iconRegister->registerIcon(lit ? "furnace_front_lit"
+                                               : "furnace_front");
+    iconTop = iconRegister->registerIcon("furnace_top");
 }
 
 void FurnaceTile::animateTick(Level* level, int xt, int yt, int zt,

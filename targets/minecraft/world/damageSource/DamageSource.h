@@ -63,14 +63,14 @@ public:
     float getFoodExhaustion();
     bool isBypassInvul();
 
-    // std::wstring msgId;
+    // std::string msgId;
     ChatPacket::EChatPacketMessage m_msgId;  // 4J Made int so we can localise
     ChatPacket::EChatPacketMessage
         m_msgWithItemId;  // 4J: Renamed from m_msgWithSourceId (it was already
                           // renamed in places, just made consistent)
 
 protected:
-    // DamageSource(const std::wstring &msgId);
+    // DamageSource(const std::string &msgId);
     DamageSource(ChatPacket::EChatPacketMessage msgId,
                  ChatPacket::EChatPacketMessage msgWithItemId =
                      ChatPacket::e_ChatCustom);
@@ -94,7 +94,7 @@ public:
     DamageSource* setMagic();
 
     // 4J Stu - Made return a packet
-    // virtual std::wstring getLocalizedDeathMessage(std::shared_ptr<Player>
+    // virtual std::string getLocalizedDeathMessage(std::shared_ptr<Player>
     // player);
     virtual std::shared_ptr<ChatPacket> getDeathMessagePacket(
         std::shared_ptr<LivingEntity> player);

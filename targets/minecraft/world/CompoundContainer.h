@@ -20,8 +20,8 @@ public:
     virtual int getContainerType();
     virtual unsigned int getContainerSize();
     virtual bool contains(std::shared_ptr<Container> c);
-    virtual std::wstring getName();
-    virtual std::wstring getCustomName();
+    virtual std::string getName();
+    virtual std::string getCustomName();
     virtual bool hasCustomName();
     virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
     virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int i);

@@ -12,7 +12,7 @@
 
 AddPlayerPacket::AddPlayerPacket() {
     id = -1;
-    name = L"";
+    name = "";
     x = 0;
     y = 0;
     z = 0;

@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/NetTypes.h"
+#include "platform/NetTypes.h"
 #include "java/InputOutputStream/DataInputStream.h"
 #include "java/InputOutputStream/DataOutputStream.h"
 

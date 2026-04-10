@@ -7,10 +7,10 @@
 class Icon;
 class Material;
 
-const std::wstring HugeMushroomTile::TEXTURE_STEM = L"skin_stem";
-const std::wstring HugeMushroomTile::TEXTURE_INSIDE = L"inside";
-const std::wstring HugeMushroomTile::TEXTURE_TYPE[] = {L"skin_brown",
-                                                       L"skin_red"};
+const std::string HugeMushroomTile::TEXTURE_STEM = "skin_stem";
+const std::string HugeMushroomTile::TEXTURE_INSIDE = "inside";
+const std::string HugeMushroomTile::TEXTURE_TYPE[] = {"skin_brown",
+                                                       "skin_red"};
 
 HugeMushroomTile::HugeMushroomTile(int id, Material* material, int type)
     : Tile(id, material) {
@@ -63,10 +63,10 @@ void HugeMushroomTile::registerIcons(IconRegister* iconRegister) {
 
     for (int i = 0; i < HUGE_MUSHROOM_TEXTURE_COUNT; i++) {
         icons[i] =
-            iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_TYPE[i]);
+            iconRegister->registerIcon(getIconName() + "_" + TEXTURE_TYPE[i]);
     }
 
     iconInside =
-        iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_INSIDE);
-    iconStem = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_STEM);
+        iconRegister->registerIcon(getIconName() + "_" + TEXTURE_INSIDE);
+    iconStem = iconRegister->registerIcon(getIconName() + "_" + TEXTURE_STEM);
 }

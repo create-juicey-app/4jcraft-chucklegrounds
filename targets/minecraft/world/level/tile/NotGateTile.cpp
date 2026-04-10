@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "NotGateTile.h"
 
 #include "app/linux/LinuxGame.h"
@@ -122,7 +123,7 @@ void NotGateTile::tick(Level* level, int x, int y, int z, Random* random) {
                                   level->getData(x, y, z), Tile::UPDATE_ALL);
 
             if (isToggledTooFrequently(level, x, y, z, true)) {
-                app.DebugPrintf(
+                Log::info(
                     "Torch at (%d,%d,%d) has toggled too many times\n", x, y,
                     z);
 
@@ -148,7 +149,7 @@ void NotGateTile::tick(Level* level, int x, int y, int z, Random* random) {
                                       level->getData(x, y, z),
                                       Tile::UPDATE_ALL);
             } else {
-                app.DebugPrintf(
+                Log::info(
                     "Torch at (%d,%d,%d) has toggled too many times\n", x, y,
                     z);
             }

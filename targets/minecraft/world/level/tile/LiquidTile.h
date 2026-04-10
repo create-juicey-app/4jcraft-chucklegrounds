@@ -16,10 +16,10 @@ class LiquidTile : public Tile {
     friend class ChunkRebuildData;
 
 public:
-    static const std::wstring TEXTURE_LAVA_STILL;
-    static const std::wstring TEXTURE_WATER_STILL;
-    static const std::wstring TEXTURE_WATER_FLOW;
-    static const std::wstring TEXTURE_LAVA_FLOW;
+    static const std::string TEXTURE_LAVA_STILL;
+    static const std::string TEXTURE_WATER_STILL;
+    static const std::string TEXTURE_WATER_FLOW;
+    static const std::string TEXTURE_LAVA_FLOW;
 
 private:
     Icon* icons[2];
@@ -78,5 +78,5 @@ protected:
 
 public:
     void registerIcons(IconRegister* iconRegister);
-    static Icon* getTexture(const std::wstring& name);
+    static Icon* getTexture(const std::string& name);
 };

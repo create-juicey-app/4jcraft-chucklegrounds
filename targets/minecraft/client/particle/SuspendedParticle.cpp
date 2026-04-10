@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/JavaMath.h"
 #include "java/Random.h"
 #include "minecraft/client/Minecraft.h"

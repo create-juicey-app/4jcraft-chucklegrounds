@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "ServerSettingsChangedPacket.h"
 
 #include "PacketListener.h"
@@ -20,7 +21,7 @@ ServerSettingsChangedPacket::ServerSettingsChangedPacket(char action,
     this->action = action;
     this->data = data;
 
-    // app.DebugPrintf("ServerSettingsChangedPacket - Difficulty =
+    // Log::info("ServerSettingsChangedPacket - Difficulty =
     // %d",difficulty);
 }
 

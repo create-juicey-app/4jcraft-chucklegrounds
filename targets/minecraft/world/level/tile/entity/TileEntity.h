@@ -21,15 +21,15 @@ public:
     virtual eINSTANCEOF GetType() { return eTYPE_TILEENTITY; }
 
 private:
-    typedef std::unordered_map<std::wstring, tileEntityCreateFn>
+    typedef std::unordered_map<std::string, tileEntityCreateFn>
         idToCreateMapType;
-    typedef std::unordered_map<eINSTANCEOF, std::wstring, eINSTANCEOFKeyHash,
+    typedef std::unordered_map<eINSTANCEOF, std::string, eINSTANCEOFKeyHash,
                                eINSTANCEOFKeyEq>
         classToIdMapType;
     static idToCreateMapType idCreateMap;
     static classToIdMapType classIdMap;
     static void setId(tileEntityCreateFn createFn, eINSTANCEOF clas,
-                      std::wstring id);
+                      std::string id);
     bool remove;
     unsigned char renderRemoveStage;  // 4J added
 

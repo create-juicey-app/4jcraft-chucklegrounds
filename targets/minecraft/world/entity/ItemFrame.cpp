@@ -99,21 +99,21 @@ void ItemFrame::setRotation(int rotation) {
 
 void ItemFrame::addAdditonalSaveData(CompoundTag* tag) {
     if (getItem() != nullptr) {
-        tag->putCompound(L"Item", getItem()->save(new CompoundTag()));
-        tag->putByte(L"ItemRotation", (uint8_t)getRotation());
-        tag->putFloat(L"ItemDropChance", dropChance);
+        tag->putCompound("Item", getItem()->save(new CompoundTag()));
+        tag->putByte("ItemRotation", (uint8_t)getRotation());
+        tag->putFloat("ItemDropChance", dropChance);
     }
     HangingEntity::addAdditonalSaveData(tag);
 }
 
 void ItemFrame::readAdditionalSaveData(CompoundTag* tag) {
-    CompoundTag* itemTag = tag->getCompound(L"Item");
+    CompoundTag* itemTag = tag->getCompound("Item");
     if (itemTag != nullptr && !itemTag->isEmpty()) {
         setItem(ItemInstance::fromTag(itemTag));
-        setRotation(tag->getByte(L"ItemRotation"));
+        setRotation(tag->getByte("ItemRotation"));
 
-        if (tag->contains(L"ItemDropChance"))
-            dropChance = tag->getFloat(L"ItemDropChance");
+        if (tag->contains("ItemDropChance"))
+            dropChance = tag->getFloat("ItemDropChance");
     }
     HangingEntity::readAdditionalSaveData(tag);
 }

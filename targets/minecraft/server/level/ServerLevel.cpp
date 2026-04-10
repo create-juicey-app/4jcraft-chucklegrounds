@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "ServerLevel.h"
 
 #include <assert.h>
@@ -5,14 +7,14 @@
 #include <algorithm>
 #include <mutex>
 
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Storage.h"
+#include "platform/input/input.h"
+#include "platform/storage/storage.h"
 #include "EntityTracker.h"
 #include "platform/ShutdownManager.h"
-#include "app/common/src/Console_Debug_enum.h"
-#include "app/common/src/DLC/DLCManager.h"
-#include "app/common/src/DLC/DLCPack.h"
-#include "app/common/src/Network/NetworkPlayerInterface.h"
+#include "app/common/Console_Debug_enum.h"
+#include "app/common/DLC/DLCManager.h"
+#include "app/common/DLC/DLCPack.h"
+#include "app/common/Network/NetworkPlayerInterface.h"
 #include "app/linux/LinuxGame.h"
 #include "PlayerChunkMap.h"
 #include "Pos.h"
@@ -129,7 +131,7 @@ void ServerLevel::staticCtor() {
 
 ServerLevel::ServerLevel(MinecraftServer* server,
                          std::shared_ptr<LevelStorage> levelStorage,
-                         const std::wstring& levelName, int dimension,
+                         const std::string& levelName, int dimension,
                          LevelSettings* levelSettings)
     : Level(levelStorage, levelName, levelSettings,
             Dimension::getNew(dimension), false) {
@@ -311,7 +313,7 @@ void ServerLevel::tick() {
         (dimension->id * dimension->id * (saveInterval / 2)))
 #endif
     {
-        // app.DebugPrintf("Incremental save\n");
+        // Log::info("Incremental save\n");
         save(false, nullptr);
     }
 
@@ -323,8 +325,8 @@ void ServerLevel::tick() {
         // 4J: Debug setting added to keep it at day time
 #if !defined(_FINAL_BUILD)
         bool freezeTime =
-            app.DebugSettingsOn() &&
-            app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad()) &
+            gameServices().debugSettingsOn() &&
+            gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
                 (1L << eDebugSetting_FreezeTime);
         if (!freezeTime)
 #endif
@@ -489,7 +491,7 @@ void ServerLevel::tickTiles() {
 
     // AP moved this outside of the loop
     int prob = 100000;
-    if (app.GetGameSettingsDebugMask() & (1L << eDebugSetting_RegularLightning))
+    if (gameServices().debugGetMask() & (1L << eDebugSetting_RegularLightning))
         prob = 100;
 
     auto itEndCtp = chunksToPoll.end();
@@ -734,7 +736,7 @@ std::vector<TickNextTickData>* ServerLevel::fetchTicksInChunk(LevelChunk* chunk,
             }
         } else {
             if (!toBeTicked.empty()) {
-                app.DebugPrintf("To be ticked size: %d\n", toBeTicked.size());
+                Log::info("To be ticked size: %d\n", toBeTicked.size());
             }
             for (auto it = toBeTicked.begin(); it != toBeTicked.end();) {
                 TickNextTickData td = *it;
@@ -849,7 +851,7 @@ void ServerLevel::setInitialSpawn(LevelSettings* levelSettings) {
         zSpawn = findBiome->z;
         delete findBiome;
     } else {
-        app.DebugPrintf(
+        Log::info(
             "Level::setInitialSpawn - Unable to find spawn biome\n");
     }
 
@@ -923,7 +925,7 @@ Pos* ServerLevel::getDimensionSpecificSpawn() {
 
 // 4j Added for XboxOne PLM
 void ServerLevel::Suspend() {
-    if (StorageManager.GetSaveDisabled()) return;
+    if (PlatformStorage.GetSaveDisabled()) return;
     saveLevelData();
     chunkSource->saveAllEntities();
 }
@@ -933,7 +935,7 @@ void ServerLevel::save(bool force, ProgressListener* progressListener,
     if (!chunkSource->shouldSave()) return;
 
     // 4J-PB - check that saves are enabled
-    if (StorageManager.GetSaveDisabled()) return;
+    if (PlatformStorage.GetSaveDisabled()) return;
 
     if (progressListener != nullptr) {
         if (bAutosave) {
@@ -981,7 +983,7 @@ void ServerLevel::save(bool force, ProgressListener* progressListener,
 void ServerLevel::saveToDisc(ProgressListener* progressListener,
                              bool autosave) {
     // 4J-PB - check that saves are enabled
-    if (StorageManager.GetSaveDisabled()) return;
+    if (PlatformStorage.GetSaveDisabled()) return;
 
     // Check if we are using a trial version of a texture pack (which will be
     // the case for going into the mash-up pack world with a trial version)
@@ -991,7 +993,7 @@ void ServerLevel::saveToDisc(ProgressListener* progressListener,
 
         DLCPack* pDLCPack = pDLCTexPack->getDLCInfoParentPack();
 
-        if (!pDLCPack->hasPurchasedFile(DLCManager::e_DLCType_Texture, L"")) {
+        if (!pDLCPack->hasPurchasedFile(DLCManager::e_DLCType_Texture, "")) {
             return;
         }
     }
@@ -1099,7 +1101,7 @@ std::shared_ptr<Explosion> ServerLevel::explode(std::shared_ptr<Entity> source,
 
         if (player->distanceToSqr(x, y, z) < 64 * 64) {
             Vec3 knockbackVec = explosion->getHitPlayerKnockback(player);
-            // app.DebugPrintf("Sending %s with knockback (%f,%f,%f)\n",
+            // Log::info("Sending %s with knockback (%f,%f,%f)\n",
             // knockbackOnly?"knockbackOnly":"allExplosion",knockbackVec->x,knockbackVec->y,knockbackVec->z);
             //  If the player is not the primary on the system, then we only
             //  want to send info for the knockback
@@ -1205,13 +1207,13 @@ PlayerChunkMap* ServerLevel::getChunkMap() { return chunkMap; }
 
 PortalForcer* ServerLevel::getPortalForcer() { return portalForcer; }
 
-void ServerLevel::sendParticles(const std::wstring& name, double x, double y,
+void ServerLevel::sendParticles(const std::string& name, double x, double y,
                                 double z, int count) {
     sendParticles(name, x + 0.5f, y + 0.5f, z + 0.5f, count, 0.5f, 0.5f, 0.5f,
                   0.02f);
 }
 
-void ServerLevel::sendParticles(const std::wstring& name, double x, double y,
+void ServerLevel::sendParticles(const std::string& name, double x, double y,
                                 double z, int count, double xDist, double yDist,
                                 double zDist, double speed) {
     std::shared_ptr<Packet> packet = std::make_shared<LevelParticlesPacket>(

@@ -188,13 +188,13 @@ bool Bat::hurt(DamageSource* source, float dmg) {
 void Bat::readAdditionalSaveData(CompoundTag* tag) {
     AmbientCreature::readAdditionalSaveData(tag);
 
-    entityData->set(DATA_ID_FLAGS, tag->getByte(L"BatFlags"));
+    entityData->set(DATA_ID_FLAGS, tag->getByte("BatFlags"));
 }
 
 void Bat::addAdditonalSaveData(CompoundTag* entityTag) {
     AmbientCreature::addAdditonalSaveData(entityTag);
 
-    entityTag->putByte(L"BatFlags", entityData->getByte(DATA_ID_FLAGS));
+    entityTag->putByte("BatFlags", entityData->getByte(DATA_ID_FLAGS));
 }
 
 bool Bat::canSpawn() {

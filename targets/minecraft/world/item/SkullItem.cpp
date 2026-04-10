@@ -19,8 +19,8 @@ const unsigned int SkullItem::NAMES[SKULL_COUNT] = {
     IDS_ITEM_SKULL_SKELETON, IDS_ITEM_SKULL_WITHER, IDS_ITEM_SKULL_ZOMBIE,
     IDS_ITEM_SKULL_CHARACTER, IDS_ITEM_SKULL_CREEPER};
 
-std::wstring SkullItem::ICON_NAMES[SKULL_COUNT] = {
-    L"skeleton", L"wither", L"zombie", L"char", L"creeper"};
+std::string SkullItem::ICON_NAMES[SKULL_COUNT] = {
+    "skeleton", "wither", "zombie", "char", "creeper"};
 
 SkullItem::SkullItem(int id) : Item(id) {
     // setItemCategory(CreativeModeTab.TAB_DECORATIONS);
@@ -63,10 +63,10 @@ bool SkullItem::useOn(
             std::dynamic_pointer_cast<SkullTileEntity>(skullTE);
 
         if (skull != nullptr) {
-            std::wstring extra = L"";
+            std::string extra = "";
             if (instance->hasTag() &&
-                instance->getTag()->contains(L"SkullOwner")) {
-                extra = instance->getTag()->getString(L"SkullOwner");
+                instance->getTag()->contains("SkullOwner")) {
+                extra = instance->getTag()->getString("SkullOwner");
             }
             skull->setSkullType(instance->getAuxValue(), extra);
             skull->setRotation(rot);
@@ -123,7 +123,7 @@ unsigned int SkullItem::getDescriptionId(
     return NAMES[auxValue];
 }
 
-std::wstring SkullItem::getHoverName(
+std::string SkullItem::getHoverName(
     std::shared_ptr<ItemInstance> itemInstance) {
     {
         return Item::getHoverName(itemInstance);
@@ -133,6 +133,6 @@ std::wstring SkullItem::getHoverName(
 void SkullItem::registerIcons(IconRegister* iconRegister) {
     for (int i = 0; i < SKULL_COUNT; i++) {
         icons[i] =
-            iconRegister->registerIcon(getIconName() + L"_" + ICON_NAMES[i]);
+            iconRegister->registerIcon(getIconName() + "_" + ICON_NAMES[i]);
     }
 }

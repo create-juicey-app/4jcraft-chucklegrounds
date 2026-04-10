@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "EnderDragon.h"
 
 #include <algorithm>
@@ -120,29 +121,29 @@ EnderDragon::EnderDragon(Level* level) : Mob(level) {
 // 4J - split off from ctor so we can use shared_from_this()
 void EnderDragon::AddParts() {
     head = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"head",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "head",
         6, 6);
     neck = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"neck",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "neck",
         6,
         6);  // 4J Added
     body = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"body",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "body",
         8, 8);
     tail1 = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"tail",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "tail",
         4, 4);
     tail2 = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"tail",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "tail",
         4, 4);
     tail3 = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"tail",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "tail",
         4, 4);
     wing1 = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"wing",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "wing",
         4, 4);
     wing2 = std::make_shared<MultiEntityMobPart>(
-        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), L"wing",
+        std::dynamic_pointer_cast<MultiEntityMob>(shared_from_this()), "wing",
         4, 4);
 
     subEntities.push_back(head);
@@ -258,7 +259,7 @@ void EnderDragon::aiStep() {
     if (getSynchedAction() == e_EnderdragonAction_Sitting_Flaming ||
         getSynchedAction() == e_EnderdragonAction_Sitting_Scanning ||
         getSynchedAction() == e_EnderdragonAction_Sitting_Attacking) {
-        // app.DebugPrintf("flapSpeed is %f\n", flapSpeed);
+        // Log::info("flapSpeed is %f\n", flapSpeed);
         // flapTime += flapSpeed * 2;
         flapTime += 0.1f;
     } else if (inWall) {
@@ -327,7 +328,7 @@ void EnderDragon::aiStep() {
             double yP = 0.0;
             double zP = 0.0;
             Vec3 v = getHeadLookVector(1);  // getViewVector(1);
-            // app.DebugPrintf("View vector is (%f,%f,%f) - lsteps %d\n", v->x,
+            // Log::info("View vector is (%f,%f,%f) - lsteps %d\n", v->x,
             // v->y, v->z, lSteps); unsigned int d = 0; for(unsigned int d = 1;
             // d < 3; ++d)
             {
@@ -403,7 +404,7 @@ void EnderDragon::aiStep() {
                 if (m_flameAttacks >= SITTING_FLAME_ATTACKS_COUNT) {
                     setSynchedAction(e_EnderdragonAction_Takeoff);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                    app.DebugPrintf("Dragon action is now: Takeoff\n");
+                    Log::info("Dragon action is now: Takeoff\n");
 #endif
                     newTarget = true;
                 } else {
@@ -412,7 +413,7 @@ void EnderDragon::aiStep() {
                         shared_from_this(), SITTING_ATTACK_VIEW_RANGE,
                         SITTING_ATTACK_Y_VIEW_RANGE);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                    app.DebugPrintf("Dragon action is now: SittingScanning\n");
+                    Log::info("Dragon action is now: SittingScanning\n");
 #endif
                 }
             }
@@ -426,7 +427,7 @@ void EnderDragon::aiStep() {
                 if (m_actionTicks > SITTING_SCANNING_IDLE_TICKS / 4) {
                     setSynchedAction(e_EnderdragonAction_Sitting_Attacking);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                    app.DebugPrintf("Dragon action is now: SittingAttacking\n");
+                    Log::info("Dragon action is now: SittingAttacking\n");
 #endif
                     m_actionTicks = ATTACK_TICKS;
                 }
@@ -434,7 +435,7 @@ void EnderDragon::aiStep() {
                 if (m_actionTicks >= SITTING_SCANNING_IDLE_TICKS) {
                     setSynchedAction(e_EnderdragonAction_Takeoff);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                    app.DebugPrintf("Dragon action is now: Takeoff\n");
+                    Log::info("Dragon action is now: Takeoff\n");
 #endif
                     newTarget = true;
                 }
@@ -449,7 +450,7 @@ void EnderDragon::aiStep() {
                     shared_from_this(), SITTING_ATTACK_VIEW_RANGE,
                     SITTING_ATTACK_Y_VIEW_RANGE);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                app.DebugPrintf("Dragon action is now: SittingFlaming\n");
+                Log::info("Dragon action is now: SittingFlaming\n");
 #endif
                 m_actionTicks = FLAME_TICKS;
             }
@@ -462,7 +463,7 @@ void EnderDragon::aiStep() {
             if (dist > (10.0f * 10.0f)) {
                 setSynchedAction(e_EnderdragonAction_HoldingPattern);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                app.DebugPrintf("Dragon action is now: HoldingPattern\n");
+                Log::info("Dragon action is now: HoldingPattern\n");
 #endif
             }
         } else if (newTarget ||
@@ -482,7 +483,7 @@ void EnderDragon::aiStep() {
 
                 for (auto it = targets->begin(); it != targets->end(); ++it) {
                     if ((*it)->instanceof(eTYPE_LIVINGENTITY)) {
-                        // app.DebugPrintf("Attacking entity with acid\n");
+                        // Log::info("Attacking entity with acid\n");
                         std::shared_ptr<LivingEntity> e =
                             std::dynamic_pointer_cast<LivingEntity>(*it);
                         e->hurt(DamageSource::dragonbreath, 2);
@@ -533,7 +534,7 @@ void EnderDragon::aiStep() {
                 }
             } else {
                 // setSynchedAction(e_EnderdragonAction_Sitting_Flaming);
-                // app.DebugPrintf("Dragon action is now : SittingFlaming\n");
+                // Log::info("Dragon action is now : SittingFlaming\n");
                 // m_actionTicks = 0;
             }
         } else if (getSynchedAction() ==
@@ -707,16 +708,16 @@ void EnderDragon::aiStep() {
         m_acidArea = {acidX - 5, acidY - 17, acidZ - 5,
                       acidX + 5, acidY + 4,  acidZ + 5};
 
-        // app.DebugPrintf("\nDragon is %s, yRot = %f, yRotA = %f, ss = %f, cc =
+        // Log::info("\nDragon is %s, yRot = %f, yRotA = %f, ss = %f, cc =
         // %f, ccTilt = %f\n",level->isClientSide?"client":"server", yRot,
-        // yRotA, ss, cc, ccTilt); app.DebugPrintf("Body (%f,%f,%f) to
+        // yRotA, ss, cc, ccTilt); Log::info("Body (%f,%f,%f) to
         // (%f,%f,%f)\n", body->bb.x0, body->bb.y0, body->bb.z0,
-        // body->bb.x1, body->bb.y1, body->bb.z1); app.DebugPrintf("Neck
+        // body->bb.x1, body->bb.y1, body->bb.z1); Log::info("Neck
         // (%f,%f,%f) to (%f,%f,%f)\n", neck->bb.x0, neck->bb.y0,
         // neck->bb.z0, neck->bb.x1, neck->bb.y1, neck->bb.z1);
-        // app.DebugPrintf("Head (%f,%f,%f) to (%f,%f,%f)\n", head->bb.x0,
+        // Log::info("Head (%f,%f,%f) to (%f,%f,%f)\n", head->bb.x0,
         // head->bb.y0, head->bb.z0, head->bb.x1, head->bb.y1,
-        // head->bb.z1); app.DebugPrintf("Acid (%f,%f,%f) to (%f,%f,%f)\n\n",
+        // head->bb.z1); Log::info("Acid (%f,%f,%f) to (%f,%f,%f)\n\n",
         // m_acidArea->x0, m_acidArea->y0, m_acidArea->z0, m_acidArea->x1,
         // m_acidArea->y1, m_acidArea->z1);
     }
@@ -794,7 +795,7 @@ void EnderDragon::aiStep() {
                     level->addEntity(ie);
                     m_fireballCharge = 0;
 
-                    app.DebugPrintf(
+                    Log::info(
                         "Finding new target due to having fired a fireball\n");
                     if (m_currentPath != nullptr) {
                         while (!m_currentPath->isDone()) {
@@ -928,12 +929,12 @@ void EnderDragon::findNewTarget() {
                         PODIUM_X_POS, eggHeight, PODIUM_Z_POS);
                     dist /= (8 * 8 * 8);
                 }
-                // app.DebugPrintf("Adjusted dist is %f\n", dist);
+                // Log::info("Adjusted dist is %f\n", dist);
 
                 if (random->nextInt(m_remainingCrystalsCount + 3) == 0) {
                     setSynchedAction(e_EnderdragonAction_LandingApproach);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                    app.DebugPrintf("Dragon action is now: LandingApproach\n");
+                    Log::info("Dragon action is now: LandingApproach\n");
 #endif
                 }
                 // More likely to strafe a player if they are close to the egg,
@@ -943,7 +944,7 @@ void EnderDragon::findNewTarget() {
                           random->nextInt(m_remainingCrystalsCount + 2) == 0)) {
                     setSynchedAction(e_EnderdragonAction_StrafePlayer);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                    app.DebugPrintf("Dragon action is now: StrafePlayer\n");
+                    Log::info("Dragon action is now: StrafePlayer\n");
 #endif
                 }
             }
@@ -954,14 +955,14 @@ void EnderDragon::findNewTarget() {
                 (m_currentPath->isDone() && newTarget)) {
                 setSynchedAction(e_EnderdragonAction_HoldingPattern);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                app.DebugPrintf("Dragon action is now: HoldingPattern\n");
+                Log::info("Dragon action is now: HoldingPattern\n");
 #endif
             }
             break;
         case e_EnderdragonAction_Landing:
             //		setSynchedAction(e_EnderdragonAction_Sitting_Flaming);
             // #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-            //		app.DebugPrintf("Dragon action is now:
+            //		Log::info("Dragon action is now:
             // SittingFlaming\n"); #endif 		m_actionTicks =
             // FLAME_TICKS;
 
@@ -971,7 +972,7 @@ void EnderDragon::findNewTarget() {
                                                    SITTING_ATTACK_VIEW_RANGE,
                                                    SITTING_ATTACK_Y_VIEW_RANGE);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-            app.DebugPrintf("Dragon action is now: SittingScanning\n");
+            Log::info("Dragon action is now: SittingScanning\n");
 #endif
             m_actionTicks = 0;
             break;
@@ -1005,7 +1006,7 @@ void EnderDragon::findNewTarget() {
                 Vec3 aim = Vec3(playerNearestToEgg->x, 0, playerNearestToEgg->z)
                                .normalize();
 
-                // app.DebugPrintf("Final marker node near (%f,%d,%f)\n",
+                // Log::info("Final marker node near (%f,%d,%f)\n",
                 // -aim->x*40,105,-aim->z*40 );
                 targetNodeIndex =
                     findClosestNode(-aim.x * 40, 105.0, -aim.z * 40);
@@ -1029,7 +1030,7 @@ void EnderDragon::findNewTarget() {
         if (m_currentPath != nullptr && m_currentPath->isDone()) {
             setSynchedAction(e_EnderdragonAction_Landing);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-            app.DebugPrintf("Dragon action is now: Landing\n");
+            Log::info("Dragon action is now: Landing\n");
 #endif
         }
     } else if (getSynchedAction() == e_EnderdragonAction_Sitting_Flaming ||
@@ -1152,7 +1153,7 @@ bool EnderDragon::hurt(std::shared_ptr<MultiEntityMobPart> MultiEntityMobPart,
         int healthBefore = getHealth();
         reallyHurt(source, damage);
 
-        // if(!level->isClientSide) app.DebugPrintf("Health is now %d\n",
+        // if(!level->isClientSide) Log::info("Health is now %d\n",
         // health);
         if (getHealth() <= 0 &&
             !(getSynchedAction() == e_EnderdragonAction_Sitting_Flaming ||
@@ -1166,9 +1167,9 @@ bool EnderDragon::hurt(std::shared_ptr<MultiEntityMobPart> MultiEntityMobPart,
                         m_currentPath->next();
                     }
                 }
-                app.DebugPrintf("Dragon should be dead, so landing.\n");
+                Log::info("Dragon should be dead, so landing.\n");
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                app.DebugPrintf("Dragon action is now: LandingApproach\n");
+                Log::info("Dragon action is now: LandingApproach\n");
 #endif
                 findNewTarget();
             }
@@ -1185,7 +1186,7 @@ bool EnderDragon::hurt(std::shared_ptr<MultiEntityMobPart> MultiEntityMobPart,
                 setSynchedAction(e_EnderdragonAction_Takeoff);
                 newTarget = true;
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-                app.DebugPrintf("Dragon action is now: Takeoff\n");
+                Log::info("Dragon action is now: Takeoff\n");
 #endif
             }
         }
@@ -1431,7 +1432,7 @@ bool EnderDragon::setSynchedAction(EEnderdragonAction action,
     if (force || validTransition) {
         entityData->set(DATA_ID_SYNCHED_ACTION, action);
     } else {
-        app.DebugPrintf("EnderDragon: Invalid state transition from %d to %d\n",
+        Log::info("EnderDragon: Invalid state transition from %d to %d\n",
                         getSynchedAction(), action);
     }
 
@@ -1452,7 +1453,7 @@ void EnderDragon::handleCrystalDestroyed(DamageSource* source) {
     if (m_remainingCrystalsCount < 0) m_remainingCrystalsCount = 0;
     delete crystals;
 
-    app.DebugPrintf("Crystal count is now %d\n", m_remainingCrystalsCount);
+    Log::info("Crystal count is now %d\n", m_remainingCrystalsCount);
 
     //--m_remainingCrystalsCount;
 
@@ -1465,7 +1466,7 @@ void EnderDragon::handleCrystalDestroyed(DamageSource* source) {
             }
             m_actionTicks = 1;
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-            app.DebugPrintf("Dragon action is now: LandingApproach\n");
+            Log::info("Dragon action is now: LandingApproach\n");
 #endif
         }
     } else if (source->getEntity() != nullptr &&
@@ -1474,7 +1475,7 @@ void EnderDragon::handleCrystalDestroyed(DamageSource* source) {
             attackTarget =
                 std::dynamic_pointer_cast<Player>(source->getEntity());
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
-            app.DebugPrintf("Dragon action is now: StrafePlayer\n");
+            Log::info("Dragon action is now: StrafePlayer\n");
 #endif
             strafeAttackTarget();
         }
@@ -1482,7 +1483,7 @@ void EnderDragon::handleCrystalDestroyed(DamageSource* source) {
 }
 
 void EnderDragon::strafeAttackTarget() {
-    app.DebugPrintf("Setting path to strafe attack target\n");
+    Log::info("Setting path to strafe attack target\n");
     int currentNodeIndex = findClosestNode();
     int targetNodeIndex =
         findClosestNode(attackTarget->x, attackTarget->y, attackTarget->z);
@@ -1528,9 +1529,9 @@ void EnderDragon::navigateToNextPathNode() {
             } while (yTarget < (curr.y));
         }
         zTarget = curr.z;
-        app.DebugPrintf("Path node pos is (%f,%f,%f)\n", curr.x, curr.y,
+        Log::info("Path node pos is (%f,%f,%f)\n", curr.x, curr.y,
                         curr.z);
-        app.DebugPrintf("Setting new target to (%f,%f,%f)\n", xTarget, yTarget,
+        Log::info("Setting new target to (%f,%f,%f)\n", xTarget, yTarget,
                         zTarget);
     }
 }
@@ -1575,7 +1576,7 @@ int EnderDragon::findClosestNode() {
                 std::max((level->seaLevel + 10),
                          level->getTopSolidBlock(nodeX, nodeZ) + yAdjustment);
 
-            app.DebugPrintf("Node %d is at (%d,%d,%d)\n", i, nodeX, nodeY,
+            Log::info("Node %d is at (%d,%d,%d)\n", i, nodeX, nodeY,
                             nodeZ);
 
             (*m_nodes)[i] = new Node(nodeX, nodeY, nodeZ);
@@ -1681,7 +1682,7 @@ Path* EnderDragon::findPath(int startIndex, int endIndex,
         Node* x = openSet->pop();
 
         if (x->equals(to)) {
-            app.DebugPrintf("Found path from %d to %d\n", startIndex, endIndex);
+            Log::info("Found path from %d to %d\n", startIndex, endIndex);
             if (finalNode != nullptr) {
                 finalNode->cameFrom = to;
                 to = finalNode;
@@ -1725,7 +1726,7 @@ Path* EnderDragon::findPath(int startIndex, int endIndex,
     }
 
     if (closest == from) return nullptr;
-    app.DebugPrintf("Failed to find path from %d to %d\n", startIndex,
+    Log::info("Failed to find path from %d to %d\n", startIndex,
                     endIndex);
     if (finalNode != nullptr) {
         finalNode->cameFrom = closest;
@@ -1755,21 +1756,21 @@ Path* EnderDragon::reconstruct_path(Node* from, Node* to) {
 }
 
 void EnderDragon::addAdditonalSaveData(CompoundTag* entityTag) {
-    app.DebugPrintf("Adding EnderDragon additional save data\n");
-    entityTag->putShort(L"RemainingCrystals", m_remainingCrystalsCount);
-    entityTag->putInt(L"DragonState", (int)getSynchedAction());
+    Log::info("Adding EnderDragon additional save data\n");
+    entityTag->putShort("RemainingCrystals", m_remainingCrystalsCount);
+    entityTag->putInt("DragonState", (int)getSynchedAction());
 
     Mob::addAdditonalSaveData(entityTag);
 }
 
 void EnderDragon::readAdditionalSaveData(CompoundTag* tag) {
-    app.DebugPrintf("Reading EnderDragon additional save data\n");
-    m_remainingCrystalsCount = tag->getShort(L"RemainingCrystals");
-    if (!tag->contains(L"RemainingCrystals"))
+    Log::info("Reading EnderDragon additional save data\n");
+    m_remainingCrystalsCount = tag->getShort("RemainingCrystals");
+    if (!tag->contains("RemainingCrystals"))
         m_remainingCrystalsCount = CRYSTAL_COUNT;
 
-    if (tag->contains(L"DragonState"))
-        setSynchedAction((EEnderdragonAction)tag->getInt(L"DragonState"), true);
+    if (tag->contains("DragonState"))
+        setSynchedAction((EEnderdragonAction)tag->getInt("DragonState"), true);
 
     Mob::readAdditionalSaveData(tag);
 }
@@ -1795,7 +1796,7 @@ float EnderDragon::getTilt(float a) {
 
         tilt = (latencyPosA[1] - latencyPosB[1]) * 10;
     }
-    // app.DebugPrintf("Tilt is %f\n", tilt);
+    // Log::info("Tilt is %f\n", tilt);
 
     return tilt;
 }
@@ -1819,7 +1820,7 @@ double EnderDragon::getHeadYOffset(float a) {
 
         headYOffset = (p0[1] - p1[1]) * 1;
     }
-    // app.DebugPrintf("headYOffset is %f\n", headYOffset);
+    // Log::info("headYOffset is %f\n", headYOffset);
     return headYOffset;
 }
 
@@ -1846,7 +1847,7 @@ double EnderDragon::getHeadPartYOffset(int partIndex,
             sqrt(distanceToSqr(PODIUM_X_POS, eggHeight, PODIUM_Z_POS)) / 4;
         if (dist < 1.0f) dist = 1.0f;
         result = partIndex / dist;
-        // app.DebugPrintf("getHeadPartYOffset - dist = %f, result = %f (%d)\n",
+        // Log::info("getHeadPartYOffset - dist = %f, result = %f (%d)\n",
         // dist, result, partIndex);
     } else if (getSynchedAction() == e_EnderdragonAction_Sitting_Flaming ||
                getSynchedAction() == e_EnderdragonAction_Sitting_Scanning ||
@@ -1859,7 +1860,7 @@ double EnderDragon::getHeadPartYOffset(int partIndex,
             result = partPos[1] - bodyPos[1];
         }
     }
-    // app.DebugPrintf("Part %d is at %f\n", partIndex, result);
+    // Log::info("Part %d is at %f\n", partIndex, result);
     return result;
 }
 
@@ -1877,7 +1878,7 @@ double EnderDragon::getHeadPartYRotDiff(int partIndex,
     {
         result = partPos[0] - bodyPos[0];
     }
-    // app.DebugPrintf("Part %d is at %f\n", partIndex, result);
+    // Log::info("Part %d is at %f\n", partIndex, result);
     return result;
 }
 

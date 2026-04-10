@@ -194,10 +194,10 @@ public:
         int extraData = 0);  // 4J Added extraData param
     virtual void finalizeSpawnEggSpawn(int extraData);  // 4J Added
     virtual bool canBeControlledByRider();
-    virtual std::wstring getAName();
+    virtual std::string getAName();
     virtual void setPersistenceRequired();
-    virtual void setCustomName(const std::wstring& name);
-    virtual std::wstring getCustomName();
+    virtual void setCustomName(const std::string& name);
+    virtual std::string getCustomName();
     virtual bool hasCustomName();
     virtual void setCustomNameVisible(bool visible);
     virtual bool isCustomNameVisible();

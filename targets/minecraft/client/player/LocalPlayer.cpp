@@ -1,3 +1,6 @@
+#include "minecraft/client/IMenuService.h"
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "LocalPlayer.h"
 
 #include <stdio.h>
@@ -25,17 +28,15 @@
 #include "minecraft/world/item/Item.h"
 #include "minecraft/world/level/tile/Tile.h"
 // 4J Stu - Added for tutorial callbacks
-#include "platform/InputActions.h"
-#include "platform/sdl2/Input.h"
-#include "platform/sdl2/Profile.h"
-#include "platform/sdl2/Render.h"
+#include "platform/input/input.h"
+#include "platform/profile/profile.h"
+#include "platform/renderer/renderer.h"
 #include "app/common/App_structs.h"
-#include "app/common/src/Audio/SoundEngine.h"
-#include "app/common/src/Network/GameNetworkManager.h"
-#include "app/common/src/Tutorial/Tutorial.h"
-#include "app/common/src/Tutorial/TutorialMode.h"
-#include "app/common/src/UI/All Platforms/UIEnums.h"
-#include "app/linux/LinuxGame.h"
+#include "app/common/Audio/SoundEngine.h"
+#include "app/common/Network/GameNetworkManager.h"
+#include "app/common/Tutorial/Tutorial.h"
+#include "app/common/Tutorial/TutorialMode.h"
+#include "app/common/UI/All Platforms/UIEnums.h"
 #include "app/linux/Linux_UIController.h"
 #include "app/linux/Stubs/winapi_stubs.h"
 #include "PlatformTypes.h"
@@ -109,13 +110,13 @@ LocalPlayer::LocalPlayer(Minecraft* minecraft, Level* level, User* user,
 
     if (user != nullptr && user->name.length() > 0) {
         customTextureUrl =
-            L"http://s3.amazonaws.com/MinecraftSkins/" + user->name + L".png";
+            "http://s3.amazonaws.com/MinecraftSkins/" + user->name + ".png";
     }
     if (user != nullptr) {
         this->name = user->name;
-        // wprintf(L"Created LocalPlayer with name %ls\n", name.c_str() );
+        // printf("Created LocalPlayer with name %s\n", name.c_str() );
         //  check to see if this player's xuid is in the list of special players
-        MOJANG_DATA* pMojangData = app.GetMojangDataForXuid(getOnlineXuid());
+        MOJANG_DATA* pMojangData = gameServices().getMojangDataForXuid(getOnlineXuid());
         if (pMojangData) {
             customTextureUrl = pMojangData->wchSkin;
         }
@@ -123,7 +124,7 @@ LocalPlayer::LocalPlayer(Minecraft* minecraft, Level* level, User* user,
     input = nullptr;
     m_iPad = -1;
     m_iScreenSection =
-        C4JRender::VIEWPORT_TYPE_FULLSCREEN;  // assume singleplayer default
+        IPlatformRenderer::VIEWPORT_TYPE_FULLSCREEN;  // assume singleplayer default
     m_bPlayerRespawned = false;
     ullButtonsPressed = 0LL;
     ullDpad_last = ullDpad_this = ullDpad_filtered = 0;
@@ -379,7 +380,7 @@ void LocalPlayer::aiStep() {
         // snap y rotation to nearest 90 degree axis aligned value
         float yRotSnapped = floorf((yRot / 90.0f) + 0.5f) * 90.0f;
 
-        if (InputManager.GetJoypadMapVal(m_iPad) == 0) {
+        if (PlatformInput.GetJoypadMapVal(m_iPad) == 0) {
             if (ullDpad_filtered & (1LL << MINECRAFT_ACTION_DPAD_RIGHT)) {
                 xd = -0.15 * cos(yRotSnapped * std::numbers::pi / 180);
                 zd = -0.15 * sin(yRotSnapped * std::numbers::pi / 180);
@@ -483,28 +484,28 @@ void LocalPlayer::aiStep() {
     }
 
     // Check if the player is idle and the rich presence needs updated
-    if (!m_bIsIdle && InputManager.GetIdleSeconds(m_iPad) > PLAYER_IDLE_TIME) {
-        ProfileManager.SetCurrentGameActivity(m_iPad, CONTEXT_PRESENCE_IDLE,
+    if (!m_bIsIdle && PlatformInput.GetIdleSeconds(m_iPad) > PLAYER_IDLE_TIME) {
+        PlatformProfile.SetCurrentGameActivity(m_iPad, CONTEXT_PRESENCE_IDLE,
                                               false);
         m_bIsIdle = true;
     } else if (m_bIsIdle &&
-               InputManager.GetIdleSeconds(m_iPad) < PLAYER_IDLE_TIME) {
+               PlatformInput.GetIdleSeconds(m_iPad) < PLAYER_IDLE_TIME) {
         // Are we offline or online, and how many players are there
         if (g_NetworkManager.GetPlayerCount() > 1) {
             // only do it for this player here - each player will run this code
             if (g_NetworkManager.IsLocalGame()) {
-                ProfileManager.SetCurrentGameActivity(
+                PlatformProfile.SetCurrentGameActivity(
                     m_iPad, CONTEXT_PRESENCE_MULTIPLAYEROFFLINE, false);
             } else {
-                ProfileManager.SetCurrentGameActivity(
+                PlatformProfile.SetCurrentGameActivity(
                     m_iPad, CONTEXT_PRESENCE_MULTIPLAYER, false);
             }
         } else {
             if (g_NetworkManager.IsLocalGame()) {
-                ProfileManager.SetCurrentGameActivity(
+                PlatformProfile.SetCurrentGameActivity(
                     m_iPad, CONTEXT_PRESENCE_MULTIPLAYER_1POFFLINE, false);
             } else {
-                ProfileManager.SetCurrentGameActivity(
+                PlatformProfile.SetCurrentGameActivity(
                     m_iPad, CONTEXT_PRESENCE_MULTIPLAYER_1P, false);
             }
         }
@@ -519,10 +520,10 @@ void LocalPlayer::changeDimension(int i) {
             awardStat(GenericStats::winGame(), GenericStats::param_noArgs());
             // minecraft.setScreen(new WinScreen());
 #if !defined(_CONTENT_PACKAGE)
-            app.DebugPrintf(
+            Log::info(
                 "LocalPlayer::changeDimension from 1 to 1 but WinScreen has "
                 "not been implemented.\n");
-            __debugbreak();
+            assert(0);
 #endif
         } else {
             awardStat(GenericStats::theEnd(), GenericStats::param_theEnd());
@@ -560,12 +561,12 @@ float LocalPlayer::getFieldOfViewModifier() {
 
 void LocalPlayer::addAdditonalSaveData(CompoundTag* entityTag) {
     Player::addAdditonalSaveData(entityTag);
-    // entityTag->putInt(L"Score", score);
+    // entityTag->putInt("Score", score);
 }
 
 void LocalPlayer::readAdditionalSaveData(CompoundTag* entityTag) {
     Player::readAdditionalSaveData(entityTag);
-    // score = entityTag->getInt(L"Score");
+    // score = entityTag->getInt("Score");
 }
 
 void LocalPlayer::closeContainer() {
@@ -590,11 +591,11 @@ void LocalPlayer::openTextEdit(std::shared_ptr<TileEntity> tileEntity) {
     bool success;
 
     if (tileEntity->GetType() == eTYPE_SIGNTILEENTITY) {
-        success = app.LoadSignEntryMenu(
+        success = gameServices().menus().openSign(
             GetXboxPad(),
             std::dynamic_pointer_cast<SignTileEntity>(tileEntity));
     } else if (tileEntity->GetType() == eTYPE_COMMANDBLOCKTILEENTITY) {
-        success = app.LoadCommandBlockMenu(
+        success = gameServices().menus().openCommandBlock(
             GetXboxPad(),
             std::dynamic_pointer_cast<CommandBlockEntity>(tileEntity));
     }
@@ -608,7 +609,7 @@ bool LocalPlayer::openContainer(std::shared_ptr<Container> container) {
     minecraft->setScreen(new ContainerScreen(inventory, container));
     bool success = true;
 #else
-    bool success = app.LoadContainerMenu(GetXboxPad(), inventory, container);
+    bool success = gameServices().menus().openContainer(GetXboxPad(), inventory, container);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     // minecraft->setScreen(new ContainerScreen(inventory, container));
@@ -620,7 +621,7 @@ bool LocalPlayer::openHopper(std::shared_ptr<HopperTileEntity> container) {
     minecraft->setScreen(new HopperScreen(inventory, container));
     bool success = true;
 #else
-    bool success = app.LoadHopperMenu(GetXboxPad(), inventory, container);
+    bool success = gameServices().menus().openHopper(GetXboxPad(), inventory, container);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -631,7 +632,7 @@ bool LocalPlayer::openHopper(std::shared_ptr<MinecartHopper> container) {
     minecraft->setScreen(new HopperScreen(inventory, container));
     bool success = true;
 #else
-    bool success = app.LoadHopperMenu(GetXboxPad(), inventory, container);
+    bool success = gameServices().menus().openHopperMinecart(GetXboxPad(), inventory, container);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -643,7 +644,7 @@ bool LocalPlayer::openHorseInventory(std::shared_ptr<EntityHorse> horse,
     minecraft->setScreen(new HorseInventoryScreen(inventory, container, horse));
     bool success = true;
 #else
-    bool success = app.LoadHorseMenu(GetXboxPad(), inventory, container, horse);
+    bool success = gameServices().menus().openHorse(GetXboxPad(), inventory, container, horse);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -654,7 +655,7 @@ bool LocalPlayer::startCrafting(int x, int y, int z) {
     minecraft->setScreen(new CraftingScreen(inventory, level, x, y, z));
     bool success = true;
 #else
-    bool success = app.LoadCrafting3x3Menu(
+    bool success = gameServices().menus().openCrafting3x3(
         GetXboxPad(),
         std::dynamic_pointer_cast<LocalPlayer>(shared_from_this()), x, y, z);
     if (success) ui.PlayUISFX(eSFX_Press);
@@ -665,7 +666,7 @@ bool LocalPlayer::startCrafting(int x, int y, int z) {
 }
 
 bool LocalPlayer::openFireworks(int x, int y, int z) {
-    bool success = app.LoadFireworksMenu(
+    bool success = gameServices().menus().openFireworks(
         GetXboxPad(),
         std::dynamic_pointer_cast<LocalPlayer>(shared_from_this()), x, y, z);
     if (success) ui.PlayUISFX(eSFX_Press);
@@ -673,13 +674,13 @@ bool LocalPlayer::openFireworks(int x, int y, int z) {
 }
 
 bool LocalPlayer::startEnchanting(int x, int y, int z,
-                                  const std::wstring& name) {
+                                  const std::string& name) {
 #ifdef ENABLE_JAVA_GUIS
     minecraft->setScreen(new EnchantmentScreen(inventory, level, x, y, z));
     bool success = true;
 #else
     bool success =
-        app.LoadEnchantingMenu(GetXboxPad(), inventory, x, y, z, level, name);
+        gameServices().menus().openEnchanting(GetXboxPad(), inventory, x, y, z, level, name);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -691,7 +692,7 @@ bool LocalPlayer::startRepairing(int x, int y, int z) {
     bool success = true;
 #else
     bool success =
-        app.LoadRepairingMenu(GetXboxPad(), inventory, level, x, y, z);
+        gameServices().menus().openRepairing(GetXboxPad(), inventory, level, x, y, z);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -702,7 +703,7 @@ bool LocalPlayer::openFurnace(std::shared_ptr<FurnaceTileEntity> furnace) {
     minecraft->setScreen(new FurnaceScreen(inventory, furnace));
     bool success = true;
 #else
-    bool success = app.LoadFurnaceMenu(GetXboxPad(), inventory, furnace);
+    bool success = gameServices().menus().openFurnace(GetXboxPad(), inventory, furnace);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -715,7 +716,7 @@ bool LocalPlayer::openBrewingStand(
     bool success = true;
 #else
     bool success =
-        app.LoadBrewingStandMenu(GetXboxPad(), inventory, brewingStand);
+        gameServices().menus().openBrewingStand(GetXboxPad(), inventory, brewingStand);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -726,7 +727,7 @@ bool LocalPlayer::openBeacon(std::shared_ptr<BeaconTileEntity> beacon) {
     minecraft->setScreen(new BeaconScreen(inventory, beacon));
     bool success = true;
 #else
-    bool success = app.LoadBeaconMenu(GetXboxPad(), inventory, beacon);
+    bool success = gameServices().menus().openBeacon(GetXboxPad(), inventory, beacon);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -737,20 +738,20 @@ bool LocalPlayer::openTrap(std::shared_ptr<DispenserTileEntity> trap) {
     minecraft->setScreen(new TrapScreen(inventory, trap));
     bool success = true;
 #else
-    bool success = app.LoadTrapMenu(GetXboxPad(), inventory, trap);
+    bool success = gameServices().menus().openTrap(GetXboxPad(), inventory, trap);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
 }
 
 bool LocalPlayer::openTrading(std::shared_ptr<Merchant> traderTarget,
-                              const std::wstring& name) {
+                              const std::string& name) {
 #ifdef ENABLE_JAVA_GUIS
     minecraft->setScreen(new MerchantScreen(inventory, traderTarget, level));
     bool success = true;
 #else
     bool success =
-        app.LoadTradingMenu(GetXboxPad(), inventory, traderTarget, level, name);
+        gameServices().menus().openTrading(GetXboxPad(), inventory, traderTarget, level, name);
     if (success) ui.PlayUISFX(eSFX_Press);
 #endif
     return success;
@@ -775,7 +776,7 @@ void LocalPlayer::take(std::shared_ptr<Entity> e, int orgCount) {
         (Level*)minecraft->level, e, shared_from_this(), -0.5f));
 }
 
-void LocalPlayer::chat(const std::wstring& message) {}
+void LocalPlayer::chat(const std::string& message) {}
 
 bool LocalPlayer::isSneaking() { return input->sneaking && !m_isSleeping; }
 
@@ -824,7 +825,7 @@ void LocalPlayer::displayClientMessage(int messageId) {
 void LocalPlayer::awardStat(Stat* stat, const std::vector<uint8_t>& param) {
     int count = CommonStats::readParam(param);
 
-    if (!app.CanRecordStatsAndAchievements()) return;
+    if (!gameServices().canRecordStatsAndAchievements()) return;
     if (stat == nullptr) return;
 
     if (stat->isAchievement()) {
@@ -843,14 +844,14 @@ void LocalPlayer::awardStat(Stat* stat, const std::vector<uint8_t>& param) {
             // achievements don't get awarded to all players e.g. Splitscreen
             // players cannot get theme/avatar/gamerpic and Trial players cannot
             // get any This causes some extreme flooding of some awards
-            if (ProfileManager.CanBeAwarded(m_iPad, ach->getAchievementID())) {
+            if (PlatformProfile.CanBeAwarded(m_iPad, ach->getAchievementID())) {
                 // 4J Stu - Some awards cause a menu to popup. This can be bad,
                 // especially if you are surrounded by mobs! We cannot pause the
                 // game unless in offline single player, but lets at least do it
                 // then
                 if (g_NetworkManager.IsLocalGame() &&
                     g_NetworkManager.GetPlayerCount() == 1 &&
-                    ProfileManager.GetAwardType(ach->getAchievementID()) !=
+                    PlatformProfile.GetAwardType(ach->getAchievementID()) !=
                         EAwardType::Achievement) {
                     ui.CloseUIScenes(m_iPad);
                     ui.NavigateToScene(m_iPad, eUIScene_PauseMenu);
@@ -861,7 +862,7 @@ void LocalPlayer::awardStat(Stat* stat, const std::vector<uint8_t>& param) {
             unsigned long long achBit = ((unsigned long long)1)
                                         << ach->getAchievementID();
             if (!(achBit & m_awardedThisSession)) {
-                ProfileManager.Award(m_iPad, ach->getAchievementID());
+                PlatformProfile.Award(m_iPad, ach->getAchievementID());
                 m_awardedThisSession |= achBit;
             }
         }
@@ -965,7 +966,7 @@ void LocalPlayer::awardStat(Stat* stat, const std::vector<uint8_t>& param) {
                 numCookPorkchop = pStats->getTotalValue(cookPorkchop);
                 numEatPorkchop = pStats->getTotalValue(eatPorkchop);
 
-                app.DebugPrintf(
+                Log::info(
                     "[AwardStat] Check unlock 'Porkchop': "
                     "pork_cooked=%i, pork_eaten=%i.\n",
                     numCookPorkchop, numEatPorkchop);
@@ -986,7 +987,7 @@ void LocalPlayer::awardStat(Stat* stat, const std::vector<uint8_t>& param) {
                 iPlayedTicks = pStats->getTotalValue(timePlayed);
                 iRequiredTicks = Level::TICKS_PER_DAY * 100;
 
-                /* app.DebugPrintf(
+                /* Log::info(
                         "[AwardStat] Check unlock 'Passing the Time': "
                         "total_ticks=%i, req=%i.\n",
                         iPlayedTicks, iRequiredTicks
@@ -1011,7 +1012,7 @@ void LocalPlayer::awardStat(Stat* stat, const std::vector<uint8_t>& param) {
                 numEmeraldBought = pStats->getTotalValue(emeraldBought);
                 totalSum = numEmeraldMined + numEmeraldBought;
 
-                app.DebugPrintf(
+                Log::info(
                     "[AwardStat] Check unlock 'The Haggler': "
                     "emerald_mined=%i, emerald_bought=%i, sum=%i.\n",
                     numEmeraldMined, numEmeraldBought, totalSum);
@@ -1051,7 +1052,7 @@ void LocalPlayer::awardStat(Stat* stat, const std::vector<uint8_t>& param) {
                 numPlacedWallSign = pStats->getTotalValue(placeWallsign);
                 numPlacedSignpost = pStats->getTotalValue(placeSignpost);
 
-                app.DebugPrintf(
+                Log::info(
                     "[AwardStat] Check unlock 'It's a Sign': "
                     "crafted=%i, placedWallSigns=%i, placedSignposts=%i.\n",
                     numCraftedSigns, numPlacedWallSign, numPlacedSignpost);
@@ -1454,7 +1455,7 @@ bool LocalPlayer::handleMouseClick(int button) {
 
     if (button == 0 && missTime > 0) return false;
     if (button == 0) {
-        // app.DebugPrintf("handleMouseClick - Player %d is
+        // Log::info("handleMouseClick - Player %d is
         // swinging\n",GetXboxPad());
         swing();
     }
@@ -1540,7 +1541,7 @@ bool LocalPlayer::handleMouseClick(int button) {
                     returnItemPlaced = true;
                 }
                 mayUse = false;
-                // app.DebugPrintf("Player %d is swinging\n",GetXboxPad());
+                // Log::info("Player %d is swinging\n",GetXboxPad());
                 swing();
             }
             if (item == nullptr) {
@@ -1574,39 +1575,39 @@ void LocalPlayer::updateRichPresence() {
         std::shared_ptr<ItemInstance> selectedItem = inventory->getSelected();
         if (selectedItem != nullptr &&
             selectedItem->id == Item::fishingRod_Id) {
-            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_FISHING);
+            gameServices().setRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_FISHING);
         } else if (selectedItem != nullptr &&
                    selectedItem->id == Item::map_Id) {
-            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_MAP);
+            gameServices().setRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_MAP);
         } else if ((riding != nullptr) && riding->instanceof(eTYPE_MINECART)) {
-            app.SetRichPresenceContext(m_iPad,
+            gameServices().setRichPresenceContext(m_iPad,
                                        CONTEXT_GAME_STATE_RIDING_MINECART);
         } else if ((riding != nullptr) && riding->instanceof(eTYPE_BOAT)) {
-            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_BOATING);
+            gameServices().setRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_BOATING);
         } else if ((riding != nullptr) && riding->instanceof(eTYPE_PIG)) {
-            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_RIDING_PIG);
+            gameServices().setRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_RIDING_PIG);
         } else if (this->dimension == -1) {
-            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_NETHER);
+            gameServices().setRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_NETHER);
         } else if (minecraft->soundEngine->GetIsPlayingStreamingCDMusic()) {
-            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_CD);
+            gameServices().setRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_CD);
         } else {
-            app.SetRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_BLANK);
+            gameServices().setRichPresenceContext(m_iPad, CONTEXT_GAME_STATE_BLANK);
         }
     }
 }
 
 // 4J Stu - Added for telemetry
 void LocalPlayer::SetSessionTimerStart(void) {
-    m_sessionTimeStart = app.getAppTime();
+    m_sessionTimeStart = gameServices().getAppTime();
     m_dimensionTimeStart = m_sessionTimeStart;
 }
 
 float LocalPlayer::getSessionTimer(void) {
-    return app.getAppTime() - m_sessionTimeStart;
+    return gameServices().getAppTime() - m_sessionTimeStart;
 }
 
 float LocalPlayer::getAndResetChangeDimensionTimer() {
-    float appTime = app.getAppTime();
+    float appTime = gameServices().getAppTime();
     float returnVal = appTime - m_dimensionTimeStart;
     m_dimensionTimeStart = appTime;
     return returnVal;

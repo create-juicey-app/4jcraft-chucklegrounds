@@ -43,7 +43,7 @@ class WeaponRecipies;
 class ShapedRecipy;
 class FireworksRecipe;
 
-typedef std::unordered_map<wchar_t, ItemInstance*> myMap;
+typedef std::unordered_map<char, ItemInstance*> myMap;
 
 #define ADD_OBJECT(a, b) a.push_back(new Object(b))
 

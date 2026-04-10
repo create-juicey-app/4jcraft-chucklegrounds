@@ -18,11 +18,11 @@ private:
     MerchantContainer* container;
     std::shared_ptr<Player> source;
     MerchantRecipeList* currentOffers;
-    std::wstring m_name;
+    std::string m_name;
 
 public:
     ClientSideMerchant(std::shared_ptr<Player> source,
-                       const std::wstring& name);
+                       const std::string& name);
     ~ClientSideMerchant();
 
     void createContainer();  // 4J Added
@@ -33,5 +33,5 @@ public:
     void overrideOffers(MerchantRecipeList* recipeList);
     void notifyTrade(MerchantRecipe* activeRecipe);
     void notifyTradeUpdated(std::shared_ptr<ItemInstance> item);
-    std::wstring getDisplayName();
+    std::string getDisplayName();
 };

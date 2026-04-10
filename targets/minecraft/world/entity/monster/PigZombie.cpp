@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "PigZombie.h"
 
 #include <string>
@@ -82,18 +83,18 @@ bool PigZombie::canSpawn() {
 
 void PigZombie::addAdditonalSaveData(CompoundTag* tag) {
     Zombie::addAdditonalSaveData(tag);
-    tag->putShort(L"Anger", (short)angerTime);
+    tag->putShort("Anger", (short)angerTime);
 }
 
 void PigZombie::readAdditionalSaveData(CompoundTag* tag) {
     Zombie::readAdditionalSaveData(tag);
-    angerTime = tag->getShort(L"Anger");
+    angerTime = tag->getShort("Anger");
 }
 
 std::shared_ptr<Entity> PigZombie::findAttackTarget() {
 #ifndef _FINAL_BUILD
 #ifdef _DEBUG_MENUS_ENABLED
-    if (app.GetMobsDontAttackEnabled()) {
+    if (gameServices().debugMobsDontAttack()) {
         return std::shared_ptr<Player>();
     }
 #endif

@@ -3,7 +3,8 @@
 #include <utility>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+
+#include "platform/renderer/renderer.h"
 #include "EntityRenderDispatcher.h"
 #include "util/StringHelpers.h"
 #include "minecraft/Facing.h"
@@ -24,9 +25,9 @@
 #include "minecraft/world/level/tile/Tile.h"
 #include "nbt/CompoundTag.h"
 
-const std::wstring HumanoidMobRenderer::MATERIAL_NAMES[5] = {
-    L"cloth", L"chain", L"iron", L"diamond", L"gold"};
-std::map<std::wstring, ResourceLocation>
+const std::string HumanoidMobRenderer::MATERIAL_NAMES[5] = {
+    "cloth", "chain", "iron", "diamond", "gold"};
+std::map<std::string, ResourceLocation>
     HumanoidMobRenderer::ARMOR_LOCATION_CACHE;
 
 void HumanoidMobRenderer::_init(HumanoidModel* humanoidModel, float scale) {
@@ -70,21 +71,21 @@ ResourceLocation* HumanoidMobRenderer::getArmorLocation(ArmorItem* armorItem,
         case 4:
             break;
     };
-    std::wstring path =
-        std::wstring(L"armor/" + MATERIAL_NAMES[armorItem->modelIndex])
-            .append(L"_")
+    std::string path =
+        std::string("armor/" + MATERIAL_NAMES[armorItem->modelIndex])
+            .append("_")
             .append(toWString<int>(layer == 2 ? 2 : 1))
-            .append((overlay ? L"_b" : L""))
-            .append(L".png");
+            .append((overlay ? "_b" : ""))
+            .append(".png");
 
-    std::map<std::wstring, ResourceLocation>::iterator it =
+    std::map<std::string, ResourceLocation>::iterator it =
         ARMOR_LOCATION_CACHE.find(path);
 
     ResourceLocation* location;
     if (it != ARMOR_LOCATION_CACHE.end()) {
         location = &it->second;
     } else {
-        ARMOR_LOCATION_CACHE.insert(std::pair<std::wstring, ResourceLocation>(
+        ARMOR_LOCATION_CACHE.insert(std::pair<std::string, ResourceLocation>(
             path, ResourceLocation(path)));
 
         it = ARMOR_LOCATION_CACHE.find(path);
@@ -240,10 +241,10 @@ void HumanoidMobRenderer::additionalRendering(std::shared_ptr<LivingEntity> mob,
                 float s = 17 / 16.0f;
                 glScalef(s, -s, -s);
 
-                std::wstring extra = L"";
+                std::string extra = "";
                 if (headGear->hasTag() &&
-                    headGear->getTag()->contains(L"SkullOwner")) {
-                    extra = headGear->getTag()->getString(L"SkullOwner");
+                    headGear->getTag()->contains("SkullOwner")) {
+                    extra = headGear->getTag()->getString("SkullOwner");
                 }
                 SkullTileRenderer::instance->renderSkull(
                     -0.5f, 0, -0.5f, Facing::UP, 180, headGear->getAuxValue(),

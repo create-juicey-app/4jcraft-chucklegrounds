@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "app/include/SkinBox.h"
+#include "minecraft/client/model/SkinBox.h"
 #include "Model.h"
 #include "minecraft/client/model/Polygon.h"
 #include "minecraft/client/model/Vertex.h"
@@ -25,7 +25,7 @@ public:
     float translateX, translateY, translateZ;
 
 private:
-    std::wstring id;
+    std::string id;
     int xTexOffs, yTexOffs;
     bool compiled;
     int list;
@@ -34,14 +34,14 @@ private:
 public:
     void _init();  // 4J added
     ModelPart();
-    ModelPart(Model* model, const std::wstring& id);
+    ModelPart(Model* model, const std::string& id);
     ModelPart(Model* model);
     ModelPart(Model* model, int xTexOffs, int yTexOffs);
 
     // MGH - had to add these for PS3, as calling constructors from others was
     // only introduced in c++11 -
     // https://en.wikipedia.org/wiki/C++11#Object_construction_improvement
-    void construct(Model* model, const std::wstring& id);
+    void construct(Model* model, const std::string& id);
     void construct(Model* model);
     void construct(Model* model, int xTexOffs, int yTexOffs);
 
@@ -49,7 +49,7 @@ public:
     ModelPart* retrieveChild(SKIN_BOX* pBox);
     ModelPart* mirror();
     ModelPart* texOffs(int xTexOffs, int yTexOffs);
-    ModelPart* addBox(std::wstring id, float x0, float y0, float z0, int w,
+    ModelPart* addBox(std::string id, float x0, float y0, float z0, int w,
                       int h, int d);
     ModelPart* addBox(float x0, float y0, float z0, int w, int h, int d);
     ModelPart* addBoxWithMask(float x0, float y0, float z0, int w, int h, int d,

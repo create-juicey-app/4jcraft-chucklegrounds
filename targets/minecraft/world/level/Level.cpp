@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "Level.h"
 
 #include <stdlib.h>
@@ -13,15 +15,15 @@
 #include <optional>
 
 #include "Explosion.h"
-#include "IPlatformInput.h"
+#include "platform/input/input.h"
 #include "LevelListener.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
-#include "app/common/src/Console_Debug_enum.h"
-#include "app/common/src/Network/GameNetworkManager.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
+#include "app/common/Console_Debug_enum.h"
+#include "app/common/Network/GameNetworkManager.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/FrameProfiler.h"
+#include "util/FrameProfiler.h"
 #include "java/Random.h"
 #include "minecraft/Direction.h"
 #include "minecraft/Facing.h"
@@ -71,7 +73,6 @@
 #include "minecraft/world/phys/HitResult.h"
 #include "minecraft/world/phys/Vec3.h"
 #include "minecraft/world/scores/Scoreboard.h"
-#include "platform/PlatformServices.h"
 
 class CompoundTag;
 class ItemInstance;
@@ -567,7 +568,7 @@ Biome* Level::getBiome(int x, int z) {
 BiomeSource* Level::getBiomeSource() { return dimension->biomeSource; }
 
 Level::Level(std::shared_ptr<LevelStorage> levelStorage,
-             const std::wstring& name, Dimension* dimension,
+             const std::string& name, Dimension* dimension,
              LevelSettings* levelSettings, bool doCreateChunkSource)
     : seaLevel(constSeaLevel) {
     _init();
@@ -601,13 +602,13 @@ Level::Level(std::shared_ptr<LevelStorage> levelStorage,
 }
 
 Level::Level(std::shared_ptr<LevelStorage> levelStorage,
-             const std::wstring& levelName, LevelSettings* levelSettings)
+             const std::string& levelName, LevelSettings* levelSettings)
     : seaLevel(constSeaLevel) {
     _init(levelStorage, levelName, levelSettings, nullptr, true);
 }
 
 Level::Level(std::shared_ptr<LevelStorage> levelStorage,
-             const std::wstring& levelName, LevelSettings* levelSettings,
+             const std::string& levelName, LevelSettings* levelSettings,
              Dimension* fixedDimension, bool doCreateChunkSource)
     : seaLevel(constSeaLevel) {
     _init(levelStorage, levelName, levelSettings, fixedDimension,
@@ -615,7 +616,7 @@ Level::Level(std::shared_ptr<LevelStorage> levelStorage,
 }
 
 void Level::_init(std::shared_ptr<LevelStorage> levelStorage,
-                  const std::wstring& levelName, LevelSettings* levelSettings,
+                  const std::string& levelName, LevelSettings* levelSettings,
                   Dimension* fixedDimension, bool doCreateChunkSource) {
     _init();
     this->levelStorage =
@@ -1492,7 +1493,7 @@ void Level::playEntitySound(std::shared_ptr<Entity> entity, int iSound,
     for (auto it = listeners.begin(); it != itEnd; it++) {
         // 4J-PB - if the entity is a local player, don't play the sound
         if (entity->GetType() == eTYPE_SERVERPLAYER) {
-            // app.DebugPrintf("ENTITY is serverplayer\n");
+            // Log::info("ENTITY is serverplayer\n");
 
             (*it)->playSound(iSound, entity->x,
                              entity->y - entity->heightOffset, entity->z,
@@ -1516,7 +1517,7 @@ void Level::playPlayerSound(std::shared_ptr<Player> entity, int iSound,
     }
 }
 
-// void Level::playSound(double x, double y, double z, const wstring& name,
+// void Level::playSound(double x, double y, double z, const string& name,
 // float volume, float pitch)
 void Level::playSound(double x, double y, double z, int iSound, float volume,
                       float pitch, float fClipSoundDist) {
@@ -1530,19 +1531,19 @@ void Level::playLocalSound(double x, double y, double z, int iSound,
                            float volume, float pitch, bool distanceDelay,
                            float fClipSoundDist) {}
 
-void Level::playStreamingMusic(const std::wstring& name, int x, int y, int z) {
+void Level::playStreamingMusic(const std::string& name, int x, int y, int z) {
     auto itEnd = listeners.end();
     for (auto it = listeners.begin(); it != itEnd; it++) {
         (*it)->playStreamingMusic(name, x, y, z);
     }
 }
 
-void Level::playMusic(double x, double y, double z, const std::wstring& string,
+void Level::playMusic(double x, double y, double z, const std::string& string,
                       float volume) {}
 
 // 4J removed -
 /*
-void Level::addParticle(const wstring& id, double x, double y, double z, double
+void Level::addParticle(const string& id, double x, double y, double z, double
 xd, double yd, double zd)
 {
 auto itEnd = listeners.end();
@@ -2113,7 +2114,7 @@ void Level::tickEntities() {
 
             if (!e->removed) {
 #if !defined(_FINAL_BUILD)
-                if (!(app.DebugSettingsOn() && app.GetMobsDontTickEnabled() &&
+                if (!(gameServices().debugSettingsOn() && gameServices().debugMobsDontTick() &&
                       e->instanceof(eTYPE_MOB) && !e->instanceof(eTYPE_PLAYER)))
 #endif
                 {
@@ -2187,7 +2188,7 @@ void Level::tickEntities() {
                 if (tileEntitiesToUnload.find(*it) !=
                     tileEntitiesToUnload.end()) {
                     if (isClientSide) {
-                        __debugbreak();
+                        assert(0);
                     }
                     it = tileEntityList.erase(it);
                 } else {
@@ -2567,16 +2568,16 @@ return shared_ptr<Entity>();
 }
 */
 
-std::wstring Level::gatherStats() {
-    wchar_t buf[64];
+std::string Level::gatherStats() {
+    char buf[64];
     {
         std::lock_guard<std::recursive_mutex> lock(m_entitiesCS);
-        swprintf(buf, 64, L"All:%d", entities.size());
+        snprintf(buf, 64, "All:%d", entities.size());
     }
-    return std::wstring(buf);
+    return std::string(buf);
 }
 
-std::wstring Level::gatherChunkSourceStats() {
+std::string Level::gatherChunkSourceStats() {
     return chunkSource->gatherStats();
 }
 
@@ -2812,8 +2813,8 @@ void Level::tickWeather() {
 
 #if !defined(_FINAL_BUILD)
     // debug setting added to disable weather
-    if (app.DebugSettingsOn()) {
-        if (app.GetGameSettingsDebugMask(PlatformInput.GetPrimaryPad()) &
+    if (gameServices().debugSettingsOn()) {
+        if (gameServices().debugGetMask(PlatformInput.GetPrimaryPad()) &
             (1L << eDebugSetting_DisableWeather)) {
             levelData->setThundering(false);
             levelData->setThunderTime(random->nextInt(TICKS_PER_DAY * 7) +
@@ -3745,7 +3746,7 @@ std::shared_ptr<Player> Level::getNearestAttackablePlayer(double x, double y,
     return result;
 }
 
-std::shared_ptr<Player> Level::getPlayerByName(const std::wstring& name) {
+std::shared_ptr<Player> Level::getPlayerByName(const std::string& name) {
     auto itEnd = players.end();
     for (auto it = players.begin(); it != itEnd; it++) {
         if (name.compare((*it)->getName()) == 0) {
@@ -3755,7 +3756,7 @@ std::shared_ptr<Player> Level::getPlayerByName(const std::wstring& name) {
     return std::shared_ptr<Player>();
 }
 
-std::shared_ptr<Player> Level::getPlayerByUUID(const std::wstring& name) {
+std::shared_ptr<Player> Level::getPlayerByUUID(const std::string& name) {
     auto itEnd = players.end();
     for (auto it = players.begin(); it != itEnd; it++) {
         if (name.compare((*it)->getUUID()) == 0) {
@@ -3870,7 +3871,7 @@ void Level::setGameTime(int64_t time) {
         } else if (timeDiff > 100) {
             // Time differences of more than ~5 seconds are generally not real
             // time passing so ignore (moving dimensions does this)
-            app.DebugPrintf(
+            Log::info(
                 "Level::setTime: Massive time difference, ignoring for time "
                 "passed stat (%lli)\n",
                 timeDiff);
@@ -3985,17 +3986,17 @@ bool Level::isHumidAt(int x, int y, int z) {
     return biome->isHumid();
 }
 
-void Level::setSavedData(const std::wstring& id,
+void Level::setSavedData(const std::string& id,
                          std::shared_ptr<SavedData> data) {
     savedDataStorage->set(id, data);
 }
 
 std::shared_ptr<SavedData> Level::getSavedData(const std::type_info& clazz,
-                                               const std::wstring& id) {
+                                               const std::string& id) {
     return savedDataStorage->get(clazz, id);
 }
 
-int Level::getFreeAuxValueFor(const std::wstring& id) {
+int Level::getFreeAuxValueFor(const std::string& id) {
     return savedDataStorage->getFreeAuxValueFor(id);
 }
 
@@ -4043,7 +4044,7 @@ Random* Level::getRandomFor(int x, int z, int blend) {
     return random;
 }
 
-TilePos* Level::findNearestMapFeature(const std::wstring& featureName, int x,
+TilePos* Level::findNearestMapFeature(const std::string& featureName, int x,
                                       int y, int z) {
     return getChunkSource()->findNearestMapFeature(this, featureName, x, y, z);
 }

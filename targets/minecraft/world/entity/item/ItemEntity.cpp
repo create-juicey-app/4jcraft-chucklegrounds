@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "ItemEntity.h"
 
 #include <stdint.h>
@@ -202,16 +203,16 @@ bool ItemEntity::hurt(DamageSource* source, float damage) {
 }
 
 void ItemEntity::addAdditonalSaveData(CompoundTag* entityTag) {
-    entityTag->putShort(L"Health", (uint8_t)health);
-    entityTag->putShort(L"Age", (short)age);
+    entityTag->putShort("Health", (uint8_t)health);
+    entityTag->putShort("Age", (short)age);
     if (getItem() != nullptr)
-        entityTag->putCompound(L"Item", getItem()->save(new CompoundTag()));
+        entityTag->putCompound("Item", getItem()->save(new CompoundTag()));
 }
 
 void ItemEntity::readAdditionalSaveData(CompoundTag* tag) {
-    health = tag->getShort(L"Health") & 0xff;
-    age = tag->getShort(L"Age");
-    CompoundTag* itemTag = tag->getCompound(L"Item");
+    health = tag->getShort("Health") & 0xff;
+    age = tag->getShort("Age");
+    CompoundTag* itemTag = tag->getCompound("Item");
     setItem(ItemInstance::fromTag(itemTag));
     if (getItem() == nullptr) remove();
 }
@@ -263,8 +264,8 @@ void ItemEntity::playerTouch(std::shared_ptr<Player> player) {
     }
 }
 
-std::wstring ItemEntity::getAName() {
-    return L"";  // L"item." + getItem()->getDescriptionId();
+std::string ItemEntity::getAName() {
+    return "";  // "item." + getItem()->getDescriptionId();
     // return I18n.get("item." + item.getDescriptionId());
 }
 
@@ -280,7 +281,7 @@ std::shared_ptr<ItemInstance> ItemEntity::getItem() {
 
     if (result == nullptr) {
         if (level != nullptr) {
-            app.DebugPrintf("Item entity %d has no item?!\n", entityId);
+            Log::info("Item entity %d has no item?!\n", entityId);
             // level.getLogger().severe("Item entity " + entityId + " has no
             // item?!");
         }
@@ -297,8 +298,8 @@ void ItemEntity::setItem(std::shared_ptr<ItemInstance> item) {
 
 bool ItemEntity::isAttackable() { return false; }
 
-void ItemEntity::setThrower(const std::wstring& thrower) {
+void ItemEntity::setThrower(const std::string& thrower) {
     this->thrower = thrower;
 }
 
-std::wstring ItemEntity::getThrower() { return this->thrower; }
+std::string ItemEntity::getThrower() { return this->thrower; }

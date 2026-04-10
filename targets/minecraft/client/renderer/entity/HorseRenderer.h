@@ -13,7 +13,7 @@ class ResourceLocation;
 
 class HorseRenderer : public MobRenderer {
 private:
-    static std::map<std::wstring, ResourceLocation*> LAYERED_LOCATION_CACHE;
+    static std::map<std::string, ResourceLocation*> LAYERED_LOCATION_CACHE;
 
     static ResourceLocation HORSE_LOCATION;
     static ResourceLocation HORSE_MULE_LOCATION;

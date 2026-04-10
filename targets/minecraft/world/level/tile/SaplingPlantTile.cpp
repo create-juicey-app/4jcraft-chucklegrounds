@@ -21,8 +21,8 @@ int Sapling::SAPLING_NAMES[SAPLING_NAMES_SIZE] = {
     IDS_TILE_SAPLING_OAK, IDS_TILE_SAPLING_SPRUCE, IDS_TILE_SAPLING_BIRCH,
     IDS_TILE_SAPLING_JUNGLE};
 
-const std::wstring Sapling::TEXTURE_NAMES[] = {
-    L"sapling", L"sapling_spruce", L"sapling_birch", L"sapling_jungle"};
+const std::string Sapling::TEXTURE_NAMES[] = {
+    "sapling", "sapling_spruce", "sapling_birch", "sapling_jungle"};
 
 Sapling::Sapling(int id) : Bush(id) {
     this->updateDefaultShape();

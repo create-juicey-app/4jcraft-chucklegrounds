@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Item.h"
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "minecraft/core/DefaultDispenseItemBehavior.h"
 
 class Icon;
@@ -21,10 +21,10 @@ public:
 
 private:
     static const int healthPerSlot[];
-    static const std::wstring LEATHER_OVERLAYS[];
+    static const std::string LEATHER_OVERLAYS[];
 
 public:
-    static const std::wstring TEXTURE_EMPTY_SLOTS[];
+    static const std::string TEXTURE_EMPTY_SLOTS[];
 
 private:
     class ArmorDispenseItemBehavior : public DefaultDispenseItemBehavior {

@@ -130,16 +130,16 @@ bool MinecartFurnace::interact(std::shared_ptr<Player> player) {
 
 void MinecartFurnace::addAdditonalSaveData(CompoundTag* base) {
     Minecart::addAdditonalSaveData(base);
-    base->putDouble(L"PushX", xPush);
-    base->putDouble(L"PushZ", zPush);
-    base->putShort(L"Fuel", (short)fuel);
+    base->putDouble("PushX", xPush);
+    base->putDouble("PushZ", zPush);
+    base->putShort("Fuel", (short)fuel);
 }
 
 void MinecartFurnace::readAdditionalSaveData(CompoundTag* base) {
     Minecart::readAdditionalSaveData(base);
-    xPush = base->getDouble(L"PushX");
-    zPush = base->getDouble(L"PushZ");
-    fuel = base->getShort(L"Fuel");
+    xPush = base->getDouble("PushX");
+    zPush = base->getDouble("PushZ");
+    fuel = base->getShort("Fuel");
 }
 
 bool MinecartFurnace::hasFuel() {

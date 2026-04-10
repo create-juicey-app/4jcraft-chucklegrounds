@@ -14,8 +14,8 @@ class FireTile : public Tile {
     friend class ChunkRebuildData;
 
 public:
-    static const std::wstring TEXTURE_FIRST;
-    static const std::wstring TEXTURE_SECOND;
+    static const std::string TEXTURE_FIRST;
+    static const std::string TEXTURE_SECOND;
 
     static const int FLAME_INSTANT = 60;
     static const int FLAME_EASY = 30;

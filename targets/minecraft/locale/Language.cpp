@@ -19,7 +19,7 @@ Language* Language::singleton = nullptr;
 Language::Language() {
     // TODO: move the language loading out of the init to better match 1.3.x
     // see StringTranslate.java in MCP 7.x for more context
-    File langFile(L"Common/res/lang/en_US.lang");
+    File langFile("Common/res/lang/en_US.lang");
     if (langFile.exists()) {
         InputStream* stream = new FileInputStream(langFile);
         if (stream) {
@@ -32,7 +32,7 @@ Language::Language() {
                 //
                 // InputStreamReader reader(stream);
                 // BufferedReader bufferedReader(&reader);
-                // std::wstring line;
+                // std::string line;
                 std::vector<uint8_t> buffer((unsigned int)fileSize);
                 int bytesRead = stream->read(buffer, 0, (unsigned int)fileSize);
                 if (bytesRead > 0) {
@@ -57,8 +57,8 @@ Language::Language() {
                             std::string key = trimmed.substr(0, equalsPos);
                             std::string value = trimmed.substr(equalsPos + 1);
 
-                            std::wstring wkey(key.begin(), key.end());
-                            std::wstring wvalue(value.begin(), value.end());
+                            std::string wkey(key.begin(), key.end());
+                            std::string wvalue(value.begin(), value.end());
 
                             translateTable[wkey] = wvalue;
                         }
@@ -80,47 +80,47 @@ Language* Language::getInstance() {
 }
 
 /* 4J Jev, creates 2 identical functions.
-std::wstring Language::getElement(const std::wstring& elementId)
+std::string Language::getElement(const std::string& elementId)
 {
         return elementId;
 } */
 
 // 4jcraft changed, again const reference into va_start, std forbids
-std::wstring Language::getElement(std::wstring elementId, ...) {
+std::string Language::getElement(std::string elementId, ...) {
     va_list args;
     va_start(args, elementId);
-    std::wstring result = getElement(elementId, args);
+    std::string result = getElement(elementId, args);
     va_end(args);
     return result;
 }
 
-std::wstring Language::getElement(const std::wstring& elementId, va_list args) {
+std::string Language::getElement(const std::string& elementId, va_list args) {
     auto it = translateTable.find(elementId);
-    std::wstring formatString =
+    std::string formatString =
         (it != translateTable.end()) ? it->second : elementId;
 
-    if (formatString.find(L'%') != std::wstring::npos) {
+    if (formatString.find('%') != std::string::npos) {
         int bufferSize = formatString.length() + 256;
-        std::vector<wchar_t> buffer(bufferSize);
+        std::vector<char> buffer(bufferSize);
 
         int written =
-            vswprintf(buffer.data(), bufferSize, formatString.c_str(), args);
+            vsnprintf(buffer.data(), bufferSize, formatString.c_str(), args);
         if (written >= 0) {
-            return std::wstring(buffer.data(), written);
+            return std::string(buffer.data(), written);
         }
     }
 
     return formatString;
 }
 
-std::wstring Language::getElementName(const std::wstring& elementId) {
-    std::wstring nameKey = elementId + L".name";
+std::string Language::getElementName(const std::string& elementId) {
+    std::string nameKey = elementId + ".name";
     auto it = translateTable.find(nameKey);
     return (it != translateTable.end()) ? it->second : elementId;
 }
 
-std::wstring Language::getElementDescription(const std::wstring& elementId) {
-    std::wstring descKey = elementId + L".description";
+std::string Language::getElementDescription(const std::string& elementId) {
+    std::string descKey = elementId + ".description";
     auto it = translateTable.find(descKey);
     return (it != translateTable.end()) ? it->second : elementId;
 }

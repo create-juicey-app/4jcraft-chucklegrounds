@@ -22,7 +22,7 @@ private:
 
 public:
     DemoLevel(std::shared_ptr<LevelStorage> levelStorage,
-              const std::wstring& levelName);
+              const std::string& levelName);
     DemoLevel(Level* level, Dimension* dimension);
 
 protected:

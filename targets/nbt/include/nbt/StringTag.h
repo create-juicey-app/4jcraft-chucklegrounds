@@ -3,9 +3,9 @@
 
 class StringTag : public Tag {
 public:
-    std::wstring data;
-    StringTag(const std::wstring& name) : Tag(name) {}
-    StringTag(const std::wstring& name, const std::wstring& data) : Tag(name) {
+    std::string data;
+    StringTag(const std::string& name) : Tag(name) {}
+    StringTag(const std::string& name, const std::string& data) : Tag(name) {
         this->data = data;
     }
 
@@ -15,7 +15,7 @@ public:
 
     uint8_t getId() { return TAG_String; }
 
-    std::wstring toString() { return data; }
+    std::string toString() { return data; }
 
     Tag* copy() { return new StringTag(getName(), data); }
 

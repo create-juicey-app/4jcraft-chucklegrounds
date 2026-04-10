@@ -5,10 +5,10 @@
 
 class MessageScreen : public Screen {
 private:
-    std::wstring message;
+    std::string message;
 
 public:
-    MessageScreen(const std::wstring& message);
+    MessageScreen(const std::string& message);
 
 protected:
     using Screen::keyPressed;

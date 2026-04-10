@@ -23,11 +23,11 @@ public:
 private:
     static const int QUARTZ_BLOCK_TEXTURES = 5;
 
-    static const std::wstring TEXTURE_TOP;
-    static const std::wstring TEXTURE_CHISELED_TOP;
-    static const std::wstring TEXTURE_LINES_TOP;
-    static const std::wstring TEXTURE_BOTTOM;
-    static const std::wstring TEXTURE_NAMES[QUARTZ_BLOCK_TEXTURES];
+    static const std::string TEXTURE_TOP;
+    static const std::string TEXTURE_CHISELED_TOP;
+    static const std::string TEXTURE_LINES_TOP;
+    static const std::string TEXTURE_BOTTOM;
+    static const std::string TEXTURE_NAMES[QUARTZ_BLOCK_TEXTURES];
 
     Icon* icons[QUARTZ_BLOCK_TEXTURES];
     Icon* iconChiseledTop;

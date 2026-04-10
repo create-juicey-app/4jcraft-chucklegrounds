@@ -6,18 +6,18 @@
 class ConfirmScreen : public Screen {
 private:
     Screen* parent;
-    std::wstring title1;
-    std::wstring title2;
-    std::wstring yesButton;
-    std::wstring noButton;
+    std::string title1;
+    std::string title2;
+    std::string yesButton;
+    std::string noButton;
     int id;
 
 public:
-    ConfirmScreen(Screen* parent, const std::wstring& title1,
-                  const std::wstring& title2, int id);
-    ConfirmScreen(Screen* parent, const std::wstring& title1,
-                  const std::wstring& title2, const std::wstring& yesButton,
-                  const std::wstring& noButton, int id);
+    ConfirmScreen(Screen* parent, const std::string& title1,
+                  const std::string& title2, int id);
+    ConfirmScreen(Screen* parent, const std::string& title1,
+                  const std::string& title2, const std::string& yesButton,
+                  const std::string& noButton, int id);
     virtual void init() override;
 
 protected:

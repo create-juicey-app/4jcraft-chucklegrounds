@@ -2,10 +2,10 @@
 
 class PlayerInfo {
 public:
-    std::wstring name;
+    std::string name;
     int latency;
 
-    PlayerInfo(const std::wstring& name) {
+    PlayerInfo(const std::string& name) {
         this->name = name;
         latency = 0;
     }

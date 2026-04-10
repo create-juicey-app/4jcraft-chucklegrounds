@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "EntityRenderDispatcher.h"
 
 #include "minecraft/client/renderer/Tesselator.h"

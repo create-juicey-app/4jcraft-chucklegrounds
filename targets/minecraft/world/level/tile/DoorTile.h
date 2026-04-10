@@ -30,7 +30,7 @@ public:
 
 private:
     static const int DOOR_TILE_TEXTURE_COUNT = 4;
-    static const std::wstring TEXTURES[];
+    static const std::string TEXTURES[];
     int texBase;
     Icon* iconTop[2];
     Icon* iconBottom[2];

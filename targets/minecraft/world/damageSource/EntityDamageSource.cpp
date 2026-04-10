@@ -1,5 +1,5 @@
 
-// EntityDamageSource::EntityDamageSource(const wstring &msgId,
+// EntityDamageSource::EntityDamageSource(const string &msgId,
 // shared_ptr<Entity> entity) : DamageSource(msgId)
 #include "minecraft/world/damageSource/EntityDamageSource.h"
 
@@ -25,10 +25,10 @@ EntityDamageSource::EntityDamageSource(
 
 std::shared_ptr<Entity> EntityDamageSource::getEntity() { return entity; }
 
-// wstring EntityDamageSource::getLocalizedDeathMessage(shared_ptr<Player>
+// string EntityDamageSource::getLocalizedDeathMessage(shared_ptr<Player>
 // player)
 //{
-//	return L"death." + msgId + player->name + entity->getAName();
+//	return "death." + msgId + player->name + entity->getAName();
 //	//return I18n.get("death." + msgId, player.name, entity.getAName());
 // }
 
@@ -38,7 +38,7 @@ std::shared_ptr<ChatPacket> EntityDamageSource::getDeathMessagePacket(
         (entity != nullptr) && entity->instanceof(eTYPE_LIVINGENTITY)
             ? std::dynamic_pointer_cast<LivingEntity>(entity)->getCarriedItem()
             : nullptr;
-    std::wstring additional = L"";
+    std::string additional = "";
 
     if (entity->instanceof(eTYPE_SERVERPLAYER)) {
         additional = std::dynamic_pointer_cast<Player>(entity)->name;

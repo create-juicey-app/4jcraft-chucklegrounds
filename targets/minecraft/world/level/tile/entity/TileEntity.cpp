@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "TileEntity.h"
 
 #include <utility>
@@ -27,50 +28,50 @@
 #include "nbt/CompoundTag.h"
 
 TileEntity::idToCreateMapType TileEntity::idCreateMap =
-    std::unordered_map<std::wstring, tileEntityCreateFn>();
+    std::unordered_map<std::string, tileEntityCreateFn>();
 TileEntity::classToIdMapType TileEntity::classIdMap =
-    std::unordered_map<eINSTANCEOF, std::wstring, eINSTANCEOFKeyHash,
+    std::unordered_map<eINSTANCEOF, std::string, eINSTANCEOFKeyHash,
                        eINSTANCEOFKeyEq>();
 
 void TileEntity::staticCtor() {
     TileEntity::setId(FurnaceTileEntity::create, eTYPE_FURNACETILEENTITY,
-                      L"Furnace");
-    TileEntity::setId(ChestTileEntity::create, eTYPE_CHESTTILEENTITY, L"Chest");
+                      "Furnace");
+    TileEntity::setId(ChestTileEntity::create, eTYPE_CHESTTILEENTITY, "Chest");
     TileEntity::setId(EnderChestTileEntity::create, eTYPE_ENDERCHESTTILEENTITY,
-                      L"EnderChest");
+                      "EnderChest");
     TileEntity::setId(JukeboxTile::Entity::create, eTYPE_RECORDPLAYERTILE,
-                      L"RecordPlayer");
+                      "RecordPlayer");
     TileEntity::setId(DispenserTileEntity::create, eTYPE_DISPENSERTILEENTITY,
-                      L"Trap");
+                      "Trap");
     TileEntity::setId(DropperTileEntity::create, eTYPE_DROPPERTILEENTITY,
-                      L"Dropper");
-    TileEntity::setId(SignTileEntity::create, eTYPE_SIGNTILEENTITY, L"Sign");
+                      "Dropper");
+    TileEntity::setId(SignTileEntity::create, eTYPE_SIGNTILEENTITY, "Sign");
     TileEntity::setId(MobSpawnerTileEntity::create, eTYPE_MOBSPAWNERTILEENTITY,
-                      L"MobSpawner");
-    TileEntity::setId(MusicTileEntity::create, eTYPE_MUSICTILEENTITY, L"Music");
+                      "MobSpawner");
+    TileEntity::setId(MusicTileEntity::create, eTYPE_MUSICTILEENTITY, "Music");
     TileEntity::setId(PistonPieceEntity::create, eTYPE_PISTONPIECEENTITY,
-                      L"Piston");
+                      "Piston");
     TileEntity::setId(BrewingStandTileEntity::create,
-                      eTYPE_BREWINGSTANDTILEENTITY, L"Cauldron");
+                      eTYPE_BREWINGSTANDTILEENTITY, "Cauldron");
     TileEntity::setId(EnchantmentTableEntity::create,
-                      eTYPE_ENCHANTMENTTABLEENTITY, L"EnchantTable");
+                      eTYPE_ENCHANTMENTTABLEENTITY, "EnchantTable");
     TileEntity::setId(TheEndPortalTileEntity::create,
-                      eTYPE_THEENDPORTALTILEENTITY, L"Airportal");
+                      eTYPE_THEENDPORTALTILEENTITY, "Airportal");
     TileEntity::setId(CommandBlockEntity::create, eTYPE_COMMANDBLOCKTILEENTITY,
-                      L"Control");
+                      "Control");
     TileEntity::setId(BeaconTileEntity::create, eTYPE_BEACONTILEENTITY,
-                      L"Beacon");
-    TileEntity::setId(SkullTileEntity::create, eTYPE_SKULLTILEENTITY, L"Skull");
+                      "Beacon");
+    TileEntity::setId(SkullTileEntity::create, eTYPE_SKULLTILEENTITY, "Skull");
     TileEntity::setId(DaylightDetectorTileEntity::create,
-                      eTYPE_DAYLIGHTDETECTORTILEENTITY, L"DLDetector");
+                      eTYPE_DAYLIGHTDETECTORTILEENTITY, "DLDetector");
     TileEntity::setId(HopperTileEntity::create, eTYPE_HOPPERTILEENTITY,
-                      L"Hopper");
+                      "Hopper");
     TileEntity::setId(ComparatorTileEntity::create, eTYPE_COMPARATORTILEENTITY,
-                      L"Comparator");
+                      "Comparator");
 }
 
 void TileEntity::setId(tileEntityCreateFn createFn, eINSTANCEOF clas,
-                       std::wstring id) {
+                       std::string id) {
     // 4J Stu - Java has classIdMap.containsKey(id) which would never work as id
     // is not of the type of the key in classIdMap I have changed to use
     // idClassMap instead so that we can still search from the string key
@@ -97,9 +98,9 @@ void TileEntity::setLevel(Level* level) { this->level = level; }
 bool TileEntity::hasLevel() { return level != nullptr; }
 
 void TileEntity::load(CompoundTag* tag) {
-    x = tag->getInt(L"x");
-    y = tag->getInt(L"y");
-    z = tag->getInt(L"z");
+    x = tag->getInt("x");
+    y = tag->getInt("y");
+    z = tag->getInt("z");
 }
 
 void TileEntity::save(CompoundTag* tag) {
@@ -110,10 +111,10 @@ void TileEntity::save(CompoundTag* tag) {
         // This is a bug!");
         return;
     }
-    tag->putString(L"id", ((*it).second));
-    tag->putInt(L"x", x);
-    tag->putInt(L"y", y);
-    tag->putInt(L"z", z);
+    tag->putString("id", ((*it).second));
+    tag->putInt("x", x);
+    tag->putInt("y", y);
+    tag->putInt("z", z);
 }
 
 void TileEntity::tick() {}
@@ -123,7 +124,7 @@ std::shared_ptr<TileEntity> TileEntity::loadStatic(CompoundTag* tag) {
 
     // try
     //{
-    auto it = idCreateMap.find(tag->getString(L"id"));
+    auto it = idCreateMap.find(tag->getString("id"));
     if (it != idCreateMap.end())
         entity = std::shared_ptr<TileEntity>(it->second());
     //}
@@ -136,8 +137,8 @@ std::shared_ptr<TileEntity> TileEntity::loadStatic(CompoundTag* tag) {
         entity->load(tag);
     } else {
 #ifdef _DEBUG
-        app.DebugPrintf("Skipping TileEntity with id %ls.\n",
-                        tag->getString(L"id").c_str());
+        Log::info("Skipping TileEntity with id %s.\n",
+                        tag->getString("id").c_str());
 #endif
     }
 

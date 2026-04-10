@@ -20,7 +20,7 @@ public:
     WeaponRecipies() { _init(); }
 
 private:
-    static std::wstring shapes[][4];
+    static std::string shapes[][4];
     std::vector<Object*>* map;
 
 public:

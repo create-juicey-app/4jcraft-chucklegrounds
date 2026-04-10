@@ -15,7 +15,7 @@ public:
     int id;
     int x, y, z;
     int dir;
-    std::wstring motive;
+    std::string motive;
 
 public:
     AddPaintingPacket();

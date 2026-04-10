@@ -17,8 +17,8 @@ class ConsoleSaveFile;
 
 class LevelStorage {
 public:
-    static const std::wstring NETHER_FOLDER;
-    static const std::wstring ENDER_FOLDER;
+    static const std::string NETHER_FOLDER;
+    static const std::string ENDER_FOLDER;
 
     virtual ~LevelStorage() {}
     virtual LevelData* prepareLevel() = 0;
@@ -30,8 +30,8 @@ public:
     virtual void saveLevelData(LevelData* levelData) = 0;
     virtual PlayerIO* getPlayerIO() = 0;
     virtual void closeAll() = 0;
-    virtual ConsoleSavePath getDataFile(const std::wstring& id) = 0;
-    virtual std::wstring getLevelId() = 0;
+    virtual ConsoleSavePath getDataFile(const std::string& id) = 0;
+    virtual std::string getLevelId() = 0;
 
 public:
     virtual ConsoleSaveFile* getSaveFile() { return nullptr; }

@@ -17,5 +17,5 @@ public:
     virtual void close() = 0;
     virtual int64_t skip(int64_t n) = 0;
 
-    static InputStream* getResourceAsStream(const std::wstring& fileName);
+    static InputStream* getResourceAsStream(const std::string& fileName);
 };

@@ -16,20 +16,20 @@ class SavedDataStorage {
 private:
     LevelStorage* levelStorage;
 
-    typedef std::unordered_map<std::wstring, std::shared_ptr<SavedData> >
+    typedef std::unordered_map<std::string, std::shared_ptr<SavedData> >
         cacheMapType;
     cacheMapType cache;
 
     std::vector<std::shared_ptr<SavedData> > savedDatas;
 
-    typedef std::unordered_map<std::wstring, short> uaiMapType;
+    typedef std::unordered_map<std::string, short> uaiMapType;
     uaiMapType usedAuxIds;
 
 public:
     SavedDataStorage(LevelStorage*);
     std::shared_ptr<SavedData> get(const std::type_info& clazz,
-                                   const std::wstring& id);
-    void set(const std::wstring& id, std::shared_ptr<SavedData> data);
+                                   const std::string& id);
+    void set(const std::string& id, std::shared_ptr<SavedData> data);
     void save();
 
 private:
@@ -37,7 +37,7 @@ private:
     void loadAuxValues();
 
 public:
-    int getFreeAuxValueFor(const std::wstring& id);
+    int getFreeAuxValueFor(const std::string& id);
 
     // 4J Added
     int getAuxValueForMap(PlayerUID xuid, int dimension, int centreXC,

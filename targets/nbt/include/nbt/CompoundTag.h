@@ -16,11 +16,11 @@
 
 class CompoundTag : public Tag {
 private:
-    std::flat_map<std::wstring, std::unique_ptr<Tag>> tags;
+    std::flat_map<std::string, std::unique_ptr<Tag>> tags;
 
 public:
-    CompoundTag() : Tag(L"") {}
-    CompoundTag(const std::wstring& name) : Tag(name) {}
+    CompoundTag() : Tag("") {}
+    CompoundTag(const std::string& name) : Tag(name) {}
 
     void write(DataOutput* dos) {
         for (auto&& [key, value] : tags) {
@@ -57,121 +57,121 @@ public:
 
     uint8_t getId() { return TAG_Compound; }
 
-    void put(const std::wstring& name, Tag* tag) {
+    void put(const std::string& name, Tag* tag) {
         tag->setName(name);
         tags[name] = std::unique_ptr<Tag>(tag);
     }
 
-    void putByte(const std::wstring& name, uint8_t value) {
+    void putByte(const std::string& name, uint8_t value) {
         tags[name] = std::make_unique<ByteTag>(name, value);
     }
 
-    void putShort(const std::wstring& name, short value) {
+    void putShort(const std::string& name, short value) {
         tags[name] = std::make_unique<ShortTag>(name, value);
     }
 
-    void putInt(const std::wstring& name, int value) {
+    void putInt(const std::string& name, int value) {
         tags[name] = std::make_unique<IntTag>(name, value);
     }
 
-    void putLong(const std::wstring& name, int64_t value) {
+    void putLong(const std::string& name, int64_t value) {
         tags[name] = std::make_unique<LongTag>(name, value);
     }
 
-    void putFloat(const std::wstring& name, float value) {
+    void putFloat(const std::string& name, float value) {
         tags[name] = std::make_unique<FloatTag>(name, value);
     }
 
-    void putDouble(const std::wstring& name, double value) {
+    void putDouble(const std::string& name, double value) {
         tags[name] = std::make_unique<DoubleTag>(name, value);
     }
 
-    void putString(const std::wstring& name, const std::wstring& value) {
+    void putString(const std::string& name, const std::string& value) {
         tags[name] = std::make_unique<StringTag>(name, value);
     }
 
-    void putByteArray(const std::wstring& name, std::vector<uint8_t>& value) {
+    void putByteArray(const std::string& name, std::vector<uint8_t>& value) {
         tags[name] = std::make_unique<ByteArrayTag>(name, value);
     }
 
-    void putIntArray(const std::wstring& name, std::vector<int>& value) {
+    void putIntArray(const std::string& name, std::vector<int>& value) {
         tags[name] = std::make_unique<IntArrayTag>(name, value);
     }
 
-    void putCompound(const std::wstring& name, CompoundTag* value) {
+    void putCompound(const std::string& name, CompoundTag* value) {
         value->setName(name);
         tags[name] = std::unique_ptr<Tag>(value);
     }
 
-    void putBoolean(const std::wstring& name, bool val) {
+    void putBoolean(const std::string& name, bool val) {
         putByte(name, val ? (uint8_t)1 : 0);
     }
 
-    Tag* get(const std::wstring& name) {
+    Tag* get(const std::string& name) {
         auto it = tags.find(name);
         if (it != tags.end()) return it->second.get();
         return nullptr;
     }
 
-    bool contains(const std::wstring& name) {
+    bool contains(const std::string& name) {
         return tags.find(name) != tags.end();
     }
 
-    uint8_t getByte(const std::wstring& name) {
+    uint8_t getByte(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return 0;
         return static_cast<ByteTag*>(it->second.get())->data;
     }
 
-    short getShort(const std::wstring& name) {
+    short getShort(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return 0;
         return static_cast<ShortTag*>(it->second.get())->data;
     }
 
-    int getInt(const std::wstring& name) {
+    int getInt(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return 0;
         return static_cast<IntTag*>(it->second.get())->data;
     }
 
-    int64_t getLong(const std::wstring& name) {
+    int64_t getLong(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return 0;
         return static_cast<LongTag*>(it->second.get())->data;
     }
 
-    float getFloat(const std::wstring& name) {
+    float getFloat(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return 0;
         return static_cast<FloatTag*>(it->second.get())->data;
     }
 
-    double getDouble(const std::wstring& name) {
+    double getDouble(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return 0;
         return static_cast<DoubleTag*>(it->second.get())->data;
     }
 
-    std::wstring getString(const std::wstring& name) {
+    std::string getString(const std::string& name) {
         auto it = tags.find(name);
-        if (it == tags.end()) return std::wstring(L"");
+        if (it == tags.end()) return std::string("");
         return static_cast<StringTag*>(it->second.get())->data;
     }
 
-    std::vector<uint8_t> getByteArray(const std::wstring& name) {
+    std::vector<uint8_t> getByteArray(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return std::vector<uint8_t>();
         return static_cast<ByteArrayTag*>(it->second.get())->data;
     }
 
-    std::vector<int> getIntArray(const std::wstring& name) {
+    std::vector<int> getIntArray(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) return std::vector<int>();
         return static_cast<IntArrayTag*>(it->second.get())->data;
     }
 
-    CompoundTag* getCompound(const std::wstring& name) {
+    CompoundTag* getCompound(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) {
             auto [it2, inserted] =
@@ -181,7 +181,7 @@ public:
         return static_cast<CompoundTag*>(it->second.get());
     }
 
-    ListTag<Tag>* getList(const std::wstring& name) {
+    ListTag<Tag>* getList(const std::string& name) {
         auto it = tags.find(name);
         if (it == tags.end()) {
             auto [it2, inserted] =
@@ -191,15 +191,15 @@ public:
         return static_cast<ListTag<Tag>*>(it->second.get());
     }
 
-    bool getBoolean(const std::wstring& string) { return getByte(string) != 0; }
+    bool getBoolean(const std::string& string) { return getByte(string) != 0; }
 
-    void remove(const std::wstring& name) { tags.erase(name); }
+    void remove(const std::string& name) { tags.erase(name); }
 
-    std::wstring toString() {
+    std::string toString() {
         static const int bufSize = 32;
-        static wchar_t buf[bufSize];
-        swprintf(buf, bufSize, L"%zu entries", tags.size());
-        return std::wstring(buf);
+        static char buf[bufSize];
+        snprintf(buf, bufSize, "%zu entries", tags.size());
+        return std::string(buf);
     }
 
     void print(char* prefix, std::ostream out) {

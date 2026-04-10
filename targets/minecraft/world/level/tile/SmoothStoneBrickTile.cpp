@@ -7,8 +7,8 @@
 
 class Icon;
 
-const std::wstring SmoothStoneBrickTile::TEXTURE_NAMES[] = {
-    L"", L"mossy", L"cracked", L"carved"};
+const std::string SmoothStoneBrickTile::TEXTURE_NAMES[] = {
+    "", "mossy", "cracked", "carved"};
 
 const unsigned int SmoothStoneBrickTile::SMOOTH_STONE_BRICK_NAMES
     [SMOOTH_STONE_BRICK_NAMES_LENGTH] = {IDS_TILE_STONE_BRICK_SMOOTH,
@@ -36,8 +36,8 @@ void SmoothStoneBrickTile::registerIcons(IconRegister* iconRegister) {
     icons = new Icon*[SMOOTH_STONE_BRICK_NAMES_LENGTH];
 
     for (int i = 0; i < SMOOTH_STONE_BRICK_NAMES_LENGTH; i++) {
-        std::wstring name = getIconName();
-        if (!TEXTURE_NAMES[i].empty()) name += L"_" + TEXTURE_NAMES[i];
+        std::string name = getIconName();
+        if (!TEXTURE_NAMES[i].empty()) name += "_" + TEXTURE_NAMES[i];
         icons[i] = iconRegister->registerIcon(name);
     }
 }

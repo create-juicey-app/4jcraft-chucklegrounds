@@ -11,10 +11,10 @@ class Material;
 
 class BasePressurePlateTile : public Tile {
 private:
-    std::wstring texture;
+    std::string texture;
 
 protected:
-    BasePressurePlateTile(int id, const std::wstring& tex, Material* material);
+    BasePressurePlateTile(int id, const std::string& tex, Material* material);
 
 public:
     virtual void updateShape(LevelSource* level, int x, int y, int z,

@@ -11,10 +11,10 @@ class HalfTransparentTile : public Tile {
 
 private:
     bool allowSame;
-    std::wstring texture;
+    std::string texture;
 
 protected:
-    HalfTransparentTile(int id, const std::wstring& tex, Material* material,
+    HalfTransparentTile(int id, const std::string& tex, Material* material,
                         bool allowSame);
 
 public:

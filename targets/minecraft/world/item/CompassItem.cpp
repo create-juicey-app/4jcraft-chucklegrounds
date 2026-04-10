@@ -9,8 +9,8 @@
 
 class Icon;
 
-const std::wstring CompassItem::TEXTURE_PLAYER_ICON[XUSER_MAX_COUNT] = {
-    L"compassP0", L"compassP1", L"compassP2", L"compassP3"};
+const std::string CompassItem::TEXTURE_PLAYER_ICON[XUSER_MAX_COUNT] = {
+    "compassP0", "compassP1", "compassP2", "compassP3"};
 
 CompassItem::CompassItem(int id) : Item(id) { icons = nullptr; }
 

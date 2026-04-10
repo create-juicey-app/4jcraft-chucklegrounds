@@ -37,9 +37,9 @@ public:
                                   unsigned int compressedDataSize = 0) = 0;
 #endif
     virtual unsigned int getSizeOnDisk() = 0;
-    virtual std::wstring getFilename() = 0;
+    virtual std::string getFilename() = 0;
     virtual std::vector<FileEntry*>* getFilesWithPrefix(
-        const std::wstring& prefix) = 0;
+        const std::string& prefix) = 0;
     virtual std::vector<FileEntry*>* getRegionFilesByDimension(
         unsigned int dimensionIndex) = 0;
 

@@ -9,77 +9,77 @@
 void FoodRecipies::addRecipes(Recipes* r) {
     // 4J-JEV: Bumped up in the list to avoid a colision with the title.
     r->addShapedRecipy(new ItemInstance(Item::apple_gold, 1, 0),  //
-                       L"ssscicig",
-                       L"###",  //
-                       L"#X#",  //
-                       L"###",  //
-                       L'#', Item::goldIngot, L'X', Item::apple, L'F');
+                       "ssscicig",
+                       "###",  //
+                       "#X#",  //
+                       "###",  //
+                       '#', Item::goldIngot, 'X', Item::apple, 'F');
 
     r->addShapedRecipy(new ItemInstance(Item::apple_gold, 1, 1),  //
-                       L"sssctcig",
-                       L"###",  //
-                       L"#X#",  //
-                       L"###",  //
-                       L'#', Tile::goldBlock, L'X', Item::apple, L'F');
+                       "sssctcig",
+                       "###",  //
+                       "#X#",  //
+                       "###",  //
+                       '#', Tile::goldBlock, 'X', Item::apple, 'F');
 
     r->addShapedRecipy(new ItemInstance(Item::speckledMelon, 1),  //
-                       L"ssscicig",
-                       L"###",  //
-                       L"#X#",  //
-                       L"###",  //
+                       "ssscicig",
+                       "###",  //
+                       "#X#",  //
+                       "###",  //
 
-                       L'#', Item::goldNugget, L'X', Item::melon, L'F');
+                       '#', Item::goldNugget, 'X', Item::melon, 'F');
 
-    r->addShapelessRecipy(new ItemInstance(Item::mushroomStew), L"ttig",
+    r->addShapelessRecipy(new ItemInstance(Item::mushroomStew), "ttig",
                           Tile::mushroom_brown, Tile::mushroom_red, Item::bowl,
-                          L'F');
+                          'F');
 
     r->addShapedRecipy(
         new ItemInstance(Item::cookie, 8),  //
-        L"sczcig",
-        L"#X#",  //
+        "sczcig",
+        "#X#",  //
 
-        L'X', new ItemInstance(Item::dye_powder, 1, DyePowderItem::BROWN), L'#',
-        Item::wheat, L'F');
+        'X', new ItemInstance(Item::dye_powder, 1, DyePowderItem::BROWN), '#',
+        Item::wheat, 'F');
 
     r->addShapedRecipy(new ItemInstance(Tile::melon),  //
-                       L"ssscig",
-                       L"MMM",  //
-                       L"MMM",  //
-                       L"MMM",  //
+                       "ssscig",
+                       "MMM",  //
+                       "MMM",  //
+                       "MMM",  //
 
-                       L'M', Item::melon, L'F');
+                       'M', Item::melon, 'F');
 
     r->addShapedRecipy(new ItemInstance(Item::seeds_melon),  //
-                       L"scig",
-                       L"M",  //
+                       "scig",
+                       "M",  //
 
-                       L'M', Item::melon, L'F');
+                       'M', Item::melon, 'F');
 
     r->addShapedRecipy(new ItemInstance(Item::seeds_pumpkin, 4),  //
-                       L"sctg",
-                       L"M",  //
+                       "sctg",
+                       "M",  //
 
-                       L'M', Tile::pumpkin, L'F');
+                       'M', Tile::pumpkin, 'F');
 
     r->addShapelessRecipy(new ItemInstance(Item::pumpkinPie),  //
-                          L"tiig", Tile::pumpkin, Item::sugar, Item::egg, L'F');
+                          "tiig", Tile::pumpkin, Item::sugar, Item::egg, 'F');
 
     r->addShapedRecipy(new ItemInstance(Item::carrotGolden, 1, 0),  //
-                       L"ssscicig",
-                       L"###",  //
-                       L"#X#",  //
-                       L"###",  //
+                       "ssscicig",
+                       "###",  //
+                       "#X#",  //
+                       "###",  //
 
-                       L'#', Item::goldNugget, L'X', Item::carrots, L'F');
+                       '#', Item::goldNugget, 'X', Item::carrots, 'F');
 
     r->addShapelessRecipy(new ItemInstance(Item::fermentedSpiderEye),  //
-                          L"itig", Item::spiderEye, Tile::mushroom_brown,
-                          Item::sugar, L'F');
+                          "itig", Item::spiderEye, Tile::mushroom_brown,
+                          Item::sugar, 'F');
 
     r->addShapelessRecipy(new ItemInstance(Item::blazePowder, 2),  //
-                          L"ig", Item::blazeRod, L'F');
+                          "ig", Item::blazeRod, 'F');
 
     r->addShapelessRecipy(new ItemInstance(Item::magmaCream),  //
-                          L"iig", Item::blazePowder, Item::slimeBall, L'F');
+                          "iig", Item::blazePowder, Item::slimeBall, 'F');
 }

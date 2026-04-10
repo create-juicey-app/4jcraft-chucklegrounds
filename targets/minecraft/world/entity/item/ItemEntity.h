@@ -21,7 +21,7 @@ private:
     static const int LIFETIME =
         5 * 60 * SharedConstants::TICKS_PER_SECOND;  // Five miniutes.
 
-    std::wstring thrower;
+    std::string thrower;
 
     // 4J Added
     void _init();
@@ -70,12 +70,12 @@ public:
     virtual void readAdditionalSaveData(CompoundTag* tag);
     virtual void playerTouch(std::shared_ptr<Player> player);
 
-    virtual std::wstring getAName();
+    virtual std::string getAName();
     virtual void changeDimension(int i);
     std::shared_ptr<ItemInstance> getItem();
     void setItem(std::shared_ptr<ItemInstance> item);
     virtual bool isAttackable();
 
-    void setThrower(const std::wstring& thrower);
-    std::wstring getThrower();
+    void setThrower(const std::string& thrower);
+    std::string getThrower();
 };

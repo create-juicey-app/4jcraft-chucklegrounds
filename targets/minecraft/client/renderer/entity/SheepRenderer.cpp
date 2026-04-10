@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/multiplayer/MultiPlayerLocalPlayer.h"
@@ -39,7 +39,7 @@ int SheepRenderer::prepareArmor(std::shared_ptr<LivingEntity> _sheep, int layer,
         bindTexture(&SHEEP_FUR_LOCATION);
 
         if (sheep->hasCustomName() &&
-            sheep->getCustomName().compare(L"jeb_") == 0) {
+            sheep->getCustomName().compare("jeb_") == 0) {
             // easter egg...
             int colorDuration = 25;
             int value = (sheep->tickCount / colorDuration) + sheep->entityId;

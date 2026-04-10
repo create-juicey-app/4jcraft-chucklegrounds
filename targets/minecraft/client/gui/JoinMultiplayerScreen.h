@@ -21,10 +21,10 @@ protected:
     virtual void buttonClicked(Button* button) override;
 
 private:
-    virtual int parseInt(const std::wstring& str, int def);
+    virtual int parseInt(const std::string& str, int def);
 
 protected:
-    virtual void keyPressed(wchar_t ch, int eventKey) override;
+    virtual void keyPressed(char ch, int eventKey) override;
     virtual void mouseClicked(int x, int y, int buttonNum) override;
 
 public:

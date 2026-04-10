@@ -1,5 +1,5 @@
 #pragma once
-#define IDC_HtmlControl L"HtmlControl"
-#define IDC_Darken L"Darken"
-#define IDC_FocusSink L"FocusSink"
-#define IDC_WinScene L"WinScene"
+#define IDC_HtmlControl "HtmlControl"
+#define IDC_Darken "Darken"
+#define IDC_FocusSink "FocusSink"
+#define IDC_WinScene "WinScene"

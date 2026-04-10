@@ -7,8 +7,8 @@ class ConsoleInputSource;
 
 class ConsoleInput {
 public:
-    std::wstring msg;
+    std::string msg;
     ConsoleInputSource* source;
 
-    ConsoleInput(const std::wstring& msg, ConsoleInputSource* source);
+    ConsoleInput(const std::string& msg, ConsoleInputSource* source);
 };

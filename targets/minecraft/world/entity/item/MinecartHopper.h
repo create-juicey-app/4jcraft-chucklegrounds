@@ -67,8 +67,8 @@ public:
                          std::shared_ptr<ItemInstance> item) {
         MinecartContainer::setItem(slot, item);
     }
-    virtual std::wstring getName() { return MinecartContainer::getName(); }
-    virtual std::wstring getCustomName() {
+    virtual std::string getName() { return MinecartContainer::getName(); }
+    virtual std::string getCustomName() {
         return MinecartContainer::getCustomName();
     }
     virtual bool hasCustomName() { return MinecartContainer::hasCustomName(); }

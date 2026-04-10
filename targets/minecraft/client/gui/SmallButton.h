@@ -9,10 +9,10 @@ private:
     const Options::Option* option;
 
 public:
-    SmallButton(int id, int x, int y, const std::wstring& msg);
+    SmallButton(int id, int x, int y, const std::string& msg);
     SmallButton(int id, int x, int y, int width, int height,
-                const std::wstring& msg);
+                const std::string& msg);
     SmallButton(int id, int x, int y, const Options::Option* item,
-                const std::wstring& msg);
+                const std::string& msg);
     const Options::Option* getOption();
 };

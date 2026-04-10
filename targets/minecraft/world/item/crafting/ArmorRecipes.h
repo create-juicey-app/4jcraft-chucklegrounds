@@ -28,7 +28,7 @@ public:
 
 private:
     // 4J-PB - this wasn't static in java, so might not be right
-    static std::wstring shapes[][4];
+    static std::string shapes[][4];
 
 private:
     std::vector<Object*>* map;

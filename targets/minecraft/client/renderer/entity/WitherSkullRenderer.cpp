@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 
 #include "minecraft/client/model/SkeletonHeadModel.h"
 #include "minecraft/client/renderer/Textures.h"

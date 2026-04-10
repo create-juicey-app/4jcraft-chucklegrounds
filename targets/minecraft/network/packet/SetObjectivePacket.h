@@ -16,8 +16,8 @@ public:
     static const int METHOD_REMOVE = 1;
     static const int METHOD_CHANGE = 2;
 
-    std::wstring objectiveName;
-    std::wstring displayName;
+    std::string objectiveName;
+    std::string displayName;
     int method;
 
     SetObjectivePacket();

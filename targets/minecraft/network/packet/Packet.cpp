@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "Packet.h"
 
 #include <assert.h>
@@ -351,11 +352,11 @@ void Packet::staticCtor() {
 }
 
 IllegalArgumentException::IllegalArgumentException(
-    const std::wstring& information) {
+    const std::string& information) {
     this->information = information;
 }
 
-IOException::IOException(const std::wstring& information) {
+IOException::IOException(const std::string& information) {
     this->information = information;
 }
 
@@ -439,11 +440,11 @@ void Packet::updatePacketStatsPIX() {
          it++) {
         Packet::PacketStatistics* stat = it->second;
         int64_t count = stat->getRunningCount();
-        wchar_t pixName[256];
-        swprintf_s(pixName, L"Packet count %d", stat->id);
+        char pixName[256];
+        snprintf(pixName, "Packet count %d", stat->id);
         //		PIXReportCounter(pixName,(float)count);
         int64_t total = stat->getRunningTotal();
-        swprintf_s(pixName, L"Packet bytes %d", stat->id);
+        snprintf(pixName, "Packet bytes %d", stat->id);
         PIXReportCounter(pixName, (float)total);
         stat->IncrementPos();
     }
@@ -465,9 +466,9 @@ void Packet::writeBytes(DataOutputStream* dataoutputstream,
 std::vector<uint8_t> Packet::readBytes(DataInputStream* datainputstream) {
     int size = datainputstream->readShort();
     if (size < 0) {
-        app.DebugPrintf("Key was smaller than nothing!  Weird key!");
+        Log::info("Key was smaller than nothing!  Weird key!");
 #if !defined(_CONTENT_PACKAGE)
-        __debugbreak();
+        assert(0);
 #endif
         return std::vector<uint8_t>();
         // throw new IOException("Key was smaller than nothing!  Weird key!");
@@ -515,19 +516,19 @@ std::shared_ptr<Packet> Packet::readPacket(
          serverReceivedPackets.find(id) == serverReceivedPackets.end()) ||
         (!isServer &&
          clientReceivedPackets.find(id) == clientReceivedPackets.end())) {
-        // app.DebugPrintf("Bad packet id %d\n", id);
-        __debugbreak();
+        // Log::info("Bad packet id %d\n", id);
+        assert(0);
         assert(false);
-        //            throw new IOException(wstring(L"Bad packet id ") +
+        //            throw new IOException(string("Bad packet id ") +
         //            toWString<int>(id));
     }
 
     packet = getPacket(id);
     if (packet == nullptr)
-        assert(false);  // throw new IOException(wstring(L"Bad packet id ") +
+        assert(false);  // throw new IOException(string("Bad packet id ") +
                         // toWString<int>(id));
 
-    // app.DebugPrintf("%s reading packet %d\n", isServer ? "Server" : "Client",
+    // Log::info("%s reading packet %d\n", isServer ? "Server" : "Client",
     // packet->getId());
     packet->read(dis);
     //    }
@@ -563,12 +564,12 @@ void Packet::writePacket(
     DataOutputStream*
         dos)  // throws IOException TODO 4J JEV, should this declare a throws?
 {
-    // app.DebugPrintf("Writing packet %d\n", packet->getId());
+    // Log::info("Writing packet %d\n", packet->getId());
     dos->write(packet->getId());
     packet->write(dos);
 }
 
-void Packet::writeUtf(const std::wstring& value,
+void Packet::writeUtf(const std::string& value,
                       DataOutputStream* dos)  // throws IOException TODO 4J JEV,
                                               // should this declare a throws?
 {
@@ -576,27 +577,27 @@ void Packet::writeUtf(const std::wstring& value,
     dos->writeChars(value);
 }
 
-std::wstring Packet::readUtf(DataInputStream* dis,
+std::string Packet::readUtf(DataInputStream* dis,
                              int maxLength)  // throws IOException TODO 4J JEV,
                                              // should this declare a throws?
 {
     short stringLength = dis->readShort();
     if (stringLength > maxLength) {
-        std::wstringstream stream;
-        stream << L"Received string length longer than maximum allowed ("
+        std::stringstream stream;
+        stream << "Received string length longer than maximum allowed ("
                << stringLength << " > " << maxLength << ")";
         assert(false);
         //        throw new IOException( stream.str() );
     }
     if (stringLength < 0) {
         assert(false);
-        //        throw new IOException(L"Received string length is less than
+        //        throw new IOException("Received string length is less than
         //        zero! Weird string!");
     }
 
-    std::wstring builder = L"";
+    std::string builder = "";
     for (int i = 0; i < stringLength; i++) {
-        wchar_t rc = dis->readChar();
+        char rc = dis->readChar();
         builder.push_back(rc);
     }
 

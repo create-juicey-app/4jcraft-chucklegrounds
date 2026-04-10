@@ -15,16 +15,16 @@ class Level;
 
 CommandBlockEntity::CommandBlockEntity() {
     successCount = 0;
-    command = L"";
-    name = L"@";
+    command = "";
+    name = "@";
 }
 
-void CommandBlockEntity::setCommand(const std::wstring& command) {
+void CommandBlockEntity::setCommand(const std::string& command) {
     this->command = command;
     setChanged();
 }
 
-std::wstring CommandBlockEntity::getCommand() { return command; }
+std::string CommandBlockEntity::getCommand() { return command; }
 
 int CommandBlockEntity::performCommand(Level* level) {
     // 4J-JEV: Cannot decide what to do with the command field.
@@ -32,31 +32,31 @@ int CommandBlockEntity::performCommand(Level* level) {
     return 0;
 }
 
-std::wstring CommandBlockEntity::getName() { return name; }
+std::string CommandBlockEntity::getName() { return name; }
 
-void CommandBlockEntity::setName(const std::wstring& name) {
+void CommandBlockEntity::setName(const std::string& name) {
     this->name = name;
 }
 
-void CommandBlockEntity::sendMessage(const std::wstring& message,
+void CommandBlockEntity::sendMessage(const std::string& message,
                                      ChatPacket::EChatPacketMessage type,
                                      int customData,
-                                     const std::wstring& additionalMessage) {}
+                                     const std::string& additionalMessage) {}
 
 bool CommandBlockEntity::hasPermission(EGameCommand command) { return false; }
 
 void CommandBlockEntity::save(CompoundTag* tag) {
     TileEntity::save(tag);
-    tag->putString(L"Command", command);
-    tag->putInt(L"SuccessCount", successCount);
-    tag->putString(L"CustomName", name);
+    tag->putString("Command", command);
+    tag->putInt("SuccessCount", successCount);
+    tag->putString("CustomName", name);
 }
 
 void CommandBlockEntity::load(CompoundTag* tag) {
     TileEntity::load(tag);
-    command = tag->getString(L"Command");
-    successCount = tag->getInt(L"SuccessCount");
-    if (tag->contains(L"CustomName")) name = tag->getString(L"CustomName");
+    command = tag->getString("Command");
+    successCount = tag->getInt("SuccessCount");
+    if (tag->contains("CustomName")) name = tag->getString("CustomName");
 }
 
 Pos* CommandBlockEntity::getCommandSenderWorldPosition() {

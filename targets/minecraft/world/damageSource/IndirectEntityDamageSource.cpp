@@ -1,5 +1,5 @@
 
-// IndirectEntityDamageSource::IndirectEntityDamageSource(const wstring &msgId,
+// IndirectEntityDamageSource::IndirectEntityDamageSource(const string &msgId,
 // shared_ptr<Entity> entity, shared_ptr<Entity> owner) :
 // EntityDamageSource(msgId, entity)
 #include "minecraft/world/damageSource/IndirectEntityDamageSource.h"
@@ -32,11 +32,11 @@ std::shared_ptr<Entity> IndirectEntityDamageSource::getEntity() {
     return owner;
 }
 
-// wstring
+// string
 // IndirectEntityDamageSource::getLocalizedDeathMessage(shared_ptr<Player>
 // player)
 //{
-//	return L"death." + msgId + player->name + owner->getAName();
+//	return "death." + msgId + player->name + owner->getAName();
 //	//return I18n.get("death." + msgId, player.name, owner.getAName());
 // }
 
@@ -46,7 +46,7 @@ std::shared_ptr<ChatPacket> IndirectEntityDamageSource::getDeathMessagePacket(
         entity->instanceof(eTYPE_LIVINGENTITY)
             ? std::dynamic_pointer_cast<LivingEntity>(entity)->getCarriedItem()
             : nullptr;
-    std::wstring additional = L"";
+    std::string additional = "";
     int type;
     if (owner != nullptr) {
         type = owner->GetType();

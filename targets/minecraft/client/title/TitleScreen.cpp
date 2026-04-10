@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "TitleScreen.h"
 
 #include <stdint.h>
@@ -5,10 +7,10 @@
 #include <cmath>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "app/linux/LinuxGame.h"
 #include "app/linux/Stubs/winapi_stubs.h"
-#include "app/include/BufferedImage.h"
+#include "minecraft/client/BufferedImage.h"
 #include "util/StringHelpers.h"
 #include "java/InputOutputStream/BufferedReader.h"
 #include "java/InputOutputStream/ByteArrayInputStream.h"
@@ -33,21 +35,21 @@ TitleScreen::TitleScreen() {
     vo = 0;
     multiplayerButton = nullptr;
 
-    splash = L"missingno";
+    splash = "missingno";
     //    try {	// 4J - removed try/catch
-    std::vector<std::wstring> splashes;
+    std::vector<std::string> splashes;
 
     // 4jcraft: copied over from UIScene_MainMenu
     int splashIndex;
 
-    std::wstring filename = L"splashes.txt";
-    if (app.hasArchiveFile(filename)) {
-        std::vector<uint8_t> splashesArray = app.getArchiveFile(filename);
+    std::string filename = "splashes.txt";
+    if (gameServices().hasArchiveFile(filename)) {
+        std::vector<uint8_t> splashesArray = gameServices().getArchiveFile(filename);
         ByteArrayInputStream bais(splashesArray);
         InputStreamReader isr(&bais);
         BufferedReader br(&isr);
 
-        std::wstring line = L"";
+        std::string line = "";
         while (!(line = br.readLine()).empty()) {
             line = trimString(line);
             if (line.length() > 0) {
@@ -87,10 +89,10 @@ void TitleScreen::tick() {
     // // 4J - temp testing
 }
 
-void TitleScreen::keyPressed(wchar_t eventCharacter, int eventKey) {}
+void TitleScreen::keyPressed(char eventCharacter, int eventKey) {}
 
 void TitleScreen::init() {
-    app.DebugPrintf("TitleScreen::init() START\n");
+    Log::info("TitleScreen::init() START\n");
 
     // 4jcraft: this is for the blured panorama background
     viewportTexture =
@@ -115,23 +117,23 @@ if (c.get(Calendar.MONTH) + 1 == 11 && c.get(Calendar.DAY_OF_MONTH) == 9) {
     const int topPos = height / 4 + spacing * 2;
 
     buttons.push_back(new Button(1, width / 2 - 100, topPos,
-                                 language->getElement(L"menu.singleplayer")));
+                                 language->getElement("menu.singleplayer")));
     buttons.push_back(multiplayerButton = new Button(
                           2, width / 2 - 100, topPos + spacing * 1,
-                          language->getElement(L"menu.multiplayer")));
+                          language->getElement("menu.multiplayer")));
     buttons.push_back(new Button(3, width / 2 - 100, topPos + spacing * 2,
-                                 language->getElement(L"menu.mods")));
+                                 language->getElement("menu.mods")));
 
     if (minecraft->appletMode) {
         buttons.push_back(new Button(0, width / 2 - 100, topPos + spacing * 3,
-                                     language->getElement(L"menu.options")));
+                                     language->getElement("menu.options")));
     } else {
         buttons.push_back(new Button(0, width / 2 - 100,
                                      topPos + spacing * 3 + 12, 98, 20,
-                                     language->getElement(L"menu.options")));
+                                     language->getElement("menu.options")));
         buttons.push_back(new Button(4, width / 2 + 2,
                                      topPos + spacing * 3 + 12, 98, 20,
-                                     language->getElement(L"menu.quit")));
+                                     language->getElement("menu.quit")));
     }
 
     if (minecraft->user == nullptr) {
@@ -141,33 +143,33 @@ if (c.get(Calendar.MONTH) + 1 == 11 && c.get(Calendar.DAY_OF_MONTH) == 9) {
 
 void TitleScreen::buttonClicked(Button* button) {
     if (button->id == 0) {
-        app.DebugPrintf(
+        Log::info(
             "TitleScreen::buttonClicked() 'Options...' if (button->id == 0)\n");
         minecraft->setScreen(new OptionsScreen(this, minecraft->options));
     }
     if (button->id == 1) {
-        app.DebugPrintf(
+        Log::info(
             "TitleScreen::buttonClicked() 'Singleplayer' if (button->id == "
             "1)\n");
         minecraft->setScreen(new SelectWorldScreen(this));
     }
     if (button->id == 2) {
-        app.DebugPrintf(
+        Log::info(
             "TitleScreen::buttonClicked() 'Multiplayer' if (button->id == "
             "2)\n");
         minecraft->setScreen(new JoinMultiplayerScreen(this));
     }
     if (button->id == 3) {
-        app.DebugPrintf(
+        Log::info(
             "TitleScreen::buttonClicked() 'Texture Pack' if (button->id == "
             "3)\n");
         //       minecraft->setScreen(new TexturePackSelectScreen(this));
         //       // 4J - TODO put back in
     }
     if (button->id == 4) {
-        app.DebugPrintf(
+        Log::info(
             "TitleScreen::buttonClicked() Exit Game if (button->id == 4)\n");
-        RenderManager.Close();  // minecraft->stop();
+        PlatformRenderer.Close();  // minecraft->stop();
     }
 }
 
@@ -415,7 +417,7 @@ void TitleScreen::render(int xm, int ym, float a) {
     drawString(
         font, ClientConstants::VERSION_STRING, 2, height - 10,
         0xffffff);  // 4jcraft: use the same height as the copyright message
-    std::wstring msg = L"Copyright Mojang AB. Do not distribute.";
+    std::string msg = "Copyright Mojang AB. Do not distribute.";
     drawString(font, msg, width - font->width(msg) - 2, height - 10, 0xffffff);
 
     Screen::render(xm, ym, a);

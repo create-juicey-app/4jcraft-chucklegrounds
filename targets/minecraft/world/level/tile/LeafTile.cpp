@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/Random.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/core/particles/ParticleTypes.h"
@@ -29,10 +29,10 @@ const unsigned int LeafTile::LEAF_NAMES[LEAF_NAMES_LENGTH] = {
     IDS_TILE_LEAVES_JUNGLE,
 };
 
-const std::wstring LeafTile::TEXTURES[2][4] = {
-    {L"leaves", L"leaves_spruce", L"leaves", L"leaves_jungle"},
-    {L"leaves_opaque", L"leaves_spruce_opaque", L"leaves_opaque",
-     L"leaves_jungle_opaque"},
+const std::string LeafTile::TEXTURES[2][4] = {
+    {"leaves", "leaves_spruce", "leaves", "leaves_jungle"},
+    {"leaves_opaque", "leaves_spruce_opaque", "leaves_opaque",
+     "leaves_jungle_opaque"},
 };
 
 // 4jcraft, this is the unitinialized vpointer fiassco of isSolidRender()

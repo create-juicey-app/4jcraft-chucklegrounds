@@ -1,9 +1,10 @@
+#include "minecraft/util/Log.h"
 #include "BiomeOverrideLayer.h"
 
 #include <string.h>
 
-#include "app/linux/LinuxGame.h"
-#include "platform/PlatformServices.h"
+#include "minecraft/IGameServices.h"
+#include "platform/fs/fs.h"
 #include "minecraft/world/level/newbiome/layer/Layer.h"
 #if defined(__linux__)
 #include "app/linux/Stubs/winapi_stubs.h"
@@ -15,17 +16,17 @@ BiomeOverrideLayer::BiomeOverrideLayer(int seedMixup) : Layer(seedMixup) {
 
     {
         const char* path = "GameRules/biomemap.bin";
-        auto result = PlatformFileIO.readFile(
+        auto result = PlatformFilesystem.readFile(
             path, m_biomeOverride.data(), m_biomeOverride.size());
-        if (result.status == IPlatformFileIO::ReadStatus::NotFound) {
-            app.DebugPrintf("Biome override not found, using plains as default\n");
+        if (result.status == IPlatformFilesystem::ReadStatus::NotFound) {
+            Log::info("Biome override not found, using plains as default\n");
             memset(m_biomeOverride.data(), Biome::plains->id,
                    m_biomeOverride.size());
-        } else if (result.status == IPlatformFileIO::ReadStatus::TooLarge) {
-            app.DebugPrintf("Biomemap binary is too large!!\n");
-            __debugbreak();
-        } else if (result.status != IPlatformFileIO::ReadStatus::Ok) {
-            app.FatalLoadError();
+        } else if (result.status == IPlatformFilesystem::ReadStatus::TooLarge) {
+            Log::info("Biomemap binary is too large!!\n");
+            assert(0);
+        } else if (result.status != IPlatformFilesystem::ReadStatus::Ok) {
+            gameServices().fatalLoadError();
         }
     }
 }

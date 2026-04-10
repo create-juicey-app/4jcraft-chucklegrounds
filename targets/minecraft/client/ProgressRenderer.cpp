@@ -112,14 +112,14 @@ void ProgressRenderer::setType(eProgressStringType eType) {
     m_eType = eType;
 }
 
-void ProgressRenderer::progressStage(std::wstring& wstrText) {
+void ProgressRenderer::progressStage(std::string& wstrText) {
     std::lock_guard<std::recursive_mutex> lock(ProgressRenderer::s_progress);
     m_wstrText = wstrText;
     m_eType = eProgressStringType_String;
 }
 
-std::wstring& ProgressRenderer::getProgressString(void) {
+std::string& ProgressRenderer::getProgressString(void) {
     std::lock_guard<std::recursive_mutex> lock(ProgressRenderer::s_progress);
-    std::wstring& temp = m_wstrText;
+    std::string& temp = m_wstrText;
     return temp;
 }

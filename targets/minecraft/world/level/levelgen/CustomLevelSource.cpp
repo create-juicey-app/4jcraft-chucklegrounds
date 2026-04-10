@@ -1,12 +1,14 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "CustomLevelSource.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
-#include "platform/PlatformServices.h"
+#include "platform/fs/fs.h"
 #include "minecraft/world/level/biome/Biome.h"
 #include "minecraft/world/level/chunk/ChunkSource.h"
 #if defined(__linux__)
@@ -45,13 +47,13 @@ CustomLevelSource::CustomLevelSource(Level* level, int64_t seed,
 
     {
         const char* path = "GameRules/heightmap.bin";
-        auto result = PlatformFileIO.readFile(
+        auto result = PlatformFilesystem.readFile(
             path, m_heightmapOverride.data(), m_heightmapOverride.size());
-        if (result.status == IPlatformFileIO::ReadStatus::TooLarge) {
-            app.DebugPrintf("Heightmap binary is too large!!\n");
-            __debugbreak();
-        } else if (result.status != IPlatformFileIO::ReadStatus::Ok) {
-            app.FatalLoadError();
+        if (result.status == IPlatformFilesystem::ReadStatus::TooLarge) {
+            Log::info("Heightmap binary is too large!!\n");
+            assert(0);
+        } else if (result.status != IPlatformFilesystem::ReadStatus::Ok) {
+            gameServices().fatalLoadError();
             assert(false);
         }
     }
@@ -61,17 +63,17 @@ CustomLevelSource::CustomLevelSource(Level* level, int64_t seed,
 
     {
         const char* waterHeightPath = "GameRules/waterheight.bin";
-        auto result = PlatformFileIO.readFile(
+        auto result = PlatformFilesystem.readFile(
             waterHeightPath, m_waterheightOverride.data(),
             m_waterheightOverride.size());
-        if (result.status == IPlatformFileIO::ReadStatus::NotFound) {
+        if (result.status == IPlatformFilesystem::ReadStatus::NotFound) {
             memset(m_waterheightOverride.data(), level->seaLevel,
                    m_waterheightOverride.size());
-        } else if (result.status == IPlatformFileIO::ReadStatus::TooLarge) {
-            app.DebugPrintf("waterheight binary is too large!!\n");
-            __debugbreak();
-        } else if (result.status != IPlatformFileIO::ReadStatus::Ok) {
-            app.FatalLoadError();
+        } else if (result.status == IPlatformFilesystem::ReadStatus::TooLarge) {
+            Log::info("waterheight binary is too large!!\n");
+            assert(0);
+        } else if (result.status != IPlatformFilesystem::ReadStatus::Ok) {
+            gameServices().fatalLoadError();
         }
     }
 
@@ -130,7 +132,7 @@ void CustomLevelSource::prepareHeights(int xOffs, int zOffs,
                                 (xMapStart * 16 + x + (xc * CHUNK_WIDTH));
                             int mapHeight = m_heightmapOverride[mapIndex];
                             waterHeight = m_waterheightOverride[mapIndex];
-                            // app.DebugPrintf("MapHeight = %d, y = %d\n",
+                            // Log::info("MapHeight = %d, y = %d\n",
                             // mapHeight, yc * CHUNK_HEIGHT + y);
                             ///////////////////////////////////////////////////////////////////
                             // 4J - add this chunk of code to make land
@@ -260,7 +262,7 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs,
             uint8_t top = b->topMaterial;
             uint8_t material = b->material;
 
-            LevelGenerationOptions* lgo = app.getLevelGenerationOptions();
+            LevelGenerationOptions* lgo = gameServices().getLevelGenerationOptions();
             if (lgo != nullptr) {
                 lgo->getBiomeOverride(b->id, material, top);
             }
@@ -527,7 +529,7 @@ void CustomLevelSource::postProcess(ChunkSource* parent, int xt, int zt) {
 
     biome->decorate(level, pprandom, xo, zo);
 
-    app.processSchematics(parent->getChunk(xt, zt));
+    gameServices().processSchematics(parent->getChunk(xt, zt));
 
     MobSpawner::postProcessSpawnMobs(level, biome, xo + 8, zo + 8, 16, 16,
                                      pprandom);
@@ -566,7 +568,7 @@ bool CustomLevelSource::tick() { return false; }
 
 bool CustomLevelSource::shouldSave() { return true; }
 
-std::wstring CustomLevelSource::gatherStats() { return L"CustomLevelSource"; }
+std::string CustomLevelSource::gatherStats() { return "CustomLevelSource"; }
 
 std::vector<Biome::MobSpawnerData*>* CustomLevelSource::getMobsAt(
     MobCategory* mobCategory, int x, int y, int z) {
@@ -586,7 +588,7 @@ std::vector<Biome::MobSpawnerData*>* CustomLevelSource::getMobsAt(
 }
 
 TilePos* CustomLevelSource::findNearestMapFeature(
-    Level* level, const std::wstring& featureName, int x, int y, int z) {
+    Level* level, const std::string& featureName, int x, int y, int z) {
 #if defined(_OVERRIDE_HEIGHTMAP)
     if (LargeFeature::STRONGHOLD == featureName &&
         strongholdFeature != nullptr) {

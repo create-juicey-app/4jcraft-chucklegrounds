@@ -27,7 +27,7 @@ private:
     Random* random;
 
 protected:
-    std::wstring name;
+    std::string name;
 
 public:
     DispenserTileEntity();
@@ -42,9 +42,9 @@ public:
     virtual int getRandomSlot();
     virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
     virtual int addItem(std::shared_ptr<ItemInstance> item);
-    virtual std::wstring getName();
-    virtual std::wstring getCustomName();
-    virtual void setCustomName(const std::wstring& name);
+    virtual std::string getName();
+    virtual std::string getCustomName();
+    virtual void setCustomName(const std::string& name);
     virtual bool hasCustomName();
     virtual void load(CompoundTag* base);
     virtual void save(CompoundTag* base);

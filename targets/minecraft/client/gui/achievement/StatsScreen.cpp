@@ -1,7 +1,7 @@
 #include "StatsScreen.h"
 
-#include "app/common/src/Audio/SoundEngine.h"
-#include "app/include/stubs.h"
+#include "app/common/Audio/SoundEngine.h"
+#include "platform/stubs.h"
 #include "util/StringHelpers.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/gui/Button.h"
@@ -33,7 +33,7 @@ StatsScreen::StatsScreen(Screen* lastScreen, StatsCounter* stats) {
 }
 
 void StatsScreen::init() {
-    title = I18n::get(L"gui.stats");
+    title = I18n::get("gui.stats");
 
     statsList = new GeneralStatisticsList(this);
     statsList->init(&buttons, 1, 1);
@@ -52,19 +52,19 @@ void StatsScreen::init() {
 void StatsScreen::postInit() {
     Language* language = Language::getInstance();
     buttons.push_back(new Button(BUTTON_CANCEL_ID, width / 2 + 4, height - 28,
-                                 150, 20, language->getElement(L"gui.done")));
+                                 150, 20, language->getElement("gui.done")));
 
     Button *blockButton, *itemButton;
 
     buttons.push_back(new Button(BUTTON_STATS_ID, width / 2 - 154, height - 52,
                                  100, 20,
-                                 language->getElement(L"stat.generalButton")));
+                                 language->getElement("stat.generalButton")));
     buttons.push_back(blockButton = new Button(
                           BUTTON_BLOCKITEMSTATS_ID, width / 2 - 46, height - 52,
-                          100, 20, language->getElement(L"stat.blocksButton")));
+                          100, 20, language->getElement("stat.blocksButton")));
     buttons.push_back(itemButton = new Button(
                           BUTTON_ITEMSTATS_ID, width / 2 + 62, height - 52, 100,
-                          20, language->getElement(L"stat.itemsButton")));
+                          20, language->getElement("stat.itemsButton")));
 
     if (blockStatsList->getNumberOfItems() == 0) {
         blockButton->active = false;
@@ -129,7 +129,7 @@ void StatsScreen::GeneralStatisticsList::renderItem(int i, int x, int y, int h,
     Stat* stat = Stats::generalStats->at(i);
     parent->drawString(parent->font, stat->name, x + 2, y + 1,
                        i % 2 == 0 ? 0xffffff : 0x909090);
-    std::wstring msg = stat->format(parent->stats->getTotalValue(stat));
+    std::string msg = stat->format(parent->stats->getTotalValue(stat));
     parent->drawString(parent->font, msg,
                        x + 2 + 213 - parent->font->width(msg), y + 1,
                        i % 2 == 0 ? 0xffffff : 0x909090);
@@ -246,11 +246,11 @@ ItemStat* StatsScreen::StatisticsList::getSlotStat(int slot) {
 void StatsScreen::StatisticsList::renderStat(ItemStat* stat, int x, int y,
                                              bool shaded) {
     if (stat != nullptr) {
-        std::wstring msg = stat->format(parent->stats->getTotalValue(stat));
+        std::string msg = stat->format(parent->stats->getTotalValue(stat));
         parent->drawString(parent->font, msg, x - parent->font->width(msg),
                            y + SLOT_TEXT_OFFSET, shaded ? 0xffffff : 0x909090);
     } else {
-        std::wstring msg = L"-";
+        std::string msg = "-";
         parent->drawString(parent->font, msg, x - parent->font->width(msg),
                            y + SLOT_TEXT_OFFSET, shaded ? 0xffffff : 0x909090);
     }
@@ -272,7 +272,7 @@ void StatsScreen::StatisticsList::renderDecorations(int mouseX, int mouseY) {
         ItemStat* stat = getSlotStat(slot);
         renderMousehoverTooltip(stat, mouseX, mouseY);
     } else {
-        std::wstring elementName;
+        std::string elementName;
         if (mouseX >= (rowX + ROW_COL_1 - SLOT_BG_SIZE) &&
             mouseX <= (rowX + ROW_COL_1)) {
             elementName = getHeaderDescriptionId(0);
@@ -287,7 +287,7 @@ void StatsScreen::StatisticsList::renderDecorations(int mouseX, int mouseY) {
         }
 
         elementName =
-            trimString(L"" + Language::getInstance()->getElement(elementName));
+            trimString("" + Language::getInstance()->getElement(elementName));
 
         if (elementName.length() > 0) {
             int rx = mouseX + 12;
@@ -434,14 +434,14 @@ void StatsScreen::ItemStatisticsList::renderItem(int i, int x, int y, int h,
     0); renderStat((ItemStat *) stat, x + ROW_COL_3, y, i % 2 == 0);*/
 }
 
-std::wstring StatsScreen::ItemStatisticsList::getHeaderDescriptionId(
+std::string StatsScreen::ItemStatisticsList::getHeaderDescriptionId(
     int column) {
     if (column == COLUMN_CRAFTED) {
-        return L"stat.crafted";
+        return "stat.crafted";
     } else if (column == COLUMN_USED) {
-        return L"stat.used";
+        return "stat.used";
     } else {
-        return L"stat.depleted";
+        return "stat.depleted";
     }
 }
 
@@ -558,13 +558,13 @@ void StatsScreen::BlockStatisticsList::renderItem(int i, int x, int y, int h,
     0); renderStat((ItemStat *) mineCount, x + ROW_COL_3, y, i % 2 == 0);*/
 }
 
-std::wstring StatsScreen::BlockStatisticsList::getHeaderDescriptionId(
+std::string StatsScreen::BlockStatisticsList::getHeaderDescriptionId(
     int column) {
     if (column == COLUMN_CRAFTED) {
-        return L"stat.crafted";
+        return "stat.crafted";
     } else if (column == COLUMN_USED) {
-        return L"stat.used";
+        return "stat.used";
     } else {
-        return L"stat.mined";
+        return "stat.mined";
     }
 }

@@ -15,21 +15,21 @@ class CustomPayloadPacket
       public std::enable_shared_from_this<CustomPayloadPacket> {
 public:
     // Mojang-defined custom packets
-    static const std::wstring CUSTOM_BOOK_PACKET;
-    static const std::wstring CUSTOM_BOOK_SIGN_PACKET;
-    static const std::wstring TEXTURE_PACK_PACKET;
-    static const std::wstring TRADER_LIST_PACKET;
-    static const std::wstring TRADER_SELECTION_PACKET;
-    static const std::wstring SET_ADVENTURE_COMMAND_PACKET;
-    static const std::wstring SET_BEACON_PACKET;
-    static const std::wstring SET_ITEM_NAME_PACKET;
+    static const std::string CUSTOM_BOOK_PACKET;
+    static const std::string CUSTOM_BOOK_SIGN_PACKET;
+    static const std::string TEXTURE_PACK_PACKET;
+    static const std::string TRADER_LIST_PACKET;
+    static const std::string TRADER_SELECTION_PACKET;
+    static const std::string SET_ADVENTURE_COMMAND_PACKET;
+    static const std::string SET_BEACON_PACKET;
+    static const std::string SET_ITEM_NAME_PACKET;
 
-    std::wstring identifier;
+    std::string identifier;
     int length;
     std::vector<uint8_t> data;
 
     CustomPayloadPacket();
-    CustomPayloadPacket(const std::wstring& identifier,
+    CustomPayloadPacket(const std::string& identifier,
                         std::vector<uint8_t> data);
 
     virtual void read(DataInputStream* dis);

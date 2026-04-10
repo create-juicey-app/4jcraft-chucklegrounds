@@ -10,7 +10,7 @@ class MinecraftServer;
 
 DerivedServerLevel::DerivedServerLevel(
     MinecraftServer* server, std::shared_ptr<LevelStorage> levelStorage,
-    const std::wstring& levelName, int dimension, LevelSettings* levelSettings,
+    const std::string& levelName, int dimension, LevelSettings* levelSettings,
     ServerLevel* wrapped)
     : ServerLevel(server, levelStorage, levelName, dimension, levelSettings) {
     // 4J-PB - we're going to override the savedDataStorage, so we need to

@@ -219,12 +219,12 @@ bool Animal::hurt(DamageSource* dmgSource, float dmg) {
 
 void Animal::addAdditonalSaveData(CompoundTag* tag) {
     AgableMob::addAdditonalSaveData(tag);
-    tag->putInt(L"InLove", getInLoveValue());
+    tag->putInt("InLove", getInLoveValue());
 }
 
 void Animal::readAdditionalSaveData(CompoundTag* tag) {
     AgableMob::readAdditionalSaveData(tag);
-    setInLoveValue(tag->getInt(L"InLove"));
+    setInLoveValue(tag->getInt("InLove"));
     setDespawnProtected();
 }
 

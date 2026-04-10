@@ -11,7 +11,7 @@ public:
     virtual void removed() override;
 
 protected:
-    virtual void keyPressed(wchar_t ch, int eventKey) override;
+    virtual void keyPressed(char ch, int eventKey) override;
 
 public:
     virtual void render(int xm, int ym, float a) override;

@@ -7,14 +7,14 @@
 
 class RecordingItem : public Item {
 private:
-    static std::unordered_map<std::wstring, RecordingItem*> BY_NAME;
+    static std::unordered_map<std::string, RecordingItem*> BY_NAME;
 
 public:
-    const std::wstring recording;
+    const std::string recording;
 
 public
     :  // 4J Stu - Was protected in Java, but the can't access it where we need
-    RecordingItem(int id, const std::wstring& recording);
+    RecordingItem(int id, const std::string& recording);
 
     Icon* getIcon(int auxValue);
     virtual bool useOn(std::shared_ptr<ItemInstance> itemInstance,
@@ -28,5 +28,5 @@ public
     virtual const Rarity* getRarity(std::shared_ptr<ItemInstance> itemInstance);
 
     void registerIcons(IconRegister* iconRegister);
-    static RecordingItem* getByName(const std::wstring& name);
+    static RecordingItem* getByName(const std::string& name);
 };

@@ -27,6 +27,6 @@ public:
     float getHealthAfterDamage();
     bool isCombatRelated();
     CombatTracker::eLOCATION getLocation();
-    std::wstring getAttackerName();
+    std::string getAttackerName();
     float getFallDistance();
 };

@@ -150,12 +150,12 @@ bool VillagerGolem::canAttackType(eINSTANCEOF targetType) {
 
 void VillagerGolem::addAdditonalSaveData(CompoundTag* tag) {
     Golem::addAdditonalSaveData(tag);
-    tag->putBoolean(L"PlayerCreated", isPlayerCreated());
+    tag->putBoolean("PlayerCreated", isPlayerCreated());
 }
 
 void VillagerGolem::readAdditionalSaveData(CompoundTag* tag) {
     Golem::readAdditionalSaveData(tag);
-    setPlayerCreated(tag->getBoolean(L"PlayerCreated"));
+    setPlayerCreated(tag->getBoolean("PlayerCreated"));
 }
 
 bool VillagerGolem::doHurtTarget(std::shared_ptr<Entity> target) {

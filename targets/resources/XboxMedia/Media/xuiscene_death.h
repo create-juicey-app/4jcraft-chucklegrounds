@@ -1,5 +1,5 @@
 #pragma once
-#define IDC_ExitGame L"ExitGame"
-#define IDC_Respawn L"Respawn"
-#define IDC_Title L"Title"
-#define IDC_SceneDeath L"SceneDeath"
+#define IDC_ExitGame "ExitGame"
+#define IDC_Respawn "Respawn"
+#define IDC_Title "Title"
+#define IDC_SceneDeath "SceneDeath"

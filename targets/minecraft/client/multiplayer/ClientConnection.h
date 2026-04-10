@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "util/Timer.h"
-#include "platform/sdl2/Storage.h"
+#include "platform/storage/storage.h"
 #include "minecraft/network/Connection.h"
 
 #include "minecraft/network/packet/DisconnectPacket.h"
@@ -38,7 +38,7 @@ private:
     Connection* connection;
 
 public:
-    std::wstring message;
+    std::string message;
     bool createdOk;  // 4J added
 private:
     Minecraft* minecraft;
@@ -63,7 +63,7 @@ private:
     int m_userIndex;  // 4J Added
 public:
     SavedDataStorage* savedDataStorage;
-    ClientConnection(Minecraft* minecraft, const std::wstring& ip, int port);
+    ClientConnection(Minecraft* minecraft, const std::string& ip, int port);
     ClientConnection(Minecraft* minecraft, Socket* socket, int iUserIndex = -1);
     ~ClientConnection();
     void tick();
@@ -127,7 +127,7 @@ public:
 
 private:
     std::shared_ptr<Entity> getEntity(int entityId);
-    std::wstring GetDisplayNameByGamertag(std::wstring gamertag);
+    std::string GetDisplayNameByGamertag(std::string gamertag);
 
 public:
     virtual void handleSetHealth(std::shared_ptr<SetHealthPacket> packet);
@@ -188,9 +188,9 @@ public:
 
     // 4J Added
     static int HostDisconnectReturned(void* pParam, int iPad,
-                                      C4JStorage::EMessageResult result);
+                                      IPlatformStorage::EMessageResult result);
     static int ExitGameAndSaveReturned(void* pParam, int iPad,
-                                       C4JStorage::EMessageResult result);
+                                       IPlatformStorage::EMessageResult result);
     virtual void handleTextureChange(
         std::shared_ptr<TextureChangePacket> packet);
     virtual void handleTextureAndGeometryChange(

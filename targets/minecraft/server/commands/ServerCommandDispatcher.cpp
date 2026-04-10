@@ -65,8 +65,8 @@ ServerCommandDispatcher::ServerCommandDispatcher() {
 
 void ServerCommandDispatcher::logAdminCommand(
     std::shared_ptr<CommandSender> source, int type,
-    ChatPacket::EChatPacketMessage messageType, const std::wstring& message,
-    int customData, const std::wstring& additionalMessage) {
+    ChatPacket::EChatPacketMessage messageType, const std::string& message,
+    int customData, const std::string& additionalMessage) {
     PlayerList* playerList = MinecraftServer::getInstance()->getPlayers();
     // for (Player player : MinecraftServer.getInstance().getPlayers().players)
     for (auto it = playerList->players.begin(); it != playerList->players.end();

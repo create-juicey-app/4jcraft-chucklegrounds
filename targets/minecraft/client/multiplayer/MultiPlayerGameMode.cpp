@@ -1,9 +1,10 @@
+#include "minecraft/IGameServices.h"
 #include "MultiPlayerGameMode.h"
 
 #include <vector>
 
 #include "ClientConnection.h"
-#include "app/common/src/Audio/SoundEngine.h"
+#include "app/common/Audio/SoundEngine.h"
 #include "MultiPlayerLevel.h"
 #include "java/Class.h"
 #include "minecraft/client/Minecraft.h"
@@ -149,8 +150,8 @@ void MultiPlayerGameMode::startDestroyBlock(int x, int y, int z, int face) {
         if (t > 0 &&
             (Tile::tiles[t]->getDestroyProgress(
                  minecraft->player, minecraft->player->level, x, y, z) >= 1
-             // ||(app.DebugSettingsOn() &&
-             // app.GetGameSettingsDebugMask(InputManager.GetPrimaryPad())&(1L<<eDebugSetting_InstantDestroy))
+             // ||(gameServices().debugSettingsOn() &&
+             // gameServices().debugGetMask(PlatformInput.GetPrimaryPad())&(1L<<eDebugSetting_InstantDestroy))
              )) {
             destroyBlock(x, y, z, face);
         } else {

@@ -36,7 +36,7 @@ private:
     std::map<int, int> m_charMap;
 
 public:
-    Font(Options* options, const std::wstring& name, Textures* textures,
+    Font(Options* options, const std::string& name, Textures* textures,
          bool enforceUnicode, ResourceLocation* textureLocation, int cols,
          int rows, int charWidth, int charHeight,
          unsigned short charMap[] = nullptr);
@@ -46,13 +46,13 @@ public:
     void renderFakeCB(IntBuffer* cb);  // 4J added
 
 private:
-    void renderCharacter(wchar_t c);  // 4J added
+    void renderCharacter(char c);  // 4J added
 
 public:
-    void drawShadow(const std::wstring& str, int x, int y, int color);
-    void drawShadowWordWrap(const std::wstring& str, int x, int y, int w,
+    void drawShadow(const std::string& str, int x, int y, int color);
+    void drawShadowWordWrap(const std::string& str, int x, int y, int w,
                             int color, int h);  // 4J Added h param
-    void draw(const std::wstring& str, int x, int y, int color);
+    void draw(const std::string& str, int x, int y, int color);
     /**
      * Reorders the string according to bidirectional levels. A bit expensive at
      * the moment.
@@ -61,37 +61,37 @@ public:
      * @return
      */
 private:
-    std::wstring reorderBidi(const std::wstring& str);
+    std::string reorderBidi(const std::string& str);
 
-    void draw(const std::wstring& str, bool dropShadow);
-    void draw(const std::wstring& str, int x, int y, int color,
+    void draw(const std::string& str, bool dropShadow);
+    void draw(const std::string& str, int x, int y, int color,
               bool dropShadow);
-    int MapCharacter(wchar_t c);      // 4J added
-    bool CharacterExists(wchar_t c);  // 4J added
+    int MapCharacter(char c);      // 4J added
+    bool CharacterExists(char c);  // 4J added
 
 public:
-    int width(const std::wstring& str);
-    std::wstring sanitize(const std::wstring& str);
-    void drawWordWrap(const std::wstring& string, int x, int y, int w, int col,
+    int width(const std::string& str);
+    std::string sanitize(const std::string& str);
+    void drawWordWrap(const std::string& string, int x, int y, int w, int col,
                       int h);  // 4J Added h param
 
 private:
-    void drawWordWrapInternal(const std::wstring& string, int x, int y, int w,
+    void drawWordWrapInternal(const std::string& string, int x, int y, int w,
                               int col, int h);  // 4J Added h param
 
 public:
-    void drawWordWrap(const std::wstring& string, int x, int y, int w, int col,
+    void drawWordWrap(const std::string& string, int x, int y, int w, int col,
                       bool darken, int h);  // 4J Added h param
 
 private:
-    void drawWordWrapInternal(const std::wstring& string, int x, int y, int w,
+    void drawWordWrapInternal(const std::string& string, int x, int y, int w,
                               int col, bool darken, int h);  // 4J Added h param
 
 public:
-    int wordWrapHeight(const std::wstring& string, int w);
+    int wordWrapHeight(const std::string& string, int w);
     void setEnforceUnicodeSheet(bool enforceUnicodeSheet);
     void setBidirectional(bool bidirectional);
 
     // 4J-PB - check for invalid player name - Japanese local name
-    bool AllCharactersValid(const std::wstring& str);
+    bool AllCharactersValid(const std::string& str);
 };

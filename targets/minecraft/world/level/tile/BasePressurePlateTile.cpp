@@ -14,7 +14,7 @@
 #include "minecraft/world/level/tile/Tile.h"
 #include "minecraft/world/phys/AABB.h"
 
-BasePressurePlateTile::BasePressurePlateTile(int id, const std::wstring& tex,
+BasePressurePlateTile::BasePressurePlateTile(int id, const std::string& tex,
                                              Material* material)
     : Tile(id, material, false) {
     texture = tex;

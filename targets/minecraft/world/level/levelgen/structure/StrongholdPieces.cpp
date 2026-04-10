@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "StrongholdPieces.h"
 
 #include <stdio.h>
@@ -6,7 +7,7 @@
 #include <memory>
 #include <string>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 #include "util/StringHelpers.h"
 #include "java/Random.h"
@@ -38,31 +39,31 @@ const bool StrongholdPieces::CHECK_AIR = true;
 
 void StrongholdPieces::loadStatic() {
     StructureFeatureIO::setPieceId(eStructurePiece_ChestCorridor,
-                                   ChestCorridor::Create, L"SHCC");
+                                   ChestCorridor::Create, "SHCC");
     StructureFeatureIO::setPieceId(eStructurePiece_FillerCorridor,
-                                   FillerCorridor::Create, L"SHFC");
+                                   FillerCorridor::Create, "SHFC");
     StructureFeatureIO::setPieceId(eStructurePiece_FiveCrossing,
-                                   FiveCrossing::Create, L"SH5C");
+                                   FiveCrossing::Create, "SH5C");
     StructureFeatureIO::setPieceId(eStructurePiece_LeftTurn, LeftTurn::Create,
-                                   L"SHLT");
+                                   "SHLT");
     StructureFeatureIO::setPieceId(eStructurePiece_Library, Library::Create,
-                                   L"SHLi");
+                                   "SHLi");
     StructureFeatureIO::setPieceId(eStructurePiece_PortalRoom,
-                                   PortalRoom::Create, L"SHPR");
+                                   PortalRoom::Create, "SHPR");
     StructureFeatureIO::setPieceId(eStructurePiece_PrisonHall,
-                                   PrisonHall::Create, L"SHPH");
+                                   PrisonHall::Create, "SHPH");
     StructureFeatureIO::setPieceId(eStructurePiece_RightTurn, RightTurn::Create,
-                                   L"SHRT");
+                                   "SHRT");
     StructureFeatureIO::setPieceId(eStructurePiece_StrongholdRoomCrossing,
-                                   RoomCrossing::Create, L"SHRC");
+                                   RoomCrossing::Create, "SHRC");
     StructureFeatureIO::setPieceId(eStructurePiece_StairsDown,
-                                   StairsDown::Create, L"SHSD");
+                                   StairsDown::Create, "SHSD");
     StructureFeatureIO::setPieceId(eStructurePiece_StrongholdStartPiece,
-                                   StartPiece::Create, L"SHStart");
+                                   StartPiece::Create, "SHStart");
     StructureFeatureIO::setPieceId(eStructurePiece_Straight, Straight::Create,
-                                   L"SHS");
+                                   "SHS");
     StructureFeatureIO::setPieceId(eStructurePiece_StraightStairsDown,
-                                   StraightStairsDown::Create, L"SHSSD");
+                                   StraightStairsDown::Create, "SHSSD");
 }
 
 StrongholdPieces::PieceWeight::PieceWeight(EPieceClass pieceClass, int weight,
@@ -283,12 +284,12 @@ StrongholdPieces::StrongholdPiece::StrongholdPiece(int genDepth)
 }
 
 void StrongholdPieces::StrongholdPiece::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putString(L"EntryDoor", toWString<int>(entryDoor));
+    tag->putString("EntryDoor", toWString<int>(entryDoor));
 }
 
 void StrongholdPieces::StrongholdPiece::readAdditonalSaveData(
     CompoundTag* tag) {
-    entryDoor = (SmallDoorType)fromWString<int>(tag->getString(L"EntryDoor"));
+    entryDoor = (SmallDoorType)fromWString<int>(tag->getString("EntryDoor"));
 }
 
 void StrongholdPieces::StrongholdPiece::generateSmallDoor(
@@ -514,12 +515,12 @@ StrongholdPieces::FillerCorridor::FillerCorridor(int genDepth, Random* random,
 
 void StrongholdPieces::FillerCorridor::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putInt(L"Steps", steps);
+    tag->putInt("Steps", steps);
 }
 
 void StrongholdPieces::FillerCorridor::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    steps = tag->getInt(L"Steps");
+    steps = tag->getInt("Steps");
 }
 
 BoundingBox* StrongholdPieces::FillerCorridor::findPieceBox(
@@ -626,12 +627,12 @@ StrongholdPieces::StairsDown::StairsDown(int genDepth, Random* random,
 
 void StrongholdPieces::StairsDown::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Source", isSource);
+    tag->putBoolean("Source", isSource);
 }
 
 void StrongholdPieces::StairsDown::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    isSource = tag->getBoolean(L"Source");
+    isSource = tag->getBoolean("Source");
 }
 
 void StrongholdPieces::StairsDown::addChildren(
@@ -745,14 +746,14 @@ StrongholdPieces::Straight::Straight(int genDepth, Random* random,
 
 void StrongholdPieces::Straight::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Left", leftChild);
-    tag->putBoolean(L"Right", rightChild);
+    tag->putBoolean("Left", leftChild);
+    tag->putBoolean("Right", rightChild);
 }
 
 void StrongholdPieces::Straight::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    leftChild = tag->getBoolean(L"Left");
-    rightChild = tag->getBoolean(L"Right");
+    leftChild = tag->getBoolean("Left");
+    rightChild = tag->getBoolean("Right");
 }
 
 void StrongholdPieces::Straight::addChildren(StructurePiece* startPiece,
@@ -856,12 +857,12 @@ StrongholdPieces::ChestCorridor::ChestCorridor(int genDepth, Random* random,
 
 void StrongholdPieces::ChestCorridor::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Chest", hasPlacedChest);
+    tag->putBoolean("Chest", hasPlacedChest);
 }
 
 void StrongholdPieces::ChestCorridor::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    hasPlacedChest = tag->getBoolean(L"Chest");
+    hasPlacedChest = tag->getBoolean("Chest");
 }
 
 void StrongholdPieces::ChestCorridor::addChildren(
@@ -1144,12 +1145,12 @@ StrongholdPieces::RoomCrossing::RoomCrossing(int genDepth, Random* random,
 
 void StrongholdPieces::RoomCrossing::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putInt(L"Type", type);
+    tag->putInt("Type", type);
 }
 
 void StrongholdPieces::RoomCrossing::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    type = tag->getInt(L"Type");
+    type = tag->getInt("Type");
 }
 
 void StrongholdPieces::RoomCrossing::addChildren(
@@ -1404,12 +1405,12 @@ StrongholdPieces::Library::Library(int genDepth, Random* random,
 
 void StrongholdPieces::Library::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Tall", isTall);
+    tag->putBoolean("Tall", isTall);
 }
 
 void StrongholdPieces::Library::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    isTall = tag->getBoolean(L"Tall");
+    isTall = tag->getBoolean("Tall");
 }
 
 StrongholdPieces::Library* StrongholdPieces::Library::createPiece(
@@ -1640,18 +1641,18 @@ StrongholdPieces::FiveCrossing::FiveCrossing(int genDepth, Random* random,
 
 void StrongholdPieces::FiveCrossing::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"leftLow", leftLow);
-    tag->putBoolean(L"leftHigh", leftHigh);
-    tag->putBoolean(L"rightLow", rightLow);
-    tag->putBoolean(L"rightHigh", rightHigh);
+    tag->putBoolean("leftLow", leftLow);
+    tag->putBoolean("leftHigh", leftHigh);
+    tag->putBoolean("rightLow", rightLow);
+    tag->putBoolean("rightHigh", rightHigh);
 }
 
 void StrongholdPieces::FiveCrossing::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    leftLow = tag->getBoolean(L"leftLow");
-    leftHigh = tag->getBoolean(L"leftHigh");
-    rightLow = tag->getBoolean(L"rightLow");
-    rightHigh = tag->getBoolean(L"rightHigh");
+    leftLow = tag->getBoolean("leftLow");
+    leftHigh = tag->getBoolean("leftHigh");
+    rightLow = tag->getBoolean("rightLow");
+    rightHigh = tag->getBoolean("rightHigh");
 }
 
 void StrongholdPieces::FiveCrossing::addChildren(
@@ -1773,12 +1774,12 @@ StrongholdPieces::PortalRoom::PortalRoom(int genDepth, Random* random,
 
 void StrongholdPieces::PortalRoom::addAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Mob", hasPlacedMobSpawner);
+    tag->putBoolean("Mob", hasPlacedMobSpawner);
 }
 
 void StrongholdPieces::PortalRoom::readAdditonalSaveData(CompoundTag* tag) {
     StrongholdPiece::readAdditonalSaveData(tag);
-    hasPlacedMobSpawner = tag->getBoolean(L"Mob");
+    hasPlacedMobSpawner = tag->getBoolean("Mob");
 }
 
 void StrongholdPieces::PortalRoom::addChildren(
@@ -1970,7 +1971,7 @@ bool StrongholdPieces::PortalRoom::postProcess(Level* level, Random* random,
             // 4J Stu - The mob spawner location is close enough for the map
             // icon display, and this ensures that we only need to set the
             // position once
-            app.AddTerrainFeaturePosition(eTerrainFeature_StrongholdEndPortal,
+            gameServices().addTerrainFeaturePosition(eTerrainFeature_StrongholdEndPortal,
                                           x, z);
             level->getLevelData()->setXStrongholdEndPortal(x);
             level->getLevelData()->setZStrongholdEndPortal(z);
@@ -1983,7 +1984,7 @@ bool StrongholdPieces::PortalRoom::postProcess(Level* level, Random* random,
                 std::dynamic_pointer_cast<MobSpawnerTileEntity>(
                     level->getTileEntity(x, y, z));
             if (entity != nullptr)
-                entity->getSpawner()->setEntityId(L"Silverfish");
+                entity->getSpawner()->setEntityId("Silverfish");
         }
     }
 

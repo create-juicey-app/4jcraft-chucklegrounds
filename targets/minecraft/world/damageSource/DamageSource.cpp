@@ -150,7 +150,7 @@ float DamageSource::getFoodExhaustion() { return exhaustion; }
 
 bool DamageSource::isBypassInvul() { return _bypassInvul; }
 
-// DamageSource::DamageSource(const wstring &msgId)
+// DamageSource::DamageSource(const string &msgId)
 DamageSource::DamageSource(ChatPacket::EChatPacketMessage msgId,
                            ChatPacket::EChatPacketMessage msgWithItemId) {
     // 4J added initialisors
@@ -205,10 +205,10 @@ DamageSource* DamageSource::setMagic() {
     return this;
 }
 
-// wstring DamageSource::getLocalizedDeathMessage(shared_ptr<Player> player)
+// string DamageSource::getLocalizedDeathMessage(shared_ptr<Player> player)
 //{
-//	return L"death." + msgId + player->name;
-//	//return I18n.get(L"death." + msgId, player.name);
+//	return "death." + msgId + player->name;
+//	//return I18n.get("death." + msgId, player.name);
 // }
 
 std::shared_ptr<ChatPacket> DamageSource::getDeathMessagePacket(

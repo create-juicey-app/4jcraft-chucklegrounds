@@ -14,14 +14,14 @@
 #define ITEM_COUNT 10
 
 VideoSettingsScreen::VideoSettingsScreen(Screen* lastScreen, Options* options) {
-    this->title = L"Video Settings";  // 4J - added
+    this->title = "Video Settings";  // 4J - added
     this->lastScreen = lastScreen;
     this->options = options;
 }
 
 void VideoSettingsScreen::init() {
     Language* language = Language::getInstance();
-    this->title = language->getElement(L"options.videoTitle");
+    this->title = language->getElement("options.videoTitle");
 
     const Options::Option* items[ITEM_COUNT] = {
         Options::Option::GRAPHICS,
@@ -55,7 +55,7 @@ void VideoSettingsScreen::init() {
     //        buttons.add(new Button(CONTROLS_BUTTON_ID, width / 2 - 100, height
     //        / 6 + 24 * 5 + 12, language.getElement("options.controls")));
     buttons.push_back(new Button(200, width / 2 - 100, height / 6 + 24 * 6,
-                                 language->getElement(L"gui.done")));
+                                 language->getElement("gui.done")));
 }
 
 void VideoSettingsScreen::buttonClicked(Button* button) {

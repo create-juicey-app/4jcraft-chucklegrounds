@@ -23,5 +23,5 @@ public:
     void setData(int data);
     int getStart();
     void setStart(int start);
-    std::wstring toString();
+    std::string toString();
 };

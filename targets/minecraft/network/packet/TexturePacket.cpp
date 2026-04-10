@@ -5,7 +5,7 @@
 #include "java/InputOutputStream/DataOutputStream.h"
 
 TexturePacket::TexturePacket() {
-    this->textureName = L"";
+    this->textureName = "";
     this->dataBytes = 0;
     this->pbData = nullptr;
 }
@@ -18,7 +18,7 @@ TexturePacket::~TexturePacket() {
     // 	}
 }
 
-TexturePacket::TexturePacket(const std::wstring& textureName,
+TexturePacket::TexturePacket(const std::string& textureName,
                              std::uint8_t* pbData, std::uint32_t dataBytes) {
     this->textureName = textureName;
     this->pbData = pbData;

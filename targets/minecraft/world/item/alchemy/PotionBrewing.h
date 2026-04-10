@@ -25,19 +25,19 @@ public:
     static inline constexpr int THROWABLE_BIT = 14;
     static inline constexpr int THROWABLE_MASK = (1 << THROWABLE_BIT);
 
-    static const std::wstring MOD_WATER;
-    static const std::wstring MOD_SUGAR;
-    static const std::wstring MOD_GHASTTEARS;
-    static const std::wstring MOD_SPIDEREYE;
-    static const std::wstring MOD_FERMENTEDEYE;
-    static const std::wstring MOD_SPECKLEDMELON;
-    static const std::wstring MOD_BLAZEPOWDER;
-    static const std::wstring MOD_MAGMACREAM;
-    static const std::wstring MOD_REDSTONE;
-    static const std::wstring MOD_GLOWSTONE;
-    static const std::wstring MOD_NETHERWART;
-    static const std::wstring MOD_GUNPOWDER;
-    static const std::wstring MOD_GOLDENCARROT;
+    static const std::string MOD_WATER;
+    static const std::string MOD_SUGAR;
+    static const std::string MOD_GHASTTEARS;
+    static const std::string MOD_SPIDEREYE;
+    static const std::string MOD_FERMENTEDEYE;
+    static const std::string MOD_SPECKLEDMELON;
+    static const std::string MOD_BLAZEPOWDER;
+    static const std::string MOD_MAGMACREAM;
+    static const std::string MOD_REDSTONE;
+    static const std::string MOD_GLOWSTONE;
+    static const std::string MOD_NETHERWART;
+    static const std::string MOD_GUNPOWDER;
+    static const std::string MOD_GOLDENCARROT;
 
     static inline constexpr int BITS_FOR_MAX_NORMAL_EFFECT = 0xF;
     static inline constexpr int BITS_FOR_DURATION = (1 << 5);
@@ -46,7 +46,7 @@ public:
     static inline constexpr int BITS_FOR_SPLASH = (1 << 14);
 
 private:
-    typedef std::unordered_map<int, std::wstring> intStringMap;
+    typedef std::unordered_map<int, std::string> intStringMap;
     static intStringMap potionEffectDuration;
     static intStringMap potionEffectAmplifier;
 
@@ -98,7 +98,7 @@ private:
                                     int countCompare, int valuePart,
                                     int multiplierPart, int brew);
     static int countOnes(int brew);
-    static int parseEffectFormulaValue(const std::wstring& definition,
+    static int parseEffectFormulaValue(const std::string& definition,
                                        int start, int end, int brew);
 
 public:
@@ -116,10 +116,10 @@ private:
                             bool isRequired);
 
 public:
-    static int applyBrew(int currentBrew, const std::wstring& formula);
+    static int applyBrew(int currentBrew, const std::string& formula);
     static int setBit(int brew, int position, bool onOff);
     static int valueOf(int brew, int p1, int p2, int p3, int p4);
     static int valueOf(int brew, int p1, int p2, int p3, int p4, int p5);
-    static std::wstring toString(int brew);
+    static std::string toString(int brew);
     // static void main(String[] args);
 };

@@ -14,10 +14,10 @@ public:
 
 public:
     std::weak_ptr<MultiEntityMob> parentMob;
-    const std::wstring id;
+    const std::string id;
 
     MultiEntityMobPart(std::shared_ptr<MultiEntityMob> parentMob,
-                       const std::wstring& id, float w, float h);
+                       const std::string& id, float w, float h);
 
 protected:
     virtual void defineSynchedData();

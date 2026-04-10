@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 
 class InputStream;
 class Minecraft;
@@ -25,19 +25,19 @@ public:
     virtual void unload(Textures* textures) = 0;
     virtual void load(Textures* textures) = 0;
     virtual InputStream* getResource(
-        const std::wstring& name,
+        const std::string& name,
         bool allowFallback) = 0;  // throws IOException;
-    // virtual InputStream *getResource(const std::wstring &name) = 0;// throws
+    // virtual InputStream *getResource(const std::string &name) = 0;// throws
     // IOException;
     virtual std::uint32_t getId() = 0;
-    virtual std::wstring getName() = 0;
-    virtual std::wstring getDesc1() = 0;
-    virtual std::wstring getDesc2() = 0;
-    virtual bool hasFile(const std::wstring& name, bool allowFallback) = 0;
+    virtual std::string getName() = 0;
+    virtual std::string getDesc1() = 0;
+    virtual std::string getDesc2() = 0;
+    virtual bool hasFile(const std::string& name, bool allowFallback) = 0;
     virtual bool isTerrainUpdateCompatible() = 0;
 
-    virtual std::wstring getResource(
-        const std::wstring& name)  // 4J - changed to just return a name rather
+    virtual std::string getResource(
+        const std::string& name)  // 4J - changed to just return a name rather
                                    // than an input stream
     {
         /* 4J - TODO
@@ -48,18 +48,18 @@ return TexturePack.class.getResourceAsStream(name);
     virtual DLCPack* getDLCPack() { return nullptr; }
 
     // 4J Added
-    virtual std::wstring getPath(bool bTitleUpdateTexture = false,
+    virtual std::string getPath(bool bTitleUpdateTexture = false,
                                  const char* pchBDPatchFilename = nullptr);
-    virtual std::wstring getAnimationString(const std::wstring& textureName,
-                                            const std::wstring& path,
+    virtual std::string getAnimationString(const std::string& textureName,
+                                            const std::string& path,
                                             bool allowFallback) = 0;
     virtual BufferedImage* getImageResource(
-        const std::wstring& File, bool filenameHasExtension = false,
-        bool bTitleUpdateTexture = false, const std::wstring& drive = L"") = 0;
+        const std::string& File, bool filenameHasExtension = false,
+        bool bTitleUpdateTexture = false, const std::string& drive = "") = 0;
     virtual void loadColourTable() = 0;
     virtual void loadUI() = 0;
     virtual void unloadUI() = 0;
-    virtual std::wstring getXuiRootPath() = 0;
+    virtual std::string getXuiRootPath() = 0;
     virtual std::uint8_t* getPackIcon(std::uint32_t& imageBytes) = 0;
     virtual std::uint8_t* getPackComparison(std::uint32_t& imageBytes) = 0;
     virtual unsigned int getDLCParentPackId() = 0;

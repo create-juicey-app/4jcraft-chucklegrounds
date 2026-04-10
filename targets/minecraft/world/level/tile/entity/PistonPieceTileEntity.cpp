@@ -148,21 +148,21 @@ void PistonPieceEntity::tick() {
 void PistonPieceEntity::load(CompoundTag* tag) {
     TileEntity::load(tag);
 
-    id = tag->getInt(L"blockId");
-    data = tag->getInt(L"blockData");
-    facing = tag->getInt(L"facing");
-    progressO = progress = tag->getFloat(L"progress");
-    extending = tag->getBoolean(L"extending");
+    id = tag->getInt("blockId");
+    data = tag->getInt("blockData");
+    facing = tag->getInt("facing");
+    progressO = progress = tag->getFloat("progress");
+    extending = tag->getBoolean("extending");
 }
 
 void PistonPieceEntity::save(CompoundTag* tag) {
     TileEntity::save(tag);
 
-    tag->putInt(L"blockId", id);
-    tag->putInt(L"blockData", data);
-    tag->putInt(L"facing", facing);
-    tag->putFloat(L"progress", progressO);
-    tag->putBoolean(L"extending", extending);
+    tag->putInt("blockId", id);
+    tag->putInt("blockData", data);
+    tag->putInt("facing", facing);
+    tag->putFloat("progress", progressO);
+    tag->putBoolean("extending", extending);
 }
 
 // 4J Added

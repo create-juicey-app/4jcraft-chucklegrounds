@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "ScatteredFeaturePieces.h"
 
 #include <algorithm>
@@ -5,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "java/Random.h"
 #include "minecraft/Direction.h"
@@ -34,11 +35,11 @@
 
 void ScatteredFeaturePieces::loadStatic() {
     StructureFeatureIO::setPieceId(eStructurePiece_DesertPyramidPiece,
-                                   DesertPyramidPiece::Create, L"TeDP");
+                                   DesertPyramidPiece::Create, "TeDP");
     StructureFeatureIO::setPieceId(eStructurePiece_JunglePyramidPiece,
-                                   DesertPyramidPiece::Create, L"TeJP");
+                                   DesertPyramidPiece::Create, "TeJP");
     StructureFeatureIO::setPieceId(eStructurePiece_SwamplandHut,
-                                   DesertPyramidPiece::Create, L"TeSH");
+                                   DesertPyramidPiece::Create, "TeSH");
 }
 
 ScatteredFeaturePieces::ScatteredFeaturePiece::ScatteredFeaturePiece() {
@@ -60,7 +61,7 @@ ScatteredFeaturePieces::ScatteredFeaturePiece::ScatteredFeaturePiece(
 
     orientation = random->nextInt(4);
 
-    LevelGenerationOptions* levelGenOptions = app.getLevelGenerationOptions();
+    LevelGenerationOptions* levelGenOptions = gameServices().getLevelGenerationOptions();
     if (levelGenOptions != nullptr) {
         int tempOrientation = 0;
         if (levelGenOptions->isFeatureChunk(west >> 4, north >> 4,
@@ -87,18 +88,18 @@ ScatteredFeaturePieces::ScatteredFeaturePiece::ScatteredFeaturePiece(
 
 void ScatteredFeaturePieces::ScatteredFeaturePiece::addAdditonalSaveData(
     CompoundTag* tag) {
-    tag->putInt(L"Width", width);
-    tag->putInt(L"Height", height);
-    tag->putInt(L"Depth", depth);
-    tag->putInt(L"HPos", heightPosition);
+    tag->putInt("Width", width);
+    tag->putInt("Height", height);
+    tag->putInt("Depth", depth);
+    tag->putInt("HPos", heightPosition);
 }
 
 void ScatteredFeaturePieces::ScatteredFeaturePiece::readAdditonalSaveData(
     CompoundTag* tag) {
-    width = tag->getInt(L"Width");
-    height = tag->getInt(L"Height");
-    depth = tag->getInt(L"Depth");
-    heightPosition = tag->getInt(L"HPos");
+    width = tag->getInt("Width");
+    height = tag->getInt("Height");
+    depth = tag->getInt("Depth");
+    heightPosition = tag->getInt("HPos");
 }
 
 bool ScatteredFeaturePieces::ScatteredFeaturePiece::updateAverageGroundHeight(
@@ -164,19 +165,19 @@ ScatteredFeaturePieces::DesertPyramidPiece::DesertPyramidPiece(Random* random,
 void ScatteredFeaturePieces::DesertPyramidPiece::addAdditonalSaveData(
     CompoundTag* tag) {
     ScatteredFeaturePiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"hasPlacedChest0", hasPlacedChest[0]);
-    tag->putBoolean(L"hasPlacedChest1", hasPlacedChest[1]);
-    tag->putBoolean(L"hasPlacedChest2", hasPlacedChest[2]);
-    tag->putBoolean(L"hasPlacedChest3", hasPlacedChest[3]);
+    tag->putBoolean("hasPlacedChest0", hasPlacedChest[0]);
+    tag->putBoolean("hasPlacedChest1", hasPlacedChest[1]);
+    tag->putBoolean("hasPlacedChest2", hasPlacedChest[2]);
+    tag->putBoolean("hasPlacedChest3", hasPlacedChest[3]);
 }
 
 void ScatteredFeaturePieces::DesertPyramidPiece::readAdditonalSaveData(
     CompoundTag* tag) {
     ScatteredFeaturePiece::readAdditonalSaveData(tag);
-    hasPlacedChest[0] = tag->getBoolean(L"hasPlacedChest0");
-    hasPlacedChest[1] = tag->getBoolean(L"hasPlacedChest1");
-    hasPlacedChest[2] = tag->getBoolean(L"hasPlacedChest2");
-    hasPlacedChest[3] = tag->getBoolean(L"hasPlacedChest3");
+    hasPlacedChest[0] = tag->getBoolean("hasPlacedChest0");
+    hasPlacedChest[1] = tag->getBoolean("hasPlacedChest1");
+    hasPlacedChest[2] = tag->getBoolean("hasPlacedChest2");
+    hasPlacedChest[3] = tag->getBoolean("hasPlacedChest3");
 }
 
 bool ScatteredFeaturePieces::DesertPyramidPiece::postProcess(
@@ -525,19 +526,19 @@ ScatteredFeaturePieces::JunglePyramidPiece::JunglePyramidPiece(Random* random,
 void ScatteredFeaturePieces::JunglePyramidPiece::addAdditonalSaveData(
     CompoundTag* tag) {
     ScatteredFeaturePiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"placedMainChest", placedMainChest);
-    tag->putBoolean(L"placedHiddenChest", placedHiddenChest);
-    tag->putBoolean(L"placedTrap1", placedTrap1);
-    tag->putBoolean(L"placedTrap2", placedTrap2);
+    tag->putBoolean("placedMainChest", placedMainChest);
+    tag->putBoolean("placedHiddenChest", placedHiddenChest);
+    tag->putBoolean("placedTrap1", placedTrap1);
+    tag->putBoolean("placedTrap2", placedTrap2);
 }
 
 void ScatteredFeaturePieces::JunglePyramidPiece::readAdditonalSaveData(
     CompoundTag* tag) {
     ScatteredFeaturePiece::readAdditonalSaveData(tag);
-    placedMainChest = tag->getBoolean(L"placedMainChest");
-    placedHiddenChest = tag->getBoolean(L"placedHiddenChest");
-    placedTrap1 = tag->getBoolean(L"placedTrap1");
-    placedTrap2 = tag->getBoolean(L"placedTrap2");
+    placedMainChest = tag->getBoolean("placedMainChest");
+    placedHiddenChest = tag->getBoolean("placedHiddenChest");
+    placedTrap1 = tag->getBoolean("placedTrap1");
+    placedTrap2 = tag->getBoolean("placedTrap2");
 }
 
 bool ScatteredFeaturePieces::JunglePyramidPiece::postProcess(
@@ -868,13 +869,13 @@ ScatteredFeaturePieces::SwamplandHut::SwamplandHut(Random* random, int west,
 void ScatteredFeaturePieces::SwamplandHut::addAdditonalSaveData(
     CompoundTag* tag) {
     ScatteredFeaturePiece::addAdditonalSaveData(tag);
-    tag->putBoolean(L"Witch", spawnedWitch);
+    tag->putBoolean("Witch", spawnedWitch);
 }
 
 void ScatteredFeaturePieces::SwamplandHut::readAdditonalSaveData(
     CompoundTag* tag) {
     ScatteredFeaturePiece::readAdditonalSaveData(tag);
-    spawnedWitch = tag->getBoolean(L"Witch");
+    spawnedWitch = tag->getBoolean("Witch");
 }
 
 bool ScatteredFeaturePieces::SwamplandHut::postProcess(Level* level,

@@ -13,7 +13,7 @@ private:
     int y;
     int width;
     int height;
-    std::wstring value;
+    std::string value;
     unsigned int maxLength;
     int frame;
 
@@ -28,11 +28,11 @@ private:
 
 public:
     EditBox(Screen* screen, Font* font, int x, int y, int width, int height,
-            const std::wstring& value);
-    void setValue(const std::wstring& value);
-    std::wstring getValue();
+            const std::string& value);
+    void setValue(const std::string& value);
+    std::string getValue();
     void tick();
-    void keyPressed(wchar_t ch, int eventKey);
+    void keyPressed(char ch, int eventKey);
     void mouseClicked(int mouseX, int mouseY, int buttonNum);
     void focus(bool newFocus);
     void render();

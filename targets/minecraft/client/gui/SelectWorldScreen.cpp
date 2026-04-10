@@ -1,3 +1,4 @@
+#include "minecraft/util/Log.h"
 #include "SelectWorldScreen.h"
 
 #include <stdint.h>
@@ -21,7 +22,7 @@
 
 SelectWorldScreen::SelectWorldScreen(Screen* lastScreen) {
     // 4J - added initialisers
-    title = L"Select world";
+    title = "Select world";
     done = false;
     selectedWorld = 0;
     worldSelectionList = nullptr;
@@ -34,12 +35,12 @@ SelectWorldScreen::SelectWorldScreen(Screen* lastScreen) {
 }
 
 void SelectWorldScreen::init() {
-    app.DebugPrintf("SelectWorldScreen::init() START\n");
+    Log::info("SelectWorldScreen::init() START\n");
     Language* language = Language::getInstance();
-    title = language->getElement(L"selectWorld.title");
+    title = language->getElement("selectWorld.title");
 
-    worldLang = language->getElement(L"selectWorld.world");
-    conversionLang = language->getElement(L"selectWorld.conversion");
+    worldLang = language->getElement("selectWorld.world");
+    conversionLang = language->getElement("selectWorld.conversion");
     loadLevelList();
 
     worldSelectionList = new WorldSelectionList(this);
@@ -55,16 +56,16 @@ void SelectWorldScreen::loadLevelList() {
     selectedWorld = -1;
 }
 
-std::wstring SelectWorldScreen::getWorldId(int id) {
+std::string SelectWorldScreen::getWorldId(int id) {
     return levelList->at(id)->getLevelId();
 }
 
-std::wstring SelectWorldScreen::getWorldName(int id) {
-    std::wstring levelName = levelList->at(id)->getLevelName();
+std::string SelectWorldScreen::getWorldName(int id) {
+    std::string levelName = levelList->at(id)->getLevelName();
 
     if (levelName.length() == 0) {
         Language* language = Language::getInstance();
-        levelName = language->getElement(L"selectWorld.world") + L" " +
+        levelName = language->getElement("selectWorld.world") + " " +
                     toWString<int>(id + 1);
     }
 
@@ -76,18 +77,18 @@ void SelectWorldScreen::postInit() {
 
     buttons.push_back(selectButton = new Button(
                           BUTTON_SELECT_ID, width / 2 - 154, height - 52, 150,
-                          20, language->getElement(L"selectWorld.select")));
+                          20, language->getElement("selectWorld.select")));
     buttons.push_back(deleteButton = new Button(
                           BUTTON_RENAME_ID, width / 2 - 154, height - 28, 70,
-                          20, language->getElement(L"selectWorld.rename")));
+                          20, language->getElement("selectWorld.rename")));
     buttons.push_back(renameButton = new Button(
                           BUTTON_DELETE_ID, width / 2 - 74, height - 28, 70, 20,
-                          language->getElement(L"selectWorld.delete")));
+                          language->getElement("selectWorld.delete")));
     buttons.push_back(new Button(BUTTON_CREATE_ID, width / 2 + 4, height - 52,
                                  150, 20,
-                                 language->getElement(L"selectWorld.create")));
+                                 language->getElement("selectWorld.create")));
     buttons.push_back(new Button(BUTTON_CANCEL_ID, width / 2 + 4, height - 28,
-                                 150, 20, language->getElement(L"gui.cancel")));
+                                 150, 20, language->getElement("gui.cancel")));
 
     selectButton->active = false;
     deleteButton->active = false;
@@ -95,22 +96,22 @@ void SelectWorldScreen::postInit() {
 }
 
 void SelectWorldScreen::buttonClicked(Button* button) {
-    app.DebugPrintf("SelectWorldScreen::buttonClicked START\n");
+    Log::info("SelectWorldScreen::buttonClicked START\n");
     if (!button->active) return;
     if (button->id == BUTTON_DELETE_ID) {
-        std::wstring worldName = getWorldName(selectedWorld);
-        if (worldName != L"") {
+        std::string worldName = getWorldName(selectedWorld);
+        if (worldName != "") {
             isDeleting = true;
 
             Language* language = Language::getInstance();
-            std::wstring title =
-                language->getElement(L"selectWorld.deleteQuestion");
-            std::wstring warning =
-                L"'" + worldName + L"' " +
-                language->getElement(L"selectWorld.deleteWarning");
-            std::wstring yes =
-                language->getElement(L"selectWorld.deleteButton");
-            std::wstring no = language->getElement(L"gui.cancel");
+            std::string title =
+                language->getElement("selectWorld.deleteQuestion");
+            std::string warning =
+                "'" + worldName + "' " +
+                language->getElement("selectWorld.deleteWarning");
+            std::string yes =
+                language->getElement("selectWorld.deleteButton");
+            std::string no = language->getElement("gui.cancel");
 
             ConfirmScreen* confirmScreen =
                 new ConfirmScreen(this, title, warning, yes, no, selectedWorld);
@@ -124,7 +125,7 @@ void SelectWorldScreen::buttonClicked(Button* button) {
         minecraft->setScreen(
             new RenameWorldScreen(this, getWorldId(selectedWorld)));
     } else if (button->id == BUTTON_CANCEL_ID) {
-        app.DebugPrintf(
+        Log::info(
             "SelectWorldScreen::buttonClicked 'Cancel' "
             "minecraft->setScreen(lastScreen)\n");
         minecraft->setScreen(lastScreen);
@@ -139,10 +140,10 @@ void SelectWorldScreen::worldSelected(int id) {
     done = true;
     minecraft->gameMode = nullptr;  // new SurvivalMode(minecraft);
 
-    std::wstring worldFolderName = getWorldId(id);
-    if (worldFolderName == L"")  // 4J - was nullptr comparison
+    std::string worldFolderName = getWorldId(id);
+    if (worldFolderName == "")  // 4J - was nullptr comparison
     {
-        worldFolderName = L"World" + toWString<int>(id);
+        worldFolderName = "World" + toWString<int>(id);
     }
     // 4J Stu - Not used, so commenting to stop the build failing
 }
@@ -200,7 +201,7 @@ void SelectWorldScreen::render(int xm, int ym, float a) {
                     count = 0;
                 }
             } else {
-                app.DebugPrintf(
+                Log::info(
                     "SelectWorldScreen::render minecraft->setScreen(new "
                     "CreateWorldScreen(this))\n");
                 minecraft->setScreen(new CreateWorldScreen(this));
@@ -251,12 +252,12 @@ void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y,
                                                        int h, Tesselator* t) {
     LevelSummary* levelSummary = parent->levelList->at(i);
 
-    std::wstring name = levelSummary->getLevelName();
+    std::string name = levelSummary->getLevelName();
     if (name.length() == 0) {
-        name = parent->worldLang + L" " + toWString<int>(i + 1);
+        name = parent->worldLang + " " + toWString<int>(i + 1);
     }
 
-    std::wstring id = levelSummary->getLevelId();
+    std::string id = levelSummary->getLevelId();
 
     ULARGE_INTEGER rawtime;
     rawtime.QuadPart = levelSummary->getLastPlayed() *
@@ -269,19 +270,19 @@ void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y,
     SYSTEMTIME time;
     FileTimeToSystemTime(&timeasfiletime, &time);
 
-    wchar_t buffer[20];
+    char buffer[20];
     // 4J Stu - Currently shows years as 4 digits, where java only showed 2
-    swprintf(buffer, 20, L"%d/%d/%d %d:%02d", time.wDay, time.wMonth,
+    snprintf(buffer, 20, "%d/%d/%d %d:%02d", time.wDay, time.wMonth,
              time.wYear, time.wHour, time.wMinute);  // 4J - TODO Localise this
-    id = id + L" (" + buffer;
+    id = id + " (" + buffer;
 
     int64_t size = levelSummary->getSizeOnDisk();
-    id = id + L", " + toWString<float>(size / 1024 * 100 / 1024 / 100.0f) +
-         L" MB)";
-    std::wstring info;
+    id = id + ", " + toWString<float>(size / 1024 * 100 / 1024 / 100.0f) +
+         " MB)";
+    std::string info;
 
     if (levelSummary->isRequiresConversion()) {
-        info = parent->conversionLang + L" " + info;
+        info = parent->conversionLang + " " + info;
     }
 
     parent->drawString(parent->font, name, x + 2, y + 1, 0xffffff);

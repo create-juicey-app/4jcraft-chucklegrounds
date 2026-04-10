@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "GenericStats.h"
-#include "app/common/src/Console_Awards_enum.h"
+#include "app/common/Console_Awards_enum.h"
 #include "java/Class.h"
 
 class CommonStats : public GenericStats {

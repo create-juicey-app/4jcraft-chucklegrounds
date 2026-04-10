@@ -22,11 +22,11 @@ JukeboxTile::Entity::Entity() : TileEntity() { record = nullptr; }
 void JukeboxTile::Entity::load(CompoundTag* tag) {
     TileEntity::load(tag);
 
-    if (tag->contains(L"RecordItem")) {
-        setRecord(ItemInstance::fromTag(tag->getCompound(L"RecordItem")));
-    } else if (tag->getInt(L"Record") > 0) {
+    if (tag->contains("RecordItem")) {
+        setRecord(ItemInstance::fromTag(tag->getCompound("RecordItem")));
+    } else if (tag->getInt("Record") > 0) {
         setRecord(std::shared_ptr<ItemInstance>(
-            new ItemInstance(tag->getInt(L"Record"), 1, 0)));
+            new ItemInstance(tag->getInt("Record"), 1, 0)));
     }
 }
 
@@ -34,9 +34,9 @@ void JukeboxTile::Entity::save(CompoundTag* tag) {
     TileEntity::save(tag);
 
     if (getRecord() != nullptr) {
-        tag->putCompound(L"RecordItem", getRecord()->save(new CompoundTag()));
+        tag->putCompound("RecordItem", getRecord()->save(new CompoundTag()));
 
-        tag->putInt(L"Record", getRecord()->id);
+        tag->putInt("Record", getRecord()->id);
     }
 }
 
@@ -116,7 +116,7 @@ void JukeboxTile::dropRecording(Level* level, int x, int y, int z) {
 
     level->levelEvent(LevelEvent::SOUND_PLAY_RECORDING, x, y, z, 0);
     // 4J-PB- the level event will play the music
-    // level->playStreamingMusic(L"", x, y, z);
+    // level->playStreamingMusic("", x, y, z);
     rte->setRecord(nullptr);
     rte->setChanged();
     level->setData(x, y, z, 0, Tile::UPDATE_CLIENTS);
@@ -151,8 +151,8 @@ std::shared_ptr<TileEntity> JukeboxTile::newTileEntity(Level* level) {
 }
 
 void JukeboxTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(getIconName() + L"_side");
-    iconTop = iconRegister->registerIcon(getIconName() + L"_top");
+    icon = iconRegister->registerIcon(getIconName() + "_side");
+    iconTop = iconRegister->registerIcon(getIconName() + "_top");
 }
 
 bool JukeboxTile::hasAnalogOutputSignal() { return true; }

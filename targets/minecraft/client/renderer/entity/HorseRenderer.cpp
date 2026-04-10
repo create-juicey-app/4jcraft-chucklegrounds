@@ -2,7 +2,8 @@
 
 #include <utility>
 
-#include "platform/sdl2/Render.h"
+
+#include "platform/renderer/renderer.h"
 #include "EntityRenderDispatcher.h"
 #include "MobRenderer.h"
 #include "minecraft/client/model/geom/Model.h"
@@ -24,7 +25,7 @@ ResourceLocation HorseRenderer::HORSE_ZOMBIE_LOCATION =
 ResourceLocation HorseRenderer::HORSE_SKELETON_LOCATION =
     ResourceLocation(TN_MOB_HORSE_SKELETON);
 
-std::map<std::wstring, ResourceLocation*> HorseRenderer::LAYERED_LOCATION_CACHE;
+std::map<std::string, ResourceLocation*> HorseRenderer::LAYERED_LOCATION_CACHE;
 
 HorseRenderer::HorseRenderer(Model* model, float f) : MobRenderer(model, f) {}
 
@@ -58,7 +59,7 @@ void HorseRenderer::renderModel(std::shared_ptr<LivingEntity> mob, float wp,
                       true);
         // Ensure that any extra layers of texturing are disabled after
         // rendering this horse
-        RenderManager.TextureBind(-1);
+        PlatformRenderer.TextureBind(-1);
     }
 }
 
@@ -93,7 +94,7 @@ ResourceLocation* HorseRenderer::getTextureLocation(
 
 ResourceLocation* HorseRenderer::getOrCreateLayeredTextureLocation(
     std::shared_ptr<EntityHorse> horse) {
-    std::wstring textureName = horse->getLayeredTextureHashName();
+    std::string textureName = horse->getLayeredTextureHashName();
 
     auto it = LAYERED_LOCATION_CACHE.find(textureName);
 

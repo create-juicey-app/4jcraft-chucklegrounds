@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "java/Class.h"
 #include "minecraft/util/WeighedRandom.h"
 #include "minecraft/world/entity/Mob.h"
@@ -59,7 +59,7 @@ public:
     static const int BIOME_COUNT = 23;  // 4J Stu added
 
 public:
-    std::wstring m_name;
+    std::string m_name;
     int color;
     uint8_t topMaterial;
     uint8_t material;
@@ -131,7 +131,7 @@ public:
 
 protected:
     Biome* setSnowCovered();
-    Biome* setName(const std::wstring& name);
+    Biome* setName(const std::string& name);
     Biome* setLeafColor(int leafColor);
     Biome* setColor(int color);
 

@@ -74,7 +74,7 @@ using XCONTENTDEVICEID = int;
 struct XCONTENT_DATA {
     XCONTENTDEVICEID DeviceID;
     std::uint32_t dwContentType;
-    wchar_t szDisplayName[XCONTENT_MAX_DISPLAYNAME_LENGTH];
+    char szDisplayName[XCONTENT_MAX_DISPLAYNAME_LENGTH];
     char szFileName[XCONTENT_MAX_FILENAME_LENGTH];
 };
 using PXCONTENT_DATA = XCONTENT_DATA*;
@@ -85,7 +85,7 @@ struct XMARKETPLACE_CONTENTOFFER_INFO {
     std::uint64_t qwOfferID;
     std::uint64_t qwPreviewOfferID;
     std::uint32_t dwOfferNameLength;
-    wchar_t* wszOfferName;
+    char* wszOfferName;
     std::uint32_t dwOfferType;
     std::uint8_t contentId[XMARKETPLACE_CONTENT_ID_LEN];
     bool fIsUnrestrictedLicense;
@@ -93,12 +93,12 @@ struct XMARKETPLACE_CONTENTOFFER_INFO {
     std::uint32_t dwTitleID;
     std::uint32_t dwContentCategory;
     std::uint32_t dwTitleNameLength;
-    wchar_t* wszTitleName;
+    char* wszTitleName;
     bool fUserHasPurchased;
     std::uint32_t dwPackageSize;
     std::uint32_t dwInstallSize;
     std::uint32_t dwSellTextLength;
-    wchar_t* wszSellText;
+    char* wszSellText;
     std::uint32_t dwAssetID;
     std::uint32_t dwPurchaseQuantity;
     std::uint32_t dwPointsPrice;

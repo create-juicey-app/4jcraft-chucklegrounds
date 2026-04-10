@@ -48,8 +48,8 @@ std::shared_ptr<ItemInstance> FishingRodItem::use(
 }
 
 void FishingRodItem::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(getIconName() + L"_uncast");
-    emptyIcon = iconRegister->registerIcon(getIconName() + L"_cast");
+    icon = iconRegister->registerIcon(getIconName() + "_uncast");
+    emptyIcon = iconRegister->registerIcon(getIconName() + "_cast");
 }
 
 Icon* FishingRodItem::getEmptyIcon() { return emptyIcon; }

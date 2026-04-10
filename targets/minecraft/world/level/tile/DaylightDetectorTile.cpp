@@ -100,6 +100,6 @@ Icon* DaylightDetectorTile::getTexture(int face, int data) {
 }
 
 void DaylightDetectorTile::registerIcons(IconRegister* iconRegister) {
-    icons[0] = iconRegister->registerIcon(getIconName() + L"_top");
-    icons[1] = iconRegister->registerIcon(getIconName() + L"_side");
+    icons[0] = iconRegister->registerIcon(getIconName() + "_top");
+    icons[1] = iconRegister->registerIcon(getIconName() + "_side");
 }

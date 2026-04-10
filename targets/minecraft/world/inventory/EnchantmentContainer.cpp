@@ -8,7 +8,7 @@
 #include "strings.h"
 
 EnchantmentContainer::EnchantmentContainer(EnchantmentMenu* menu)
-    : SimpleContainer(IDS_ENCHANT, L"", false, 1), m_menu(menu) {}
+    : SimpleContainer(IDS_ENCHANT, "", false, 1), m_menu(menu) {}
 
 int EnchantmentContainer::getMaxStackSize() { return 1; }
 

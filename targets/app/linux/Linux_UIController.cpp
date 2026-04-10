@@ -1,9 +1,9 @@
-#include <GL/gl.h>
+
 
 // GDraw GL backend for Linux
-#include "platform/sdl2/Render.h"
+#include "platform/renderer/renderer.h"
 #include "Linux_UIController.h"
-#include "app/common/src/UI/All Platforms/UIStructs.h"
+#include "app/common/UI/All Platforms/UIStructs.h"
 #include "app/linux/Iggy/gdraw/gdraw.h"
 #include "app/linux/Iggy/include/iggy.h"
 #ifndef _ENABLEIGGY

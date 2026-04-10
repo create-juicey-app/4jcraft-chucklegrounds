@@ -5,8 +5,8 @@
 #include <unordered_map>
 
 #include "Entity.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "java/Class.h"
 #include "java/JavaIntHash.h"
 
@@ -35,40 +35,40 @@ public:
     };
 
 private:
-    static std::unordered_map<std::wstring, entityCreateFn>* idCreateMap;
-    static std::unordered_map<eINSTANCEOF, std::wstring, eINSTANCEOFKeyHash,
+    static std::unordered_map<std::string, entityCreateFn>* idCreateMap;
+    static std::unordered_map<eINSTANCEOF, std::string, eINSTANCEOFKeyHash,
                               eINSTANCEOFKeyEq>* classIdMap;
     static std::unordered_map<int, entityCreateFn>* numCreateMap;
     static std::unordered_map<int, eINSTANCEOF>* numClassMap;
     static std::unordered_map<eINSTANCEOF, int, eINSTANCEOFKeyHash,
                               eINSTANCEOFKeyEq>* classNumMap;
-    static std::unordered_map<std::wstring, int>* idNumMap;
+    static std::unordered_map<std::string, int>* idNumMap;
 
 public:
     static std::unordered_map<int, SpawnableMobInfo*> idsSpawnableInCreative;
 
 private:
     static void setId(entityCreateFn createFn, eINSTANCEOF clas,
-                      const std::wstring& id, int idNum);
+                      const std::string& id, int idNum);
     static void setId(entityCreateFn createFn, eINSTANCEOF clas,
-                      const std::wstring& id, int idNum,
+                      const std::string& id, int idNum,
                       eMinecraftColour color1, eMinecraftColour color2,
                       int nameId);
 
 public:
     static void staticCtor();
-    static std::shared_ptr<Entity> newEntity(const std::wstring& id,
+    static std::shared_ptr<Entity> newEntity(const std::string& id,
                                              Level* level);
     static std::shared_ptr<Entity> loadStatic(CompoundTag* tag, Level* level);
     static std::shared_ptr<Entity> newById(int id, Level* level);
     static std::shared_ptr<Entity> newByEnumType(eINSTANCEOF eType,
                                                  Level* level);
     static int getId(std::shared_ptr<Entity> entity);
-    static std::wstring getEncodeId(std::shared_ptr<Entity> entity);
-    static int getId(const std::wstring& encodeId);
-    static std::wstring getEncodeId(int entityIoValue);
+    static std::string getEncodeId(std::shared_ptr<Entity> entity);
+    static int getId(const std::string& encodeId);
+    static std::string getEncodeId(int entityIoValue);
     static int getNameId(int entityIoValue);
-    static eINSTANCEOF getType(const std::wstring& idString);
+    static eINSTANCEOF getType(const std::string& idString);
     static eINSTANCEOF getClass(int id);
 
     // 4J-JEV, added for enumerating mobs.

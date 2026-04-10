@@ -4,8 +4,8 @@
 class ByteTag : public Tag {
 public:
     uint8_t data;
-    ByteTag(const std::wstring& name) : Tag(name) {}
-    ByteTag(const std::wstring& name, uint8_t data) : Tag(name) {
+    ByteTag(const std::string& name) : Tag(name) {}
+    ByteTag(const std::string& name, uint8_t data) : Tag(name) {
         this->data = data;
     }
 
@@ -13,10 +13,10 @@ public:
     void load(DataInput* dis, int tagDepth) { data = dis->readByte(); }
 
     uint8_t getId() { return TAG_Byte; }
-    std::wstring toString() {
-        static wchar_t buf[32];
-        swprintf(buf, 32, L"%d", data);
-        return std::wstring(buf);
+    std::string toString() {
+        static char buf[32];
+        snprintf(buf, 32, "%d", data);
+        return std::string(buf);
     }
 
     bool equals(Tag* obj) {

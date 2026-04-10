@@ -139,9 +139,9 @@ void FallingTile::tick() {
                             for (auto it = allTags.begin(); it != allTags.end();
                                  ++it) {
                                 Tag* tag = *it;
-                                if (tag->getName().compare(L"x") == 0 ||
-                                    tag->getName().compare(L"y") == 0 ||
-                                    tag->getName().compare(L"z") == 0)
+                                if (tag->getName().compare("x") == 0 ||
+                                    tag->getName().compare("y") == 0 ||
+                                    tag->getName().compare("z") == 0)
                                     continue;
                                 swap->put(tag->getName(), tag->copy());
                             }
@@ -208,40 +208,40 @@ void FallingTile::causeFallDamage(float distance) {
 }
 
 void FallingTile::addAdditonalSaveData(CompoundTag* tag) {
-    tag->putByte(L"Tile", (uint8_t)tile);
-    tag->putInt(L"TileID", tile);
-    tag->putByte(L"Data", (uint8_t)data);
-    tag->putByte(L"Time", (uint8_t)time);
-    tag->putBoolean(L"DropItem", dropItem);
-    tag->putBoolean(L"HurtEntities", hurtEntities);
-    tag->putFloat(L"FallHurtAmount", fallDamageAmount);
-    tag->putInt(L"FallHurtMax", fallDamageMax);
-    if (tileData != nullptr) tag->putCompound(L"TileEntityData", tileData);
+    tag->putByte("Tile", (uint8_t)tile);
+    tag->putInt("TileID", tile);
+    tag->putByte("Data", (uint8_t)data);
+    tag->putByte("Time", (uint8_t)time);
+    tag->putBoolean("DropItem", dropItem);
+    tag->putBoolean("HurtEntities", hurtEntities);
+    tag->putFloat("FallHurtAmount", fallDamageAmount);
+    tag->putInt("FallHurtMax", fallDamageMax);
+    if (tileData != nullptr) tag->putCompound("TileEntityData", tileData);
 }
 
 void FallingTile::readAdditionalSaveData(CompoundTag* tag) {
-    if (tag->contains(L"TileID")) {
-        tile = tag->getInt(L"TileID");
+    if (tag->contains("TileID")) {
+        tile = tag->getInt("TileID");
     } else {
-        tile = tag->getByte(L"Tile") & 0xff;
+        tile = tag->getByte("Tile") & 0xff;
     }
-    data = tag->getByte(L"Data") & 0xff;
-    time = tag->getByte(L"Time") & 0xff;
+    data = tag->getByte("Data") & 0xff;
+    time = tag->getByte("Time") & 0xff;
 
-    if (tag->contains(L"HurtEntities")) {
-        hurtEntities = tag->getBoolean(L"HurtEntities");
-        fallDamageAmount = tag->getFloat(L"FallHurtAmount");
-        fallDamageMax = tag->getInt(L"FallHurtMax");
+    if (tag->contains("HurtEntities")) {
+        hurtEntities = tag->getBoolean("HurtEntities");
+        fallDamageAmount = tag->getFloat("FallHurtAmount");
+        fallDamageMax = tag->getInt("FallHurtMax");
     } else if (tile == Tile::anvil_Id) {
         hurtEntities = true;
     }
 
-    if (tag->contains(L"DropItem")) {
-        dropItem = tag->getBoolean(L"DropItem");
+    if (tag->contains("DropItem")) {
+        dropItem = tag->getBoolean("DropItem");
     }
 
-    if (tag->contains(L"TileEntityData")) {
-        tileData = tag->getCompound(L"TileEntityData");
+    if (tag->contains("TileEntityData")) {
+        tileData = tag->getCompound("TileEntityData");
     }
 
     if (tile == 0) {

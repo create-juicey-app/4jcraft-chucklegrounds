@@ -14,7 +14,7 @@ class LoginPacket : public Packet,
                     public std::enable_shared_from_this<LoginPacket> {
 public:
     int clientVersion;
-    std::wstring userName;
+    std::string userName;
     int64_t seed;
     char dimension;
     PlayerUID m_offlineXuid, m_onlineXuid;         // 4J Added
@@ -37,14 +37,14 @@ public:
     std::uint8_t maxPlayers;
 
     LoginPacket();
-    LoginPacket(const std::wstring& userName, int clientVersion,
+    LoginPacket(const std::string& userName, int clientVersion,
                 LevelType* pLevelType, int64_t seed, int gameType,
                 char dimension, std::uint8_t mapHeight, std::uint8_t maxPlayers,
                 char difficulty, int m_multiplayerInstanceId,
                 std::uint8_t playerIndex, bool newSeaLevel,
                 unsigned int uiGamePrivileges, int xzSize,
                 int hellScale);  // Server -> Client
-    LoginPacket(const std::wstring& userName, int clientVersion,
+    LoginPacket(const std::string& userName, int clientVersion,
                 PlayerUID offlineXuid, PlayerUID onlineXuid,
                 bool friendsOnlyUGC, std::uint32_t ugcPlayersVersion,
                 std::uint32_t skinId, std::uint32_t capeId,

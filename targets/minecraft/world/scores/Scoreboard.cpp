@@ -2,19 +2,19 @@
 
 class Player;
 
-Objective* Scoreboard::getObjective(const std::wstring& name) {
+Objective* Scoreboard::getObjective(const std::string& name) {
     return nullptr;
     // return objectivesByName.find(name)->second;
 }
 
-Objective* Scoreboard::addObjective(const std::wstring& name,
+Objective* Scoreboard::addObjective(const std::string& name,
                                     ObjectiveCriteria* criteria) {
     return nullptr;
     //	Objective *objective = getObjective(name);
     //	if (objective != nullptr)
     //	{
     // #indef _CONTENT_PACKAGE
-    //		__debugbreak();
+    //		assert(0);
     // #endif
     //		//throw new IllegalArgumentException("An objective with the name
     //'" + name + "' already exists!");
@@ -48,7 +48,7 @@ std::vector<Objective*>* Scoreboard::findObjectiveFor(
     // vector<Objective *>(objectives);
 }
 
-Score* Scoreboard::getPlayerScore(const std::wstring& name,
+Score* Scoreboard::getPlayerScore(const std::string& name,
                                   Objective* objective) {
     return nullptr;
     // unordered_map<Objective *, Score *> *scores =
@@ -91,12 +91,12 @@ std::vector<Objective*>* Scoreboard::getObjectives() {
     // return objectivesByName.values();
 }
 
-std::vector<std::wstring>* Scoreboard::getTrackedPlayers() {
+std::vector<std::string>* Scoreboard::getTrackedPlayers() {
     return nullptr;
     // return playerScores.keySet();
 }
 
-void Scoreboard::resetPlayerScore(const std::wstring& player) {
+void Scoreboard::resetPlayerScore(const std::string& player) {
     // unordered_map<Objective *, Score *> *removed =
     // playerScores.remove(player);
 
@@ -133,7 +133,7 @@ std::vector<Score*>* Scoreboard::getScores(Objective* objective) {
 }
 
 std::unordered_map<Objective*, Score*>* Scoreboard::getPlayerScores(
-    const std::wstring& player) {
+    const std::string& player) {
     return nullptr;
     // Map<Objective, Score> result = playerScores.get(player);
     // if (result == null) result = new HashMap<Objective, Score>();
@@ -167,12 +167,12 @@ Objective* Scoreboard::getDisplayObjective(int slot) {
     // return displayObjectives[slot];
 }
 
-PlayerTeam* Scoreboard::getPlayerTeam(const std::wstring& name) {
+PlayerTeam* Scoreboard::getPlayerTeam(const std::string& name) {
     return nullptr;
     // return teamsByName.get(name);
 }
 
-PlayerTeam* Scoreboard::addPlayerTeam(const std::wstring& name) {
+PlayerTeam* Scoreboard::addPlayerTeam(const std::string& name) {
     return nullptr;
     // PlayerTeam team = getPlayerTeam(name);
     // if (team != null) throw new IllegalArgumentException("An objective with
@@ -197,7 +197,7 @@ void Scoreboard::removePlayerTeam(PlayerTeam* team) {
     // onTeamRemoved(team);
 }
 
-void Scoreboard::addPlayerToTeam(const std::wstring& player, PlayerTeam* team) {
+void Scoreboard::addPlayerToTeam(const std::string& player, PlayerTeam* team) {
     // if (getPlayersTeam(player) != null) {
     //	removePlayerFromTeam(player);
     // }
@@ -206,7 +206,7 @@ void Scoreboard::addPlayerToTeam(const std::wstring& player, PlayerTeam* team) {
     // team.getPlayers().add(player);
 }
 
-bool Scoreboard::removePlayerFromTeam(const std::wstring& player) {
+bool Scoreboard::removePlayerFromTeam(const std::string& player) {
     return false;
     // PlayerTeam team = getPlayersTeam(player);
 
@@ -218,7 +218,7 @@ bool Scoreboard::removePlayerFromTeam(const std::wstring& player) {
     // }
 }
 
-void Scoreboard::removePlayerFromTeam(const std::wstring& player,
+void Scoreboard::removePlayerFromTeam(const std::string& player,
                                       PlayerTeam* team) {
     // if (getPlayersTeam(player) != team) {
     //	throw new IllegalStateException("Player is either on another team or not
@@ -229,7 +229,7 @@ void Scoreboard::removePlayerFromTeam(const std::wstring& player,
     // team.getPlayers().remove(player);
 }
 
-std::vector<std::wstring>* Scoreboard::getTeamNames() {
+std::vector<std::string>* Scoreboard::getTeamNames() {
     return nullptr;
     // return teamsByName.keySet();
 }
@@ -239,12 +239,12 @@ std::vector<PlayerTeam*>* Scoreboard::getPlayerTeams() {
     // return teamsByName.values();
 }
 
-std::shared_ptr<Player> Scoreboard::getPlayer(const std::wstring& name) {
+std::shared_ptr<Player> Scoreboard::getPlayer(const std::string& name) {
     return nullptr;
     // return MinecraftServer.getInstance().getPlayers().getPlayer(name);
 }
 
-PlayerTeam* Scoreboard::getPlayersTeam(const std::wstring& name) {
+PlayerTeam* Scoreboard::getPlayersTeam(const std::string& name) {
     return nullptr;
     // return teamsByPlayer.get(name);
 }
@@ -257,7 +257,7 @@ void Scoreboard::onObjectiveRemoved(Objective* objective) {}
 
 void Scoreboard::onScoreChanged(Score* score) {}
 
-void Scoreboard::onPlayerRemoved(const std::wstring& player) {}
+void Scoreboard::onPlayerRemoved(const std::string& player) {}
 
 void Scoreboard::onTeamAdded(PlayerTeam* team) {}
 
@@ -265,20 +265,20 @@ void Scoreboard::onTeamChanged(PlayerTeam* team) {}
 
 void Scoreboard::onTeamRemoved(PlayerTeam* team) {}
 
-std::wstring Scoreboard::getDisplaySlotName(int slot) {
+std::string Scoreboard::getDisplaySlotName(int slot) {
     switch (slot) {
         case DISPLAY_SLOT_LIST:
-            return L"list";
+            return "list";
         case DISPLAY_SLOT_SIDEBAR:
-            return L"sidebar";
+            return "sidebar";
         case DISPLAY_SLOT_BELOW_NAME:
-            return L"belowName";
+            return "belowName";
         default:
-            return L"";
+            return "";
     }
 }
 
-int Scoreboard::getDisplaySlotByName(const std::wstring& name) {
+int Scoreboard::getDisplaySlotByName(const std::string& name) {
     return -1;
     // if (name.equalsIgnoreCase("list"))
     //{

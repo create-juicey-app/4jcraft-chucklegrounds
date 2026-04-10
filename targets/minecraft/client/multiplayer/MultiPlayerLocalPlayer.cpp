@@ -1,3 +1,5 @@
+#include "minecraft/IGameServices.h"
+#include "minecraft/util/Log.h"
 #include "MultiPlayerLocalPlayer.h"
 
 #include <wchar.h>
@@ -5,9 +7,9 @@
 #include <cmath>
 
 #include "ClientConnection.h"
-#include "app/common/src/Tutorial/Tutorial.h"
-#include "app/common/src/Tutorial/TutorialEnum.h"
-#include "app/common/src/Tutorial/TutorialMode.h"
+#include "app/common/Tutorial/Tutorial.h"
+#include "app/common/Tutorial/TutorialEnum.h"
+#include "app/common/Tutorial/TutorialMode.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/multiplayer/MultiPlayerGameMode.h"
@@ -70,13 +72,13 @@ void MultiplayerLocalPlayer::tick() {
     // 4J Added
     // 4J-PB - changing this to a game host option ot hide gamertags
     // bool bIsisPrimaryHost=g_NetworkManager.IsHost() &&
-    // (InputManager.GetPrimaryPad()==m_iPad);
+    // (PlatformInput.GetPrimaryPad()==m_iPad);
 
-    /*if((app.GetGameSettings(m_iPad,eGameSetting_PlayerVisibleInMap)!=0) !=
+    /*if((gameServices().getGameSettings(m_iPad,eGameSetting_PlayerVisibleInMap)!=0) !=
     m_bShownOnMaps)
     {
             m_bShownOnMaps =
-    (app.GetGameSettings(m_iPad,eGameSetting_PlayerVisibleInMap)!=0); if
+    (gameServices().getGameSettings(m_iPad,eGameSetting_PlayerVisibleInMap)!=0); if
     (m_bShownOnMaps) connection->send( std::shared_ptr<PlayerCommandPacket>( new
     PlayerCommandPacket(shared_from_this(), PlayerCommandPacket::SHOW_ON_MAPS) )
     ); else connection->send( std::shared_ptr<PlayerCommandPacket>( new
@@ -209,7 +211,7 @@ std::shared_ptr<ItemEntity> MultiplayerLocalPlayer::drop() {
 void MultiplayerLocalPlayer::reallyDrop(
     std::shared_ptr<ItemEntity> itemEntity) {}
 
-void MultiplayerLocalPlayer::chat(const std::wstring& message) {
+void MultiplayerLocalPlayer::chat(const std::string& message) {
     connection->send(std::make_shared<ChatPacket>(message));
 }
 
@@ -371,26 +373,26 @@ void MultiplayerLocalPlayer::setAndBroadcastCustomSkin(std::uint32_t skinId) {
     std::uint32_t oldSkinIndex = getCustomSkin();
     LocalPlayer::setCustomSkin(skinId);
 #if !defined(_CONTENT_PACKAGE)
-    wprintf(L"Skin for local player %ls has changed to %ls (%d)\n",
+    printf("Skin for local player %s has changed to %s (%d)\n",
             name.c_str(), customTextureUrl.c_str(), getPlayerDefaultSkin());
 #endif
     if (getCustomSkin() != oldSkinIndex)
         connection->send(std::shared_ptr<TextureAndGeometryChangePacket>(
             new TextureAndGeometryChangePacket(
-                shared_from_this(), app.GetPlayerSkinName(GetXboxPad()))));
+                shared_from_this(), gameServices().getPlayerSkinName(GetXboxPad()))));
 }
 
 void MultiplayerLocalPlayer::setAndBroadcastCustomCape(std::uint32_t capeId) {
     std::uint32_t oldCapeIndex = getCustomCape();
     LocalPlayer::setCustomCape(capeId);
 #if !defined(_CONTENT_PACKAGE)
-    wprintf(L"Cape for local player %ls has changed to %ls\n", name.c_str(),
+    printf("Cape for local player %s has changed to %s\n", name.c_str(),
             customTextureUrl2.c_str());
 #endif
     if (getCustomCape() != oldCapeIndex)
         connection->send(std::make_shared<TextureChangePacket>(
             shared_from_this(), TextureChangePacket::e_TextureChange_Cape,
-            app.GetPlayerCapeName(GetXboxPad())));
+            gameServices().getPlayerCapeName(GetXboxPad())));
 }
 
 // 4J added for testing. This moves the player in a repeated sequence of 2
@@ -419,7 +421,7 @@ void MultiplayerLocalPlayer::StressTestMove(double* tempX, double* tempY,
     /*
             if( faultFound )
             {
-                    app.DebugPrintf("Fault found\n");
+                    Log::info("Fault found\n");
                     stressTestEnabled = false;
             }
             */

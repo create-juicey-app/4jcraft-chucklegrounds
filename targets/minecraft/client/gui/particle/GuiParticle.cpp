@@ -1,7 +1,8 @@
 #include "GuiParticle.h"
 
-#include "app/include/stubs.h"
+#include "platform/stubs.h"
 #include "java/Random.h"
+#include "java/Color.h"
 
 Random* GuiParticle::random = new Random();
 
@@ -17,7 +18,7 @@ GuiParticle::GuiParticle(double x, double y, double xa, double ya) {
     this->xa = xa;
     this->ya = ya;
 
-    int col = Color::HSBtoRGB(random->nextFloat(), 0.5f, 1);
+    int col = Color::getHSBColor(random->nextFloat(), 0.5f, 1).getRGB();
     r = ((col >> 16) & 0xff) / 255.0;
     g = ((col >> 8) & 0xff) / 255.0;
     b = ((col) & 0xff) / 255.0;

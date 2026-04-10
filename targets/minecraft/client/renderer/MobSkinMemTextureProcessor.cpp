@@ -1,7 +1,7 @@
-#include "app/include/MobSkinMemTextureProcessor.h"
+#include "minecraft/client/renderer/MobSkinMemTextureProcessor.h"
 
-#include "app/include/BufferedImage.h"
-#include "app/include/stubs.h"
+#include "minecraft/client/BufferedImage.h"
+#include "platform/stubs.h"
 
 BufferedImage* MobSkinMemTextureProcessor::process(BufferedImage* in) {
     if (in == nullptr) return nullptr;

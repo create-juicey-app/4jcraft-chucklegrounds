@@ -1,14 +1,15 @@
+#include "minecraft/IGameServices.h"
 #include "AttributeModifier.h"
 
 #include <assert.h>
 #include <wchar.h>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "app/linux/LinuxGame.h"
 #include "minecraft/util/HtmlString.h"
 #include "minecraft/world/entity/ai/attributes/Attribute.h"
 
-void AttributeModifier::_init(eMODIFIER_ID id, const std::wstring name,
+void AttributeModifier::_init(eMODIFIER_ID id, const std::string name,
                               double amount, int operation) {
     assert(operation < TOTAL_OPERATIONS);
     this->amount = amount;
@@ -34,7 +35,7 @@ AttributeModifier::AttributeModifier(eMODIFIER_ID id, double amount,
 
 eMODIFIER_ID AttributeModifier::getId() { return id; }
 
-std::wstring AttributeModifier::getName() { return name; }
+std::string AttributeModifier::getName() { return name; }
 
 int AttributeModifier::getOperation() { return operation; }
 
@@ -57,16 +58,16 @@ bool AttributeModifier::equals(AttributeModifier* modifier) {
     return true;
 }
 
-std::wstring AttributeModifier::toString() {
-    return L"";
+std::string AttributeModifier::toString() {
+    return "";
 
-    /*return L"AttributeModifier{" +
-    L"amount=" + amount +
-    L", operation=" + operation +
-    L", name='" + name + '\'' +
-    L", id=" + id +
-    L", serialize=" + serialize +
-    L'}';*/
+    /*return "AttributeModifier{" +
+    "amount=" + amount +
+    ", operation=" + operation +
+    ", name='" + name + '\'' +
+    ", id=" + id +
+    ", serialize=" + serialize +
+    '}';*/
 }
 
 HtmlString AttributeModifier::getHoverText(eATTRIBUTE_ID attribute) {
@@ -103,10 +104,10 @@ HtmlString AttributeModifier::getHoverText(eATTRIBUTE_ID attribute) {
             assert(0);
     }
 
-    wchar_t formatted[256];
-    swprintf(formatted, 256, L"%ls%d%ls %ls", (amount > 0 ? L"+" : L"-"),
-             (int)displayAmount, (percentage ? L"%" : L""),
-             app.GetString(Attribute::getName(attribute)));
+    char formatted[256];
+    snprintf(formatted, 256, "%s%d%s %s", (amount > 0 ? "+" : "-"),
+             (int)displayAmount, (percentage ? "%" : ""),
+             gameServices().getString(Attribute::getName(attribute)));
 
     return HtmlString(formatted, color);
 }

@@ -21,7 +21,7 @@ protected:
     static const int BUTTON_ITEMSTATS_ID = 3;
 
     Screen* lastScreen;
-    std::wstring title;
+    std::string title;
 
 public:
     class GeneralStatisticsList;
@@ -105,7 +105,7 @@ private:
         virtual void clickedHeader(int headerMouseX, int headerMouseY);
         virtual int getNumberOfItems();
         ItemStat* getSlotStat(int slot);
-        virtual std::wstring getHeaderDescriptionId(int column) = 0;
+        virtual std::string getHeaderDescriptionId(int column) = 0;
         virtual void renderStat(ItemStat* stat, int x, int y, bool shaded);
         virtual void renderDecorations(int mouseX, int mouseY);
         virtual void renderMousehoverTooltip(ItemStat* stat, int x, int y);
@@ -124,7 +124,7 @@ public:
             StatsScreen* ss);  // 4J - added parameter so we can access parent
         virtual void renderHeader(int x, int y, Tesselator* t);
         virtual void renderItem(int i, int x, int y, int h, Tesselator* t);
-        virtual std::wstring getHeaderDescriptionId(int column);
+        virtual std::string getHeaderDescriptionId(int column);
     };
 
     class BlockStatisticsList : public StatisticsList {
@@ -138,6 +138,6 @@ public:
             StatsScreen* ss);  // 4J - added parameter so we can access parent
         virtual void renderHeader(int x, int y, Tesselator* t);
         virtual void renderItem(int i, int x, int y, int h, Tesselator* t);
-        virtual std::wstring getHeaderDescriptionId(int column);
+        virtual std::string getHeaderDescriptionId(int column);
     };
 };

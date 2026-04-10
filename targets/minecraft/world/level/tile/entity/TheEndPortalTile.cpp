@@ -2,8 +2,7 @@
 
 #include <string>
 
-#include "app/common/App_enums.h"
-#include "app/linux/LinuxGame.h"
+#include "minecraft/IGameServices.h"
 #include "TheEndPortalTileEntity.h"
 #include "java/Class.h"
 #include "java/Random.h"
@@ -72,7 +71,7 @@ void TheEndPortal::entityInside(Level* level, int x, int y, int z,
                 x = z = 0;
                 if (level->dimension == 0 &&
                     !level->getLevelData()->getHasStrongholdEndPortal() &&
-                    app.GetTerrainFeaturePosition(
+                    gameServices().getTerrainFeaturePosition(
                         eTerrainFeature_StrongholdEndPortal, &x, &z)) {
                     level->getLevelData()->setXStrongholdEndPortal(x);
                     level->getLevelData()->setZStrongholdEndPortal(z);
@@ -111,5 +110,5 @@ int TheEndPortal::cloneTileId(Level* level, int x, int y, int z) { return 0; }
 
 void TheEndPortal::registerIcons(IconRegister* iconRegister) {
     // don't register null, because of particles
-    icon = iconRegister->registerIcon(L"portal");
+    icon = iconRegister->registerIcon("portal");
 }

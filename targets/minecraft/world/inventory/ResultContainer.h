@@ -17,8 +17,8 @@ public:
 
     virtual unsigned int getContainerSize() override;
     virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot) override;
-    virtual std::wstring getName() override;
-    virtual std::wstring getCustomName() override;
+    virtual std::string getName() override;
+    virtual std::string getCustomName() override;
     virtual bool hasCustomName() override;
     virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot,
                                                      int count) override;

@@ -14,16 +14,16 @@ Stat::TimeFormatter* Stat::timeFormatter = new TimeFormatter();
 Stat::DistanceFormatter* Stat::distanceFormatter = new DistanceFormatter();
 
 // 4J Stu - Changed this to take in a printf format string instead
-DecimalFormat* Stat::decimalFormat = new DecimalFormat(L"%0(3).2f");
+DecimalFormat* Stat::decimalFormat = new DecimalFormat("%0(3).2f");
 
 void Stat::_init() { awardLocallyOnly = false; }
 
-Stat::Stat(int id, const std::wstring& name, StatFormatter* formatter)
+Stat::Stat(int id, const std::string& name, StatFormatter* formatter)
     : id(id), name(name), formatter(formatter) {
     _init();
 }
 
-Stat::Stat(int id, const std::wstring& name)
+Stat::Stat(int id, const std::string& name)
     : id(id), name(name), formatter(defaultFormatter) {
     _init();
 }
@@ -50,13 +50,13 @@ Stat* Stat::postConstruct() {
 
 bool Stat::isAchievement() { return false; }
 
-std::wstring Stat::format(int value) {
+std::string Stat::format(int value) {
     return ((StatFormatter*)formatter)->format(value);
 }
 
-std::wstring Stat::toString() { return name; }
+std::string Stat::toString() { return name; }
 
-std::wstring Stat::TimeFormatter::format(int value) {
+std::string Stat::TimeFormatter::format(int value) {
     double seconds = value / 20.0;
     double minutes = seconds / 60.0;
     double hours = minutes / 60.0;
@@ -64,31 +64,31 @@ std::wstring Stat::TimeFormatter::format(int value) {
     double years = days / 365.0;
 
     if (years > 0.5) {
-        return decimalFormat->format(years) + L" y";
+        return decimalFormat->format(years) + " y";
     } else if (days > 0.5) {
-        return decimalFormat->format(days) + L" d";
+        return decimalFormat->format(days) + " d";
     } else if (hours > 0.5) {
-        return decimalFormat->format(hours) + L" h";
+        return decimalFormat->format(hours) + " h";
     } else if (minutes > 0.5) {
-        return decimalFormat->format(minutes) + L" m";
+        return decimalFormat->format(minutes) + " m";
     }
 
-    return toWString<double>(seconds) + L" s";
+    return toWString<double>(seconds) + " s";
 }
 
-std::wstring Stat::DefaultFormat::format(int value) {
+std::string Stat::DefaultFormat::format(int value) {
     return NumberFormat::format(value);  // numberFormat->format(value);
 }
 
-std::wstring Stat::DistanceFormatter::format(int cm) {
+std::string Stat::DistanceFormatter::format(int cm) {
     double meters = cm / 100.0;
     double kilometers = meters / 1000.0;
 
     if (kilometers > 0.5) {
-        return decimalFormat->format(kilometers) + L" km";
+        return decimalFormat->format(kilometers) + " km";
 
     } else if (meters > 0.5) {
-        return decimalFormat->format(meters) + L" m";
+        return decimalFormat->format(meters) + " m";
     }
-    return toWString<int>(cm) + L" cm";
+    return toWString<int>(cm) + " cm";
 }

@@ -58,9 +58,9 @@ protected:
                             double y, double z);
     virtual bool shouldShowName(std::shared_ptr<LivingEntity> mob);
     virtual void renderNameTags(std::shared_ptr<LivingEntity> mob, double x,
-                                double y, double z, const std::wstring& msg,
+                                double y, double z, const std::string& msg,
                                 float scale, double dist);
     virtual void renderNameTag(std::shared_ptr<LivingEntity> mob,
-                               const std::wstring& name, double x, double y,
+                               const std::string& name, double x, double y,
                                double z, int maxDist, int color = 0xff000000);
 };

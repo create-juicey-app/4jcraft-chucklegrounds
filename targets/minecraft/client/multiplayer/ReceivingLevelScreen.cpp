@@ -36,7 +36,7 @@ void ReceivingLevelScreen::render(int xm, int ym, float a) {
     Language* language = Language::getInstance();
 
     drawCenteredString(font,
-                       language->getElement(L"multiplayer.downloadingTerrain"),
+                       language->getElement("multiplayer.downloadingTerrain"),
                        width / 2, height / 2 - 50, 0xffffff);
 
     Screen::render(xm, ym, a);

@@ -19,8 +19,8 @@ PlayerIO* MockedLevelStorage::getPlayerIO() { return nullptr; }
 
 void MockedLevelStorage::closeAll() {}
 
-ConsoleSavePath MockedLevelStorage::getDataFile(const std::wstring& id) {
-    return ConsoleSavePath(std::wstring(L""));
+ConsoleSavePath MockedLevelStorage::getDataFile(const std::string& id) {
+    return ConsoleSavePath(std::string(""));
 }
 
-std::wstring MockedLevelStorage::getLevelId() { return L"none"; }
+std::string MockedLevelStorage::getLevelId() { return "none"; }

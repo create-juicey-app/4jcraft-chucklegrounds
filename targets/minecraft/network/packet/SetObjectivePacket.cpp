@@ -6,8 +6,8 @@
 #include "minecraft/world/scores/Objective.h"
 
 SetObjectivePacket::SetObjectivePacket() {
-    objectiveName = L"";
-    displayName = L"";
+    objectiveName = "";
+    displayName = "";
     method = 0;
 }
 

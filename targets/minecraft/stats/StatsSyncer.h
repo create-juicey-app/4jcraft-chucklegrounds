@@ -30,7 +30,7 @@ public:
     StatsSyncher(User* user, StatsCounter* statsCounter, File* dir);
 
 private:
-    void attemptRename(File* dir, const std::wstring& name, File* to);
+    void attemptRename(File* dir, const std::string& name, File* to);
     std::unordered_map<Stat*, int>* loadStatsFromDisk(File* file, File* tmp,
                                                       File* old);
     std::unordered_map<Stat*, int>* loadStatsFromDisk(File* file);

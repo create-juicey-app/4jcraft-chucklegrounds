@@ -90,9 +90,9 @@ void CactusTile::entityInside(Level* level, int x, int y, int z,
 }
 
 void CactusTile::registerIcons(IconRegister* iconRegister) {
-    icon = iconRegister->registerIcon(L"cactus_side");
-    iconTop = iconRegister->registerIcon(L"cactus_top");
-    iconBottom = iconRegister->registerIcon(L"cactus_bottom");
+    icon = iconRegister->registerIcon("cactus_side");
+    iconTop = iconRegister->registerIcon("cactus_top");
+    iconBottom = iconRegister->registerIcon("cactus_bottom");
 }
 
 bool CactusTile::shouldTileTick(Level* level, int x, int y, int z) {

@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <utility>
 
-#include "app/common/App_enums.h"
+#include "minecraft/GameEnums.h"
 #include "java/Class.h"
 #include "minecraft/SharedConstants.h"
 #include "minecraft/world/damageSource/DamageSource.h"
@@ -377,9 +377,9 @@ MobEffect::EMobEffectIcon MobEffect::getIcon() { return icon; }
 
 bool MobEffect::isHarmful() { return _isHarmful; }
 
-std::wstring MobEffect::formatDuration(MobEffectInstance* instance) {
+std::string MobEffect::formatDuration(MobEffectInstance* instance) {
     if (instance->isNoCounter()) {
-        return L"**:**";
+        return "**:**";
     }
     int duration = instance->getDuration();
 
@@ -387,14 +387,14 @@ std::wstring MobEffect::formatDuration(MobEffectInstance* instance) {
     int minutes = seconds / 60;
     seconds %= 60;
 
-    wchar_t temp[8];
-    memset(&temp, 0, 8 * (sizeof(wchar_t)));
+    char temp[8];
+    memset(&temp, 0, 8 * (sizeof(char)));
 
     if (seconds < 10) {
-        swprintf(temp, 8, L"%d:0%d", minutes, seconds);
+        snprintf(temp, 8, "%d:0%d", minutes, seconds);
         // return minutes + ":0" + seconds;
     } else {
-        swprintf(temp, 8, L"%d:%d", minutes, seconds);
+        snprintf(temp, 8, "%d:%d", minutes, seconds);
         // return minutes + ":" + seconds;
     }
 

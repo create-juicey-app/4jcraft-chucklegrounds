@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/gl.h>
+#include "platform/renderer/renderer.h"
 
 #include <format>
 #include <string>
@@ -52,7 +52,7 @@ private:
     int magFilter;
     int wrapMode;
     bool mipmapped;
-    std::wstring name;
+    std::string name;
 
     Rect2i* rect;
 
@@ -68,29 +68,29 @@ public:
     ~Texture();
 
 private:
-    Texture(const std::wstring& name, int mode, int width, int height,
+    Texture(const std::string& name, int mode, int width, int height,
             int depth, int wrapMode, int format, int minFilter, int magFilter,
             bool mipMap = true);
 
-    void _init(const std::wstring& name, int mode, int width, int height,
+    void _init(const std::string& name, int mode, int width, int height,
                int depth, int wrapMode, int format, int minFilter,
                int magFilter, bool mipMap);
-    void _init(const std::wstring& name, int mode, int width, int height,
+    void _init(const std::string& name, int mode, int width, int height,
                int depth, int wrapMode, int format, int minFilter,
                int magFilter, BufferedImage* image, bool mipMap);
 
 public:
-    Texture(const std::wstring& name, int mode, int width, int height,
+    Texture(const std::string& name, int mode, int width, int height,
             int wrapMode, int format, int minFilter, int magFilter,
             BufferedImage* image, bool mipMap = true);
-    Texture(const std::wstring& name, int mode, int width, int height,
+    Texture(const std::string& name, int mode, int width, int height,
             int depth, int wrapMode, int format, int minFilter, int magFilter,
             BufferedImage* image, bool mipMap = true);
 
     const Rect2i* getRect();
     void fill(const Rect2i* rect, int color);
-    void writeAsBMP(const std::wstring& name);
-    void writeAsPNG(const std::wstring& filename);
+    void writeAsBMP(const std::string& name);
+    void writeAsPNG(const std::string& filename);
     void blit(int x, int y, Texture* source);
     void blit(int x, int y, Texture* source, bool rotated);
     void transferFromBuffer(const std::vector<int>& buffer);
@@ -99,7 +99,7 @@ public:
     int getGlId();
     int getWidth();
     int getHeight();
-    std::wstring getName();
+    std::string getName();
     void setImmediateUpdate(bool immediateUpdate);
     void bind(int mipMapIndex);
     void updateOnGPU();

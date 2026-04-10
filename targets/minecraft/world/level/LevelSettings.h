@@ -21,19 +21,19 @@ public:
 
 private:
     int id;
-    std::wstring name;
+    std::string name;
 
-    GameType(int id, const std::wstring& name);
+    GameType(int id, const std::string& name);
 
 public:
     int getId();
-    std::wstring getName();
+    std::string getName();
     void updatePlayerAbilities(Abilities* abilities);
     bool isAdventureRestricted();
     bool isCreative();
     bool isSurvival();
     static GameType* byId(int id);
-    static GameType* byName(const std::wstring& name);
+    static GameType* byName(const std::string& name);
 };
 
 class LevelSettings {
@@ -46,7 +46,7 @@ private:
     LevelType* levelType;
     bool allowCommands;
     bool startingBonusItems;  // 4J - brought forward from 1.3.2
-    std::wstring levelTypeOptions;
+    std::string levelTypeOptions;
     int m_xzSize;  // 4J Added
     int m_hellScale;
 
@@ -64,7 +64,7 @@ public:
     LevelSettings*
     enableStartingBonusItems();  // 4J - brought forward from 1.3.2
     LevelSettings* enableSinglePlayerCommands();
-    LevelSettings* setLevelTypeOptions(const std::wstring& options);
+    LevelSettings* setLevelTypeOptions(const std::string& options);
     bool hasStartingBonusItems();  // 4J - brought forward from 1.3.2
     int64_t getSeed();
     GameType* getGameType();
@@ -76,5 +76,5 @@ public:
     int getXZSize();     // 4J Added
     int getHellScale();  // 4J Added
     static GameType* validateGameType(int gameType);
-    std::wstring getLevelTypeOptions();
+    std::string getLevelTypeOptions();
 };

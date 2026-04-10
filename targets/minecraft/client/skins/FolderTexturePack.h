@@ -13,21 +13,21 @@ private:
     bool bUILoaded;
 
 public:
-    FolderTexturePack(std::uint32_t id, const std::wstring& name, File* folder,
+    FolderTexturePack(std::uint32_t id, const std::string& name, File* folder,
                       TexturePack* fallback);
 
 protected:
     //@Override
     InputStream* getResourceImplementation(
-        const std::wstring& name);  // throws IOException
+        const std::string& name);  // throws IOException
 
 public:
     //@Override
-    bool hasFile(const std::wstring& name);
+    bool hasFile(const std::string& name);
     bool isTerrainUpdateCompatible();
 
     // 4J Added
-    virtual std::wstring getPath(bool bTitleUpdateTexture = false,
+    virtual std::string getPath(bool bTitleUpdateTexture = false,
                                  const char* pchBDPatchFilename = nullptr);
     virtual void loadUI();
     virtual void unloadUI();

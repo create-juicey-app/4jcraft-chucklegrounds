@@ -1,7 +1,7 @@
 #include "FoliageColor.h"
 
-#include "app/common/App_enums.h"
-#include "app/common/src/Colours/ColourTable.h"
+#include "minecraft/GameEnums.h"
+#include "app/common/Colours/ColourTable.h"
 #include "minecraft/client/Minecraft.h"
 
 // 4J Stu - Don't use this any more

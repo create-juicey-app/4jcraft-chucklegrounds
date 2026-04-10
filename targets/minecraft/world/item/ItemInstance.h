@@ -34,9 +34,9 @@ class ListTag;
 // fit well into out macroisation setup
 class ItemInstance : public std::enable_shared_from_this<ItemInstance> {
 public:
-    static const std::wstring ATTRIBUTE_MODIFIER_FORMAT;
-    static const wchar_t* TAG_ENCH_ID;
-    static const wchar_t* TAG_ENCH_LEVEL;
+    static const std::string ATTRIBUTE_MODIFIER_FORMAT;
+    static const char* TAG_ENCH_ID;
+    static const char* TAG_ENCH_LEVEL;
 
     int count;
     int popTime;
@@ -146,7 +146,7 @@ public:
     virtual ItemInstance* setDescriptionId(unsigned int id);
     static std::shared_ptr<ItemInstance> clone(
         std::shared_ptr<ItemInstance> item);
-    std::wstring toString();
+    std::string toString();
     void inventoryTick(Level* level, std::shared_ptr<Entity> owner, int slot,
                        bool selected);
     void onCraftedBy(Level* level, std::shared_ptr<Player> player,
@@ -163,14 +163,14 @@ public:
     CompoundTag* getTag();
     ListTag<CompoundTag>* getEnchantmentTags();
     void setTag(CompoundTag* tag);
-    std::wstring getHoverName();
-    void setHoverName(const std::wstring& name);
+    std::string getHoverName();
+    void setHoverName(const std::string& name);
     void resetHoverName();
     bool hasCustomHoverName();
     // 4jcraft: re-added old TU18 overload for java gui
-    std::vector<std::wstring>* getHoverText(
+    std::vector<std::string>* getHoverText(
         std::shared_ptr<Player> player, bool advanced,
-        std::vector<std::wstring>& unformattedStrings);
+        std::vector<std::string>& unformattedStrings);
     std::vector<HtmlString>* getHoverText(std::shared_ptr<Player> player,
                                           bool advanced);
     std::vector<HtmlString>* getHoverTextOnly(std::shared_ptr<Player> player,
@@ -180,7 +180,7 @@ public:
     bool isEnchantable();
     void enchant(const Enchantment* enchantment, int level);
     bool isEnchanted();
-    void addTagElement(std::wstring name, Tag* tag);
+    void addTagElement(std::string name, Tag* tag);
     bool mayBePlacedInAdventureMode();
     bool isFramed();
     void setFramed(std::shared_ptr<ItemFrame> frame);

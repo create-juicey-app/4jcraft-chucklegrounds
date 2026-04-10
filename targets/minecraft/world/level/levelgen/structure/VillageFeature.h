@@ -15,8 +15,8 @@ class Random;
 
 class VillageFeature : public StructureFeature {
 public:
-    static const std::wstring OPTION_SIZE_MODIFIER;
-    static const std::wstring OPTION_SPACING;
+    static const std::string OPTION_SIZE_MODIFIER;
+    static const std::string OPTION_SPACING;
 
 private:
     int villageSizeModifier;
@@ -29,9 +29,9 @@ public:
     static void staticCtor();
     static std::vector<Biome*> allowedBiomes;
     VillageFeature(int iXZSize);
-    VillageFeature(std::unordered_map<std::wstring, std::wstring> options,
+    VillageFeature(std::unordered_map<std::string, std::string> options,
                    int iXZSize);
-    std::wstring getFeatureName();
+    std::string getFeatureName();
 
 protected:
     virtual bool isFeatureChunk(int x, int z, bool bIsSuperflat = false);

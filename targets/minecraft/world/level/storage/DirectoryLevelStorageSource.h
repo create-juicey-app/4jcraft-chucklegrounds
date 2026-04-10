@@ -17,28 +17,28 @@ protected:
 
 public:
     DirectoryLevelStorageSource(const File dir);
-    virtual std::wstring getName();
+    virtual std::string getName();
     virtual std::vector<LevelSummary*>* getLevelList();
     virtual void clearAll();
     virtual LevelData* getDataTagFor(ConsoleSaveFile* saveFile,
-                                     const std::wstring& levelId);
-    virtual void renameLevel(const std::wstring& levelId,
-                             const std::wstring& newLevelName);
-    virtual bool isNewLevelIdAcceptable(const std::wstring& levelId);
-    virtual void deleteLevel(const std::wstring& levelId);
+                                     const std::string& levelId);
+    virtual void renameLevel(const std::string& levelId,
+                             const std::string& newLevelName);
+    virtual bool isNewLevelIdAcceptable(const std::string& levelId);
+    virtual void deleteLevel(const std::string& levelId);
 
 protected:
     static void deleteRecursive(std::vector<File*>* files);
 
 public:
     virtual std::shared_ptr<LevelStorage> selectLevel(
-        ConsoleSaveFile* saveFile, const std::wstring& levelId,
+        ConsoleSaveFile* saveFile, const std::string& levelId,
         bool createPlayerDir);
     virtual bool isConvertible(ConsoleSaveFile* saveFile,
-                               const std::wstring& levelId);
+                               const std::string& levelId);
     virtual bool requiresConversion(ConsoleSaveFile* saveFile,
-                                    const std::wstring& levelId);
+                                    const std::string& levelId);
     virtual bool convertLevel(ConsoleSaveFile* saveFile,
-                              const std::wstring& levelId,
+                              const std::string& levelId,
                               ProgressListener* progress);
 };

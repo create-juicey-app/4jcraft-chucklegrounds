@@ -35,10 +35,10 @@ public:
     virtual void writeLong(int64_t a);
     virtual void writeShort(short a);
     virtual void writeUnsignedShort(unsigned short a);
-    virtual void writeChar(wchar_t a);
-    virtual void writeChars(const std::wstring& a);
+    virtual void writeChar(char a);
+    virtual void writeChars(const std::string& a);
     virtual void writeBoolean(bool b);
-    virtual void writeUTF(const std::wstring& a);
+    virtual void writeUTF(const std::string& a);
     virtual void writePlayerUID(unsigned long long player);
     virtual void flush();
 };

@@ -320,8 +320,8 @@ void Skeleton::setSkeletonType(int type) {
 void Skeleton::readAdditionalSaveData(CompoundTag* tag) {
     Monster::readAdditionalSaveData(tag);
 
-    if (tag->contains(L"SkeletonType")) {
-        int value = tag->getByte(L"SkeletonType");
+    if (tag->contains("SkeletonType")) {
+        int value = tag->getByte("SkeletonType");
         setSkeletonType(value);
     }
 
@@ -330,7 +330,7 @@ void Skeleton::readAdditionalSaveData(CompoundTag* tag) {
 
 void Skeleton::addAdditonalSaveData(CompoundTag* entityTag) {
     Monster::addAdditonalSaveData(entityTag);
-    entityTag->putByte(L"SkeletonType", (uint8_t)getSkeletonType());
+    entityTag->putByte("SkeletonType", (uint8_t)getSkeletonType());
 }
 
 void Skeleton::setEquippedSlot(int slot, std::shared_ptr<ItemInstance> item) {

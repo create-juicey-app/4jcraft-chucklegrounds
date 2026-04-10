@@ -1,9 +1,10 @@
+#include "minecraft/IGameServices.h"
 #include "NetherBridgeFeature.h"
 
 #include <list>
 #include <unordered_map>
 
-#include "app/common/src/GameRules/LevelGeneration/LevelGenerationOptions.h"
+#include "app/common/GameRules/LevelGeneration/LevelGenerationOptions.h"
 #include "app/linux/LinuxGame.h"
 #include "NetherBridgePieces.h"
 #include "java/Class.h"
@@ -32,7 +33,7 @@ NetherBridgeFeature::~NetherBridgeFeature() {
     if (netherFortressPos != nullptr) delete netherFortressPos;
 }
 
-std::wstring NetherBridgeFeature::getFeatureName() { return L"Fortress"; }
+std::string NetherBridgeFeature::getFeatureName() { return "Fortress"; }
 
 std::vector<Biome::MobSpawnerData*>* NetherBridgeFeature::getBridgeEnemies() {
     return &bridgeEnemies;
@@ -59,7 +60,7 @@ bool NetherBridgeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat) {
     }
 
     bool forcePlacement = false;
-    LevelGenerationOptions* levelGenOptions = app.getLevelGenerationOptions();
+    LevelGenerationOptions* levelGenOptions = gameServices().getLevelGenerationOptions();
     if (levelGenOptions != nullptr) {
         forcePlacement =
             levelGenOptions->isFeatureChunk(x, z, eFeature_NetherBridge);

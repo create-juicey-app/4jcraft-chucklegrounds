@@ -2,17 +2,18 @@
 
 #include <cstdint>
 
-#include "platform/sdl2/Storage.h"
+#include "platform/storage/storage.h"
 #include "app/common/App_Defines.h"
-#include "app/common/App_enums.h"
-#include "app/common/src/Tutorial/TutorialEnum.h"
-#include "app/common/src/UI/All Platforms/UIEnums.h"
-#include "app/include/NetTypes.h"
-#include "app/include/SkinBox.h"
-#include "app/include/XboxStubs.h"
+#include "minecraft/GameEnums.h"
+#include "minecraft/GameTypes.h"
+#include "app/common/Tutorial/TutorialEnum.h"
+#include "app/common/UI/All Platforms/UIEnums.h"
+#include "platform/NetTypes.h"
+#include "minecraft/client/model/SkinBox.h"
+#include "platform/XboxStubs.h"
 
 typedef struct {
-    wchar_t* wchFilename;
+    char* wchFilename;
     eFileExtensionType eEXT;
     eTMSFileType eTMSType;
     std::uint8_t* pbData;
@@ -145,27 +146,16 @@ typedef struct {
 } TIPSTRUCT;
 
 typedef struct {
-    eXUID eXuid;
-    wchar_t wchCape[MAX_CAPENAME_SIZE];
-    wchar_t wchSkin[MAX_CAPENAME_SIZE];
-} MOJANG_DATA;
-
-typedef struct {
     eDLCContentType eDLCType;
 
     uint64_t ullOfferID_Full;
     uint64_t ullOfferID_Trial;
-    wchar_t wchBanner[MAX_BANNERNAME_SIZE];
-    wchar_t wchDataFile[MAX_BANNERNAME_SIZE];
+    char wchBanner[MAX_BANNERNAME_SIZE];
+    char wchDataFile[MAX_BANNERNAME_SIZE];
     int iGender;
     int iConfig;
     unsigned int uiSortIndex;
 } DLC_INFO;
-
-typedef struct {
-    int x, z;
-    _eTerrainFeatureType eTerrainFeature;
-} FEATURE_DATA;
 
 // banned list
 typedef struct {
@@ -181,12 +171,12 @@ typedef struct _DLCRequest {
 typedef struct _TMSPPRequest {
     eTMSContentState eState;
     eDLCContentType eType;
-    C4JStorage::eGlobalStorage eStorageFacility;
-    C4JStorage::eTMS_FILETYPEVAL eFileTypeVal;
+    IPlatformStorage::eGlobalStorage eStorageFacility;
+    IPlatformStorage::eTMS_FILETYPEVAL eFileTypeVal;
     // char szFilename[MAX_TMSFILENAME_SIZE];
-    int (*CallbackFunc)(void*, int, int, C4JStorage::PTMSPP_FILEDATA,
+    int (*CallbackFunc)(void*, int, int, IPlatformStorage::PTMSPP_FILEDATA,
                         const char* szFilename);
-    wchar_t wchFilename[MAX_TMSFILENAME_SIZE];
+    char wchFilename[MAX_TMSFILENAME_SIZE];
 
     void* lpCallbackParam;
 } TMSPPRequest;

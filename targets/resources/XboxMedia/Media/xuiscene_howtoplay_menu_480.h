@@ -1,6 +1,6 @@
 #pragma once
-#define IDC_control_ListItem L"control_ListItem"
-#define IDC_control_ListItem L"control_ListItem"
-#define IDC_control_ListItem L"control_ListItem"
-#define IDC_HowToListButtons L"HowToListButtons"
-#define IDC_SceneHowToPlayMenu L"SceneHowToPlayMenu"
+#define IDC_control_ListItem "control_ListItem"
+#define IDC_control_ListItem "control_ListItem"
+#define IDC_control_ListItem "control_ListItem"
+#define IDC_HowToListButtons "HowToListButtons"
+#define IDC_SceneHowToPlayMenu "SceneHowToPlayMenu"

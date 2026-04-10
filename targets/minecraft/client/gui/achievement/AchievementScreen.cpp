@@ -1,12 +1,12 @@
 #include "AchievementScreen.h"
 
-#include <GL/gl.h>
+
 
 #include <string>
 #include <vector>
 
-#include "platform/sdl2/Render.h"
-#include "app/include/stubs.h"
+#include "platform/renderer/renderer.h"
+#include "platform/stubs.h"
 #include "minecraft/client/KeyMapping.h"
 #include "minecraft/client/Minecraft.h"
 #include "minecraft/client/Options.h"
@@ -49,7 +49,7 @@ void AchievementScreen::init() {
     //        buttons.add(new SmallButton(0, width / 2 - 80 - 24, height / 2 +
     //        74, 110, 20, I18n.get("gui.achievements")));
     buttons.push_back(new SmallButton(1, width / 2 + 24, height / 2 + 74, 80,
-                                      20, I18n::get(L"gui.done")));
+                                      20, I18n::get("gui.done")));
 }
 
 void AchievementScreen::buttonClicked(Button* button) {
@@ -132,7 +132,7 @@ void AchievementScreen::tick() {
 void AchievementScreen::renderLabels() {
     int xo = (width - imageWidth) / 2;
     int yo = (height - imageHeight) / 2;
-    font->draw(L"Achievements", xo + 15, yo + 5, 0x404040);
+    font->draw("Achievements", xo + 15, yo + 5, 0x404040);
 
     //        font.draw(xScrollP + ", " + yScrollP, xo + 5, yo + 5 +
     //        BIGMAP_HEIGHT + 18, 0x404040); font.drawWordWrap("Ride a pig off a

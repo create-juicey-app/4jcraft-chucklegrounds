@@ -1,6 +1,6 @@
 #include "HttpTexture.h"
 
-HttpTexture::HttpTexture(const std::wstring& _url,
+HttpTexture::HttpTexture(const std::string& _url,
                          HttpTextureProcessor* processor) {
     // 4J - added
     count = 1;

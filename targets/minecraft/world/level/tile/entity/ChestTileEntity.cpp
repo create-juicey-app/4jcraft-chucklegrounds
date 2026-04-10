@@ -1,3 +1,4 @@
+#include "minecraft/IGameServices.h"
 #include "ChestTileEntity.h"
 
 #include <stdint.h>
@@ -46,7 +47,7 @@ void ChestTileEntity::_init(bool isBonusChest) {
     tickInterval = 0;
 
     type = -1;
-    name = L"";
+    name = "";
 }
 
 ChestTileEntity::ChestTileEntity(bool isBonusChest /* = false*/)
@@ -108,36 +109,36 @@ void ChestTileEntity::setItem(unsigned int slot,
     this->setChanged();
 }
 
-std::wstring ChestTileEntity::getName() {
-    return hasCustomName() ? name : app.GetString(IDS_TILE_CHEST);
+std::string ChestTileEntity::getName() {
+    return hasCustomName() ? name : gameServices().getString(IDS_TILE_CHEST);
 }
 
-std::wstring ChestTileEntity::getCustomName() {
-    return hasCustomName() ? name : L"";
+std::string ChestTileEntity::getCustomName() {
+    return hasCustomName() ? name : "";
 }
 
 bool ChestTileEntity::hasCustomName() { return !name.empty(); }
 
-void ChestTileEntity::setCustomName(const std::wstring& name) {
+void ChestTileEntity::setCustomName(const std::string& name) {
     this->name = name;
 }
 
 void ChestTileEntity::load(CompoundTag* base) {
     TileEntity::load(base);
     ListTag<CompoundTag>* inventoryList =
-        (ListTag<CompoundTag>*)base->getList(L"Items");
+        (ListTag<CompoundTag>*)base->getList("Items");
     if (items) {
         delete items;
     }
     items = new std::vector<std::shared_ptr<ItemInstance>>(getContainerSize());
-    if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
+    if (base->contains("CustomName")) name = base->getString("CustomName");
     for (int i = 0; i < inventoryList->size(); i++) {
         CompoundTag* tag = inventoryList->get(i);
-        unsigned int slot = tag->getByte(L"Slot") & 0xff;
+        unsigned int slot = tag->getByte("Slot") & 0xff;
         if (slot >= 0 && slot < items->size())
             (*items)[slot] = ItemInstance::fromTag(tag);
     }
-    isBonusChest = base->getBoolean(L"bonus");
+    isBonusChest = base->getBoolean("bonus");
 }
 
 void ChestTileEntity::save(CompoundTag* base) {
@@ -147,14 +148,14 @@ void ChestTileEntity::save(CompoundTag* base) {
     for (unsigned int i = 0; i < items->size(); i++) {
         if ((*items)[i] != nullptr) {
             CompoundTag* tag = new CompoundTag();
-            tag->putByte(L"Slot", (uint8_t)i);
+            tag->putByte("Slot", (uint8_t)i);
             (*items)[i]->save(tag);
             listTag->add(tag);
         }
     }
-    base->put(L"Items", listTag);
-    if (hasCustomName()) base->putString(L"CustomName", name);
-    base->putBoolean(L"bonus", isBonusChest);
+    base->put("Items", listTag);
+    if (hasCustomName()) base->putString("CustomName", name);
+    base->putBoolean("bonus", isBonusChest);
 }
 
 int ChestTileEntity::getMaxStackSize() {
